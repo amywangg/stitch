@@ -1,0 +1,1938 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model achievements {
+  id                Int                 @id @default(autoincrement())
+  slug              String              @unique @db.VarChar(50)
+  name              String              @db.VarChar(100)
+  description       String?
+  icon_url          String?
+  criteria_type     String?             @db.VarChar(50)
+  criteria_value    Int?
+  rarity            String?             @default("common") @db.VarChar(20)
+  points            Int?                @default(10)
+  is_active         Boolean?            @default(true)
+  user_achievements user_achievements[]
+}
+
+model activity_feed {
+  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id       String        @db.Uuid
+  activity_type activity_type
+  title         String        @db.VarChar(255)
+  description   String?
+  project_id    String?       @db.Uuid
+  pattern_id    String?       @db.Uuid
+  post_id       String?       @db.Uuid
+  metadata      Json?         @default("{}")
+  is_public     Boolean?      @default(true)
+  created_at    DateTime?     @default(now()) @db.Timestamptz(6)
+  patterns      patterns?     @relation(fields: [pattern_id], references: [id], onUpdate: NoAction)
+  posts         posts?        @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects      projects?     @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users         users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([created_at(sort: Desc)], map: "idx_activity_feed_created")
+  @@index([activity_type], map: "idx_activity_feed_type")
+  @@index([user_id], map: "idx_activity_feed_user")
+}
+
+model ai_pattern_sessions {
+  id                   String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id              String    @db.Uuid
+  pattern_id           String?   @db.Uuid
+  session_type         String?   @db.VarChar(50)
+  input_parameters     Json?
+  conversation_history Json?
+  generated_pattern    Json?
+  status               String?   @default("active") @db.VarChar(50)
+  created_at           DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime? @default(now()) @db.Timestamptz(6)
+  patterns             patterns? @relation(fields: [pattern_id], references: [id], onUpdate: NoAction)
+  users                users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model chart_conversion_jobs {
+  id                   String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id              String             @db.Uuid
+  pattern_id           String?            @db.Uuid
+  written_instructions String
+  stitch_count         Int?
+  row_count            Int?
+  generated_chart_id   String?            @db.Uuid
+  status               processing_status? @default(pending)
+  error_message        String?
+  created_at           DateTime?          @default(now()) @db.Timestamptz(6)
+  completed_at         DateTime?          @db.Timestamptz(6)
+  pattern_charts       pattern_charts?    @relation(fields: [generated_chart_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patterns             patterns?          @relation(fields: [pattern_id], references: [id], onUpdate: NoAction)
+  users                users              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model chart_symbols {
+  id           Int         @id @default(autoincrement())
+  symbol       String      @db.VarChar(10)
+  name         String      @db.VarChar(50)
+  abbreviation String?     @db.VarChar(20)
+  description  String?
+  svg_path     String?
+  unicode_char String?     @db.VarChar(10)
+  category     String?     @db.VarChar(50)
+  craft_type   craft_type? @default(both)
+
+  @@unique([symbol, craft_type])
+}
+
+model comments {
+  id                String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id           String          @db.Uuid
+  post_id           String?         @db.Uuid
+  project_id        String?         @db.Uuid
+  pattern_id        String?         @db.Uuid
+  parent_comment_id String?         @db.Uuid
+  content           String
+  like_count        Int?            @default(0)
+  reply_count       Int?            @default(0)
+  created_at        DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?       @default(now()) @db.Timestamptz(6)
+  deleted_at        DateTime?       @db.Timestamptz(6)
+  comments          comments?       @relation("commentsTocomments", fields: [parent_comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  other_comments    comments[]      @relation("commentsTocomments")
+  patterns          patterns?       @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  posts             posts?          @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects          projects?       @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users             users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  likes             likes[]
+  notifications     notifications[]
+
+  @@index([pattern_id], map: "idx_comments_pattern")
+  @@index([post_id], map: "idx_comments_post")
+  @@index([project_id], map: "idx_comments_project")
+}
+
+model designer_profiles {
+  user_id           String    @id @db.Uuid
+  shop_name         String?   @db.VarChar(100)
+  shop_slug         String?   @unique @db.VarChar(100)
+  shop_description  String?
+  shop_policies     String?
+  refund_policy     String?
+  banner_url        String?
+  logo_url          String?
+  support_email     String?   @db.VarChar(255)
+  stripe_account_id String?   @db.VarChar(255)
+  stripe_onboarded  Boolean?  @default(false)
+  paypal_email      String?   @db.VarChar(255)
+  tax_id            String?   @db.VarChar(100)
+  total_sales       Int?      @default(0)
+  total_revenue     Decimal?  @default(0) @db.Decimal(12, 2)
+  average_rating    Decimal?  @db.Decimal(3, 2)
+  review_count      Int?      @default(0)
+  vacation_mode     Boolean?  @default(false)
+  vacation_message  String?
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime? @default(now()) @db.Timestamptz(6)
+  users             users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model follows {
+  id                                String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  follower_id                       String    @db.Uuid
+  following_id                      String    @db.Uuid
+  created_at                        DateTime? @default(now()) @db.Timestamptz(6)
+  users_follows_follower_idTousers  users     @relation("follows_follower_idTousers", fields: [follower_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_follows_following_idTousers users     @relation("follows_following_idTousers", fields: [following_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([follower_id, following_id])
+  @@index([follower_id], map: "idx_follows_follower")
+  @@index([following_id], map: "idx_follows_following")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model friendships {
+  id                                    String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  requester_id                          String             @db.Uuid
+  addressee_id                          String             @db.Uuid
+  status                                friendship_status? @default(pending)
+  created_at                            DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at                            DateTime?          @default(now()) @db.Timestamptz(6)
+  accepted_at                           DateTime?          @db.Timestamptz(6)
+  users_friendships_addressee_idTousers users              @relation("friendships_addressee_idTousers", fields: [addressee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_friendships_requester_idTousers users              @relation("friendships_requester_idTousers", fields: [requester_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([requester_id, addressee_id])
+  @@index([addressee_id], map: "idx_friendships_addressee")
+  @@index([requester_id], map: "idx_friendships_requester")
+  @@index([status], map: "idx_friendships_status")
+}
+
+model group_members {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  group_id  String    @db.Uuid
+  user_id   String    @db.Uuid
+  role      String?   @default("member") @db.VarChar(20)
+  joined_at DateTime? @default(now()) @db.Timestamptz(6)
+  groups    groups    @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users     users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([group_id, user_id])
+  @@index([group_id], map: "idx_group_members_group")
+  @@index([user_id], map: "idx_group_members_user")
+}
+
+model group_posts {
+  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  group_id      String        @db.Uuid
+  user_id       String        @db.Uuid
+  title         String?       @db.VarChar(255)
+  content       String
+  content_type  content_type? @default(discussion)
+  is_pinned     Boolean?      @default(false)
+  is_locked     Boolean?      @default(false)
+  like_count    Int?          @default(0)
+  comment_count Int?          @default(0)
+  created_at    DateTime?     @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?     @default(now()) @db.Timestamptz(6)
+  deleted_at    DateTime?     @db.Timestamptz(6)
+  groups        groups        @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users         users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([group_id], map: "idx_group_posts_group")
+}
+
+model groups {
+  id                 String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name               String          @db.VarChar(150)
+  slug               String          @unique @db.VarChar(150)
+  description        String?
+  rules              String?
+  cover_image_url    String?
+  icon_url           String?
+  visibility         visibility?     @default(public)
+  requires_approval  Boolean?        @default(false)
+  posting_permission String?         @default("members") @db.VarChar(20)
+  member_count       Int?            @default(0)
+  post_count         Int?            @default(0)
+  created_by         String          @db.Uuid
+  created_at         DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?       @default(now()) @db.Timestamptz(6)
+  group_members      group_members[]
+  group_posts        group_posts[]
+  users              users           @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  knit_alongs        knit_alongs[]
+  notifications      notifications[]
+
+  @@index([slug], map: "idx_groups_slug")
+}
+
+model kal_clues {
+  id           String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  kal_id       String      @db.Uuid
+  clue_number  Int
+  title        String?     @db.VarChar(200)
+  description  String?
+  instructions String?
+  release_date DateTime?   @db.Timestamptz(6)
+  is_released  Boolean?    @default(false)
+  created_at   DateTime?   @default(now()) @db.Timestamptz(6)
+  knit_alongs  knit_alongs @relation(fields: [kal_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model kal_participants {
+  id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  kal_id      String      @db.Uuid
+  user_id     String      @db.Uuid
+  project_id  String?     @db.Uuid
+  joined_at   DateTime?   @default(now()) @db.Timestamptz(6)
+  finished_at DateTime?   @db.Timestamptz(6)
+  knit_alongs knit_alongs @relation(fields: [kal_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects    projects?   @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users       users       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([kal_id, user_id])
+}
+
+model knit_alongs {
+  id                String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name              String             @db.VarChar(200)
+  slug              String             @unique @db.VarChar(200)
+  description       String?
+  rules             String?
+  pattern_ids       String[]           @db.Uuid
+  start_date        DateTime?          @db.Date
+  end_date          DateTime?          @db.Date
+  sign_up_deadline  DateTime?          @db.Date
+  has_mystery_clues Boolean?           @default(false)
+  has_prizes        Boolean?           @default(false)
+  prize_description String?
+  host_id           String             @db.Uuid
+  host_group_id     String?            @db.Uuid
+  visibility        visibility?        @default(public)
+  participant_count Int?               @default(0)
+  finished_count    Int?               @default(0)
+  cover_image_url   String?
+  created_at        DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?          @default(now()) @db.Timestamptz(6)
+  kal_clues         kal_clues[]
+  kal_participants  kal_participants[]
+  groups            groups?            @relation(fields: [host_group_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users             users              @relation(fields: [host_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  notifications     notifications[]
+}
+
+model likes {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id    String    @db.Uuid
+  post_id    String?   @db.Uuid
+  project_id String?   @db.Uuid
+  pattern_id String?   @db.Uuid
+  comment_id String?   @db.Uuid
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  comments   comments? @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  patterns   patterns? @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  posts      posts?    @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects   projects? @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, comment_id])
+  @@unique([user_id, pattern_id])
+  @@unique([user_id, post_id])
+  @@unique([user_id, project_id])
+  @@index([user_id], map: "idx_likes_user")
+}
+
+model needle_brands {
+  id           String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name         String         @db.VarChar(100)
+  website_url  String?        @db.VarChar(255)
+  is_verified  Boolean?       @default(false)
+  user_needles user_needles[]
+}
+
+model needle_size_chart {
+  id      Int     @id @default(autoincrement())
+  size_mm Decimal @db.Decimal(4, 2)
+  size_us String? @db.VarChar(10)
+  size_uk String? @db.VarChar(10)
+  size_jp String? @db.VarChar(10)
+  hook_us String? @db.VarChar(10)
+  hook_uk String? @db.VarChar(10)
+}
+
+model notifications {
+  id                                  String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                             String            @db.Uuid
+  type                                notification_type
+  actor_id                            String?           @db.Uuid
+  post_id                             String?           @db.Uuid
+  project_id                          String?           @db.Uuid
+  pattern_id                          String?           @db.Uuid
+  comment_id                          String?           @db.Uuid
+  group_id                            String?           @db.Uuid
+  kal_id                              String?           @db.Uuid
+  achievement_id                      Int?
+  title                               String?           @db.VarChar(255)
+  message                             String?
+  data                                Json?
+  is_read                             Boolean?          @default(false)
+  read_at                             DateTime?         @db.Timestamptz(6)
+  created_at                          DateTime?         @default(now()) @db.Timestamptz(6)
+  users_notifications_actor_idTousers users?            @relation("notifications_actor_idTousers", fields: [actor_id], references: [id], onUpdate: NoAction)
+  comments                            comments?         @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  groups                              groups?           @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  knit_alongs                         knit_alongs?      @relation(fields: [kal_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  patterns                            patterns?         @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  posts                               posts?            @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects                            projects?         @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_notifications_user_idTousers  users             @relation("notifications_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, is_read, created_at(sort: Desc)], map: "idx_notifications_user")
+}
+
+model pattern_abbreviations {
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pattern_id    String   @db.Uuid
+  abbreviation  String   @db.VarChar(20)
+  meaning       String   @db.VarChar(255)
+  display_order Int?     @default(0)
+  patterns      patterns @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model pattern_annotations {
+  id               String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id          String            @db.Uuid
+  pattern_id       String            @db.Uuid
+  page_number      Int?
+  section_id       String?           @db.Uuid
+  row_id           String?           @db.Uuid
+  x_percent        Decimal?          @db.Decimal(5, 2)
+  y_percent        Decimal?          @db.Decimal(5, 2)
+  annotation_type  String?           @db.VarChar(50)
+  color            String?           @db.VarChar(7)
+  content          String?
+  created_at       DateTime?         @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?         @default(now()) @db.Timestamptz(6)
+  patterns         patterns          @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pattern_rows     pattern_rows?     @relation(fields: [row_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pattern_sections pattern_sections? @relation(fields: [section_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users            users             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, pattern_id], map: "idx_pattern_annotations")
+}
+
+model pattern_charts {
+  id                    String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pattern_id            String                  @db.Uuid
+  section_id            String?                 @db.Uuid
+  name                  String?                 @db.VarChar(100)
+  description           String?
+  width_stitches        Int
+  height_rows           Int
+  chart_data            Json
+  symbol_legend         Json?
+  image_url             String?
+  read_rs_right_to_left Boolean?                @default(true)
+  read_ws_right_to_left Boolean?                @default(false)
+  first_row_number      Int?                    @default(1)
+  row_numbering_side    String?                 @default("right") @db.VarChar(10)
+  display_order         Int?                    @default(0)
+  created_at            DateTime?               @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime?               @default(now()) @db.Timestamptz(6)
+  chart_conversion_jobs chart_conversion_jobs[]
+  patterns              patterns                @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pattern_sections      pattern_sections?       @relation(fields: [section_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([pattern_id], map: "idx_pattern_charts_pattern")
+}
+
+model pattern_favorites {
+  user_id    String    @db.Uuid
+  pattern_id String    @db.Uuid
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  patterns   patterns  @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, pattern_id])
+}
+
+model pattern_images {
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pattern_id    String    @db.Uuid
+  image_url     String
+  thumbnail_url String?
+  caption       String?
+  is_cover      Boolean?  @default(false)
+  display_order Int?      @default(0)
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  patterns      patterns  @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model pattern_listings {
+  id            String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pattern_id    String          @unique @db.Uuid
+  price         Decimal         @db.Decimal(10, 2)
+  currency      String?         @default("USD") @db.VarChar(3)
+  sale_price    Decimal?        @db.Decimal(10, 2)
+  sale_start    DateTime?       @db.Timestamptz(6)
+  sale_end      DateTime?       @db.Timestamptz(6)
+  status        listing_status? @default(draft)
+  sales_count   Int?            @default(0)
+  revenue       Decimal?        @default(0) @db.Decimal(12, 2)
+  preview_pages Int?            @default(1)
+  created_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  patterns      patterns        @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  purchases     purchases[]
+}
+
+model pattern_queue {
+  id              String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id         String         @db.Uuid
+  pattern_id      String         @db.Uuid
+  size_id         String?        @db.Uuid
+  priority        Int?           @default(0)
+  notes           String?
+  planned_yarn_id String?        @db.Uuid
+  created_at      DateTime?      @default(now()) @db.Timestamptz(6)
+  patterns        patterns       @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user_stash      user_stash?    @relation(fields: [planned_yarn_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pattern_sizes   pattern_sizes? @relation(fields: [size_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users           users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, pattern_id])
+}
+
+model pattern_reading_progress {
+  id                          String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                     String            @db.Uuid
+  pattern_id                  String            @db.Uuid
+  project_id                  String?           @db.Uuid
+  current_page                Int?
+  current_section_id          String?           @db.Uuid
+  current_row_id              String?           @db.Uuid
+  selected_size_id            String?           @db.Uuid
+  show_only_selected_size     Boolean?          @default(true)
+  highlight_size_instructions Boolean?          @default(true)
+  zoom_level                  Int?              @default(100)
+  last_read_at                DateTime?         @default(now()) @db.Timestamptz(6)
+  projects                    projects?         @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_reading_progress_project")
+  pattern_rows                pattern_rows?     @relation(fields: [current_row_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pattern_sections            pattern_sections? @relation(fields: [current_section_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patterns                    patterns          @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pattern_sizes               pattern_sizes?    @relation(fields: [selected_size_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                       users             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, pattern_id, project_id])
+}
+
+model pattern_repeats {
+  id                            String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pattern_id                    String                    @db.Uuid
+  section_id                    String?                   @db.Uuid
+  name                          String?                   @db.VarChar(100)
+  start_row                     Int
+  end_row                       Int
+  repeat_type                   String?                   @db.VarChar(50)
+  repeat_count                  Int?
+  repeat_until_cm               Decimal?                  @db.Decimal(5, 2)
+  repeat_until_stitches         Int?
+  repeat_until_condition        String?
+  stitches_increased_per_repeat Int?                      @default(0)
+  stitches_decreased_per_repeat Int?                      @default(0)
+  display_order                 Int?                      @default(0)
+  created_at                    DateTime?                 @default(now()) @db.Timestamptz(6)
+  patterns                      patterns                  @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pattern_sections              pattern_sections?         @relation(fields: [section_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  project_repeat_progress       project_repeat_progress[]
+
+  @@index([pattern_id], map: "idx_pattern_repeats_pattern")
+}
+
+model pattern_requirements {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pattern_id       String   @db.Uuid
+  requirement_type String?  @db.VarChar(50)
+  description      String
+  is_optional      Boolean? @default(false)
+  display_order    Int?     @default(0)
+  patterns         patterns @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model pattern_reviews {
+  id                    String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pattern_id            String     @db.Uuid
+  user_id               String     @db.Uuid
+  project_id            String?    @db.Uuid
+  purchase_id           String?    @db.Uuid
+  rating                Int
+  title                 String?    @db.VarChar(255)
+  content               String?
+  clarity_rating        Int?
+  accuracy_rating       Int?
+  value_rating          Int?
+  is_verified_purchase  Boolean?   @default(false)
+  photo_urls            String[]
+  helpful_count         Int?       @default(0)
+  designer_response     String?
+  designer_responded_at DateTime?  @db.Timestamptz(6)
+  created_at            DateTime?  @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime?  @default(now()) @db.Timestamptz(6)
+  patterns              patterns   @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects              projects?  @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  purchases             purchases? @relation(fields: [purchase_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                 users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([pattern_id, user_id])
+}
+
+model pattern_row_audio {
+  id                     String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  row_id                 String       @db.Uuid
+  language               String?      @default("en-US") @db.VarChar(10)
+  voice_id               String?      @db.VarChar(50)
+  audio_url              String?
+  audio_duration_seconds Decimal?     @db.Decimal(6, 2)
+  created_at             DateTime?    @default(now()) @db.Timestamptz(6)
+  pattern_rows           pattern_rows @relation(fields: [row_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([row_id, language, voice_id])
+}
+
+model pattern_row_size_variants {
+  id                     String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  row_id                 String        @db.Uuid
+  size_id                String        @db.Uuid
+  instruction            String
+  instruction_simplified String?
+  stitch_count           Int?
+  measurement_target_cm  Decimal?      @db.Decimal(5, 2)
+  estimated_rows         Int?
+  created_at             DateTime?     @default(now()) @db.Timestamptz(6)
+  pattern_rows           pattern_rows  @relation(fields: [row_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pattern_sizes          pattern_sizes @relation(fields: [size_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([row_id, size_id])
+  @@index([row_id, size_id], map: "idx_pattern_row_size_variants")
+}
+
+model pattern_rows {
+  id                        String                      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  section_id                String                      @db.Uuid
+  size_id                   String?                     @db.Uuid
+  row_number                Int
+  row_label                 String?                     @db.VarChar(50)
+  row_side                  String?                     @db.VarChar(10)
+  instruction               String
+  instruction_simplified    String?
+  stitch_count              Int?
+  stitch_count_by_size      Json?
+  notes                     String?
+  tips                      String?
+  instruction_type          row_instruction_type?       @default(counted)
+  target_measurement_cm     Decimal?                    @db.Decimal(5, 2)
+  target_measurement_inches Decimal?                    @db.Decimal(5, 2)
+  estimated_rows            Int?
+  measure_every_n_rows      Int?
+  measurement_notes         String?
+  repeat_from_row           Int?
+  repeat_until_condition    String?
+  repeat_count              Int?
+  is_checkpoint             Boolean?                    @default(false)
+  checkpoint_message        String?
+  created_at                DateTime?                   @default(now()) @db.Timestamptz(6)
+  pattern_annotations       pattern_annotations[]
+  pattern_reading_progress  pattern_reading_progress[]
+  pattern_row_audio         pattern_row_audio[]
+  pattern_row_size_variants pattern_row_size_variants[]
+  pattern_sections          pattern_sections            @relation(fields: [section_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pattern_sizes             pattern_sizes?              @relation(fields: [size_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  project_row_completions   project_row_completions[]
+
+  @@index([section_id], map: "idx_pattern_rows_section")
+  @@index([size_id], map: "idx_pattern_rows_size")
+}
+
+model pattern_sections {
+  id                       String                     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pattern_id               String                     @db.Uuid
+  section_type             section_type?
+  name                     String                     @db.VarChar(100)
+  display_order            Int?                       @default(0)
+  instructions             String?
+  notes                    String?
+  chart_image_url          String?
+  chart_rows               Int?
+  chart_stitches           Int?
+  created_at               DateTime?                  @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime?                  @default(now()) @db.Timestamptz(6)
+  pattern_annotations      pattern_annotations[]
+  pattern_charts           pattern_charts[]
+  pattern_reading_progress pattern_reading_progress[]
+  pattern_repeats          pattern_repeats[]
+  pattern_rows             pattern_rows[]
+  patterns                 patterns                   @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  project_sections         project_sections[]
+
+  @@index([pattern_id], map: "idx_pattern_sections_pattern")
+}
+
+model pattern_sizes {
+  id                         String                      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pattern_id                 String                      @db.Uuid
+  name                       String                      @db.VarChar(50)
+  display_order              Int?                        @default(0)
+  bust_cm                    Decimal?                    @db.Decimal(5, 1)
+  bust_inches                Decimal?                    @db.Decimal(5, 1)
+  waist_cm                   Decimal?                    @db.Decimal(5, 1)
+  waist_inches               Decimal?                    @db.Decimal(5, 1)
+  hip_cm                     Decimal?                    @db.Decimal(5, 1)
+  hip_inches                 Decimal?                    @db.Decimal(5, 1)
+  finished_bust_cm           Decimal?                    @db.Decimal(5, 1)
+  finished_bust_inches       Decimal?                    @db.Decimal(5, 1)
+  finished_length_cm         Decimal?                    @db.Decimal(5, 1)
+  finished_length_inches     Decimal?                    @db.Decimal(5, 1)
+  finished_sleeve_cm         Decimal?                    @db.Decimal(5, 1)
+  finished_sleeve_inches     Decimal?                    @db.Decimal(5, 1)
+  finished_armhole_depth_cm  Decimal?                    @db.Decimal(5, 1)
+  finished_yoke_depth_cm     Decimal?                    @db.Decimal(5, 1)
+  finished_shoulder_width_cm Decimal?                    @db.Decimal(5, 1)
+  head_circumference_cm      Decimal?                    @db.Decimal(5, 1)
+  foot_circumference_cm      Decimal?                    @db.Decimal(5, 1)
+  foot_length_cm             Decimal?                    @db.Decimal(5, 1)
+  hand_circumference_cm      Decimal?                    @db.Decimal(5, 1)
+  yardage                    Int?
+  meters                     Int?
+  cast_on_stitches           Int?
+  created_at                 DateTime?                   @default(now()) @db.Timestamptz(6)
+  pattern_queue              pattern_queue[]
+  pattern_reading_progress   pattern_reading_progress[]
+  pattern_row_size_variants  pattern_row_size_variants[]
+  pattern_rows               pattern_rows[]
+  patterns                   patterns                    @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects                   projects[]
+
+  @@index([pattern_id], map: "idx_pattern_sizes_pattern")
+}
+
+model pattern_tags {
+  pattern_id String   @db.Uuid
+  tag_id     Int
+  patterns   patterns @relation(fields: [pattern_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tags       tags     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([pattern_id, tag_id])
+}
+
+model pattern_uploads {
+  id                      String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                 String             @db.Uuid
+  pattern_id              String?            @db.Uuid
+  upload_type             upload_type
+  original_filename       String             @db.VarChar(255)
+  file_url                String
+  file_type               String?            @db.VarChar(50)
+  file_size_bytes         Int?
+  page_count              Int?
+  width_px                Int?
+  height_px               Int?
+  processing_status       processing_status? @default(pending)
+  processing_started_at   DateTime?          @db.Timestamptz(6)
+  processing_completed_at DateTime?          @db.Timestamptz(6)
+  processing_error        String?
+  extracted_text          String?
+  ocr_text                String?
+  ocr_confidence          Decimal?           @db.Decimal(3, 2)
+  extracted_data          Json?
+  detected_sizes          String[]
+  detected_gauge          Json?
+  detected_yarn_weight    String?            @db.VarChar(50)
+  detected_sections       String[]
+  detected_abbreviations  Json?
+  ai_confidence_score     Decimal?           @db.Decimal(3, 2)
+  created_at              DateTime?          @default(now()) @db.Timestamptz(6)
+  patterns                patterns?          @relation(fields: [pattern_id], references: [id], onUpdate: NoAction)
+  users                   users              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([processing_status], map: "idx_pattern_uploads_status")
+  @@index([user_id], map: "idx_pattern_uploads_user")
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model patterns {
+  id                         String                     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  author_id                  String                     @db.Uuid
+  title                      String                     @db.VarChar(255)
+  slug                       String                     @db.VarChar(255)
+  description                String?
+  notes                      String?
+  craft_type                 craft_type?                @default(knitting)
+  garment_type               garment_type?
+  difficulty                 pattern_difficulty?
+  is_seamless                Boolean?
+  is_worked_flat             Boolean?
+  is_worked_in_round         Boolean?
+  is_top_down                Boolean?
+  is_bottom_up               Boolean?
+  construction_notes         String?
+  techniques                 String[]
+  size_range                 String?                    @db.VarChar(100)
+  is_size_inclusive          Boolean?                   @default(false)
+  fit_type                   String?                    @db.VarChar(50)
+  gauge_stitches             Decimal?                   @db.Decimal(4, 1)
+  gauge_rows                 Decimal?                   @db.Decimal(4, 1)
+  gauge_pattern              String?                    @db.VarChar(100)
+  gauge_size_inches          Decimal?                   @default(4) @db.Decimal(3, 1)
+  gauge_needle_mm            Decimal?                   @db.Decimal(3, 2)
+  gauge_needle_us            String?                    @db.VarChar(10)
+  gauge_hook_mm              Decimal?                   @db.Decimal(3, 2)
+  gauge_hook_us              String?                    @db.VarChar(10)
+  gauge_notes                String?
+  gauge_critical             Boolean?                   @default(true)
+  recommended_yarn_id        String?                    @db.Uuid
+  recommended_yarn_weight_id Int?
+  yarn_weight_description    String?                    @db.VarChar(100)
+  total_yardage_min          Int?
+  total_yardage_max          Int?
+  total_meters_min           Int?
+  total_meters_max           Int?
+  number_of_colors           Int?                       @default(1)
+  primary_needle_mm          Decimal?                   @db.Decimal(3, 2)
+  primary_needle_us          String?                    @db.VarChar(10)
+  secondary_needle_mm        Decimal?                   @db.Decimal(3, 2)
+  secondary_needle_us        String?                    @db.VarChar(10)
+  needle_notes               String?
+  is_published               Boolean?                   @default(false)
+  published_at               DateTime?                  @db.Timestamptz(6)
+  is_free                    Boolean?                   @default(true)
+  requires_purchase          Boolean?                   @default(false)
+  pdf_url                    String?
+  pdf_page_count             Int?
+  pdf_version                String?                    @db.VarChar(20)
+  last_updated_at            DateTime?                  @db.Timestamptz(6)
+  update_notes               String?
+  language                   String?                    @default("en") @db.VarChar(10)
+  available_languages        String[]
+  cover_image_url            String?
+  designer_name              String?                    @db.VarChar(150)
+  designer_url               String?                    @db.VarChar(255)
+  parsing_source             upload_type?
+  original_text              String?
+  cleaned_instructions       String?
+  detected_abbreviations     Json?
+  detected_repeats           Json?
+  ai_parsed_data             Json?
+  ai_confidence_score        Decimal?                   @db.Decimal(3, 2)
+  ai_rewrite_version         Int?                       @default(0)
+  view_count                 Int?                       @default(0)
+  favorite_count             Int?                       @default(0)
+  queue_count                Int?                       @default(0)
+  project_count              Int?                       @default(0)
+  average_rating             Decimal?                   @db.Decimal(3, 2)
+  rating_count               Int?                       @default(0)
+  meta_description           String?                    @db.VarChar(300)
+  created_at                 DateTime?                  @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime?                  @default(now()) @db.Timestamptz(6)
+  deleted_at                 DateTime?                  @db.Timestamptz(6)
+  activity_feed              activity_feed[]
+  ai_pattern_sessions        ai_pattern_sessions[]
+  chart_conversion_jobs      chart_conversion_jobs[]
+  comments                   comments[]
+  likes                      likes[]
+  notifications              notifications[]
+  pattern_abbreviations      pattern_abbreviations[]
+  pattern_annotations        pattern_annotations[]
+  pattern_charts             pattern_charts[]
+  pattern_favorites          pattern_favorites[]
+  pattern_images             pattern_images[]
+  pattern_listings           pattern_listings?
+  pattern_queue              pattern_queue[]
+  pattern_reading_progress   pattern_reading_progress[]
+  pattern_repeats            pattern_repeats[]
+  pattern_requirements       pattern_requirements[]
+  pattern_reviews            pattern_reviews[]
+  pattern_sections           pattern_sections[]
+  pattern_sizes              pattern_sizes[]
+  pattern_tags               pattern_tags[]
+  pattern_uploads            pattern_uploads[]
+  users                      users                      @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  yarns                      yarns?                     @relation(fields: [recommended_yarn_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  yarn_weights               yarn_weights?              @relation(fields: [recommended_yarn_weight_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projects                   projects[]
+  purchases                  purchases[]
+  user_pattern_library       user_pattern_library[]
+
+  @@unique([author_id, slug])
+  @@index([author_id], map: "idx_patterns_author")
+  @@index([craft_type], map: "idx_patterns_craft")
+  @@index([difficulty], map: "idx_patterns_difficulty")
+  @@index([garment_type], map: "idx_patterns_garment")
+  @@index([is_published, published_at(sort: Desc)], map: "idx_patterns_published")
+  @@index([techniques], map: "idx_patterns_techniques", type: Gin)
+}
+
+model post_images {
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  post_id       String    @db.Uuid
+  image_url     String
+  thumbnail_url String?
+  display_order Int?      @default(0)
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  posts         posts     @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model posts {
+  id               String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id          String          @db.Uuid
+  project_id       String?         @db.Uuid
+  content_type     content_type?   @default(post)
+  content          String?
+  visibility       visibility?     @default(public)
+  like_count       Int?            @default(0)
+  comment_count    Int?            @default(0)
+  share_count      Int?            @default(0)
+  progress_percent Int?
+  created_at       DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?       @default(now()) @db.Timestamptz(6)
+  deleted_at       DateTime?       @db.Timestamptz(6)
+  activity_feed    activity_feed[]
+  comments         comments[]
+  likes            likes[]
+  notifications    notifications[]
+  post_images      post_images[]
+  projects         projects?       @relation(fields: [project_id], references: [id], onUpdate: NoAction)
+  users            users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([created_at(sort: Desc)], map: "idx_posts_created")
+  @@index([project_id], map: "idx_posts_project")
+  @@index([user_id], map: "idx_posts_user")
+}
+
+model project_analytics {
+  id                           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_id                   String    @unique @db.Uuid
+  avg_rows_per_session         Decimal?  @db.Decimal(5, 1)
+  avg_session_duration_minutes Decimal?  @db.Decimal(6, 1)
+  fastest_row_seconds          Int?
+  slowest_row_seconds          Int?
+  predicted_yarn_usage_meters  Int?
+  predicted_yarn_usage_grams   Int?
+  predicted_completion_date    DateTime? @db.Date
+  predicted_remaining_hours    Decimal?  @db.Decimal(6, 1)
+  progress_by_day              Json?
+  rows_by_day                  Json?
+  time_by_day                  Json?
+  last_calculated_at           DateTime? @default(now()) @db.Timestamptz(6)
+  projects                     projects  @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model project_gauge {
+  id                        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_id                String    @unique @db.Uuid
+  stitches_per_10cm         Decimal?  @db.Decimal(4, 1)
+  stitches_per_4in          Decimal?  @db.Decimal(4, 1)
+  rows_per_10cm             Decimal?  @db.Decimal(4, 1)
+  rows_per_4in              Decimal?  @db.Decimal(4, 1)
+  swatch_width_cm           Decimal?  @db.Decimal(5, 2)
+  swatch_height_cm          Decimal?  @db.Decimal(5, 2)
+  swatch_stitches           Int?
+  swatch_rows               Int?
+  needle_mm                 Decimal?  @db.Decimal(3, 2)
+  needle_us                 String?   @db.VarChar(10)
+  hook_mm                   Decimal?  @db.Decimal(3, 2)
+  hook_us                   String?   @db.VarChar(10)
+  blocked                   Boolean?  @default(false)
+  blocked_stitches_per_10cm Decimal?  @db.Decimal(4, 1)
+  blocked_rows_per_10cm     Decimal?  @db.Decimal(4, 1)
+  notes                     String?
+  photo_url                 String?
+  created_at                DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at                DateTime? @default(now()) @db.Timestamptz(6)
+  projects                  projects  @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model project_measurements {
+  id                 String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_section_id String           @db.Uuid
+  measured_at_row    Int
+  measurement_cm     Decimal          @db.Decimal(5, 2)
+  measurement_inches Decimal?         @db.Decimal(5, 2)
+  target_cm          Decimal?         @db.Decimal(5, 2)
+  notes              String?
+  photo_url          String?
+  created_at         DateTime?        @default(now()) @db.Timestamptz(6)
+  project_sections   project_sections @relation(fields: [project_section_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model project_notes {
+  id               String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_id       String            @db.Uuid
+  content          String
+  at_row           Int?
+  at_section_id    String?           @db.Uuid
+  visibility       visibility?       @default(private)
+  created_at       DateTime?         @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?         @default(now()) @db.Timestamptz(6)
+  project_sections project_sections? @relation(fields: [at_section_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projects         projects          @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model project_photos {
+  id                String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_id        String    @db.Uuid
+  user_id           String    @db.Uuid
+  image_url         String
+  thumbnail_url     String?
+  caption           String?
+  progress_percent  Int?
+  taken_at_row      Int?
+  taken_at_section  String?   @db.VarChar(100)
+  is_cover          Boolean?  @default(false)
+  is_finished_photo Boolean?  @default(false)
+  display_order     Int?      @default(0)
+  taken_at          DateTime? @db.Timestamptz(6)
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+  projects          projects  @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users             users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([project_id], map: "idx_project_photos_project")
+}
+
+model project_repeat_progress {
+  id                    String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_section_id    String           @db.Uuid
+  pattern_repeat_id     String?          @db.Uuid
+  current_repeat        Int?             @default(0)
+  total_repeats         Int?
+  is_completed          Boolean?         @default(false)
+  current_row_in_repeat Int?             @default(1)
+  total_rows_in_repeat  Int?
+  created_at            DateTime?        @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime?        @default(now()) @db.Timestamptz(6)
+  pattern_repeats       pattern_repeats? @relation(fields: [pattern_repeat_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  project_sections      project_sections @relation(fields: [project_section_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model project_row_completions {
+  id                 String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_section_id String           @db.Uuid
+  pattern_row_id     String?          @db.Uuid
+  row_number         Int
+  is_completed       Boolean?         @default(false)
+  completed_at       DateTime?        @db.Timestamptz(6)
+  repeat_number      Int?
+  notes              String?
+  created_at         DateTime?        @default(now()) @db.Timestamptz(6)
+  pattern_rows       pattern_rows?    @relation(fields: [pattern_row_id], references: [id], onUpdate: NoAction)
+  project_sections   project_sections @relation(fields: [project_section_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([project_section_id, row_number, repeat_number])
+  @@index([project_section_id], map: "idx_project_row_completions")
+}
+
+model project_sections {
+  id                      String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_id              String                    @db.Uuid
+  pattern_section_id      String?                   @db.Uuid
+  name                    String                    @db.VarChar(100)
+  section_type            section_type?
+  display_order           Int?                      @default(0)
+  current_row             Int?                      @default(0)
+  total_rows              Int?
+  is_estimated_total      Boolean?                  @default(false)
+  target_measurement_cm   Decimal?                  @db.Decimal(5, 2)
+  current_measurement_cm  Decimal?                  @db.Decimal(5, 2)
+  last_measured_at_row    Int?
+  next_measure_at_row     Int?
+  current_repeat          Int?                      @default(0)
+  total_repeats           Int?
+  rows_per_repeat         Int?
+  is_active               Boolean?                  @default(false)
+  is_completed            Boolean?                  @default(false)
+  started_at              DateTime?                 @db.Timestamptz(6)
+  completed_at            DateTime?                 @db.Timestamptz(6)
+  time_spent_minutes      Int?                      @default(0)
+  counter_haptic_feedback Boolean?                  @default(true)
+  counter_sound_enabled   Boolean?                  @default(true)
+  counter_voice_enabled   Boolean?                  @default(false)
+  counter_auto_advance    Boolean?                  @default(false)
+  notes                   String?
+  created_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  project_measurements    project_measurements[]
+  project_notes           project_notes[]
+  project_repeat_progress project_repeat_progress[]
+  project_row_completions project_row_completions[]
+  pattern_sections        pattern_sections?         @relation(fields: [pattern_section_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projects                projects                  @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  project_time_sessions   project_time_sessions[]
+  row_counter_history     row_counter_history[]
+
+  @@index([project_id], map: "idx_project_sections_project")
+}
+
+model project_time_sessions {
+  id                 String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_id         String            @db.Uuid
+  project_section_id String?           @db.Uuid
+  started_at         DateTime          @db.Timestamptz(6)
+  ended_at           DateTime?         @db.Timestamptz(6)
+  duration_minutes   Int?
+  rows_completed     Int?
+  start_row          Int?
+  end_row            Int?
+  notes              String?
+  created_at         DateTime?         @default(now()) @db.Timestamptz(6)
+  projects           projects          @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  project_sections   project_sections? @relation(fields: [project_section_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([started_at(sort: Desc)], map: "idx_project_time_sessions_date")
+  @@index([project_id], map: "idx_project_time_sessions_project")
+}
+
+model project_yarns {
+  id                     String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_id             String      @db.Uuid
+  stash_id               String?     @db.Uuid
+  yarn_id                String?     @db.Uuid
+  custom_yarn_name       String?     @db.VarChar(200)
+  custom_colorway        String?     @db.VarChar(100)
+  color_hex              String?     @db.VarChar(7)
+  skeins_used            Decimal?    @db.Decimal(5, 2)
+  grams_used             Int?
+  meters_used            Int?
+  yards_used             Int?
+  estimated_total_meters Int?
+  meters_per_row         Decimal?    @db.Decimal(4, 2)
+  color_role             String?     @db.VarChar(50)
+  notes                  String?
+  created_at             DateTime?   @default(now()) @db.Timestamptz(6)
+  projects               projects    @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user_stash             user_stash? @relation(fields: [stash_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  yarns                  yarns?      @relation(fields: [yarn_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([project_id], map: "idx_project_yarns_project")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model projects {
+  id                          String                     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                     String                     @db.Uuid
+  pattern_id                  String?                    @db.Uuid
+  size_id                     String?                    @db.Uuid
+  title                       String                     @db.VarChar(255)
+  slug                        String                     @db.VarChar(255)
+  description                 String?
+  status                      project_status?            @default(planned)
+  visibility                  visibility?                @default(public)
+  progress_percent            Int?                       @default(0)
+  cast_on_date                DateTime?                  @db.Date
+  started_at                  DateTime?                  @db.Date
+  finished_at                 DateTime?                  @db.Date
+  total_time_minutes          Int?                       @default(0)
+  estimated_time_minutes      Int?
+  estimated_completion_date   DateTime?                  @db.Date
+  estimated_remaining_minutes Int?
+  rows_per_hour_avg           Decimal?                   @db.Decimal(5, 1)
+  personal_rating             Int?
+  made_for                    String?                    @db.VarChar(100)
+  made_for_size               String?                    @db.VarChar(50)
+  modifications_made          String?
+  would_make_again            Boolean?
+  is_custom                   Boolean?                   @default(false)
+  custom_pattern_source       String?
+  actual_gauge_stitches       Decimal?                   @db.Decimal(4, 1)
+  actual_gauge_rows           Decimal?                   @db.Decimal(4, 1)
+  gauge_swatch_washed         Boolean?
+  gauge_notes                 String?
+  needle_size_mm              Decimal?                   @db.Decimal(3, 2)
+  needle_size_us              String?                    @db.VarChar(10)
+  needle_type                 needle_type?
+  needle_notes                String?
+  notes                       String?
+  cover_image_url             String?
+  happiness_rating            Int?
+  created_at                  DateTime?                  @default(now()) @db.Timestamptz(6)
+  updated_at                  DateTime?                  @default(now()) @db.Timestamptz(6)
+  deleted_at                  DateTime?                  @db.Timestamptz(6)
+  activity_feed               activity_feed[]
+  comments                    comments[]
+  kal_participants            kal_participants[]
+  likes                       likes[]
+  notifications               notifications[]
+  pattern_reading_progress    pattern_reading_progress[]
+  pattern_reviews             pattern_reviews[]
+  posts                       posts[]
+  project_analytics           project_analytics?
+  project_gauge               project_gauge?
+  project_notes               project_notes[]
+  project_photos              project_photos[]
+  project_sections            project_sections[]
+  project_time_sessions       project_time_sessions[]
+  project_yarns               project_yarns[]
+  patterns                    patterns?                  @relation(fields: [pattern_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pattern_sizes               pattern_sizes?             @relation(fields: [size_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                       users                      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user_achievements           user_achievements[]
+  user_needles                user_needles[]
+  voice_command_log           voice_command_log[]
+
+  @@unique([user_id, slug])
+  @@index([finished_at(sort: Desc)], map: "idx_projects_finished")
+  @@index([pattern_id], map: "idx_projects_pattern")
+  @@index([started_at(sort: Desc)], map: "idx_projects_started")
+  @@index([status], map: "idx_projects_status")
+  @@index([user_id], map: "idx_projects_user")
+}
+
+model purchases {
+  id                               String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                          String            @db.Uuid
+  pattern_id                       String            @db.Uuid
+  listing_id                       String            @db.Uuid
+  amount                           Decimal           @db.Decimal(10, 2)
+  currency                         String?           @default("USD") @db.VarChar(3)
+  payment_method                   String?           @db.VarChar(50)
+  stripe_payment_intent_id         String?           @db.VarChar(255)
+  paypal_transaction_id            String?           @db.VarChar(255)
+  status                           purchase_status?  @default(pending)
+  seller_id                        String            @db.Uuid
+  seller_amount                    Decimal?          @db.Decimal(10, 2)
+  platform_fee                     Decimal?          @db.Decimal(10, 2)
+  download_count                   Int?              @default(0)
+  last_download_at                 DateTime?         @db.Timestamptz(6)
+  purchased_at                     DateTime?         @default(now()) @db.Timestamptz(6)
+  refunded_at                      DateTime?         @db.Timestamptz(6)
+  pattern_reviews                  pattern_reviews[]
+  pattern_listings                 pattern_listings  @relation(fields: [listing_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patterns                         patterns          @relation(fields: [pattern_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_purchases_seller_idTousers users             @relation("purchases_seller_idTousers", fields: [seller_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_purchases_user_idTousers   users             @relation("purchases_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([seller_id], map: "idx_purchases_seller")
+  @@index([user_id], map: "idx_purchases_user")
+}
+
+model refresh_tokens {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id     String    @db.Uuid
+  token_hash  String    @db.VarChar(255)
+  device_info String?   @db.VarChar(255)
+  ip_address  String?   @db.VarChar(45)
+  expires_at  DateTime  @db.Timestamptz(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  revoked_at  DateTime? @db.Timestamptz(6)
+  users       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_refresh_tokens_user")
+}
+
+model row_counter_history {
+  id                 String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  project_section_id String              @db.Uuid
+  row_number         Int
+  action             String              @db.VarChar(20)
+  previous_value     Int?
+  input_type         counter_input_type? @default(click)
+  voice_transcript   String?
+  notes              String?
+  created_at         DateTime?           @default(now()) @db.Timestamptz(6)
+  project_sections   project_sections    @relation(fields: [project_section_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([created_at(sort: Desc)], map: "idx_row_counter_history_created")
+  @@index([project_section_id], map: "idx_row_counter_history_section")
+}
+
+model standard_measurements {
+  id                    Int      @id @default(autoincrement())
+  measurement_system    String?  @db.VarChar(20)
+  size_name             String?  @db.VarChar(20)
+  bust_cm               Decimal? @db.Decimal(5, 1)
+  waist_cm              Decimal? @db.Decimal(5, 1)
+  hip_cm                Decimal? @db.Decimal(5, 1)
+  shoulder_width_cm     Decimal? @db.Decimal(5, 1)
+  arm_length_cm         Decimal? @db.Decimal(5, 1)
+  torso_length_cm       Decimal? @db.Decimal(5, 1)
+  head_circumference_cm Decimal? @db.Decimal(5, 1)
+  foot_length_cm        Decimal? @db.Decimal(5, 1)
+}
+
+model stash_photos {
+  id            String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  stash_id      String     @db.Uuid
+  image_url     String
+  display_order Int?       @default(0)
+  created_at    DateTime?  @default(now()) @db.Timestamptz(6)
+  user_stash    user_stash @relation(fields: [stash_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model sync_queue {
+  id                  String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id             String    @db.Uuid
+  device_id           String    @db.VarChar(255)
+  entity_type         String    @db.VarChar(50)
+  entity_id           String    @db.Uuid
+  action              String    @db.VarChar(20)
+  change_data         Json
+  is_synced           Boolean?  @default(false)
+  synced_at           DateTime? @db.Timestamptz(6)
+  conflict_detected   Boolean?  @default(false)
+  conflict_resolution String?
+  created_at          DateTime? @default(now()) @db.Timestamptz(6)
+  users               users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, is_synced], map: "idx_sync_queue_user")
+}
+
+model tags {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique @db.VarChar(50)
+  slug         String         @unique @db.VarChar(50)
+  category     String?        @db.VarChar(50)
+  usage_count  Int?           @default(0)
+  pattern_tags pattern_tags[]
+}
+
+model user_achievements {
+  id             String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id        String       @db.Uuid
+  achievement_id Int
+  earned_at      DateTime?    @default(now()) @db.Timestamptz(6)
+  project_id     String?      @db.Uuid
+  achievements   achievements @relation(fields: [achievement_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projects       projects?    @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users          users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, achievement_id])
+  @@index([user_id], map: "idx_user_achievements")
+}
+
+model user_daily_activity {
+  id                  String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id             String    @db.Uuid
+  activity_date       DateTime  @db.Date
+  time_spent_minutes  Int?      @default(0)
+  rows_completed      Int?      @default(0)
+  projects_worked_on  Int?      @default(0)
+  achievements_earned String[]
+  created_at          DateTime? @default(now()) @db.Timestamptz(6)
+  users               users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, activity_date])
+  @@index([user_id, activity_date], map: "idx_user_daily_activity")
+}
+
+model user_devices {
+  id             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id        String    @db.Uuid
+  device_id      String    @db.VarChar(255)
+  device_name    String?   @db.VarChar(100)
+  device_type    String?   @db.VarChar(50)
+  push_token     String?
+  last_sync_at   DateTime? @db.Timestamptz(6)
+  last_active_at DateTime? @db.Timestamptz(6)
+  app_version    String?   @db.VarChar(20)
+  os_version     String?   @db.VarChar(50)
+  is_active      Boolean?  @default(true)
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  users          users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, device_id])
+  @@index([user_id], map: "idx_user_devices")
+}
+
+model user_knitting_streaks {
+  id                      String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                 String    @unique @db.Uuid
+  current_streak_days     Int?      @default(0)
+  longest_streak_days     Int?      @default(0)
+  last_knitting_date      DateTime? @db.Date
+  streak_start_date       DateTime? @db.Date
+  days_knit_this_week     Int?      @default(0)
+  time_this_week_minutes  Int?      @default(0)
+  rows_this_week          Int?      @default(0)
+  days_knit_this_month    Int?      @default(0)
+  time_this_month_minutes Int?      @default(0)
+  rows_this_month         Int?      @default(0)
+  updated_at              DateTime? @default(now()) @db.Timestamptz(6)
+  users                   users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model user_needles {
+  id                       String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                  String         @db.Uuid
+  brand_id                 String?        @db.Uuid
+  custom_brand_name        String?        @db.VarChar(100)
+  needle_type              needle_type
+  size_mm                  Decimal?       @db.Decimal(4, 2)
+  size_us                  String?        @db.VarChar(10)
+  length_cm                Int?
+  length_inches            Decimal?       @db.Decimal(4, 1)
+  is_interchangeable       Boolean?       @default(false)
+  interchangeable_set_name String?        @db.VarChar(100)
+  tip_length_cm            Int?
+  cable_length_cm          Int?
+  material                 String?        @db.VarChar(50)
+  notes                    String?
+  quantity                 Int?           @default(1)
+  current_project_id       String?        @db.Uuid
+  created_at               DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime?      @default(now()) @db.Timestamptz(6)
+  projects                 projects?      @relation(fields: [current_project_id], references: [id], onUpdate: NoAction, map: "fk_user_needles_project")
+  needle_brands            needle_brands? @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                    users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([size_mm], map: "idx_user_needles_size")
+  @@index([user_id], map: "idx_user_needles_user")
+}
+
+model user_oauth_accounts {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id          String    @db.Uuid
+  provider         String    @db.VarChar(50)
+  provider_user_id String    @db.VarChar(255)
+  access_token     String?
+  refresh_token    String?
+  expires_at       DateTime? @db.Timestamptz(6)
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+  users            users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([provider, provider_user_id])
+}
+
+model user_pattern_library {
+  id                  String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id             String    @db.Uuid
+  pattern_id          String?   @db.Uuid
+  custom_pattern_name String?   @db.VarChar(255)
+  custom_designer     String?   @db.VarChar(150)
+  custom_source       String?   @db.VarChar(255)
+  custom_pdf_url      String?
+  personal_notes      String?
+  tags                String[]
+  purchased_at        DateTime? @db.Timestamptz(6)
+  purchase_price      Decimal?  @db.Decimal(10, 2)
+  currency            String?   @db.VarChar(3)
+  created_at          DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime? @default(now()) @db.Timestamptz(6)
+  patterns            patterns? @relation(fields: [pattern_id], references: [id], onUpdate: NoAction)
+  users               users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, pattern_id])
+  @@index([user_id], map: "idx_user_pattern_library_user")
+}
+
+model user_recently_viewed {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id     String    @db.Uuid
+  entity_type String    @db.VarChar(50)
+  entity_id   String    @db.Uuid
+  viewed_at   DateTime? @default(now()) @db.Timestamptz(6)
+  users       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, entity_type, entity_id])
+  @@index([user_id, viewed_at(sort: Desc)], map: "idx_user_recently_viewed")
+}
+
+model user_search_history {
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id       String    @db.Uuid
+  search_query  String
+  search_type   String?   @db.VarChar(50)
+  filters_used  Json?
+  results_count Int?
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  users         users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, created_at(sort: Desc)], map: "idx_user_search_history")
+}
+
+model user_settings {
+  user_id                          String      @id @db.Uuid
+  email_notifications              Boolean?    @default(true)
+  email_pattern_updates            Boolean?    @default(true)
+  email_kal_updates                Boolean?    @default(true)
+  email_comments                   Boolean?    @default(true)
+  email_newsletter                 Boolean?    @default(false)
+  push_notifications               Boolean?    @default(true)
+  show_online_status               Boolean?    @default(true)
+  show_projects_count              Boolean?    @default(true)
+  show_stash                       Boolean?    @default(true)
+  allow_messages_from              String?     @default("everyone") @db.VarChar(20)
+  default_project_visibility       visibility? @default(public)
+  default_pattern_notes_visibility visibility? @default(private)
+  theme                            String?     @default("system") @db.VarChar(20)
+  compact_view                     Boolean?    @default(false)
+  show_metric_and_imperial         Boolean?    @default(true)
+  voice_enabled                    Boolean?    @default(false)
+  voice_language                   String?     @default("en-US") @db.VarChar(10)
+  voice_speed                      Decimal?    @default(1.0) @db.Decimal(2, 1)
+  voice_auto_advance               Boolean?    @default(false)
+  voice_confirmation_sound         Boolean?    @default(true)
+  default_haptic_feedback          Boolean?    @default(true)
+  default_sound_enabled            Boolean?    @default(true)
+  knitting_style                   String?     @default("continental") @db.VarChar(20)
+  created_at                       DateTime?   @default(now()) @db.Timestamptz(6)
+  updated_at                       DateTime?   @default(now()) @db.Timestamptz(6)
+  users                            users       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model user_stash {
+  id                   String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id              String                @db.Uuid
+  yarn_id              String?               @db.Uuid
+  colorway_id          String?               @db.Uuid
+  custom_yarn_name     String?               @db.VarChar(200)
+  custom_company_name  String?               @db.VarChar(150)
+  custom_colorway      String?               @db.VarChar(100)
+  custom_weight        yarn_weight_category?
+  custom_fiber_content String?
+  skeins_total         Decimal?              @db.Decimal(6, 2)
+  skeins_used          Decimal?              @default(0) @db.Decimal(6, 2)
+  grams_total          Int?
+  grams_used           Int?                  @default(0)
+  meters_total         Int?
+  meters_used          Int?                  @default(0)
+  dye_lot              String?               @db.VarChar(50)
+  color_hex            String?               @db.VarChar(7)
+  acquired_from        String?               @db.VarChar(255)
+  acquired_date        DateTime?             @db.Date
+  acquired_price       Decimal?              @db.Decimal(10, 2)
+  currency             String?               @default("USD") @db.VarChar(3)
+  location             String?               @db.VarChar(100)
+  notes                String?
+  tags                 String[]
+  is_handspun          Boolean?              @default(false)
+  is_available         Boolean?              @default(true)
+  is_trade_or_sell     Boolean?              @default(false)
+  created_at           DateTime?             @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?             @default(now()) @db.Timestamptz(6)
+  pattern_queue        pattern_queue[]
+  project_yarns        project_yarns[]
+  stash_photos         stash_photos[]
+  yarn_colorways       yarn_colorways?       @relation(fields: [colorway_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                users                 @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  yarns                yarns?                @relation(fields: [yarn_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_user_stash_user")
+  @@index([yarn_id], map: "idx_user_stash_yarn")
+}
+
+model user_stats {
+  user_id                     String    @id @db.Uuid
+  follower_count              Int?      @default(0)
+  following_count             Int?      @default(0)
+  project_count               Int?      @default(0)
+  finished_project_count      Int?      @default(0)
+  pattern_count               Int?      @default(0)
+  published_pattern_count     Int?      @default(0)
+  post_count                  Int?      @default(0)
+  favorite_count              Int?      @default(0)
+  stash_yarn_count            Int?      @default(0)
+  total_knitting_time_minutes Int?      @default(0)
+  total_rows_knit             Int?      @default(0)
+  total_xp                    Int?      @default(0)
+  level                       Int?      @default(1)
+  achievements_count          Int?      @default(0)
+  updated_at                  DateTime? @default(now()) @db.Timestamptz(6)
+  users                       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id                                          String                     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email                                       String                     @unique @db.VarChar(255)
+  username                                    String                     @unique @db.VarChar(50)
+  password_hash                               String                     @db.VarChar(255)
+  display_name                                String?                    @db.VarChar(100)
+  bio                                         String?
+  avatar_url                                  String?
+  cover_image_url                             String?
+  website_url                                 String?                    @db.VarChar(255)
+  ravelry_username                            String?                    @db.VarChar(100)
+  instagram_handle                            String?                    @db.VarChar(100)
+  google_id                                   String?                    @unique @db.VarChar(255)
+  apple_id                                    String?                    @unique @db.VarChar(255)
+  location                                    String?                    @db.VarChar(100)
+  country_code                                String?                    @db.VarChar(2)
+  timezone                                    String?                    @db.VarChar(50)
+  role                                        user_role?                 @default(user)
+  preferred_unit                              unit_system?               @default(metric)
+  preferred_currency                          String?                    @default("USD") @db.VarChar(3)
+  is_verified                                 Boolean?                   @default(false)
+  is_designer                                 Boolean?                   @default(false)
+  is_pro                                      Boolean?                   @default(false)
+  email_verified                              Boolean?                   @default(false)
+  email_verified_at                           DateTime?                  @db.Timestamptz(6)
+  last_login_at                               DateTime?                  @db.Timestamptz(6)
+  created_at                                  DateTime?                  @default(now()) @db.Timestamptz(6)
+  updated_at                                  DateTime?                  @default(now()) @db.Timestamptz(6)
+  deleted_at                                  DateTime?                  @db.Timestamptz(6)
+  activity_feed                               activity_feed[]
+  ai_pattern_sessions                         ai_pattern_sessions[]
+  chart_conversion_jobs                       chart_conversion_jobs[]
+  comments                                    comments[]
+  designer_profiles                           designer_profiles?
+  follows_follows_follower_idTousers          follows[]                  @relation("follows_follower_idTousers")
+  follows_follows_following_idTousers         follows[]                  @relation("follows_following_idTousers")
+  friendships_friendships_addressee_idTousers friendships[]              @relation("friendships_addressee_idTousers")
+  friendships_friendships_requester_idTousers friendships[]              @relation("friendships_requester_idTousers")
+  group_members                               group_members[]
+  group_posts                                 group_posts[]
+  groups                                      groups[]
+  kal_participants                            kal_participants[]
+  knit_alongs                                 knit_alongs[]
+  likes                                       likes[]
+  notifications_notifications_actor_idTousers notifications[]            @relation("notifications_actor_idTousers")
+  notifications_notifications_user_idTousers  notifications[]            @relation("notifications_user_idTousers")
+  pattern_annotations                         pattern_annotations[]
+  pattern_favorites                           pattern_favorites[]
+  pattern_queue                               pattern_queue[]
+  pattern_reading_progress                    pattern_reading_progress[]
+  pattern_reviews                             pattern_reviews[]
+  pattern_uploads                             pattern_uploads[]
+  patterns                                    patterns[]
+  posts                                       posts[]
+  project_photos                              project_photos[]
+  projects                                    projects[]
+  purchases_purchases_seller_idTousers        purchases[]                @relation("purchases_seller_idTousers")
+  purchases_purchases_user_idTousers          purchases[]                @relation("purchases_user_idTousers")
+  refresh_tokens                              refresh_tokens[]
+  sync_queue                                  sync_queue[]
+  user_achievements                           user_achievements[]
+  user_daily_activity                         user_daily_activity[]
+  user_devices                                user_devices[]
+  user_knitting_streaks                       user_knitting_streaks?
+  user_needles                                user_needles[]
+  user_oauth_accounts                         user_oauth_accounts[]
+  user_pattern_library                        user_pattern_library[]
+  user_recently_viewed                        user_recently_viewed[]
+  user_search_history                         user_search_history[]
+  user_settings                               user_settings?
+  user_stash                                  user_stash[]
+  user_stats                                  user_stats?
+  voice_command_log                           voice_command_log[]
+  yarns                                       yarns[]
+
+  @@index([email], map: "idx_users_email")
+  @@index([location], map: "idx_users_location")
+  @@index([username], map: "idx_users_username")
+}
+
+model voice_command_log {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id          String    @db.Uuid
+  project_id       String?   @db.Uuid
+  transcript       String
+  detected_command String?   @db.VarChar(50)
+  confidence       Decimal?  @db.Decimal(3, 2)
+  was_successful   Boolean?
+  action_taken     String?   @db.VarChar(100)
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+  projects         projects? @relation(fields: [project_id], references: [id], onUpdate: NoAction)
+  users            users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_voice_command_log_user")
+}
+
+model yarn_colorways {
+  id              String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  yarn_id         String       @db.Uuid
+  name            String?      @db.VarChar(150)
+  color_code      String?      @db.VarChar(50)
+  hex_color       String?      @db.VarChar(7)
+  image_url       String?
+  is_discontinued Boolean?     @default(false)
+  created_at      DateTime?    @default(now()) @db.Timestamptz(6)
+  user_stash      user_stash[]
+  yarns           yarns        @relation(fields: [yarn_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([yarn_id], map: "idx_yarn_colorways_yarn")
+}
+
+model yarn_companies {
+  id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name         String    @db.VarChar(150)
+  slug         String    @unique @db.VarChar(150)
+  website_url  String?   @db.VarChar(255)
+  logo_url     String?
+  description  String?
+  country_code String?   @db.VarChar(2)
+  is_verified  Boolean?  @default(false)
+  is_active    Boolean?  @default(true)
+  yarn_count   Int?      @default(0)
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime? @default(now()) @db.Timestamptz(6)
+  yarns        yarns[]
+
+  @@index([name], map: "idx_yarn_companies_name")
+}
+
+model yarn_weights {
+  id                        Int                  @id @default(autoincrement())
+  name                      String               @db.VarChar(50)
+  category                  yarn_weight_category
+  ply_range                 String?              @db.VarChar(20)
+  wraps_per_inch_min        Int?
+  wraps_per_inch_max        Int?
+  knit_gauge_min            Decimal?             @db.Decimal(4, 1)
+  knit_gauge_max            Decimal?             @db.Decimal(4, 1)
+  recommended_needle_us_min String?              @db.VarChar(10)
+  recommended_needle_us_max String?              @db.VarChar(10)
+  recommended_needle_mm_min Decimal?             @db.Decimal(3, 2)
+  recommended_needle_mm_max Decimal?             @db.Decimal(3, 2)
+  crochet_gauge_min         Decimal?             @db.Decimal(4, 1)
+  crochet_gauge_max         Decimal?             @db.Decimal(4, 1)
+  recommended_hook_mm_min   Decimal?             @db.Decimal(3, 2)
+  recommended_hook_mm_max   Decimal?             @db.Decimal(3, 2)
+  patterns                  patterns[]
+  yarns                     yarns[]
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model yarns {
+  id                    String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  company_id            String?          @db.Uuid
+  name                  String           @db.VarChar(200)
+  slug                  String           @db.VarChar(200)
+  weight_id             Int?
+  fiber_content         String?
+  primary_fiber         fiber_type?
+  is_organic            Boolean?         @default(false)
+  is_hand_dyed          Boolean?         @default(false)
+  is_self_striping      Boolean?         @default(false)
+  is_variegated         Boolean?         @default(false)
+  meters_per_skein      Int?
+  yards_per_skein       Int?
+  grams_per_skein       Int?
+  ounces_per_skein      Decimal?         @db.Decimal(4, 2)
+  number_of_plies       Int?
+  gauge_stitches        Decimal?         @db.Decimal(4, 1)
+  gauge_rows            Decimal?         @db.Decimal(4, 1)
+  gauge_size_inches     Decimal?         @default(4) @db.Decimal(3, 1)
+  recommended_needle_mm Decimal?         @db.Decimal(3, 2)
+  recommended_needle_us String?          @db.VarChar(10)
+  recommended_hook_mm   Decimal?         @db.Decimal(3, 2)
+  recommended_hook_us   String?          @db.VarChar(10)
+  machine_washable      Boolean?
+  tumble_dry            Boolean?
+  care_instructions     String?
+  is_discontinued       Boolean?         @default(false)
+  discontinued_date     DateTime?        @db.Date
+  project_count         Int?             @default(0)
+  stash_count           Int?             @default(0)
+  average_rating        Decimal?         @db.Decimal(3, 2)
+  rating_count          Int?             @default(0)
+  created_by            String?          @db.Uuid
+  is_verified           Boolean?         @default(false)
+  created_at            DateTime?        @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime?        @default(now()) @db.Timestamptz(6)
+  patterns              patterns[]
+  project_yarns         project_yarns[]
+  user_stash            user_stash[]
+  yarn_colorways        yarn_colorways[]
+  yarn_companies        yarn_companies?  @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                 users?           @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  yarn_weights          yarn_weights?    @relation(fields: [weight_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([company_id, slug])
+  @@index([company_id], map: "idx_yarns_company")
+  @@index([weight_id], map: "idx_yarns_weight")
+}
+
+enum activity_type {
+  project_created
+  project_updated
+  project_completed
+  post_created
+  photo_added
+  pattern_purchased
+  pattern_favorited
+  achievement_earned
+  milestone_reached
+  friend_added
+  joined_group
+  joined_kal
+}
+
+enum content_type {
+  post
+  discussion
+  question
+  kal_update
+  photo
+  wip_update
+}
+
+enum counter_input_type {
+  click
+  voice
+  gesture
+  auto
+}
+
+enum craft_type {
+  knitting
+  crochet
+  both
+}
+
+enum fiber_type {
+  wool
+  merino
+  alpaca
+  cashmere
+  mohair
+  angora
+  silk
+  cotton
+  linen
+  bamboo
+  hemp
+  acrylic
+  nylon
+  polyester
+  blend
+  other
+}
+
+enum friendship_status {
+  pending
+  accepted
+  declined
+  blocked
+}
+
+enum garment_type {
+  sweater
+  cardigan
+  vest
+  hat
+  beanie
+  beret
+  scarf
+  cowl
+  shawl
+  socks
+  mittens
+  gloves
+  fingerless_gloves
+  blanket
+  afghan
+  throw
+  toy
+  amigurumi
+  bag
+  tote
+  accessory
+  wrap
+  poncho
+  cape
+  dress
+  skirt
+  top
+  tank
+  tee
+  sleeves
+  collar
+  cushion
+  coaster
+  dishcloth
+  washcloth
+  ornament
+  garland
+  baby_item
+  pet_item
+  other
+}
+
+enum listing_status {
+  draft
+  pending_review
+  active
+  paused
+  archived
+  rejected
+}
+
+enum needle_type {
+  straight
+  circular
+  dpn
+  interchangeable
+  cable
+  crochet_hook
+}
+
+enum notification_type {
+  follow
+  like
+  comment
+  mention
+  pattern_update
+  purchase
+  sale
+  kal_update
+  group_post
+  achievement
+  system
+}
+
+enum pattern_difficulty {
+  beginner
+  easy
+  intermediate
+  advanced
+  expert
+}
+
+enum processing_status {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum project_status {
+  planned
+  in_progress
+  frogged
+  completed
+  hibernating
+}
+
+enum purchase_status {
+  pending
+  completed
+  refunded
+  disputed
+}
+
+enum row_instruction_type {
+  counted
+  measured
+  repeat
+  marker
+  note
+}
+
+enum section_type {
+  body
+  sleeve
+  collar
+  cuff
+  hem
+  yoke
+  pocket
+  hood
+  front
+  back
+  border
+  other
+}
+
+enum unit_system {
+  metric
+  imperial
+}
+
+enum upload_type {
+  pdf
+  image
+  url
+  manual
+  ai_builder
+}
+
+enum user_role {
+  user
+  designer
+  admin
+  moderator
+}
+
+enum visibility {
+  private
+  followers
+  public
+}
+
+enum yarn_weight_category {
+  lace
+  light_fingering
+  fingering
+  sport
+  dk
+  worsted
+  aran
+  bulky
+  super_bulky
+  jumbo
+}

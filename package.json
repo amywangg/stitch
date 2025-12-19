@@ -1,0 +1,33 @@
+{
+  "name": "stitch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A knitting application for tracking projects and patterns",
+  "packageManager": "yarn@4.12.0",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"yarn dev:backend\" \"yarn dev:frontend\"",
+    "dev:frontend": "yarn workspace @stitch/frontend dev",
+    "dev:backend": "yarn workspace @stitch/backend dev",
+    "build": "yarn workspaces foreach -A run build",
+    "lint": "yarn workspaces foreach -A run lint",
+    "test": "yarn workspaces foreach -A run test",
+    "db:start": "cd database && docker-compose up -d",
+    "db:stop": "cd database && docker-compose down",
+    "db:reset": "cd database && docker-compose down -v && docker-compose up -d",
+    "db:migrate": "yarn workspace @stitch/backend db:migrate",
+    "db:generate": "yarn workspace @stitch/backend db:generate",
+    "ai:dev": "cd ai-service && python3 -m venv venv 2>/dev/null || true && (source venv/bin/activate 2>/dev/null || . venv/bin/activate) && pip install -q -r requirements.txt 2>/dev/null || true && uvicorn app.main:app --reload --port 8001",
+    "ai:setup": "cd ai-service && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
