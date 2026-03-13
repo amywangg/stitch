@@ -3,23 +3,25 @@ import SwiftUI
 struct ActivityCard: View {
     let activity: FeedActivity
     let onLike: () -> Void
+    let onComment: () -> Void
+    @Environment(ThemeManager.self) private var theme
 
     private var eventConfig: (icon: String, color: Color, verb: String) {
         switch activity.type {
         case "project_completed":
             return ("checkmark.circle.fill", Color.green, "finished")
         case "project_started":
-            return ("plus.circle.fill", Color(hex: "#4ECDC4"), "started")
+            return ("plus.circle.fill", theme.primary, "started")
         case "project_frogged":
             return ("scissors", Color.red, "frogged")
         case "row_milestone":
             let milestone = activity.metadata?["milestone"]?.intValue ?? 0
-            return ("chart.bar.fill", Color(hex: "#FF6B6B"), "reached row \(milestone) on")
+            return ("chart.bar.fill", theme.primary, "reached row \(milestone) on")
         case "pattern_queued":
-            return ("book.closed.fill", Color(hex: "#4ECDC4"), "queued")
+            return ("book.closed.fill", theme.primary, "queued")
         case "stash_added":
             let yarnName = activity.metadata?["yarnName"]?.stringValue ?? "yarn"
-            return ("basket.fill", Color(hex: "#4ECDC4"), "added \(yarnName) to stash")
+            return ("basket.fill", theme.primary, "added \(yarnName) to stash")
         case "review_posted":
             return ("star.fill", Color.yellow, "reviewed")
         default:
@@ -64,15 +66,18 @@ struct ActivityCard: View {
                         "\(activity.count?.likes ?? 0)",
                         systemImage: activity.isLiked ? "heart.fill" : "heart"
                     )
-                    .foregroundStyle(activity.isLiked ? Color(hex: "#FF6B6B") : .secondary)
+                    .foregroundStyle(activity.isLiked ? theme.primary : .secondary)
                 }
                 .buttonStyle(.plain)
 
-                Label(
-                    "\(activity.count?.comments ?? 0)",
-                    systemImage: "bubble.right"
-                )
-                .foregroundStyle(.secondary)
+                Button(action: onComment) {
+                    Label(
+                        "\(activity.count?.comments ?? 0)",
+                        systemImage: "bubble.right"
+                    )
+                    .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
 
                 Spacer()
             }
@@ -185,15 +190,15 @@ struct ActivityCard: View {
                 let milestone = activity.metadata?["milestone"]?.intValue ?? 0
                 HStack(spacing: 4) {
                     Image(systemName: "flame.fill")
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                         .font(.caption)
                     Text("Row \(milestone)")
                         .font(.caption.weight(.bold))
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
-                .background(Color(hex: "#FF6B6B").opacity(0.1))
+                .background(theme.primary.opacity(0.1))
                 .clipShape(Capsule())
             }
         }
@@ -235,7 +240,7 @@ struct ActivityCard: View {
         let yarnName = activity.metadata?["yarnName"]?.stringValue ?? "yarn"
         HStack(spacing: 8) {
             Image(systemName: "basket.fill")
-                .foregroundStyle(Color(hex: "#4ECDC4"))
+                .foregroundStyle(theme.primary)
                 .font(.title3)
             (Text("added ")
                 .foregroundStyle(.secondary)

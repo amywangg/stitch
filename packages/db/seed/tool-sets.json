@@ -2,174 +2,312 @@
   {
     "brand": "ChiaoGoo",
     "website": "https://www.chiaogoo.com",
-    "logo_url": "",
+    "logo_url": "https://www.chiaogoo.com/wp-content/uploads/2015/03/Chiaogoo_Logo.jpg",
     "sets": [
       {
         "name": "TWIST Red Lace Interchangeable Set - Small 5\"",
         "set_type": "interchangeable_knitting",
-        "description": "Surgical stainless steel tips with TWIST red cables. Small set covers US 2 through US 8 in 5-inch tip length.",
-        "image_url": "",
+        "description": "Surgical stainless steel lace-point tips with memory-free TWIST red cables. Small set covers US 2 through US 8 in 5-inch tip length. Includes 3 cables, end stoppers, tightening keys, stitch markers, cable connector, and needle gauge.",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/twist-5-interchangeable-needle-sets-by-chiaogoo-chiaogoo-218768.png?v=1742425476",
         "items": [
-          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
-          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
-          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
-          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
-          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
-          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
-          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 100 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 30, "material": "nylon", "quantity": 1, "sort_order": 101 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 102 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 103 }
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 }
         ]
       },
       {
         "name": "TWIST Red Lace Interchangeable Set - Large 5\"",
         "set_type": "interchangeable_knitting",
-        "description": "Surgical stainless steel tips with TWIST red cables. Large set covers US 9 through US 15 in 5-inch tip length.",
-        "image_url": "",
+        "description": "Surgical stainless steel lace-point tips with memory-free TWIST red cables. Large set covers US 9 through US 15 in 5-inch tip length. Includes 3 cables, end stoppers, tightening keys, stitch markers, cable connector, and needle gauge.",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/twist-5-interchangeable-needle-sets-by-chiaogoo-chiaogoo-218768.png?v=1742425476",
         "items": [
-          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
-          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
-          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
-          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
-          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
-          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 7.0, "size_label": "US 10.75", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 7.5, "size_label": "US 10.875", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 100 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 30, "material": "nylon", "quantity": 1, "sort_order": 101 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 102 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 103 }
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 }
         ]
       },
       {
         "name": "TWIST Red Lace Interchangeable Set - Complete 5\"",
         "set_type": "interchangeable_knitting",
-        "description": "Surgical stainless steel tips with TWIST red cables. Complete set covers US 2 through US 15 in 5-inch tip length.",
-        "image_url": "",
+        "description": "Surgical stainless steel lace-point tips with memory-free TWIST red cables. Complete set covers US 2 through US 15 in 5-inch tip length. Includes all Small + Large tips with 6 cables.",
+        "image_url": "https://www.chiaogoo.com/wp-content/uploads/2015/02/7500-C-4.png",
         "items": [
-          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
-          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
-          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
-          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
-          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
-          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
-          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
-          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
-          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 8 },
-          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 9 },
-          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 10 },
-          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 11 },
-          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 12 },
+          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
+          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 8 },
+          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 9 },
+          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 10 },
+          { "type": "interchangeable_tip", "size_mm": 7.0, "size_label": "US 10.75", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 11 },
+          { "type": "interchangeable_tip", "size_mm": 7.5, "size_label": "US 10.875", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 12 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 13 },
+          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 14 },
+          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 15 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 2, "sort_order": 100 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 30, "material": "nylon", "quantity": 2, "sort_order": 101 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 102 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 103 }
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 2, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 75, "material": "nylon", "quantity": 1, "sort_order": 103 }
+        ]
+      },
+      {
+        "name": "TWIST Red Lace Interchangeable Set - Mini 5\"",
+        "set_type": "interchangeable_knitting",
+        "description": "Solid surgical stainless steel mini tips with TWIST red cables. Covers US 000 through US 1.5 in 5-inch tip length for fine lace and sock knitting. Mini [M] join connector.",
+        "image_url": "https://www.chiaogoo.com/wp-content/uploads/2016/04/7500-M_with-labels-cropped.jpg",
+        "items": [
+          { "type": "interchangeable_tip", "size_mm": 1.5, "size_label": "US 000", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 1.75, "size_label": "US 00", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 2.0, "size_label": "US 0", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 2.25, "size_label": "US 1", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 2.5, "size_label": "US 1.5", "length_cm": 13, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 100 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 }
         ]
       },
       {
         "name": "TWIST Red Lace Interchangeable Set - Small 4\"",
         "set_type": "interchangeable_knitting",
-        "description": "Surgical stainless steel tips with TWIST red cables. Small set covers US 2 through US 8 in 4-inch tip length, ideal for smaller projects and magic loop.",
-        "image_url": "",
+        "description": "Surgical stainless steel lace-point tips with memory-free TWIST red cables. Small set covers US 2 through US 8 in 4-inch tip length, ideal for smaller projects and magic loop.",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/chiaogoo-twist-red-lace-small-interchangeable-knitting-needle-tip-set-4-chiaogoo-482512.webp?v=1749808051",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
-          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
-          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
-          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
-          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
-          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
-          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 100 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 30, "material": "nylon", "quantity": 1, "sort_order": 101 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 102 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 103 }
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 }
         ]
       },
       {
         "name": "TWIST Red Lace Interchangeable Set - Large 4\"",
         "set_type": "interchangeable_knitting",
-        "description": "Surgical stainless steel tips with TWIST red cables. Large set covers US 9 through US 15 in 4-inch tip length.",
-        "image_url": "",
+        "description": "Surgical stainless steel lace-point tips with memory-free TWIST red cables. Large set covers US 9 through US 15 in 4-inch tip length.",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/chiaogoo-twist-red-lace-complete-interchangeable-knitting-needle-tip-set-4-chiaogoo-935147.webp?v=1749808052",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
           { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
-          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
-          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
-          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 7.0, "size_label": "US 10.75", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 7.5, "size_label": "US 10.875", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 100 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 30, "material": "nylon", "quantity": 1, "sort_order": 101 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 102 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 103 }
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 }
         ]
       },
       {
         "name": "TWIST Red Lace Interchangeable Set - Complete 4\"",
         "set_type": "interchangeable_knitting",
-        "description": "Surgical stainless steel tips with TWIST red cables. Complete set covers US 2 through US 15 in 4-inch tip length.",
-        "image_url": "",
+        "description": "Surgical stainless steel lace-point tips with memory-free TWIST red cables. Complete set covers US 2 through US 15 in 4-inch tip length.",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/chiaogoo-twist-red-lace-complete-interchangeable-knitting-needle-tip-set-4-chiaogoo-935147.webp?v=1749808052",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
-          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
-          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
-          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
-          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
-          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
-          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
-          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
-          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 8 },
-          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 9 },
-          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 10 },
-          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 11 },
-          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 12 },
+          { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
+          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 8 },
+          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 9 },
+          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 10 },
+          { "type": "interchangeable_tip", "size_mm": 7.0, "size_label": "US 10.75", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 11 },
+          { "type": "interchangeable_tip", "size_mm": 7.5, "size_label": "US 10.875", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 12 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 13 },
+          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 14 },
+          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 15 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 2, "sort_order": 100 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 30, "material": "nylon", "quantity": 2, "sort_order": 101 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 102 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 103 }
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 2, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 75, "material": "nylon", "quantity": 1, "sort_order": 103 }
+        ]
+      },
+      {
+        "name": "TWIST Red Lace Interchangeable Set - Mini 4\"",
+        "set_type": "interchangeable_knitting",
+        "description": "Solid surgical stainless steel mini tips with TWIST red cables. Covers US 000 through US 1.5 in 4-inch tip length for fine lace and sock knitting. Mini [M] join connector.",
+        "image_url": "https://www.chiaogoo.com/wp-content/uploads/2015/11/7400_M-set.png",
+        "items": [
+          { "type": "interchangeable_tip", "size_mm": 1.5, "size_label": "US 000", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 1.75, "size_label": "US 00", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 2.0, "size_label": "US 0", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 2.25, "size_label": "US 1", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 2.5, "size_label": "US 1.5", "length_cm": 10, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 100 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 }
+        ]
+      },
+      {
+        "name": "TWIST Shorties Red [M] - 2\" & 3\" Tips",
+        "set_type": "interchangeable_knitting",
+        "description": "Solid surgical stainless steel shorties for small-circumference knitting (socks, sleeves, hats). 12 pairs of 2-inch and 3-inch tips (US 0-3) with Mini [M] join, 3 mini red cables, end stoppers, keys, and red zippered pouch. Makes 9-14 inch circulars.",
+        "image_url": "https://www.chiaogoo.com/wp-content/uploads/2018/05/2_3prodpic_2.png",
+        "items": [
+          { "type": "interchangeable_tip", "size_mm": 2.0, "size_label": "US 0", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 2.25, "size_label": "US 1", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 2.5, "size_label": "US 1.5", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 2.0, "size_label": "US 0", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 2.25, "size_label": "US 1", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
+          { "type": "interchangeable_tip", "size_mm": 2.5, "size_label": "US 1.5", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 8 },
+          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 9 },
+          { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 10 },
+          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 11 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 13, "material": "nylon", "quantity": 1, "sort_order": 100 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 15, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 102 }
+        ]
+      },
+      {
+        "name": "TWIST Shorties Blue [S] - 2\" & 3\" Tips",
+        "set_type": "interchangeable_knitting",
+        "description": "Surgical stainless steel shorties for small-circumference knitting. 10 sets of 2-inch (solid) and 3-inch (hollow) tips (US 4-8) with Small [S] join, 3 X-Flex blue cables, and blue zippered pouch. Makes 9-14 inch circulars.",
+        "image_url": "https://www.chiaogoo.com/wp-content/uploads/2019/06/shorties_prodpic@025x.png",
+        "items": [
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 5, "material": "stainless_steel", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 7 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 8 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 9 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 13, "material": "nylon", "quantity": 1, "sort_order": 100 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 15, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 102 }
+        ]
+      },
+      {
+        "name": "TWIST Shorties Yellow [L] - 3\" Tips",
+        "set_type": "interchangeable_knitting",
+        "description": "Surgical stainless steel shorties for bulky small-circumference knitting. 3-inch tips only (US 9-11) with Large [L] join, 3 SWIV360 silver cables, and yellow zippered pouch. Makes 12-14 inch circulars.",
+        "image_url": "https://www.chiaogoo.com/wp-content/uploads/2022/10/7230_L.png",
+        "items": [
+          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 8, "material": "stainless_steel", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 15, "material": "nylon", "quantity": 2, "sort_order": 100 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 101 }
+        ]
+      },
+      {
+        "name": "FORTE 2.0 Interchangeable Set",
+        "set_type": "interchangeable_knitting",
+        "description": "Premium set with carbon fiber + stainless steel tips (US 2-8, [S] join) and blackwood + stainless steel tips (US 9-15, [L] join). Includes 6 SWIV360 silver cables and 3 TWIST red cables. Book-style leather case with removable needle board.",
+        "image_url": "https://www.chiaogoo.com/wp-content/uploads/2024/04/4500-2.0-set-open-and-laid-out.jpeg",
+        "items": [
+          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 13, "material": "carbon_fiber", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 13, "material": "carbon_fiber", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 13, "material": "carbon_fiber", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 13, "material": "carbon_fiber", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 13, "material": "carbon_fiber", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 13, "material": "carbon_fiber", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 13, "material": "carbon_fiber", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 13, "material": "carbon_fiber", "quantity": 2, "sort_order": 7 },
+          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 13, "material": "wood", "quantity": 2, "sort_order": 8 },
+          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 13, "material": "wood", "quantity": 2, "sort_order": 9 },
+          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 13, "material": "wood", "quantity": 2, "sort_order": 10 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 13, "material": "wood", "quantity": 2, "sort_order": 11 },
+          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 13, "material": "wood", "quantity": 2, "sort_order": 12 },
+          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 13, "material": "wood", "quantity": 2, "sort_order": 13 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 3, "sort_order": 100 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 3, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 3, "sort_order": 102 }
+        ]
+      },
+      {
+        "name": "Stainless Steel DPN Sock Set - 6\"",
+        "set_type": "dpn_set",
+        "description": "6 sets of 6-inch double-pointed needles in surgical stainless steel (US 0, 1, 1.5, 2, 2.5, 3). Includes 12 stitch markers, 3-inch needle gauge, and zippered fabric case. Perfect for sock knitting.",
+        "image_url": "https://www.chiaogoo.com/wp-content/uploads/2015/02/6600-1.png",
+        "items": [
+          { "type": "dpn", "size_mm": 2.0, "size_label": "US 0", "length_cm": 15, "material": "stainless_steel", "quantity": 5, "sort_order": 0 },
+          { "type": "dpn", "size_mm": 2.25, "size_label": "US 1", "length_cm": 15, "material": "stainless_steel", "quantity": 5, "sort_order": 1 },
+          { "type": "dpn", "size_mm": 2.5, "size_label": "US 1.5", "length_cm": 15, "material": "stainless_steel", "quantity": 5, "sort_order": 2 },
+          { "type": "dpn", "size_mm": 2.75, "size_label": "US 2", "length_cm": 15, "material": "stainless_steel", "quantity": 5, "sort_order": 3 },
+          { "type": "dpn", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 15, "material": "stainless_steel", "quantity": 5, "sort_order": 4 },
+          { "type": "dpn", "size_mm": 3.25, "size_label": "US 3", "length_cm": 15, "material": "stainless_steel", "quantity": 5, "sort_order": 5 }
         ]
       },
       {
         "name": "SPIN Bamboo Interchangeable Set - Small 5\"",
         "set_type": "interchangeable_knitting",
-        "description": "Dark bamboo tips with TWIST red cables. Lightweight and warm, ideal for slippery yarns. Small set US 2 through US 8.",
-        "image_url": "",
+        "description": "Dark patina bamboo tips with TWIST red cables. Lightweight and warm, ideal for slippery yarns. Small set US 2 through US 8 in 5-inch tip length.",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/chiaogoo-spin-5-13cm-bamboo-interchangeable-needle-sets-chiaogoo-683178.png?v=1742425476",
         "items": [
-          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 0 },
-          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 1 },
-          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 2 },
-          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 3 },
-          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 4 },
-          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 5 },
-          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 7 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 1, "sort_order": 100 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 30, "material": "nylon", "quantity": 1, "sort_order": 101 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 102 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 103 }
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 }
         ]
       },
       {
         "name": "SPIN Bamboo Interchangeable Set - Complete 5\"",
         "set_type": "interchangeable_knitting",
-        "description": "Dark bamboo tips with TWIST red cables. Complete set covers US 2 through US 15 in 5-inch tip length.",
-        "image_url": "",
+        "description": "Dark patina bamboo tips with TWIST red cables. Complete set covers US 2 through US 15 in 5-inch tip length.",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/chiaogoo-spin-5-13cm-bamboo-interchangeable-needle-sets-chiaogoo-683178.png?v=1742425476",
         "items": [
-          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 0 },
-          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 1 },
-          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 2 },
-          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 3 },
-          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 4 },
-          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 5 },
-          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 6 },
-          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 7 },
-          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 8 },
-          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 9 },
-          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 10 },
-          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 11 },
-          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 12 },
+          { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 7 },
+          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 8 },
+          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 9 },
+          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 10 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 11 },
+          { "type": "interchangeable_tip", "size_mm": 9.0, "size_label": "US 13", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 12 },
+          { "type": "interchangeable_tip", "size_mm": 10.0, "size_label": "US 15", "length_cm": 13, "material": "bamboo", "quantity": 2, "sort_order": 13 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 20, "material": "nylon", "quantity": 2, "sort_order": 100 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 30, "material": "nylon", "quantity": 2, "sort_order": 101 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 1, "sort_order": 102 },
-          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 103 }
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 35, "material": "nylon", "quantity": 2, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 55, "material": "nylon", "quantity": 1, "sort_order": 102 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 75, "material": "nylon", "quantity": 1, "sort_order": 103 }
         ]
       }
     ]
@@ -177,13 +315,13 @@
   {
     "brand": "Knitter's Pride / KnitPro",
     "website": "https://www.knitterspride.com",
-    "logo_url": "",
+    "logo_url": "https://www.knitterspride.com/wp-content/themes/developer/images/logo.png",
     "sets": [
       {
         "name": "Zing Interchangeable Deluxe Set",
         "set_type": "interchangeable_knitting",
         "description": "Color-coded anodized aluminum tips with smooth joins. Each size is a different color for easy identification. Deluxe set US 2.5 through US 11.",
-        "image_url": "",
+        "image_url": "https://www.yarn.com/cdn/shop/files/299c9e4a-4ed4-495d-9f29-71f30934c454.jpg?v=1771798879",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.0, "size_label": "US 2.5", "length_cm": 12.7, "material": "aluminum", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "aluminum", "quantity": 2, "sort_order": 1 },
@@ -206,7 +344,7 @@
         "name": "Symfonie Interchangeable Deluxe Set",
         "set_type": "interchangeable_knitting",
         "description": "Multi-colored laminated birch wood tips with smooth metal joins. Warm to the touch with slight grip. Deluxe set US 4 through US 11.",
-        "image_url": "",
+        "image_url": "https://www.yarn.com/cdn/shop/files/d7ac3603-356d-4a9b-9332-126164eeb077.jpg?v=1771798810",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "wood", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12.7, "material": "wood", "quantity": 2, "sort_order": 1 },
@@ -227,7 +365,7 @@
         "name": "Dreamz Interchangeable Deluxe Set",
         "set_type": "interchangeable_knitting",
         "description": "Color-coded laminated birch wood tips. Each size is a different vibrant color. Lightweight and smooth. Deluxe set US 4 through US 11.",
-        "image_url": "",
+        "image_url": "https://www.yarn.com/cdn/shop/files/07b35263-27a5-490b-9097-f1c40b9e2472.jpg?v=1771798818",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "wood", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12.7, "material": "wood", "quantity": 2, "sort_order": 1 },
@@ -248,7 +386,7 @@
         "name": "Options Nickel-Plated Interchangeable Deluxe Set",
         "set_type": "interchangeable_knitting",
         "description": "Nickel-plated brass tips with ultra-smooth finish. Fast knitting with slick yarn glide. Deluxe set US 4 through US 11.",
-        "image_url": "",
+        "image_url": "https://www.yarn.com/cdn/shop/files/6ea3c06f-9060-47b2-a0a0-beb424f19fd8_ba7e6901-3c92-413c-8a66-437f84a5da2c.jpg?v=1771798820",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12.7, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 1 },
@@ -269,14 +407,14 @@
   },
   {
     "brand": "Lykke",
-    "website": "https://www.lykkeneedles.com",
-    "logo_url": "",
+    "website": "https://www.lykkecrafts.com",
+    "logo_url": "https://www.lykkecrafts.com/page-assets/img/LYKKE.svg",
     "sets": [
       {
         "name": "Driftwood Interchangeable Set - 3.5\"",
         "set_type": "interchangeable_knitting",
         "description": "Hand-finished birch wood tips with a driftwood-inspired finish. 3.5-inch tips are ideal for smaller projects and tight knitters. US 3 through US 17.",
-        "image_url": "",
+        "image_url": "https://www.yarn.com/cdn/shop/files/12f6f401-1ba1-4287-b38c-92d7a52701e9.jpg?v=1771798853&width=1280",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 9, "material": "wood", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 9, "material": "wood", "quantity": 2, "sort_order": 1 },
@@ -301,7 +439,7 @@
         "name": "Driftwood Interchangeable Set - 5\"",
         "set_type": "interchangeable_knitting",
         "description": "Hand-finished birch wood tips with a driftwood-inspired finish. 5-inch tips for standard knitting comfort. US 3 through US 17.",
-        "image_url": "",
+        "image_url": "https://www.yarn.com/cdn/shop/files/e2c82f10-01c3-473a-a3e4-1d8c50c61d9a.jpg?v=1771798860&width=1280",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "wood", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "wood", "quantity": 2, "sort_order": 1 },
@@ -326,7 +464,7 @@
         "name": "Blush Interchangeable Set - 5\"",
         "set_type": "interchangeable_knitting",
         "description": "Hand-finished birch wood tips with a blush pink finish. Same precision as Driftwood with a distinctive pink color. US 3 through US 17.",
-        "image_url": "",
+        "image_url": "https://www.yarn.com/cdn/shop/files/153a19b0-786a-4a9f-b10e-a06a265c8ce9.jpg?v=1771798829",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "wood", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "wood", "quantity": 2, "sort_order": 1 },
@@ -352,13 +490,13 @@
   {
     "brand": "Addi",
     "website": "https://www.addi.de",
-    "logo_url": "",
+    "logo_url": "https://addi.de/wp-content/uploads/2022/04/addi-logo.png",
     "sets": [
       {
         "name": "Click Basic Interchangeable Set",
         "set_type": "interchangeable_knitting",
         "description": "Brass tips with a smooth olive-gold finish. Revolutionary click mechanism for quick tip changes without tools. US 4 through US 11.",
-        "image_url": "",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/addi-click-bamboo-interchangeable-knitting-needle-set-addi-151377.jpg?v=1758965559",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "brass", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12.7, "material": "brass", "quantity": 2, "sort_order": 1 },
@@ -377,7 +515,7 @@
         "name": "Click Turbo Interchangeable Set",
         "set_type": "interchangeable_knitting",
         "description": "Turbo-finished brass tips with extra-smooth plating for fast knitting. Click mechanism. Slightly more slippery than Basic. US 4 through US 11.",
-        "image_url": "",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/addi-click-turbo-interchangeable-knitting-needle-set-addi-462807.jpg?v=1758965595",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "brass", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12.7, "material": "brass", "quantity": 2, "sort_order": 1 },
@@ -396,7 +534,7 @@
         "name": "Click Lace Long Interchangeable Set",
         "set_type": "interchangeable_knitting",
         "description": "Extra-sharp lace tips with elongated taper for fine lacework. Click mechanism. Brass with white-bronze finish. US 4 through US 11.",
-        "image_url": "",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/addi-click-rocket-long-tip-set-addi-333306.jpg?v=1758965523",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "brass", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12.7, "material": "brass", "quantity": 2, "sort_order": 1 },
@@ -415,7 +553,7 @@
         "name": "Rocket Squared Interchangeable Set",
         "set_type": "interchangeable_knitting",
         "description": "Square-profile brass tips with turbo-smooth finish. Ergonomic squared shape reduces hand fatigue. Click mechanism. US 4 through US 11.",
-        "image_url": "",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/addi-click-rocket-squared-interchangeable-knitting-needle-set-addi-528130.jpg?v=1761628440",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "brass", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12.7, "material": "brass", "quantity": 2, "sort_order": 1 },
@@ -435,13 +573,13 @@
   {
     "brand": "HiyaHiya",
     "website": "https://www.hiyahiya.com",
-    "logo_url": "",
+    "logo_url": "https://hiyahiya-direct.com/images/direct_logo.png",
     "sets": [
       {
         "name": "Sharp Steel Interchangeable Set - Small",
         "set_type": "interchangeable_knitting",
         "description": "Hollow stainless steel tips with extra-sharp points, ideal for lace knitting. Lightweight despite being metal. Small set US 2 through US 8, 5-inch tips.",
-        "image_url": "",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/hiyahiya-sharp-interchangeable-knitting-needle-set-hiyahiya-513554.png?v=1742425539",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
@@ -460,7 +598,7 @@
         "name": "Sharp Steel Interchangeable Set - Large",
         "set_type": "interchangeable_knitting",
         "description": "Hollow stainless steel tips with extra-sharp points. Large set US 9 through US 15, 5-inch tips.",
-        "image_url": "",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/hiyahiya-sharp-interchangeable-knitting-needle-set-hiyahiya-360880.png?v=1742425538",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 12.7, "material": "stainless_steel", "quantity": 2, "sort_order": 1 },
@@ -478,7 +616,7 @@
         "name": "Bamboo Interchangeable Set - Small",
         "set_type": "interchangeable_knitting",
         "description": "Lightweight bamboo tips with smooth finish. Warm to the touch with gentle grip for slippery yarns. Small set US 2 through US 8, 5-inch tips.",
-        "image_url": "",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/hiyahiya-bamboo-interchangeable-knitting-needle-set-hiyahiya-217629.png?v=1742425538",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 2.75, "size_label": "US 2", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 1 },
@@ -498,13 +636,13 @@
   {
     "brand": "Clover",
     "website": "https://www.clover-usa.com",
-    "logo_url": "",
+    "logo_url": "https://clover-usa.com/cdn/shop/files/100th-Anniversay-Logo_EN-white-WEB_500x.png?v=1752775868",
     "sets": [
       {
         "name": "Takumi Interchangeable Circular Knitting Needle Set",
         "set_type": "interchangeable_knitting",
         "description": "Smooth bamboo tips with precision-molded joins. Takumi bamboo is lightweight and warm. Set includes US 3 through US 15.",
-        "image_url": "",
+        "image_url": "https://clover-usa.com/cdn/shop/files/3683_1.jpg?v=1717610918",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 3.25, "size_label": "US 3", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12.7, "material": "bamboo", "quantity": 2, "sort_order": 1 },
@@ -527,7 +665,7 @@
         "name": "Soft Touch Crochet Hook Set",
         "set_type": "crochet_hook_set",
         "description": "Ergonomic crochet hooks with cushioned rubber handles. Aluminum hook with soft-grip handle reduces hand fatigue. Sizes B/1 through J/10.",
-        "image_url": "",
+        "image_url": "https://clover-usa.com/cdn/shop/files/1007G-IPWeb.jpg?v=1697151094",
         "items": [
           { "type": "crochet_hook", "size_mm": 2.25, "size_label": "B/1", "length_cm": 13.5, "material": "aluminum", "quantity": 1, "sort_order": 0 },
           { "type": "crochet_hook", "size_mm": 2.75, "size_label": "C/2", "length_cm": 13.5, "material": "aluminum", "quantity": 1, "sort_order": 1 },
@@ -546,13 +684,13 @@
   {
     "brand": "Susan Bates",
     "website": "https://www.yarnspirations.com/susan-bates",
-    "logo_url": "",
+    "logo_url": "https://www.yarnspirations.com/on/demandware.static/-/Sites-master-catalog-spinrite/default/dwa3ef4afc/images/hi-res/brand-logos/susan-bates-logo.png",
     "sets": [
       {
         "name": "Silvalume Crochet Hook Set",
         "set_type": "crochet_hook_set",
         "description": "Classic aluminum crochet hooks with a smooth anodized finish. Industry-standard inline hook design preferred by many crocheters. Sizes E/4 through K/10.5.",
-        "image_url": "",
+        "image_url": "https://www.yarn.com/cdn/shop/files/e11d1861-a4cd-4ffb-a0d3-4206c13189b9_1ee34106-2ab8-4c6a-be87-f38e052a4d05.jpg?v=1771963184",
         "items": [
           { "type": "crochet_hook", "size_mm": 3.5, "size_label": "E/4", "length_cm": 14, "material": "aluminum", "quantity": 1, "sort_order": 0 },
           { "type": "crochet_hook", "size_mm": 3.75, "size_label": "F/5", "length_cm": 14, "material": "aluminum", "quantity": 1, "sort_order": 1 },
@@ -568,7 +706,7 @@
         "name": "Bamboo Crochet Hook Set",
         "set_type": "crochet_hook_set",
         "description": "Lightweight bamboo crochet hooks with inline head design. Warm and comfortable with gentle yarn grip. Sizes E/4 through J/10.",
-        "image_url": "",
+        "image_url": "https://www.yarn.com/cdn/shop/files/36f5374d-8e88-44dc-adda-8392710e06b3.jpg?v=1771798837",
         "items": [
           { "type": "crochet_hook", "size_mm": 3.5, "size_label": "E/4", "length_cm": 15, "material": "bamboo", "quantity": 1, "sort_order": 0 },
           { "type": "crochet_hook", "size_mm": 3.75, "size_label": "F/5", "length_cm": 15, "material": "bamboo", "quantity": 1, "sort_order": 1 },
@@ -582,14 +720,14 @@
   },
   {
     "brand": "Tulip",
-    "website": "https://www.tulip-japan.com",
-    "logo_url": "",
+    "website": "https://www.tulip-japan.co.jp",
+    "logo_url": "https://en.tulip-japan.co.jp/wp/wp-content/themes/tulip/img/share/logo.jpg?240531",
     "sets": [
       {
         "name": "Etimo Crochet Hook Set - Red",
         "set_type": "crochet_hook_set",
         "description": "Premium Japanese crochet hooks with cushion grip handles. Precision-crafted aluminum hooks with ergonomic elastomer handles. Known for exceptionally smooth hook throats. Sizes 2/0 through 7/0 (2.0mm-4.5mm).",
-        "image_url": "",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/tulip-etimo-red-crochet-hook-with-cushion-grip-set-tulip-341178.jpg?v=1761616095",
         "items": [
           { "type": "crochet_hook", "size_mm": 2.0, "size_label": "2/0", "length_cm": 13, "material": "aluminum", "quantity": 1, "sort_order": 0 },
           { "type": "crochet_hook", "size_mm": 2.2, "size_label": "3/0", "length_cm": 13, "material": "aluminum", "quantity": 1, "sort_order": 1 },
@@ -605,7 +743,7 @@
         "name": "Etimo Crochet Hook Set - Rose",
         "set_type": "crochet_hook_set",
         "description": "Premium Japanese crochet hooks with rose-pink cushion grip handles. Same precision as the Red set with a feminine aesthetic. US letter sizes B/1 through J/10.",
-        "image_url": "",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/tulip-etimo-blue-crochet-hook-with-cushion-grip-set-tulip-605529.jpg?v=1761633023",
         "items": [
           { "type": "crochet_hook", "size_mm": 2.25, "size_label": "B/1", "length_cm": 13, "material": "aluminum", "quantity": 1, "sort_order": 0 },
           { "type": "crochet_hook", "size_mm": 2.75, "size_label": "C/2", "length_cm": 13, "material": "aluminum", "quantity": 1, "sort_order": 1 },
@@ -624,13 +762,13 @@
   {
     "brand": "Prym",
     "website": "https://www.prym.com",
-    "logo_url": "",
+    "logo_url": "https://www.prym.com/themes/prym/img/logo_prym.svg",
     "sets": [
       {
         "name": "Ergonomics Crochet Hook Set",
         "set_type": "crochet_hook_set",
         "description": "Ergonomically shaped crochet hooks with soft-grip handles. Designed in collaboration with physiotherapists. Each size is a different color. Sizes 2.0mm through 6.0mm.",
-        "image_url": "",
+        "image_url": "https://www.prymconsumerusa.com/cdn/shop/products/ccnalhxybdt8vd5eomaf_105a8ca9-1415-4f5c-b954-0f1b4d061734.jpg?v=1684789328",
         "items": [
           { "type": "crochet_hook", "size_mm": 2.0, "size_label": "2.0mm", "length_cm": 17, "material": "plastic", "quantity": 1, "sort_order": 0 },
           { "type": "crochet_hook", "size_mm": 2.5, "size_label": "2.5mm", "length_cm": 17, "material": "plastic", "quantity": 1, "sort_order": 1 },
@@ -647,7 +785,7 @@
         "name": "Ergonomics Interchangeable Knitting Needle Set",
         "set_type": "interchangeable_knitting",
         "description": "Lightweight synthetic tips with ergonomic shape. Color-coded by size. Smooth joins with flexible cables. Sizes 4.0mm through 8.0mm.",
-        "image_url": "",
+        "image_url": "https://www.prymconsumerusa.com/cdn/shop/products/ccnalhxybdt8vd5eomaf_105a8ca9-1415-4f5c-b954-0f1b4d061734.jpg?v=1684789328",
         "items": [
           { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12.7, "material": "plastic", "quantity": 2, "sort_order": 0 },
           { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 12.7, "material": "plastic", "quantity": 2, "sort_order": 1 },
@@ -657,6 +795,73 @@
           { "type": "interchangeable_tip", "size_mm": 7.0, "size_label": "US 10.75", "length_cm": 12.7, "material": "plastic", "quantity": 2, "sort_order": 5 },
           { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 12.7, "material": "plastic", "quantity": 2, "sort_order": 6 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 60, "material": "nylon", "quantity": 1, "sort_order": 100 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 80, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 100, "material": "nylon", "quantity": 1, "sort_order": 102 }
+        ]
+      }
+    ]
+  },
+  {
+    "brand": "Knit Picks",
+    "website": "https://www.knitpicks.com",
+    "logo_url": "https://www.knitpicks.com/images/knitpicks-logo.svg",
+    "sets": [
+      {
+        "name": "Options Wood Interchangeable Set",
+        "set_type": "interchangeable_knitting",
+        "description": "Laminated birch wood tips with smooth finish and warm feel. Available in multiple colorways. 4.75-inch tips US 4 through US 11.",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/sunstruck-full-needle-set.jpg?v=1575572016&width=1024",
+        "items": [
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 7 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 8 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 60, "material": "nylon", "quantity": 2, "sort_order": 100 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 80, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 100, "material": "nylon", "quantity": 1, "sort_order": 102 }
+        ]
+      },
+      {
+        "name": "Nickel-Plated Options Interchangeable Set",
+        "set_type": "interchangeable_knitting",
+        "description": "Hollow nickel-plated brass tips for fast, smooth knitting. Lightweight with sharp points. 4.75-inch tips US 4 through US 11.",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/knit-picks-full-nickel-plated-set.jpg?v=1575572016&width=1024",
+        "items": [
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 12, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 12, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 12, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 12, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 12, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 7 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 12, "material": "nickel_plated_brass", "quantity": 2, "sort_order": 8 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 60, "material": "nylon", "quantity": 2, "sort_order": 100 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 80, "material": "nylon", "quantity": 1, "sort_order": 101 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 100, "material": "nylon", "quantity": 1, "sort_order": 102 }
+        ]
+      },
+      {
+        "name": "Caspian Wood Interchangeable Set",
+        "set_type": "interchangeable_knitting",
+        "description": "Exotic blue-stained laminated birch wood tips. Smooth finish with a distinctive ocean-blue color. 4.75-inch tips US 4 through US 11.",
+        "image_url": "https://jimmybeanswool.com/cdn/shop/files/91078_grande.jpg?v=1758568599",
+        "items": [
+          { "type": "interchangeable_tip", "size_mm": 3.5, "size_label": "US 4", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 0 },
+          { "type": "interchangeable_tip", "size_mm": 3.75, "size_label": "US 5", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 1 },
+          { "type": "interchangeable_tip", "size_mm": 4.0, "size_label": "US 6", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 2 },
+          { "type": "interchangeable_tip", "size_mm": 4.5, "size_label": "US 7", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 3 },
+          { "type": "interchangeable_tip", "size_mm": 5.0, "size_label": "US 8", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 4 },
+          { "type": "interchangeable_tip", "size_mm": 5.5, "size_label": "US 9", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 5 },
+          { "type": "interchangeable_tip", "size_mm": 6.0, "size_label": "US 10", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 6 },
+          { "type": "interchangeable_tip", "size_mm": 6.5, "size_label": "US 10.5", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 7 },
+          { "type": "interchangeable_tip", "size_mm": 8.0, "size_label": "US 11", "length_cm": 12, "material": "wood", "quantity": 2, "sort_order": 8 },
+          { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 60, "material": "nylon", "quantity": 2, "sort_order": 100 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 80, "material": "nylon", "quantity": 1, "sort_order": 101 },
           { "type": "interchangeable_cable", "size_mm": null, "size_label": null, "length_cm": 100, "material": "nylon", "quantity": 1, "sort_order": 102 }
         ]

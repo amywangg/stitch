@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
 
-type Params = { params: { id: string } }
+type Params = { params: Promise<{ id: string }> }
 
 async function getProject(projectId: string, userId: string) {
   return prisma.projects.findFirst({
@@ -12,15 +12,16 @@ async function getProject(projectId: string, userId: string) {
 }
 
 export async function GET(_req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const project = await getProject(params.id, user.id)
+  const project = await getProject(id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const projectTags = await prisma.project_tags.findMany({
-    where: { project_id: params.id },
+    where: { project_id: id },
     include: { tag: true },
   })
 
@@ -29,11 +30,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
 }
 
 export async function POST(req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const project = await getProject(params.id, user.id)
+  const project = await getProject(id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const body = await req.json()
@@ -60,7 +62,7 @@ export async function POST(req: NextRequest, { params }: Params) {
   // Create project_tags join records, skipping duplicates
   await prisma.project_tags.createMany({
     data: tagRecords.map((tag) => ({
-      project_id: params.id,
+      project_id: id,
       tag_id: tag.id,
     })),
     skipDuplicates: true,
@@ -68,7 +70,7 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   // Return updated tags list
   const projectTags = await prisma.project_tags.findMany({
-    where: { project_id: params.id },
+    where: { project_id: id },
     include: { tag: true },
   })
 
@@ -77,11 +79,12 @@ export async function POST(req: NextRequest, { params }: Params) {
 }
 
 export async function DELETE(req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const project = await getProject(params.id, user.id)
+  const project = await getProject(id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const body = await req.json()
@@ -90,7 +93,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   }
 
   await prisma.project_tags.deleteMany({
-    where: { project_id: params.id, tag_id: body.tag_id },
+    where: { project_id: id, tag_id: body.tag_id },
   })
 
   return NextResponse.json({ success: true })

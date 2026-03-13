@@ -25,6 +25,7 @@ model users {
   experience_level String? // "beginner" | "intermediate" | "advanced"
   is_pro           Boolean @default(false)
   username_changed_at DateTime? // cooldown: one change per 30 days
+  activity_sharing Json?   // { project_started, project_completed, stash_added, row_milestone, pattern_queued, ... } — null = all on
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -189,7 +190,30 @@ model tool_brands {
   logo_url   String?  // brand logo image
   created_at DateTime @default(now())
 
-  tool_sets tool_sets[]
+  tool_sets          tool_sets[]
+  tool_product_lines tool_product_lines[]
+}
+
+/// Individual needle/hook product lines from popular brands (e.g. "Red Lace Fixed Circulars")
+model tool_product_lines {
+  id         String   @id @default(uuid())
+  brand_id   String
+  name       String   // "Red Lace Fixed Circulars"
+  // "circular" | "straight" | "dpn" | "crochet_hook"
+  type       String
+  material   String?  // stainless_steel, bamboo, wood, aluminum, etc.
+  // JSON array: [{mm: 2.0, label: "US 0"}, {mm: 2.25, label: "US 1"}, ...]
+  sizes      Json?
+  // JSON array of available total lengths in cm: [41, 61, 81, 102] or null
+  lengths_cm Json?
+  image_url  String?
+  created_at DateTime @default(now())
+
+  brand tool_brands @relation(fields: [brand_id], references: [id], onDelete: Cascade)
+
+  @@unique([brand_id, name])
+  @@index([brand_id])
+  @@index([type])
 }
 
 // Pre-populated catalog of needle/hook sets
@@ -274,6 +298,8 @@ model user_supplies {
   brand      String?
   quantity   Int      @default(1)
   notes      String?
+  photo_url  String?  // Supabase Storage public URL
+  photo_path String?  // Storage path for deletion
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -326,20 +352,27 @@ model projects {
 }
 
 model project_sections {
-  id          String   @id @default(uuid())
-  project_id  String
-  name        String
-  description String?
-  target_rows Int?
-  current_row Int      @default(0)
-  sort_order  Int      @default(0)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id                 String   @id @default(uuid())
+  project_id         String
+  pattern_section_id String?  // link to pattern section for instruction lookup
+  name               String
+  description        String?
+  target_rows        Int?     // total taps across all steps (estimated for open-ended steps)
+  current_row        Int      @default(0) // total taps within current step
+  current_step       Int      @default(1) // which instruction step the knitter is on (1-based)
+  sort_order         Int      @default(0)
+  completed          Boolean  @default(false) // true when all steps finished
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
 
-  project     projects              @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  row_history row_counter_history[]
+  project         projects              @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  pattern_section pattern_sections?     @relation(fields: [pattern_section_id], references: [id], onDelete: SetNull)
+  row_history     row_counter_history[]
+  step_notes      step_notes[]
+  step_overrides  step_overrides[]
 
   @@index([project_id])
+  @@index([pattern_section_id])
 }
 
 model row_counter_history {
@@ -426,8 +459,15 @@ model patterns {
   pdf_url         String?   // Supabase Storage URL
   cover_image_url String?
   is_public       Boolean   @default(false)
+  // true = original/free content (can be shared publicly)
+  // false = from paid PDF or paid Ravelry pattern (must stay private)
+  // null = unknown (treat as private)
+  source_free     Boolean?
   ravelry_id      String?
   ai_parsed       Boolean   @default(false)
+  raw_text        String?   @db.Text  // stored PDF text for re-parsing with different size
+  selected_size   String?             // which size was parsed row-by-row ("M", "XL", etc.)
+  parse_version   Int       @default(1)
   deleted_at      DateTime?
   created_at      DateTime  @default(now())
   updated_at      DateTime  @updatedAt
@@ -459,19 +499,34 @@ model pattern_sections {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  pat  patterns     @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
-  rows pattern_rows[]
+  pat              patterns            @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
+  rows             pattern_rows[]
+  project_sections project_sections[]
 
   @@index([pattern_id])
 }
 
+// Each "row" is actually an instruction step — may represent 1 tap, N taps, or open-ended work.
+// The step_number is the display order within a section. The counter tracks taps within a step.
 model pattern_rows {
-  id          String   @id @default(uuid())
-  section_id  String
-  row_number  Int
-  instruction String
-  notes       String?
-  created_at  DateTime @default(now())
+  id              String   @id @default(uuid())
+  section_id      String
+  row_number      Int               // step number within section (1-based)
+  instruction     String            // display text for this step (resolved for selected size)
+  notes           String?
+  stitch_count    Int?              // expected stitches after completing this step
+  // "setup" = one-time action (CO, join, slip sts)
+  // "work_rows" = fixed set of rows to work through
+  // "repeat" = a block that repeats N times
+  // "work_to_measurement" = knit until piece reaches a measurement (open-ended)
+  // "finishing" = bind off, seaming, weave in ends
+  row_type        String?
+  rows_in_step    Int?              // how many counter taps this step takes (null = open-ended)
+  is_repeat       Boolean   @default(false)
+  repeat_count    Int?              // how many times the block repeats
+  rows_per_repeat Int?              // rows in each repeat cycle (e.g. 2 for RS+WS pair)
+  target_measurement_cm Float?      // for work_to_measurement steps
+  created_at      DateTime  @default(now())
 
   section pattern_sections @relation(fields: [section_id], references: [id], onDelete: Cascade)
 
@@ -484,8 +539,15 @@ model pattern_sizes {
   pattern_id         String
   name               String // "XS", "S/M", "36\" bust"
   sort_order         Int    @default(0)
-  finished_bust_cm   Int?
-  finished_length_cm Int?
+  finished_bust_cm   Float?
+  finished_length_cm Float?
+  hip_cm               Float?
+  shoulder_width_cm    Float?
+  arm_length_cm        Float?
+  upper_arm_cm         Float?
+  back_length_cm       Float?
+  head_circumference_cm Float?
+  foot_length_cm       Float?
   yardage            Int?
 
   pattern patterns @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
@@ -830,17 +892,97 @@ model crafting_sessions {
   started_at       DateTime?           // exact start time (if using timer)
   ended_at         DateTime?           // exact end time (if using timer)
   duration_minutes Int                 // total minutes — calculated or manual
+  active_minutes   Int?               // time actually knitting (excludes pauses)
   // "timer" = in-app start/stop, "counter" = auto from row counter activity, "manual" = user entered after the fact
   source           String    @default("manual")
   notes            String?
+  // Progress tracking — snapshot of where the knitter was
+  rows_start       Int?               // counter value at session start
+  rows_end         Int?               // counter value at session end
+  section_start    String?            // section name when started
+  section_end      String?            // section name when ended
+  step_start       Int?               // step number at start
+  step_end         Int?               // step number at end
   created_at       DateTime  @default(now())
 
-  user    users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  project projects? @relation(fields: [project_id], references: [id], onDelete: SetNull)
+  user    users              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  project projects?          @relation(fields: [project_id], references: [id], onDelete: SetNull)
+  pauses  session_pauses[]
+  photos  session_photos[]
 
   @@index([user_id, date])   // heatmap query: group by date for past year
   @@index([user_id, created_at])
   @@index([project_id])
+}
+
+// ─── Session Pauses ─────────────────────────────────────────────────────────
+
+// Tracks pause/resume within a session for accurate active time calculation.
+model session_pauses {
+  id         String    @id @default(uuid())
+  session_id String
+  paused_at  DateTime
+  resumed_at DateTime?
+
+  session crafting_sessions @relation(fields: [session_id], references: [id], onDelete: Cascade)
+
+  @@index([session_id])
+}
+
+// ─── Session Photos ─────────────────────────────────────────────────────────
+
+// Progress photos taken during or at the end of a session.
+model session_photos {
+  id           String   @id @default(uuid())
+  session_id   String
+  url          String
+  storage_path String   // Supabase Storage path for deletion
+  caption      String?
+  created_at   DateTime @default(now())
+
+  session crafting_sessions @relation(fields: [session_id], references: [id], onDelete: Cascade)
+
+  @@index([session_id])
+}
+
+// ─── Step Notes & Overrides ──────────────────────────────────────────────────
+
+// Notes, modifications, and inline measurements attached to a specific step in a project.
+model step_notes {
+  id                 String   @id @default(uuid())
+  project_section_id String
+  step_number        Int      // which step within the section
+  content            String
+  // "note" = general observation
+  // "modification" = change to the instruction
+  // "measurement" = inline tape-measure reading
+  note_type          String   @default("note")
+  measurement_value  Float?   // cm — if note_type = "measurement"
+  measurement_target Float?   // cm — the target from the pattern step
+  row_at             Int?     // counter tap count when note was added
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+
+  project_section project_sections @relation(fields: [project_section_id], references: [id], onDelete: Cascade)
+
+  @@index([project_section_id])
+  @@index([project_section_id, step_number])
+}
+
+// User's custom override of an instruction step (their personal version).
+// Original pattern_rows is preserved — this takes display priority.
+model step_overrides {
+  id                 String   @id @default(uuid())
+  project_section_id String
+  step_number        Int      // which step to override
+  custom_instruction String   // user's modified version
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+
+  project_section project_sections @relation(fields: [project_section_id], references: [id], onDelete: Cascade)
+
+  @@unique([project_section_id, step_number])
+  @@index([project_section_id])
 }
 
 // ─── User Measurements ──────────────────────────────────────────────────────

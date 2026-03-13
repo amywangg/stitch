@@ -3,11 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
 
-type Params = { params: { id: string } }
+type Params = { params: Promise<{ id: string }> }
 
 export async function GET(_req: NextRequest, { params }: Params) {
+  const { id } = await params
   const post = await prisma.posts.findFirst({
-    where: { id: params.id, deleted_at: null },
+    where: { id, deleted_at: null },
     include: {
       user: { select: { id: true, username: true, display_name: true, avatar_url: true } },
       comments: {
@@ -24,14 +25,15 @@ export async function GET(_req: NextRequest, { params }: Params) {
 }
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const post = await prisma.posts.findFirst({ where: { id: params.id, deleted_at: null } })
+  const post = await prisma.posts.findFirst({ where: { id, deleted_at: null } })
   if (!post) return NextResponse.json({ error: 'Post not found' }, { status: 404 })
   if (post.user_id !== user.id) return NextResponse.json({ error: 'Not authorized' }, { status: 403 })
 
-  await prisma.posts.update({ where: { id: params.id }, data: { deleted_at: new Date() } })
-  return NextResponse.json({ success: true, message: 'Post deleted' })
+  await prisma.posts.update({ where: { id }, data: { deleted_at: new Date() } })
+  return NextResponse.json({ success: true, data: {} })
 }

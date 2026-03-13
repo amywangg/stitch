@@ -1,11 +1,12 @@
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { getDbUser } from '@/lib/auth'
-import { requirePro, FREE_LIMITS } from '@/lib/pro-gate'
+import { requirePro } from '@/lib/pro-gate'
 import { extractPdfText } from '@/lib/pdf'
-import { parsePatternWithAI } from '@/lib/openai'
+import { parsePatternMetadata } from '@/lib/openai'
 import { prisma } from '@/lib/prisma'
 import { slugify } from '@/lib/utils'
+import { autoFetchCoverImage } from '@/lib/pattern-cover'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseAdmin = createClient(
@@ -19,9 +20,9 @@ export const maxDuration = 60 // seconds — allow time for AI parsing
 
 /**
  * POST /api/v1/pdf/parse
- * Accepts a PDF file (or an existing pdf_upload_id) as input.
- * Extracts text, parses with GPT-4o, and saves the result as a pattern.
- * Links the pdf_upload to the new pattern.
+ * Stage 1: Upload PDF → extract text → AI extracts metadata (title, sizes, gauge, sections).
+ * Does NOT parse row-by-row instructions — use POST /api/v1/patterns/[id]/apply-size for that.
+ * Stores raw_text on the pattern for later re-parsing.
  *
  * Pro required.
  */
@@ -126,15 +127,15 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  // Parse with AI
+  // Stage 1: Parse metadata only (fast)
   let parsed
   try {
-    parsed = await parsePatternWithAI(extractedText)
+    parsed = await parsePatternMetadata(extractedText)
   } catch {
     return NextResponse.json({ error: 'AI parsing failed' }, { status: 500 })
   }
 
-  // Save pattern to DB
+  // Save pattern shell + sizes to DB
   const title = parsed.title ?? fileName.replace(/\.pdf$/i, '')
   let slug = slugify(title)
   let attempt = 0
@@ -152,21 +153,47 @@ export async function POST(req: NextRequest) {
       craft_type: parsed.craft_type ?? 'knitting',
       difficulty: parsed.difficulty ?? null,
       garment_type: parsed.garment_type ?? null,
+      designer_name: parsed.designer ?? null,
+      yarn_weight: parsed.yarn_weight ?? null,
+      needle_size_mm: parsed.gauge?.needle_size_mm ?? null,
+      gauge_stitches_per_10cm: parsed.gauge?.stitches_per_10cm ?? null,
+      gauge_rows_per_10cm: parsed.gauge?.rows_per_10cm ?? null,
       ai_parsed: true,
+      raw_text: extractedText,
+      source_free: false,
+      pdf_url: (() => {
+        const { data } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(storagePath)
+        return data.publicUrl
+      })(),
+      // Create section shells (no rows yet — those come in Stage 2)
       sections: {
-        create: parsed.sections.map((section, sectionIdx) => ({
+        create: parsed.sections.map((section, idx) => ({
           name: section.name,
-          sort_order: sectionIdx,
-          rows: {
-            create: section.rows.map((row) => ({
-              row_number: row.row_number,
-              instruction: row.instruction,
-            })),
-          },
+          sort_order: idx,
+        })),
+      },
+      // Create sizes with measurements
+      sizes: {
+        create: parsed.sizes.map((size, idx) => ({
+          name: size.name,
+          sort_order: idx,
+          finished_bust_cm: size.finished_bust_cm,
+          finished_length_cm: size.finished_length_cm,
+          hip_cm: size.hip_cm,
+          shoulder_width_cm: size.shoulder_width_cm,
+          arm_length_cm: size.arm_length_cm,
+          upper_arm_cm: size.upper_arm_cm,
+          back_length_cm: size.back_length_cm,
+          head_circumference_cm: size.head_circumference_cm,
+          foot_length_cm: size.foot_length_cm,
+          yardage: size.yardage,
         })),
       },
     },
-    include: { sections: { include: { rows: true } } },
+    include: {
+      sections: { orderBy: { sort_order: 'asc' } },
+      sizes: { orderBy: { sort_order: 'asc' } },
+    },
   })
 
   // Create or update pdf_uploads record
@@ -188,17 +215,25 @@ export async function POST(req: NextRequest) {
     })
   }
 
+  // Best-effort: auto-fetch a cover image from Ravelry in the background
+  autoFetchCoverImage(pattern.id, title, parsed.designer).catch(() => {})
+
+  // Get the PDF storage URL for the response
+  const { data: pdfUrlData } = supabaseAdmin.storage
+    .from(BUCKET)
+    .getPublicUrl(storagePath)
+
   return NextResponse.json({
     success: true,
     data: {
-      pattern,
+      pattern: { ...pattern, pdf_url: pdfUrlData.publicUrl },
       meta: {
         page_count: pageCount,
         parsed_title: parsed.title,
         parsed_designer: parsed.designer,
         gauge: parsed.gauge,
-        sizes: parsed.sizes,
       },
+      next_step: 'select_size',
     },
   })
 }

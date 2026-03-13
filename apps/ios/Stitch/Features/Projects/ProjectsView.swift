@@ -3,6 +3,8 @@ import SafariServices
 
 struct ProjectsView: View {
     @Binding var selectedTab: AppTab
+    @Binding var patternsSubTab: PatternsTab
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = ProjectsViewModel()
     @State private var showingNewProject = false
     @State private var showRavelryPrompt = false
@@ -24,8 +26,8 @@ struct ProjectsView: View {
                     switch route {
                     case .projectDetail(let id):
                         ProjectDetailView(projectId: id)
-                    case .counter(let sectionId):
-                        CounterView(sectionId: sectionId)
+                    case .counter(let sectionId, let allSections, let projectId, let pdfUploadId):
+                        CounterView(sectionId: sectionId, allSections: allSections, projectId: projectId, pdfUploadId: pdfUploadId)
                     case .patternDetail(let id):
                         PatternDetailView(patternId: id)
                     default:
@@ -137,7 +139,7 @@ struct ProjectsView: View {
             VStack(spacing: 12) {
                 Image(systemName: "hands.and.sparkles")
                     .font(.system(size: 36))
-                    .foregroundStyle(Color(hex: "#FF6B6B").opacity(0.5))
+                    .foregroundStyle(theme.primary.opacity(0.5))
 
                 Text("Nothing on the needles")
                     .font(.subheadline.weight(.medium))
@@ -151,20 +153,21 @@ struct ProjectsView: View {
                             .font(.subheadline.weight(.medium))
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
-                            .background(Color(hex: "#FF6B6B"))
+                            .background(theme.primary)
                             .foregroundStyle(.white)
                             .clipShape(Capsule())
                     }
 
                     Button {
+                        patternsSubTab = .discover
                         selectedTab = .patterns
                     } label: {
                         Label("Find a pattern", systemImage: "magnifyingglass")
                             .font(.subheadline.weight(.medium))
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
-                            .background(Color(hex: "#4ECDC4").opacity(0.15))
-                            .foregroundStyle(Color(hex: "#4ECDC4"))
+                            .background(theme.primary.opacity(0.15))
+                            .foregroundStyle(theme.primary)
                             .clipShape(Capsule())
                     }
                 }
@@ -251,7 +254,7 @@ struct ProjectsView: View {
                     }
                 }
                 .font(.subheadline)
-                .foregroundStyle(Color(hex: "#FF6B6B"))
+                .foregroundStyle(theme.primary)
             }
         }
         .padding(.horizontal, 16)
@@ -271,10 +274,10 @@ struct ProjectsView: View {
                 Image(systemName: "chevron.down")
                     .font(.caption)
             }
-            .foregroundStyle(Color(hex: "#FF6B6B"))
+            .foregroundStyle(theme.primary)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 10)
-            .background(Color(hex: "#FF6B6B").opacity(0.08))
+            .background(theme.primary.opacity(0.08))
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .padding(.horizontal, 16)
@@ -292,10 +295,10 @@ struct ProjectsView: View {
                 Text("New project")
                     .font(.subheadline.weight(.medium))
             }
-            .foregroundStyle(Color(hex: "#FF6B6B"))
+            .foregroundStyle(theme.primary)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .background(Color(hex: "#FF6B6B").opacity(0.08))
+            .background(theme.primary.opacity(0.08))
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .padding(.horizontal, 16)
@@ -380,7 +383,7 @@ struct ProjectsView: View {
                         .font(.body.weight(.medium))
                 }
             }
-            .foregroundStyle(Color(hex: "#FF6B6B"))
+            .foregroundStyle(theme.primary)
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 8)
@@ -472,17 +475,19 @@ private func projectStatusColor(_ status: String) -> Color {
 // MARK: - Shared Components
 
 private struct ProjectRavelryBadge: View {
+    @Environment(ThemeManager.self) private var theme
     var body: some View {
         Text("R")
             .font(.system(size: 9, weight: .bold))
             .foregroundStyle(.white)
             .padding(.horizontal, 4)
             .padding(.vertical, 1)
-            .background(Color(hex: "#FF6B6B"), in: RoundedRectangle(cornerRadius: 3))
+            .background(theme.primary, in: RoundedRectangle(cornerRadius: 3))
     }
 }
 
 private struct ProjectStatusDot: View {
+    @Environment(ThemeManager.self) private var theme
     let status: String
     var body: some View {
         Circle()
@@ -493,13 +498,14 @@ private struct ProjectStatusDot: View {
 
 private struct CircularProgress: View {
     let value: Double
+    @Environment(ThemeManager.self) private var theme
     var body: some View {
         ZStack {
             Circle()
                 .stroke(Color(.systemGray5), lineWidth: 3)
             Circle()
                 .trim(from: 0, to: value)
-                .stroke(Color(hex: "#FF6B6B"), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .stroke(theme.primary, style: StrokeStyle(lineWidth: 3, lineCap: .round))
                 .rotationEffect(.degrees(-90))
             Text("\(Int(value * 100))")
                 .font(.system(size: 9, weight: .bold))
@@ -509,6 +515,7 @@ private struct CircularProgress: View {
 }
 
 private struct ProjectTagChips: View {
+    @Environment(ThemeManager.self) private var theme
     let tags: [ProjectTag]
     var limit: Int = 3
     var style: TagStyle = .normal
@@ -565,6 +572,7 @@ private struct ProjectTagChips: View {
 private struct ProjectGridCard: View {
     let project: Project
 
+    @Environment(ThemeManager.self) private var theme
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             coverImage
@@ -627,7 +635,7 @@ private struct ProjectGridCard: View {
 
             if let progress = projectProgress(project) {
                 ProgressView(value: progress)
-                    .tint(Color(hex: "#FF6B6B"))
+                    .tint(theme.primary)
                     .scaleEffect(y: 0.6)
                     .padding(.top, 2)
             }
@@ -638,6 +646,7 @@ private struct ProjectGridCard: View {
 // MARK: - List Row (Compact)
 
 private struct ProjectListRow: View {
+    @Environment(ThemeManager.self) private var theme
     let project: Project
 
     var body: some View {
@@ -718,6 +727,7 @@ private struct ProjectListRow: View {
 private struct ProjectLargeCard: View {
     let project: Project
 
+    @Environment(ThemeManager.self) private var theme
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             heroImage
@@ -806,7 +816,7 @@ private struct ProjectLargeCard: View {
 
             if let progress = projectProgress(project) {
                 ProgressView(value: progress)
-                    .tint(Color(hex: "#FF6B6B"))
+                    .tint(theme.primary)
                     .background(Color.white.opacity(0.2), in: Capsule())
             }
         }
@@ -828,6 +838,7 @@ private struct ProjectLargeCard: View {
 
 struct RavelryOnboardingSheet: View {
     @Binding var isPresented: Bool
+    @Environment(ThemeManager.self) private var theme
     @State private var showSafari = false
 
     private var connectURL: URL {
@@ -839,7 +850,7 @@ struct RavelryOnboardingSheet: View {
             Spacer()
             Image(systemName: "yarnball")
                 .font(.system(size: 60))
-                .foregroundStyle(Color(hex: "#FF6B6B"))
+                .foregroundStyle(theme.primary)
 
             VStack(spacing: 8) {
                 Text("Already on Ravelry?")
@@ -860,7 +871,7 @@ struct RavelryOnboardingSheet: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color(hex: "#FF6B6B"))
+                        .background(theme.primary)
                         .foregroundStyle(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }

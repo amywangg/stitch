@@ -15,17 +15,28 @@ function reverseMapStatus(stitchStatus: string): string {
   return map[stitchStatus] ?? 'In Progress'
 }
 
-type Params = { params: { id: string } }
+type Params = { params: Promise<{ id: string }> }
 
 export async function GET(_req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
   const project = await prisma.projects.findFirst({
-    where: { id: params.id, user_id: user.id, deleted_at: null },
+    where: { id, user_id: user.id, deleted_at: null },
     include: {
-      sections: { orderBy: { sort_order: 'asc' } },
+      sections: {
+        orderBy: { sort_order: 'asc' },
+        include: {
+          pattern_section: {
+            include: { rows: { orderBy: { row_number: 'asc' } } },
+          },
+        },
+      },
+      pattern: {
+        include: { sizes: { orderBy: { sort_order: 'asc' } } },
+      },
       gauge: true,
       photos: { orderBy: { sort_order: 'asc' } },
       yarns: { include: { yarn: { include: { company: true } } } },
@@ -40,12 +51,13 @@ export async function GET(_req: NextRequest, { params }: Params) {
 }
 
 export async function PATCH(req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
   const project = await prisma.projects.findFirst({
-    where: { id: params.id, user_id: user.id, deleted_at: null },
+    where: { id, user_id: user.id, deleted_at: null },
   })
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
@@ -66,7 +78,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     }
   }
 
-  const updated = await prisma.projects.update({ where: { id: params.id }, data: updates })
+  const updated = await prisma.projects.update({ where: { id }, data: updates })
 
   // Emit activity for status changes
   if ('status' in updates && updates.status !== project.status) {
@@ -98,17 +110,18 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 }
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
   const project = await prisma.projects.findFirst({
-    where: { id: params.id, user_id: user.id, deleted_at: null },
+    where: { id, user_id: user.id, deleted_at: null },
   })
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   await prisma.projects.update({
-    where: { id: params.id },
+    where: { id },
     data: { deleted_at: new Date() },
   })
 
@@ -120,5 +133,5 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     }
   }
 
-  return NextResponse.json({ success: true, message: 'Project deleted' })
+  return NextResponse.json({ success: true, data: {} })
 }

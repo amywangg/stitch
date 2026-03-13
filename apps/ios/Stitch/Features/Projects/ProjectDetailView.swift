@@ -93,6 +93,7 @@ final class ProjectDetailViewModel {
 
 struct ProjectDetailView: View {
     let projectId: String
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = ProjectDetailViewModel()
     @State private var isEditing = false
     @State private var showDeleteConfirmation = false
@@ -227,6 +228,11 @@ struct ProjectDetailView: View {
                 VStack(spacing: 20) {
                     headerBadges(project)
 
+                    // Master progress card
+                    if let sections = project.sections, !sections.isEmpty {
+                        masterProgressCard(sections)
+                    }
+
                     if project.startedAt != nil || project.finishedAt != nil || project.sizeMade != nil {
                         quickStats(project)
                     }
@@ -259,8 +265,18 @@ struct ProjectDetailView: View {
                     if let permalink = project.ravelryPermalink {
                         ravelryLink(permalink)
                     }
+
+                    // Spacer for continue button
+                    if let sections = project.sections, sections.contains(where: { $0.completed != true }) {
+                        Color.clear.frame(height: 60)
+                    }
                 }
                 .padding()
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if let sections = project.sections, sections.contains(where: { $0.completed != true }) {
+                continueKnittingButton(project: project, sections: sections)
             }
         }
     }
@@ -296,7 +312,7 @@ struct ProjectDetailView: View {
             badge(project.status.capitalized, icon: statusIcon(project.status), color: statusColor(project.status))
             badge(project.craftType.capitalized, icon: "leaf", color: .secondary)
             if project.ravelryId != nil {
-                badge("Ravelry", icon: "link", color: Color(hex: "#FF6B6B"))
+                badge("Ravelry", icon: "link", color: theme.primary)
             }
             Spacer()
         }
@@ -325,7 +341,7 @@ struct ProjectDetailView: View {
         case "completed": return .green
         case "hibernating": return .orange
         case "frogged": return .red
-        default: return Color(hex: "#FF6B6B")
+        default: return theme.primary
         }
     }
 
@@ -405,11 +421,11 @@ struct ProjectDetailView: View {
             ForEach(yarns) { yarn in
                 HStack(spacing: 12) {
                     Circle()
-                        .fill(Color(hex: "#4ECDC4").opacity(0.2))
+                        .fill(theme.primary.opacity(0.2))
                         .frame(width: 40, height: 40)
                         .overlay {
                             Image(systemName: "wand.and.rays.inverse")
-                                .foregroundStyle(Color(hex: "#4ECDC4"))
+                                .foregroundStyle(theme.primary)
                         }
                     VStack(alignment: .leading, spacing: 2) {
                         Text(yarnDisplayName(yarn))
@@ -439,20 +455,110 @@ struct ProjectDetailView: View {
         return yarn.nameOverride ?? "Unknown Yarn"
     }
 
+    // MARK: - Master Progress
+
+    private func masterProgressCard(_ sections: [ProjectSection]) -> some View {
+        let completedCount = sections.filter { $0.completed == true }.count
+        let totalPct = masterProgressPct(sections)
+        let activeSection = sections.first { $0.completed != true }
+
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("\(Int(totalPct * 100))%")
+                    .font(.title2.weight(.bold))
+                    .foregroundStyle(theme.primary)
+                Spacer()
+                Text("\(completedCount) of \(sections.count) sections complete")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Segmented progress bar
+            GeometryReader { proxy in
+                HStack(spacing: 2) {
+                    ForEach(sections) { section in
+                        let weight = sectionWeight(section, totalSections: sections)
+                        let sectionPct = sectionCompletionPct(section)
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(Color(.systemGray5))
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(section.completed == true ? theme.primary : theme.primary.opacity(0.6))
+                                .frame(width: (proxy.size.width * weight - 2) * sectionPct)
+                        }
+                        .frame(width: proxy.size.width * weight - 2)
+                    }
+                }
+            }
+            .frame(height: 6)
+
+            if let active = activeSection {
+                Text("Active: \(active.name)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(16)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func masterProgressPct(_ sections: [ProjectSection]) -> Double {
+        let totalTarget = sections.reduce(0) { $0 + ($1.targetRows ?? 1) }
+        guard totalTarget > 0 else { return 0 }
+        let totalDone = sections.reduce(0) { sum, s in
+            let target = s.targetRows ?? 1
+            return sum + min(s.currentRow, target)
+        }
+        return Double(totalDone) / Double(totalTarget)
+    }
+
+    private func sectionWeight(_ section: ProjectSection, totalSections: [ProjectSection]) -> Double {
+        let totalTarget = totalSections.reduce(0) { $0 + ($1.targetRows ?? 1) }
+        guard totalTarget > 0 else { return 1.0 / Double(totalSections.count) }
+        return Double(section.targetRows ?? 1) / Double(totalTarget)
+    }
+
+    private func sectionCompletionPct(_ section: ProjectSection) -> Double {
+        if section.completed == true { return 1.0 }
+        let target = section.targetRows ?? 1
+        guard target > 0 else { return 0 }
+        return min(Double(section.currentRow) / Double(target), 1.0)
+    }
+
     // MARK: - Sections
 
+    private func sectionRefs(_ sections: [ProjectSection]) -> [SectionRef] {
+        sections.map { SectionRef(id: $0.id, name: $0.name) }
+    }
+
     private func sectionsBlock(_ sections: [ProjectSection]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let refs = sectionRefs(sections)
+        let activeId = sections.first(where: { $0.completed != true })?.id
+
+        return VStack(alignment: .leading, spacing: 8) {
             Text("Sections").font(.headline)
             ForEach(sections) { section in
+                let isActive = section.id == activeId
                 Button {
-                    router.push(.counter(sectionId: section.id))
+                    router.push(.counter(
+                        sectionId: section.id,
+                        allSections: refs,
+                        projectId: viewModel.project?.id,
+                        pdfUploadId: viewModel.project?.pdfUploadId
+                    ))
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(section.name).font(.subheadline.weight(.medium))
+                            Text(section.name)
+                                .font(.subheadline.weight(.medium))
                             Text("Row \(section.currentRow)\(section.targetRows.map { " of \($0)" } ?? "")")
                                 .font(.caption).foregroundStyle(.secondary)
+                            if let step = section.currentStep, let ps = section.patternSection,
+                               let rows = ps.rows, !rows.isEmpty {
+                                Text("Step \(step) of \(rows.count)")
+                                    .font(.caption2).foregroundStyle(.tertiary)
+                            }
                         }
                         Spacer()
                         if let target = section.targetRows, target > 0 {
@@ -460,21 +566,75 @@ struct ProjectDetailView: View {
                             ZStack {
                                 Circle().stroke(Color(.systemGray4), lineWidth: 3)
                                 Circle().trim(from: 0, to: pct)
-                                    .stroke(Color(hex: "#FF6B6B"), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                                    .stroke(theme.primary, style: StrokeStyle(lineWidth: 3, lineCap: .round))
                                     .rotationEffect(.degrees(-90))
+                                if section.completed == true {
+                                    Image(systemName: "checkmark")
+                                        .font(.caption2.bold())
+                                        .foregroundStyle(theme.primary)
+                                }
                             }
                             .frame(width: 28, height: 28)
+                        } else if section.completed == true {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(theme.primary)
                         }
                         Image(systemName: "chevron.right").font(.caption).foregroundStyle(.tertiary)
                     }
                     .padding(12)
-                    .background(Color(.secondarySystemGroupedBackground))
+                    .background(
+                        isActive
+                            ? theme.primary.opacity(0.08)
+                            : Color(.secondarySystemGroupedBackground)
+                    )
                     .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        isActive
+                            ? RoundedRectangle(cornerRadius: 10).stroke(theme.primary.opacity(0.3), lineWidth: 1)
+                            : nil
+                    )
                 }
                 .buttonStyle(.plain)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: - Continue Knitting
+
+    private func continueKnittingButton(project: Project, sections: [ProjectSection]) -> some View {
+        let activeSection = sections.first { $0.completed != true }
+        let refs = sectionRefs(sections)
+
+        return Group {
+            if let active = activeSection {
+                Button {
+                    router.push(.counter(
+                        sectionId: active.id,
+                        allSections: refs,
+                        projectId: project.id,
+                        pdfUploadId: project.pdfUploadId
+                    ))
+                } label: {
+                    Text("Continue knitting")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(theme.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 8)
+                .background(
+                    LinearGradient(
+                        colors: [Color(.systemBackground).opacity(0), Color(.systemBackground)],
+                        startPoint: .top,
+                        endPoint: .center
+                    )
+                )
+            }
+        }
     }
 
     // MARK: - PDF Block
@@ -487,7 +647,7 @@ struct ProjectDetailView: View {
             } label: {
                 HStack(spacing: 12) {
                     Image(systemName: "doc.fill")
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                         .font(.title3)
 
                     VStack(alignment: .leading, spacing: 2) {
@@ -526,9 +686,9 @@ struct ProjectDetailView: View {
                         Spacer()
                         Image(systemName: "arrow.up.right").font(.caption)
                     }
-                    .foregroundStyle(Color(hex: "#FF6B6B"))
+                    .foregroundStyle(theme.primary)
                     .padding(12)
-                    .background(Color(hex: "#FF6B6B").opacity(0.08))
+                    .background(theme.primary.opacity(0.08))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
@@ -539,6 +699,7 @@ struct ProjectDetailView: View {
 // MARK: - Edit Sheet
 
 struct ProjectEditSheet: View {
+    @Environment(ThemeManager.self) private var theme
     @Bindable var viewModel: ProjectDetailViewModel
     @Binding var isPresented: Bool
 

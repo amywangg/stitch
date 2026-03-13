@@ -9,7 +9,9 @@ enum AppTab: String {
 }
 
 struct MainTabView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var selectedTab: AppTab = .feed
+    @State private var patternsSubTab: PatternsTab = .myPatterns
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -19,7 +21,7 @@ struct MainTabView: View {
                 }
                 .tag(AppTab.feed)
 
-            ProjectsView(selectedTab: $selectedTab)
+            ProjectsView(selectedTab: $selectedTab, patternsSubTab: $patternsSubTab)
                 .tabItem {
                     Label("Projects", systemImage: "folder")
                 }
@@ -31,7 +33,7 @@ struct MainTabView: View {
                 }
                 .tag(AppTab.stash)
 
-            PatternsView()
+            PatternsView(initialSubTab: $patternsSubTab)
                 .tabItem {
                     Label("Patterns", systemImage: "book.closed")
                 }
@@ -43,6 +45,7 @@ struct MainTabView: View {
                 }
                 .tag(AppTab.profile)
         }
-        .tint(Color(hex: "#FF6B6B"))
+        .tint(theme.primary)
+        .preferredColorScheme(theme.colorScheme)
     }
 }

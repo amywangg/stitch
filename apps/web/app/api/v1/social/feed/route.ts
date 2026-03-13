@@ -9,52 +9,79 @@ export async function GET(req: NextRequest) {
 
   const user = await getDbUser(clerkId)
   const page = parseInt(req.nextUrl.searchParams.get('page') ?? '1')
-  const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '20')
+  const limit = Math.min(parseInt(req.nextUrl.searchParams.get('limit') ?? '20'), 50)
   const skip = (page - 1) * limit
+  const feedType = req.nextUrl.searchParams.get('type') // 'social' | 'activity' | null (both)
 
-  // Get IDs of people the user follows + self
+  // Get IDs of people the user follows
   const following = await prisma.follows.findMany({
     where: { follower_id: user.id },
     select: { following_id: true },
   })
-  const feedUserIds = [user.id, ...following.map((f) => f.following_id)]
+  const followingIds = following.map((f) => f.following_id)
+  const allFeedUserIds = [user.id, ...followingIds]
+
+  // For activity feed: only show from mutual follows (friends)
+  // A friend = someone I follow who also follows me back
+  let friendIds: string[] = []
+  if (feedType !== 'social') {
+    const mutualFollows = await prisma.follows.findMany({
+      where: {
+        follower_id: { in: followingIds },
+        following_id: user.id,
+      },
+      select: { follower_id: true },
+    })
+    friendIds = [user.id, ...mutualFollows.map((f) => f.follower_id)]
+  }
 
   const userSelect = { id: true, username: true, display_name: true, avatar_url: true }
 
-  // Two parallel queries: posts + activity_events
+  // Build queries based on feed type
+  const includePosts = feedType !== 'activity'
+  const includeActivity = feedType !== 'social'
+
   const [posts, postTotal, activities, activityTotal] = await Promise.all([
-    prisma.posts.findMany({
-      where: { user_id: { in: feedUserIds }, deleted_at: null },
-      orderBy: { created_at: 'desc' },
-      take: limit + skip, // fetch enough to merge
-      include: {
-        user: { select: userSelect },
-        photos: { orderBy: { sort_order: 'asc' } },
-        _count: { select: { likes: true, comments: { where: { deleted_at: null } } } },
-        likes: { where: { user_id: user.id }, take: 1 },
-      },
-    }),
-    prisma.posts.count({ where: { user_id: { in: feedUserIds }, deleted_at: null } }),
-    prisma.activity_events.findMany({
-      where: { user_id: { in: feedUserIds } },
-      orderBy: { created_at: 'desc' },
-      take: limit + skip,
-      include: {
-        user: { select: userSelect },
-        project: {
-          select: {
-            id: true, title: true, slug: true, status: true, craft_type: true,
-            photos: { orderBy: { sort_order: 'asc' }, take: 1 },
+    includePosts
+      ? prisma.posts.findMany({
+          where: { user_id: { in: allFeedUserIds }, deleted_at: null },
+          orderBy: { created_at: 'desc' },
+          take: limit + skip,
+          include: {
+            user: { select: userSelect },
+            photos: { orderBy: { sort_order: 'asc' } },
+            _count: { select: { likes: true, comments: { where: { deleted_at: null } } } },
+            likes: { where: { user_id: user.id }, take: 1 },
           },
-        },
-        pattern: {
-          select: { id: true, title: true, slug: true, cover_image_url: true, designer_name: true },
-        },
-        _count: { select: { likes: true, comments: { where: { deleted_at: null } } } },
-        likes: { where: { user_id: user.id }, take: 1 },
-      },
-    }),
-    prisma.activity_events.count({ where: { user_id: { in: feedUserIds } } }),
+        })
+      : [],
+    includePosts
+      ? prisma.posts.count({ where: { user_id: { in: allFeedUserIds }, deleted_at: null } })
+      : 0,
+    includeActivity
+      ? prisma.activity_events.findMany({
+          where: { user_id: { in: friendIds } },
+          orderBy: { created_at: 'desc' },
+          take: limit + skip,
+          include: {
+            user: { select: userSelect },
+            project: {
+              select: {
+                id: true, title: true, slug: true, status: true, craft_type: true,
+                photos: { orderBy: { sort_order: 'asc' }, take: 1 },
+              },
+            },
+            pattern: {
+              select: { id: true, title: true, slug: true, cover_image_url: true, designer_name: true },
+            },
+            _count: { select: { likes: true, comments: { where: { deleted_at: null } } } },
+            likes: { where: { user_id: user.id }, take: 1 },
+          },
+        })
+      : [],
+    includeActivity
+      ? prisma.activity_events.count({ where: { user_id: { in: friendIds } } })
+      : 0,
   ])
 
   // Merge by created_at desc

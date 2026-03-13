@@ -3,6 +3,7 @@ import PhotosUI
 
 struct StashItemDetailView: View {
     let itemId: String
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = StashItemDetailViewModel()
     @State private var showDeleteConfirmation = false
     @State private var showPhotoOptions = false
@@ -151,7 +152,7 @@ struct StashItemDetailView: View {
                     VStack(spacing: 12) {
                         Image(systemName: "camera.fill")
                             .font(.system(size: 32))
-                            .foregroundStyle(Color(hex: "#FF6B6B").opacity(0.6))
+                            .foregroundStyle(theme.primary.opacity(0.6))
 
                         Text("Add a photo of your yarn")
                             .font(.subheadline)
@@ -192,7 +193,7 @@ struct StashItemDetailView: View {
             } else {
                 Label("Identify colorway", systemImage: "sparkles")
                     .font(.subheadline)
-                    .foregroundStyle(Color(hex: "#FF6B6B"))
+                    .foregroundStyle(theme.primary)
             }
         }
         .disabled(viewModel.isIdentifyingColorway)
@@ -204,7 +205,7 @@ struct StashItemDetailView: View {
             VStack(spacing: 8) {
                 HStack {
                     Image(systemName: "sparkles")
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("AI suggests: \(suggestion.colorway)")
                             .font(.subheadline.weight(.medium))
@@ -229,7 +230,7 @@ struct StashItemDetailView: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(Color(hex: "#FF6B6B"))
+                    .tint(theme.primary)
 
                     Button {
                         viewModel.colorwaySuggestion = nil
@@ -242,7 +243,7 @@ struct StashItemDetailView: View {
                 }
             }
             .padding()
-            .background(Color(hex: "#FF6B6B").opacity(0.08))
+            .background(theme.primary.opacity(0.08))
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .padding(.horizontal)
         }
@@ -267,8 +268,8 @@ struct StashItemDetailView: View {
                     .font(.caption.weight(.medium))
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
-                    .background(Color(hex: "#4ECDC4").opacity(0.15))
-                    .foregroundStyle(Color(hex: "#4ECDC4"))
+                    .background(theme.primary.opacity(0.15))
+                    .foregroundStyle(theme.primary)
                     .clipShape(Capsule())
             }
         }
@@ -401,7 +402,7 @@ struct StashItemDetailView: View {
             }
         }
         .disabled(viewModel.isSaving)
-        .listRowBackground(Color(hex: "#FF6B6B"))
+        .listRowBackground(theme.primary)
         .foregroundStyle(.white)
     }
 
@@ -484,7 +485,7 @@ struct StashItemDetailView: View {
 
     private func statusColor(_ status: String) -> Color {
         switch status {
-        case "active": return Color(hex: "#4ECDC4")
+        case "active": return theme.primary
         case "completed": return .green
         case "frogged": return .orange
         case "hibernating": return .purple

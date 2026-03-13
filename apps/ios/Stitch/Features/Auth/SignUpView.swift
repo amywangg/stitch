@@ -4,6 +4,7 @@ import ClerkKit
 struct SignUpView: View {
     var onSignIn: () -> Void
 
+    @Environment(ThemeManager.self) private var theme
     @State private var firstName = ""
     @State private var email = ""
     @State private var password = ""
@@ -109,7 +110,7 @@ struct SignUpView: View {
                     Text("Already have an account?")
                         .foregroundStyle(Color(hex: "#8E8E93"))
                     Button("Sign in") { onSignIn() }
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                         .fontWeight(.semibold)
                 }
                 .font(.subheadline)
@@ -131,7 +132,7 @@ struct SignUpView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "envelope.badge.shield.half.filled")
                         .font(.system(size: 40))
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                         .padding(.bottom, 8)
 
                     Text("Verify your email")
@@ -177,7 +178,7 @@ struct SignUpView: View {
                 } label: {
                     Text("Resend code")
                         .font(.subheadline)
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                 }
                 .padding(.top, 20)
 

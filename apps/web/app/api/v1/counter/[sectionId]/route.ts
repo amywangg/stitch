@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
 
-type Params = { params: { sectionId: string } }
+type Params = { params: Promise<{ sectionId: string }> }
 
 async function getSectionForUser(sectionId: string, userId: string) {
   return prisma.project_sections.findFirst({
@@ -15,11 +15,12 @@ async function getSectionForUser(sectionId: string, userId: string) {
 }
 
 export async function GET(_req: NextRequest, { params }: Params) {
+  const { sectionId } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const section = await getSectionForUser(params.sectionId, user.id)
+  const section = await getSectionForUser(sectionId, user.id)
   if (!section) return NextResponse.json({ error: 'Section not found' }, { status: 404 })
 
   return NextResponse.json({

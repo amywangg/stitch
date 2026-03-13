@@ -229,6 +229,7 @@ struct PatternSearchResponse: Codable {
 // MARK: - Discover View
 
 struct PatternDiscoverView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = PatternDiscoverViewModel()
     @State private var showFilters = false
     @FocusState private var isSearchFocused: Bool
@@ -236,9 +237,9 @@ struct PatternDiscoverView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 20) {
-                searchBar
                 categoriesSection
                 filtersRow
+                searchBar
 
                 if viewModel.isSearching && viewModel.results.isEmpty {
                     ProgressView()
@@ -339,7 +340,7 @@ struct PatternDiscoverView: View {
                                     .frame(width: 48, height: 48)
                                     .background(
                                         isSelected
-                                            ? Color(hex: "#FF6B6B")
+                                            ? theme.primary
                                             : Color(.secondarySystemGroupedBackground)
                                     )
                                     .foregroundStyle(isSelected ? .white : .primary)
@@ -347,7 +348,7 @@ struct PatternDiscoverView: View {
 
                                 Text(cat.label)
                                     .font(.caption2)
-                                    .foregroundStyle(isSelected ? Color(hex: "#FF6B6B") : .secondary)
+                                    .foregroundStyle(isSelected ? theme.primary : .secondary)
                             }
                         }
                         .buttonStyle(.plain)
@@ -373,7 +374,7 @@ struct PatternDiscoverView: View {
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundStyle(.white)
                                 .frame(width: 18, height: 18)
-                                .background(Color(hex: "#FF6B6B"), in: Circle())
+                                .background(theme.primary, in: Circle())
                         }
                     }
                     .font(.caption.weight(.medium))
@@ -381,10 +382,10 @@ struct PatternDiscoverView: View {
                     .padding(.vertical, 6)
                     .background(
                         viewModel.activeFilterCount > 0
-                            ? Color(hex: "#FF6B6B").opacity(0.12)
+                            ? theme.primary.opacity(0.12)
                             : Color(.secondarySystemGroupedBackground)
                     )
-                    .foregroundStyle(viewModel.activeFilterCount > 0 ? Color(hex: "#FF6B6B") : .primary)
+                    .foregroundStyle(viewModel.activeFilterCount > 0 ? theme.primary : .primary)
                     .clipShape(Capsule())
                 }
                 .buttonStyle(.plain)
@@ -464,7 +465,7 @@ struct PatternDiscoverView: View {
                 .font(.caption.weight(.medium))
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(isActive ? Color(hex: "#FF6B6B") : Color(.secondarySystemGroupedBackground))
+                .background(isActive ? theme.primary : Color(.secondarySystemGroupedBackground))
                 .foregroundStyle(isActive ? .white : .primary)
                 .clipShape(Capsule())
         }
@@ -481,8 +482,8 @@ struct PatternDiscoverView: View {
             .font(.caption.weight(.medium))
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
-            .background(Color(hex: "#FF6B6B").opacity(0.12))
-            .foregroundStyle(Color(hex: "#FF6B6B"))
+            .background(theme.primary.opacity(0.12))
+            .foregroundStyle(theme.primary)
             .clipShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -494,7 +495,7 @@ struct PatternDiscoverView: View {
         VStack(spacing: 12) {
             Image(systemName: "sparkle.magnifyingglass")
                 .font(.system(size: 40))
-                .foregroundStyle(Color(hex: "#FF6B6B").opacity(0.4))
+                .foregroundStyle(theme.primary.opacity(0.4))
                 .padding(.top, 40)
 
             Text("Search or pick a category")
@@ -558,6 +559,7 @@ struct PatternDiscoverView: View {
 // MARK: - Filter Sheet
 
 private struct PatternFilterSheet: View {
+    @Environment(ThemeManager.self) private var theme
     @Bindable var viewModel: PatternDiscoverViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var designerText = ""
@@ -674,6 +676,7 @@ private struct PatternFilterSheet: View {
 // MARK: - Pattern Row
 
 private struct DiscoverPatternRow: View {
+    @Environment(ThemeManager.self) private var theme
     let pattern: DiscoverPattern
     let isSaved: Bool
     let onSave: () -> Void
@@ -734,7 +737,7 @@ private struct DiscoverPatternRow: View {
                 if pattern.free {
                     Text("Free")
                         .font(.caption2.weight(.medium))
-                        .foregroundStyle(Color(hex: "#4ECDC4"))
+                        .foregroundStyle(theme.primary)
                 }
                 if let weight = pattern.weight {
                     Text(weight.capitalized)
@@ -756,7 +759,7 @@ private struct DiscoverPatternRow: View {
                     HStack(spacing: 2) {
                         Image(systemName: "star.fill")
                             .font(.system(size: 9))
-                            .foregroundStyle(Color(hex: "#FF6B6B"))
+                            .foregroundStyle(theme.primary)
                         Text(String(format: "%.1f", rating))
                             .font(.caption2)
                     }
@@ -776,14 +779,14 @@ private struct DiscoverPatternRow: View {
     private var saveButton: some View {
         if isSaved {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(Color(hex: "#4ECDC4"))
+                .foregroundStyle(theme.primary)
                 .font(.title3)
         } else {
             Button {
                 onSave()
             } label: {
                 Image(systemName: "bookmark")
-                    .foregroundStyle(Color(hex: "#FF6B6B"))
+                    .foregroundStyle(theme.primary)
                     .font(.title3)
             }
             .buttonStyle(.plain)

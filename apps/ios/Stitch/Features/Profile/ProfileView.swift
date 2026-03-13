@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = ProfileViewModel()
     @State private var showingEditProfile = false
 
@@ -84,7 +85,7 @@ struct ProfileView: View {
             .overlay(
                 Circle()
                     .stroke(
-                        user.isPro ? Color(hex: "#FF6B6B") : Color.clear,
+                        user.isPro ? theme.primary : Color.clear,
                         lineWidth: 3
                     )
                     .padding(-2)
@@ -101,7 +102,7 @@ struct ProfileView: View {
                         .foregroundStyle(.white)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color(hex: "#FF6B6B"))
+                        .background(theme.primary)
                         .clipShape(Capsule())
                 }
             }
@@ -228,7 +229,7 @@ struct ProfileView: View {
             if stats.totalCraftingMinutesThisYear > 0 {
                 Text(formatCraftingTime(stats.totalCraftingMinutesThisYear) + " this year")
                     .font(.caption)
-                    .foregroundStyle(Color(hex: "#4ECDC4"))
+                    .foregroundStyle(theme.primary)
             }
         }) {
             if heatmap.isEmpty {
@@ -309,7 +310,7 @@ struct ProfileView: View {
                let section = project.sections.first,
                let target = section.targetRows, target > 0 {
                 ProgressView(value: Double(section.currentRow), total: Double(target))
-                    .tint(Color(hex: "#FF6B6B"))
+                    .tint(theme.primary)
                     .frame(width: 130)
             }
         }
@@ -454,7 +455,7 @@ struct ProfileView: View {
 
                             GeometryReader { geo in
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color(hex: "#4ECDC4").opacity(0.7))
+                                    .fill(theme.primary.opacity(0.7))
                                     .frame(
                                         width: max(4, geo.size.width * entry.skeins / maxSkeins)
                                     )
@@ -496,7 +497,7 @@ struct ProfileView: View {
                         VStack(spacing: 4) {
                             Image(systemName: needleIcon(type))
                                 .font(.title3)
-                                .foregroundStyle(Color(hex: "#FF6B6B"))
+                                .foregroundStyle(theme.primary)
                             Text("\(qty)")
                                 .font(.subheadline.weight(.semibold))
                             Text(needleLabel(type))
@@ -562,7 +563,7 @@ struct ProfileView: View {
                     ForEach(1...5, id: \.self) { star in
                         Image(systemName: starIcon(for: star, rating: review.rating))
                             .font(.system(size: 11))
-                            .foregroundStyle(Color(hex: "#FF6B6B"))
+                            .foregroundStyle(theme.primary)
                     }
 
                     if let difficulty = review.difficultyRating {
@@ -588,7 +589,7 @@ struct ProfileView: View {
                         Text(wouldMake ? "Would make again" : "Would not make again")
                             .font(.caption2)
                     }
-                    .foregroundStyle(wouldMake ? Color(hex: "#4ECDC4") : .secondary)
+                    .foregroundStyle(wouldMake ? theme.primary : .secondary)
                 }
             }
 
@@ -715,7 +716,7 @@ struct ProfileView: View {
                 .font(.subheadline.weight(.semibold))
             Text("\(count)")
                 .font(.subheadline.weight(.bold))
-                .foregroundStyle(Color(hex: "#FF6B6B"))
+                .foregroundStyle(theme.primary)
             if count > 0 {
                 Text(countLabel)
                     .font(.caption)
@@ -752,7 +753,7 @@ struct ProfileView: View {
     private func statusColor(_ status: String) -> Color {
         switch status {
         case "completed": return .green
-        case "active": return Color(hex: "#4ECDC4")
+        case "active": return theme.primary
         case "frogged": return .red
         case "hibernating": return .orange
         default: return .gray
@@ -823,10 +824,10 @@ struct ProfileView: View {
     private func activityColor(_ type: String) -> Color {
         switch type {
         case "project_completed": return .green
-        case "project_started": return Color(hex: "#4ECDC4")
+        case "project_started": return theme.primary
         case "project_frogged": return .red
-        case "row_milestone": return Color(hex: "#FF6B6B")
-        case "pattern_queued", "stash_added": return Color(hex: "#4ECDC4")
+        case "row_milestone": return theme.primary
+        case "pattern_queued", "stash_added": return theme.primary
         case "review_posted": return .yellow
         default: return .secondary
         }
@@ -863,6 +864,7 @@ struct ProfileView: View {
 struct HeatmapGrid: View {
     let days: [HeatmapDay]
 
+    @Environment(ThemeManager.self) private var theme
     private let columns = 52
     private let rows = 7
     private let cellSize: CGFloat = 10
@@ -928,10 +930,10 @@ struct HeatmapGrid: View {
 
     private func heatmapLevelColor(_ minutes: Int) -> Color {
         if minutes == 0 { return Color(.systemGray5) }
-        if minutes < 15 { return Color(hex: "#4ECDC4").opacity(0.3) }
-        if minutes < 30 { return Color(hex: "#4ECDC4").opacity(0.5) }
-        if minutes < 60 { return Color(hex: "#4ECDC4").opacity(0.7) }
-        return Color(hex: "#4ECDC4")
+        if minutes < 15 { return theme.primary.opacity(0.3) }
+        if minutes < 30 { return theme.primary.opacity(0.5) }
+        if minutes < 60 { return theme.primary.opacity(0.7) }
+        return theme.primary
     }
 }
 
@@ -943,6 +945,7 @@ struct EditProfileSheet: View {
     let user: ProfileUser
     let onSave: () -> Void
 
+    @Environment(ThemeManager.self) private var theme
     @Environment(\.dismiss) private var dismiss
     @State private var displayName: String = ""
     @State private var bio: String = ""
@@ -986,14 +989,14 @@ struct EditProfileSheet: View {
 
                                 Image(systemName: "camera.circle.fill")
                                     .font(.title3)
-                                    .foregroundStyle(.white, Color(hex: "#FF6B6B"))
+                                    .foregroundStyle(.white, theme.primary)
                                     .offset(x: 2, y: 2)
                             }
                             .onTapGesture { showingPhotoPicker = true }
 
                             Button("Change photo") { showingPhotoPicker = true }
                                 .font(.subheadline)
-                                .foregroundStyle(Color(hex: "#FF6B6B"))
+                                .foregroundStyle(theme.primary)
 
                             if isUploading {
                                 ProgressView()
@@ -1024,13 +1027,13 @@ struct EditProfileSheet: View {
                             ProgressView().controlSize(.small)
                         } else if let available = usernameAvailable {
                             Image(systemName: available ? "checkmark.circle.fill" : "xmark.circle.fill")
-                                .foregroundStyle(available ? Color(hex: "#4ECDC4") : Color(hex: "#FF6B6B"))
+                                .foregroundStyle(available ? theme.primary : theme.primary)
                         }
                     }
                     if let message = usernameMessage {
                         Text(message)
                             .font(.caption)
-                            .foregroundStyle(usernameAvailable == true ? Color(hex: "#4ECDC4") : .red)
+                            .foregroundStyle(usernameAvailable == true ? theme.primary : .red)
                     }
                 } header: {
                     Text("Username")

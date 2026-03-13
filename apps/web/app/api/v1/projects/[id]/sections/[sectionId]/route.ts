@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
 
-type Params = { params: { id: string; sectionId: string } }
+type Params = { params: Promise<{ id: string; sectionId: string }> }
 
 async function getSectionForUser(sectionId: string, projectId: string, userId: string) {
   const project = await prisma.projects.findFirst({
@@ -14,11 +14,12 @@ async function getSectionForUser(sectionId: string, projectId: string, userId: s
 }
 
 export async function PATCH(req: NextRequest, { params }: Params) {
+  const { id, sectionId } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const section = await getSectionForUser(params.sectionId, params.id, user.id)
+  const section = await getSectionForUser(sectionId, id, user.id)
   if (!section) return NextResponse.json({ error: 'Section not found' }, { status: 404 })
 
   const body = await req.json()
@@ -28,18 +29,19 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     if (key in body) updates[key] = body[key]
   }
 
-  const updated = await prisma.project_sections.update({ where: { id: params.sectionId }, data: updates })
+  const updated = await prisma.project_sections.update({ where: { id: sectionId }, data: updates })
   return NextResponse.json({ success: true, data: updated })
 }
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
+  const { id, sectionId } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const section = await getSectionForUser(params.sectionId, params.id, user.id)
+  const section = await getSectionForUser(sectionId, id, user.id)
   if (!section) return NextResponse.json({ error: 'Section not found' }, { status: 404 })
 
-  await prisma.project_sections.delete({ where: { id: params.sectionId } })
-  return NextResponse.json({ success: true, message: 'Section deleted' })
+  await prisma.project_sections.delete({ where: { id: sectionId } })
+  return NextResponse.json({ success: true, data: {} })
 }

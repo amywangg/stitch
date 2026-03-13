@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SplashView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var opacity: Double = 0
     @State private var dotOpacity: [Double] = [0.3, 0.3, 0.3]
 
@@ -10,7 +11,7 @@ struct SplashView: View {
 
             // Soft coral glow behind logo
             RadialGradient(
-                colors: [Color(hex: "#FF6B6B").opacity(0.25), .clear],
+                colors: [theme.primary.opacity(0.25), .clear],
                 center: .center,
                 startRadius: 0,
                 endRadius: 280
@@ -26,13 +27,13 @@ struct SplashView: View {
                         RoundedRectangle(cornerRadius: 26, style: .continuous)
                             .fill(
                                 LinearGradient(
-                                    colors: [Color(hex: "#FF6B6B"), Color(hex: "#FF8E53")],
+                                    colors: [theme.primary, Color(hex: "#FF8E53")],
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 )
                             )
                             .frame(width: 84, height: 84)
-                            .shadow(color: Color(hex: "#FF6B6B").opacity(0.5), radius: 24, y: 8)
+                            .shadow(color: theme.primary.opacity(0.5), radius: 24, y: 8)
 
                         Text("S")
                             .font(.system(size: 42, weight: .bold, design: .rounded))
@@ -41,7 +42,7 @@ struct SplashView: View {
 
                     Text("Stitch")
                         .font(.system(size: 30, weight: .bold, design: .rounded))
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                 }
                 .opacity(opacity)
 
@@ -52,7 +53,7 @@ struct SplashView: View {
                     HStack(spacing: 7) {
                         ForEach(0..<3, id: \.self) { i in
                             Circle()
-                                .fill(Color(hex: "#FF6B6B"))
+                                .fill(theme.primary)
                                 .frame(width: 7, height: 7)
                                 .opacity(dotOpacity[i])
                         }

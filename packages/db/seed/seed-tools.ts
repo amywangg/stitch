@@ -29,6 +29,25 @@ interface Brand {
   sets: ToolSet[]
 }
 
+interface ProductLineSize {
+  mm: number
+  label: string
+}
+
+interface ProductLine {
+  name: string
+  type: string
+  material?: string
+  image_url?: string
+  sizes: ProductLineSize[]
+  lengths_cm: number[] | null
+}
+
+interface ProductLineBrand {
+  brand: string
+  product_lines: ProductLine[]
+}
+
 async function main() {
   const filePath = join(__dirname, 'tool-sets.json')
   const raw = readFileSync(filePath, 'utf-8')
@@ -100,6 +119,52 @@ async function main() {
         })
         console.log(`    Created ${set.items.length} item(s)`)
       }
+    }
+  }
+
+  // --- Seed product lines ---
+  const plFilePath = join(__dirname, 'tool-product-lines.json')
+  const plRaw = readFileSync(plFilePath, 'utf-8')
+  const plBrands: ProductLineBrand[] = JSON.parse(plRaw)
+
+  console.log(`\nLoaded ${plBrands.length} brand(s) from tool-product-lines.json`)
+
+  for (const plBrand of plBrands) {
+    console.log(`\nUpserting product lines for: ${plBrand.brand}`)
+
+    const dbBrand = await prisma.tool_brands.upsert({
+      where: { name: plBrand.brand },
+      update: {},
+      create: { name: plBrand.brand },
+    })
+
+    for (const pl of plBrand.product_lines) {
+      console.log(`  Upserting product line: ${pl.name} (${pl.type})`)
+
+      await prisma.tool_product_lines.upsert({
+        where: {
+          brand_id_name: {
+            brand_id: dbBrand.id,
+            name: pl.name,
+          },
+        },
+        update: {
+          type: pl.type,
+          material: pl.material ?? null,
+          sizes: pl.sizes as any,
+          lengths_cm: pl.lengths_cm as any,
+          image_url: pl.image_url ?? null,
+        },
+        create: {
+          brand_id: dbBrand.id,
+          name: pl.name,
+          type: pl.type,
+          material: pl.material ?? null,
+          sizes: pl.sizes as any,
+          lengths_cm: pl.lengths_cm as any,
+          image_url: pl.image_url ?? null,
+        },
+      })
     }
   }
 

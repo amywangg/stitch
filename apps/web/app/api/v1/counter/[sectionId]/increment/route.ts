@@ -4,50 +4,90 @@ import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
 import { getRavelryPushClient, pushToRavelry } from '@/lib/ravelry-push'
 import { emitActivity } from '@/lib/activity'
+import { resolveStep, getStepPosition, shouldAutoAdvance, getSectionProgress } from '@/lib/instruction-resolver'
 
-type Params = { params: { sectionId: string } }
+type Params = { params: Promise<{ sectionId: string }> }
 
 export async function POST(_req: NextRequest, { params }: Params) {
+  const { sectionId } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
 
-  // Cross-device realtime sync is a Pro feature; still allow counting on free tier
-  // (the sync just won't broadcast to other devices)
-
   const section = await prisma.project_sections.findFirst({
-    where: { id: params.sectionId, project: { user_id: user.id, deleted_at: null } },
+    where: { id: sectionId, project: { user_id: user.id, deleted_at: null } },
     include: { project: true },
   })
   if (!section) return NextResponse.json({ error: 'Section not found' }, { status: 404 })
 
   const previous = section.current_row
-  const newRow = previous + 1
+  const newTap = previous + 1
+
+  // Check if we should auto-advance to the next step
+  let newStep = section.current_step
+  let newTapInStep = newTap
+  let autoAdvanced = false
+
+  if (section.pattern_section_id) {
+    const patternSteps = await prisma.pattern_rows.findMany({
+      where: { section_id: section.pattern_section_id },
+      orderBy: { row_number: 'asc' },
+    })
+
+    if (patternSteps.length > 0) {
+      const currentStepData = resolveStep(patternSteps, section.current_step)
+      if (currentStepData && shouldAutoAdvance(currentStepData, newTap)) {
+        // Move to next step, reset tap counter
+        const nextStepData = resolveStep(patternSteps, section.current_step + 1)
+        if (nextStepData) {
+          newStep = section.current_step + 1
+          newTapInStep = 0
+          autoAdvanced = true
+        }
+        // If no next step, section is complete — handled below
+      }
+    }
+  }
+
+  // Check if section is now complete
+  let sectionCompleted = false
+  if (section.pattern_section_id && autoAdvanced) {
+    const totalSteps = await prisma.pattern_rows.count({
+      where: { section_id: section.pattern_section_id },
+    })
+    if (newStep > totalSteps) {
+      sectionCompleted = true
+    }
+  }
 
   await prisma.$transaction([
     prisma.project_sections.update({
-      where: { id: params.sectionId },
-      data: { current_row: newRow },
+      where: { id: sectionId },
+      data: {
+        current_row: autoAdvanced ? newTapInStep : newTap,
+        current_step: newStep,
+        completed: sectionCompleted || undefined,
+      },
     }),
     prisma.row_counter_history.create({
-      data: { section_id: params.sectionId, action: 'increment', value: newRow, previous },
+      data: { section_id: sectionId, action: 'increment', value: newTap, previous },
     }),
   ])
 
-  // Row milestone events
+  // Row milestone events (based on total taps across all steps, not just current)
   const milestones = [50, 100, 250, 500, 1000, 2000, 5000]
-  if (milestones.includes(newRow)) {
+  if (milestones.includes(newTap)) {
     emitActivity({
       userId: user.id,
       type: 'row_milestone',
       projectId: section.project_id,
-      metadata: { milestone: newRow, currentRow: newRow, projectTitle: section.project.title },
+      metadata: { milestone: newTap, currentRow: newTap, projectTitle: section.project.title },
     })
   }
 
   // Auto-finish: when target_rows is set and counter reaches it
-  if (section.target_rows && newRow >= section.target_rows) {
+  if (section.target_rows && newTap >= section.target_rows) {
     const today = new Date()
     await prisma.projects.update({
       where: { id: section.project_id },
@@ -69,8 +109,45 @@ export async function POST(_req: NextRequest, { params }: Params) {
     }
   }
 
+  // Resolve instruction for response
+  let instruction = null
+  if (section.pattern_section_id) {
+    const patternSteps = await prisma.pattern_rows.findMany({
+      where: { section_id: section.pattern_section_id },
+      orderBy: { row_number: 'asc' },
+    })
+    if (patternSteps.length > 0) {
+      const effectiveTap = autoAdvanced ? 0 : newTap
+      const resolved = resolveStep(patternSteps, newStep)
+      const progress = getSectionProgress(patternSteps, newStep, effectiveTap)
+
+      // Check for override
+      const override = await prisma.step_overrides.findUnique({
+        where: { project_section_id_step_number: { project_section_id: sectionId, step_number: newStep } },
+      })
+
+      instruction = resolved ? {
+        step_number: resolved.step_number,
+        instruction: override?.custom_instruction ?? resolved.instruction,
+        stitch_count: resolved.stitch_count,
+        row_type: resolved.row_type,
+        is_repeat: resolved.is_repeat,
+        position: resolved ? getStepPosition(resolved, effectiveTap) : null,
+        progress,
+        auto_advanced: autoAdvanced,
+        section_completed: sectionCompleted,
+      } : null
+    }
+  }
+
   return NextResponse.json({
     success: true,
-    data: { sectionId: params.sectionId, currentRow: newRow, previousRow: previous },
+    data: {
+      sectionId,
+      currentRow: autoAdvanced ? newTapInStep : newTap,
+      currentStep: newStep,
+      previousRow: previous,
+      instruction,
+    },
   })
 }

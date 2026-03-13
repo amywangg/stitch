@@ -3,13 +3,14 @@ import SwiftUI
 // MARK: - Background
 
 struct AuthBackground: View {
+    @Environment(ThemeManager.self) private var theme
     var body: some View {
         ZStack {
             Color(hex: "#0A0A0A").ignoresSafeArea()
 
             // Coral radial glow at top
             RadialGradient(
-                colors: [Color(hex: "#FF6B6B").opacity(0.22), .clear],
+                colors: [theme.primary.opacity(0.22), .clear],
                 center: UnitPoint(x: 0.5, y: -0.1),
                 startRadius: 0,
                 endRadius: 380
@@ -22,19 +23,20 @@ struct AuthBackground: View {
 // MARK: - Logo Header
 
 struct AuthLogoHeader: View {
+    @Environment(ThemeManager.self) private var theme
     var body: some View {
         VStack(spacing: 12) {
             ZStack {
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [Color(hex: "#FF6B6B"), Color(hex: "#FF8E53")],
+                            colors: [theme.primary, Color(hex: "#FF8E53")],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
                     .frame(width: 68, height: 68)
-                    .shadow(color: Color(hex: "#FF6B6B").opacity(0.5), radius: 16, y: 6)
+                    .shadow(color: theme.primary.opacity(0.5), radius: 16, y: 6)
 
                 Text("S")
                     .font(.system(size: 36, weight: .bold, design: .rounded))
@@ -43,7 +45,7 @@ struct AuthLogoHeader: View {
 
             Text("Stitch")
                 .font(.system(size: 26, weight: .bold, design: .rounded))
-                .foregroundStyle(Color(hex: "#FF6B6B"))
+                .foregroundStyle(theme.primary)
         }
     }
 }
@@ -57,6 +59,7 @@ struct AuthTextField: View {
     var isSecure: Bool = false
     var keyboardType: UIKeyboardType = .default
 
+    @Environment(ThemeManager.self) private var theme
     @State private var isRevealed = false
 
     var body: some View {
@@ -75,7 +78,7 @@ struct AuthTextField: View {
                 }
             }
             .foregroundStyle(.white)
-            .tint(Color(hex: "#FF6B6B"))
+            .tint(theme.primary)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
 
@@ -107,6 +110,7 @@ struct AuthPrimaryButton: View {
     let isLoading: Bool
     let disabled: Bool
     let action: () -> Void
+    @Environment(ThemeManager.self) private var theme
 
     var body: some View {
         Button(action: action) {
@@ -125,7 +129,7 @@ struct AuthPrimaryButton: View {
                 LinearGradient(
                     colors: disabled
                         ? [Color(hex: "#3A3A3C"), Color(hex: "#3A3A3C")]
-                        : [Color(hex: "#FF6B6B"), Color(hex: "#FF8E53")],
+                        : [theme.primary, Color(hex: "#FF8E53")],
                     startPoint: .leading,
                     endPoint: .trailing
                 )
@@ -139,6 +143,7 @@ struct AuthPrimaryButton: View {
 // MARK: - Divider
 
 struct AuthDivider: View {
+    @Environment(ThemeManager.self) private var theme
     var body: some View {
         HStack(spacing: 12) {
             Rectangle()

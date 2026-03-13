@@ -8,6 +8,7 @@ struct OnboardingView: View {
     var onComplete: () -> Void
 
     @Environment(Clerk.self) private var clerk
+    @Environment(ThemeManager.self) private var theme
     @State private var step = 0           // 0 welcome, 1 username, 2 craft, 3 features, 4 ravelry, 5 measurements, 6 done
     @State private var craftPref: CraftPref?
     @State private var featurePage = 0
@@ -31,7 +32,7 @@ struct OnboardingView: View {
             Color(hex: "#0A0A0A").ignoresSafeArea()
             RadialGradient(
                 colors: [
-                    Color(hex: "#FF6B6B").opacity(step == 6 ? 0.35 : 0.2),
+                    theme.primary.opacity(step == 6 ? 0.35 : 0.2),
                     .clear
                 ],
                 center: UnitPoint(x: 0.5, y: step == 6 ? 0.4 : -0.05),
@@ -70,12 +71,12 @@ struct OnboardingView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 28, style: .continuous)
                         .fill(LinearGradient(
-                            colors: [Color(hex: "#FF6B6B"), Color(hex: "#FF8E53")],
+                            colors: [theme.primary, Color(hex: "#FF8E53")],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ))
                         .frame(width: 96, height: 96)
-                        .shadow(color: Color(hex: "#FF6B6B").opacity(0.55), radius: 28, y: 12)
+                        .shadow(color: theme.primary.opacity(0.55), radius: 28, y: 12)
                     Text("S")
                         .font(.system(size: 50, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
@@ -93,7 +94,7 @@ struct OnboardingView: View {
                                 .foregroundStyle(.white)
                             Text("Welcome to Stitch")
                                 .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(Color(hex: "#FF6B6B"))
+                                .foregroundStyle(theme.primary)
                         }
                     }
                     Text("Your knitting companion for every\nrow, project, and pattern.")
@@ -133,11 +134,11 @@ struct OnboardingView: View {
             VStack(spacing: 28) {
                 ZStack {
                     Circle()
-                        .fill(Color(hex: "#4ECDC4").opacity(0.12))
+                        .fill(theme.primary.opacity(0.12))
                         .frame(width: 90, height: 90)
                     Image(systemName: "at")
                         .font(.system(size: 38, weight: .medium))
-                        .foregroundStyle(Color(hex: "#4ECDC4"))
+                        .foregroundStyle(theme.primary)
                 }
 
                 VStack(spacing: 10) {
@@ -181,7 +182,7 @@ struct OnboardingView: View {
                                 .padding(.trailing, 14)
                         } else if let available = usernameAvailable {
                             Image(systemName: available ? "checkmark.circle.fill" : "xmark.circle.fill")
-                                .foregroundStyle(available ? Color(hex: "#4ECDC4") : Color(hex: "#FF6B6B"))
+                                .foregroundStyle(available ? theme.primary : theme.primary)
                                 .padding(.trailing, 14)
                         }
                     }
@@ -189,8 +190,8 @@ struct OnboardingView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .strokeBorder(
-                            usernameAvailable == true ? Color(hex: "#4ECDC4").opacity(0.5) :
-                            usernameAvailable == false ? Color(hex: "#FF6B6B").opacity(0.5) :
+                            usernameAvailable == true ? theme.primary.opacity(0.5) :
+                            usernameAvailable == false ? theme.primary.opacity(0.5) :
                             Color(hex: "#2C2C2E"),
                             lineWidth: 1
                         ))
@@ -198,7 +199,7 @@ struct OnboardingView: View {
                     if let message = usernameMessage {
                         Text(message)
                             .font(.caption)
-                            .foregroundStyle(usernameAvailable == true ? Color(hex: "#4ECDC4") : Color(hex: "#FF6B6B"))
+                            .foregroundStyle(usernameAvailable == true ? theme.primary : theme.primary)
                     }
 
                     Text("3-20 characters · letters, numbers, underscores")
@@ -359,10 +360,10 @@ struct OnboardingView: View {
 
     private var featuresStep: some View {
         let features: [FeatureCard] = [
-            .init(icon: "arrow.up.circle.fill", color: Color(hex: "#FF6B6B"),
+            .init(icon: "arrow.up.circle.fill", color: theme.primary,
                   title: "Row Counter",
                   description: "Count rows with a tap, voice command, or hardware button. Never lose your place again."),
-            .init(icon: "sparkles", color: Color(hex: "#4ECDC4"),
+            .init(icon: "sparkles", color: theme.primary,
                   title: "AI Patterns",
                   description: "Upload any PDF and get an instant AI-powered breakdown — sections, rows, and all."),
             .init(icon: "archivebox.fill", color: Color(hex: "#BF5AF2"),
@@ -393,7 +394,7 @@ struct OnboardingView: View {
             HStack(spacing: 6) {
                 ForEach(0..<3, id: \.self) { i in
                     Capsule()
-                        .fill(featurePage == i ? Color(hex: "#FF6B6B") : Color(hex: "#3A3A3C"))
+                        .fill(featurePage == i ? theme.primary : Color(hex: "#3A3A3C"))
                         .frame(width: featurePage == i ? 22 : 8, height: 8)
                         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: featurePage)
                 }
@@ -566,14 +567,14 @@ struct OnboardingView: View {
             VStack(spacing: 28) {
                 ZStack {
                     Circle()
-                        .fill(Color(hex: "#FF6B6B").opacity(0.12))
+                        .fill(theme.primary.opacity(0.12))
                         .frame(width: 110, height: 110)
                     Circle()
-                        .strokeBorder(Color(hex: "#FF6B6B").opacity(0.3), lineWidth: 2)
+                        .strokeBorder(theme.primary.opacity(0.3), lineWidth: 2)
                         .frame(width: 110, height: 110)
                     Image(systemName: "checkmark")
                         .font(.system(size: 44, weight: .bold))
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                         .scaleEffect(doneAppeared ? 1 : 0.3)
                         .opacity(doneAppeared ? 1 : 0)
                         .animation(.spring(response: 0.5, dampingFraction: 0.6).delay(0.1), value: doneAppeared)

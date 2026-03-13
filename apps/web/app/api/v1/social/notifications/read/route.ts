@@ -25,5 +25,5 @@ export async function PATCH(req: NextRequest) {
     })
   }
 
-  return NextResponse.json({ success: true, message: 'Notifications marked as read' })
+  return NextResponse.json({ success: true, data: {} })
 }

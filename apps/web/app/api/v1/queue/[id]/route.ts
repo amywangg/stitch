@@ -4,17 +4,18 @@ import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
 import { getRavelryPushClient, pushToRavelry } from '@/lib/ravelry-push'
 
-type Params = { params: { id: string } }
+type Params = { params: Promise<{ id: string }> }
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const item = await prisma.pattern_queue.findFirst({ where: { id: params.id, user_id: user.id } })
+  const item = await prisma.pattern_queue.findFirst({ where: { id, user_id: user.id } })
   if (!item) return NextResponse.json({ error: 'Queue item not found' }, { status: 404 })
 
-  await prisma.pattern_queue.delete({ where: { id: params.id } })
+  await prisma.pattern_queue.delete({ where: { id } })
 
   // Ravelry write-back
   if (item.ravelry_queue_id) {
@@ -24,5 +25,5 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     }
   }
 
-  return NextResponse.json({ success: true, message: 'Queue item removed' })
+  return NextResponse.json({ success: true, data: {} })
 }

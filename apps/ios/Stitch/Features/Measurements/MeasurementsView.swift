@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - Measurements View (Settings)
 
 struct MeasurementsView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = MeasurementsViewModel()
 
     var body: some View {
@@ -42,6 +43,7 @@ struct OnboardingMeasurementsStep: View {
     @Bindable var viewModel: MeasurementsViewModel
     let onContinue: () -> Void
     let onSkip: () -> Void
+    @Environment(ThemeManager.self) private var theme
 
     var body: some View {
         VStack(spacing: 0) {
@@ -61,11 +63,11 @@ struct OnboardingMeasurementsStep: View {
                     VStack(spacing: 10) {
                         ZStack {
                             Circle()
-                                .fill(Color(hex: "#4ECDC4").opacity(0.12))
+                                .fill(theme.primary.opacity(0.12))
                                 .frame(width: 90, height: 90)
                             Image(systemName: "figure.stand")
                                 .font(.system(size: 38, weight: .medium))
-                                .foregroundStyle(Color(hex: "#4ECDC4"))
+                                .foregroundStyle(theme.primary)
                         }
 
                         Text("Your measurements")
@@ -114,6 +116,7 @@ struct OnboardingMeasurementsStep: View {
 struct MeasurementsForm: View {
     @Bindable var viewModel: MeasurementsViewModel
     let isOnboarding: Bool
+    @Environment(ThemeManager.self) private var theme
 
     var body: some View {
         VStack(spacing: 20) {
@@ -178,7 +181,7 @@ struct MeasurementsForm: View {
                 .padding(.vertical, 10)
                 .background(
                     selected
-                        ? Color(hex: "#FF6B6B")
+                        ? theme.primary
                         : Color.clear,
                     in: RoundedRectangle(cornerRadius: 8)
                 )
@@ -208,7 +211,7 @@ struct MeasurementsForm: View {
                                 .frame(width: 44, height: 40)
                                 .background(
                                     selected
-                                        ? Color(hex: "#FF6B6B")
+                                        ? theme.primary
                                         : isOnboarding ? Color(hex: "#1C1C1E") : Color(.secondarySystemGroupedBackground),
                                     in: RoundedRectangle(cornerRadius: 10)
                                 )
@@ -238,7 +241,7 @@ struct MeasurementsForm: View {
             HStack(spacing: 6) {
                 Image(systemName: icon)
                     .font(.caption)
-                    .foregroundStyle(Color(hex: "#FF6B6B"))
+                    .foregroundStyle(theme.primary)
                 Text(title)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(isOnboarding ? .white : .primary)

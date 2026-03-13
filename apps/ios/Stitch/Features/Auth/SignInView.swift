@@ -4,6 +4,7 @@ import ClerkKit
 struct SignInView: View {
     var onSignUp: () -> Void
 
+    @Environment(ThemeManager.self) private var theme
     @State private var email = ""
     @State private var password = ""
     @State private var isLoading = false
@@ -53,7 +54,7 @@ struct SignInView: View {
                             Spacer()
                             Button("Forgot password?") { showForgotAlert = true }
                                 .font(.subheadline.weight(.medium))
-                                .foregroundStyle(Color(hex: "#FF6B6B"))
+                                .foregroundStyle(theme.primary)
                         }
                         .padding(.top, 2)
                     }
@@ -97,7 +98,7 @@ struct SignInView: View {
                         Text("Don't have an account?")
                             .foregroundStyle(Color(hex: "#8E8E93"))
                         Button("Sign up") { onSignUp() }
-                            .foregroundStyle(Color(hex: "#FF6B6B"))
+                            .foregroundStyle(theme.primary)
                             .fontWeight(.semibold)
                     }
                     .font(.subheadline)

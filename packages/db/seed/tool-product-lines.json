@@ -1,0 +1,888 @@
+[
+  {
+    "brand": "ChiaoGoo",
+    "product_lines": [
+      {
+        "name": "Red Lace Fixed Circulars",
+        "type": "circular",
+        "material": "stainless_steel",
+        "image_url": "https://www.paradisefibers.com/cdn/shop/products/chiaogoo-red-lace-circular-needles.jpg",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"},
+          {"mm": 12.75, "label": "US 17"},
+          {"mm": 15.0, "label": "US 19"}
+        ],
+        "lengths_cm": [23, 30, 41, 51, 61, 74, 81, 102, 120, 152]
+      },
+      {
+        "name": "Bamboo Fixed Circulars",
+        "type": "circular",
+        "material": "bamboo",
+        "image_url": "https://www.paradisefibers.com/cdn/shop/products/chiaogoo-bamboo-circular-needles.jpg",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [23, 30, 41, 61, 81, 102]
+      },
+      {
+        "name": "Red Lace DPNs",
+        "type": "dpn",
+        "material": "stainless_steel",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"}
+        ],
+        "lengths_cm": [15, 20]
+      },
+      {
+        "name": "Bamboo DPNs",
+        "type": "dpn",
+        "material": "bamboo",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"}
+        ],
+        "lengths_cm": [15, 20]
+      },
+      {
+        "name": "Bamboo Straight Needles",
+        "type": "straight",
+        "material": "bamboo",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [23, 33]
+      }
+    ]
+  },
+  {
+    "brand": "Addi",
+    "product_lines": [
+      {
+        "name": "Turbo Rocket Circulars",
+        "type": "circular",
+        "material": "brass",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"},
+          {"mm": 12.75, "label": "US 17"},
+          {"mm": 15.0, "label": "US 19"}
+        ],
+        "lengths_cm": [41, 51, 61, 81, 102, 120, 152]
+      },
+      {
+        "name": "Turbo Bamboo Circulars",
+        "type": "circular",
+        "material": "bamboo",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"},
+          {"mm": 12.75, "label": "US 17"}
+        ],
+        "lengths_cm": [41, 51, 61, 81, 102]
+      },
+      {
+        "name": "FlexiFlips",
+        "type": "dpn",
+        "material": "aluminum",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"}
+        ],
+        "lengths_cm": [18, 21]
+      },
+      {
+        "name": "Turbo DPNs",
+        "type": "dpn",
+        "material": "aluminum",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"}
+        ],
+        "lengths_cm": [15, 20]
+      },
+      {
+        "name": "Turbo Straights",
+        "type": "straight",
+        "material": "aluminum",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [25, 36]
+      }
+    ]
+  },
+  {
+    "brand": "Knitter's Pride",
+    "product_lines": [
+      {
+        "name": "Dreamz Fixed Circulars",
+        "type": "circular",
+        "material": "wood",
+        "sizes": [
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [41, 61, 81, 102]
+      },
+      {
+        "name": "Nova Platina Fixed Circulars",
+        "type": "circular",
+        "material": "brass",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"},
+          {"mm": 12.75, "label": "US 17"}
+        ],
+        "lengths_cm": [41, 61, 81, 102]
+      },
+      {
+        "name": "Dreamz DPNs",
+        "type": "dpn",
+        "material": "wood",
+        "sizes": [
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"}
+        ],
+        "lengths_cm": [13, 15, 20]
+      },
+      {
+        "name": "Dreamz Straight Needles",
+        "type": "straight",
+        "material": "wood",
+        "sizes": [
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [25, 36]
+      }
+    ]
+  },
+  {
+    "brand": "Knit Picks",
+    "product_lines": [
+      {
+        "name": "Nickel Plated Fixed Circulars",
+        "type": "circular",
+        "material": "nickel",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"},
+          {"mm": 12.75, "label": "US 17"}
+        ],
+        "lengths_cm": [41, 61, 81, 102, 120]
+      },
+      {
+        "name": "Sunstruck Fixed Circulars",
+        "type": "circular",
+        "material": "wood",
+        "sizes": [
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [41, 61, 81, 102]
+      },
+      {
+        "name": "Caspian DPNs",
+        "type": "dpn",
+        "material": "wood",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"}
+        ],
+        "lengths_cm": [13, 15, 20]
+      },
+      {
+        "name": "Nickel Plated DPNs",
+        "type": "dpn",
+        "material": "nickel",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"}
+        ],
+        "lengths_cm": [15, 20]
+      }
+    ]
+  },
+  {
+    "brand": "Clover",
+    "product_lines": [
+      {
+        "name": "Takumi Bamboo Circulars",
+        "type": "circular",
+        "material": "bamboo",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [41, 61, 74, 91]
+      },
+      {
+        "name": "Takumi Bamboo Straights",
+        "type": "straight",
+        "material": "bamboo",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [23, 33]
+      },
+      {
+        "name": "Takumi Bamboo DPNs",
+        "type": "dpn",
+        "material": "bamboo",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"}
+        ],
+        "lengths_cm": [13, 18]
+      },
+      {
+        "name": "Amour Crochet Hooks",
+        "type": "crochet_hook",
+        "material": "aluminum",
+        "sizes": [
+          {"mm": 2.25, "label": "B/1"},
+          {"mm": 2.75, "label": "C/2"},
+          {"mm": 3.25, "label": "D/3"},
+          {"mm": 3.5, "label": "E/4"},
+          {"mm": 3.75, "label": "F/5"},
+          {"mm": 4.0, "label": "G/6"},
+          {"mm": 4.5, "label": "7"},
+          {"mm": 5.0, "label": "H/8"},
+          {"mm": 5.5, "label": "I/9"},
+          {"mm": 6.0, "label": "J/10"},
+          {"mm": 6.5, "label": "K/10.5"},
+          {"mm": 8.0, "label": "L/11"},
+          {"mm": 9.0, "label": "M/13"},
+          {"mm": 10.0, "label": "N/15"}
+        ],
+        "lengths_cm": null
+      }
+    ]
+  },
+  {
+    "brand": "Lykke",
+    "product_lines": [
+      {
+        "name": "Driftwood Fixed Circulars",
+        "type": "circular",
+        "material": "wood",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"},
+          {"mm": 12.75, "label": "US 17"}
+        ],
+        "lengths_cm": [41, 61, 81, 102]
+      },
+      {
+        "name": "Driftwood DPNs",
+        "type": "dpn",
+        "material": "wood",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"}
+        ],
+        "lengths_cm": [15]
+      },
+      {
+        "name": "Driftwood Straight Needles",
+        "type": "straight",
+        "material": "wood",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [25, 36]
+      }
+    ]
+  },
+  {
+    "brand": "HiyaHiya",
+    "product_lines": [
+      {
+        "name": "Sharp Fixed Circulars",
+        "type": "circular",
+        "material": "stainless_steel",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"},
+          {"mm": 12.75, "label": "US 17"},
+          {"mm": 15.0, "label": "US 19"}
+        ],
+        "lengths_cm": [23, 30, 41, 61, 81, 102]
+      },
+      {
+        "name": "Bamboo Fixed Circulars",
+        "type": "circular",
+        "material": "bamboo",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [41, 61, 81, 102]
+      },
+      {
+        "name": "Sharp DPNs",
+        "type": "dpn",
+        "material": "stainless_steel",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"}
+        ],
+        "lengths_cm": [15]
+      }
+    ]
+  },
+  {
+    "brand": "Tulip",
+    "product_lines": [
+      {
+        "name": "Etimo Crochet Hooks",
+        "type": "crochet_hook",
+        "material": "aluminum",
+        "sizes": [
+          {"mm": 2.0, "label": "0"},
+          {"mm": 2.2, "label": "1"},
+          {"mm": 2.3, "label": "2"},
+          {"mm": 2.5, "label": "3"},
+          {"mm": 2.75, "label": "C/2"},
+          {"mm": 3.0, "label": "4"},
+          {"mm": 3.25, "label": "D/3"},
+          {"mm": 3.5, "label": "E/4"},
+          {"mm": 3.75, "label": "F/5"},
+          {"mm": 4.0, "label": "G/6"},
+          {"mm": 4.5, "label": "7"},
+          {"mm": 5.0, "label": "H/8"},
+          {"mm": 5.5, "label": "I/9"},
+          {"mm": 6.0, "label": "J/10"},
+          {"mm": 6.5, "label": "K/10.5"}
+        ],
+        "lengths_cm": null
+      },
+      {
+        "name": "Etimo Red Crochet Hooks",
+        "type": "crochet_hook",
+        "material": "aluminum",
+        "sizes": [
+          {"mm": 1.8, "label": "6"},
+          {"mm": 2.0, "label": "4"},
+          {"mm": 2.2, "label": "2"},
+          {"mm": 2.5, "label": "1/0"},
+          {"mm": 2.75, "label": "C/2"},
+          {"mm": 3.0, "label": "3/0"},
+          {"mm": 3.25, "label": "D/3"},
+          {"mm": 3.5, "label": "E/4"},
+          {"mm": 3.75, "label": "F/5"},
+          {"mm": 4.0, "label": "G/6"},
+          {"mm": 4.5, "label": "7"},
+          {"mm": 5.0, "label": "H/8"},
+          {"mm": 5.5, "label": "I/9"},
+          {"mm": 6.0, "label": "J/10"},
+          {"mm": 6.5, "label": "K/10.5"}
+        ],
+        "lengths_cm": null
+      }
+    ]
+  },
+  {
+    "brand": "Susan Bates",
+    "product_lines": [
+      {
+        "name": "Silvalume Crochet Hooks",
+        "type": "crochet_hook",
+        "material": "aluminum",
+        "sizes": [
+          {"mm": 2.25, "label": "B/1"},
+          {"mm": 2.75, "label": "C/2"},
+          {"mm": 3.25, "label": "D/3"},
+          {"mm": 3.5, "label": "E/4"},
+          {"mm": 3.75, "label": "F/5"},
+          {"mm": 4.0, "label": "G/6"},
+          {"mm": 4.5, "label": "7"},
+          {"mm": 5.0, "label": "H/8"},
+          {"mm": 5.5, "label": "I/9"},
+          {"mm": 6.0, "label": "J/10"},
+          {"mm": 6.5, "label": "K/10.5"},
+          {"mm": 8.0, "label": "L/11"},
+          {"mm": 9.0, "label": "M/13"},
+          {"mm": 10.0, "label": "N/15"},
+          {"mm": 11.5, "label": "P/16"}
+        ],
+        "lengths_cm": null
+      },
+      {
+        "name": "Bamboo Handle Crochet Hooks",
+        "type": "crochet_hook",
+        "material": "bamboo",
+        "sizes": [
+          {"mm": 3.75, "label": "F/5"},
+          {"mm": 4.0, "label": "G/6"},
+          {"mm": 4.5, "label": "7"},
+          {"mm": 5.0, "label": "H/8"},
+          {"mm": 5.5, "label": "I/9"},
+          {"mm": 6.0, "label": "J/10"},
+          {"mm": 6.5, "label": "K/10.5"},
+          {"mm": 8.0, "label": "L/11"},
+          {"mm": 9.0, "label": "M/13"},
+          {"mm": 10.0, "label": "N/15"}
+        ],
+        "lengths_cm": null
+      }
+    ]
+  },
+  {
+    "brand": "Prym",
+    "product_lines": [
+      {
+        "name": "Ergonomics Crochet Hooks",
+        "type": "crochet_hook",
+        "material": "plastic",
+        "sizes": [
+          {"mm": 3.0, "label": "D/3"},
+          {"mm": 3.5, "label": "E/4"},
+          {"mm": 4.0, "label": "G/6"},
+          {"mm": 4.5, "label": "7"},
+          {"mm": 5.0, "label": "H/8"},
+          {"mm": 6.0, "label": "J/10"},
+          {"mm": 7.0, "label": "K/10.75"},
+          {"mm": 8.0, "label": "L/11"},
+          {"mm": 9.0, "label": "M/13"},
+          {"mm": 10.0, "label": "N/15"},
+          {"mm": 12.0, "label": "P/16"}
+        ],
+        "lengths_cm": null
+      },
+      {
+        "name": "Natural Bamboo Circulars",
+        "type": "circular",
+        "material": "bamboo",
+        "sizes": [
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 7.0, "label": "US 10.75"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"}
+        ],
+        "lengths_cm": [41, 61, 81]
+      }
+    ]
+  },
+  {
+    "brand": "Knit Pro",
+    "product_lines": [
+      {
+        "name": "Zing Fixed Circulars",
+        "type": "circular",
+        "material": "aluminum",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.25, "label": "US 1"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"},
+          {"mm": 12.0, "label": "US 17"}
+        ],
+        "lengths_cm": [25, 40, 60, 80, 100, 120]
+      },
+      {
+        "name": "Zing DPNs",
+        "type": "dpn",
+        "material": "aluminum",
+        "sizes": [
+          {"mm": 2.0, "label": "US 0"},
+          {"mm": 2.5, "label": "US 1.5"},
+          {"mm": 2.75, "label": "US 2"},
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"}
+        ],
+        "lengths_cm": [15, 20]
+      },
+      {
+        "name": "Basix Birch Circulars",
+        "type": "circular",
+        "material": "wood",
+        "sizes": [
+          {"mm": 3.0, "label": "US 2.5"},
+          {"mm": 3.25, "label": "US 3"},
+          {"mm": 3.5, "label": "US 4"},
+          {"mm": 3.75, "label": "US 5"},
+          {"mm": 4.0, "label": "US 6"},
+          {"mm": 4.5, "label": "US 7"},
+          {"mm": 5.0, "label": "US 8"},
+          {"mm": 5.5, "label": "US 9"},
+          {"mm": 6.0, "label": "US 10"},
+          {"mm": 6.5, "label": "US 10.5"},
+          {"mm": 8.0, "label": "US 11"},
+          {"mm": 9.0, "label": "US 13"},
+          {"mm": 10.0, "label": "US 15"},
+          {"mm": 12.0, "label": "US 17"}
+        ],
+        "lengths_cm": [40, 60, 80, 100]
+      }
+    ]
+  }
+]

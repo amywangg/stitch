@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
 
-type Params = { params: { id: string } }
+type Params = { params: Promise<{ id: string }> }
 
 async function getProject(projectId: string, userId: string) {
   return prisma.projects.findFirst({
@@ -12,15 +12,16 @@ async function getProject(projectId: string, userId: string) {
 }
 
 export async function GET(_req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const project = await getProject(params.id, user.id)
+  const project = await getProject(id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const sections = await prisma.project_sections.findMany({
-    where: { project_id: params.id },
+    where: { project_id: id },
     orderBy: { sort_order: 'asc' },
   })
 
@@ -28,11 +29,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
 }
 
 export async function POST(req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const project = await getProject(params.id, user.id)
+  const project = await getProject(id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const body = await req.json()
@@ -41,13 +43,13 @@ export async function POST(req: NextRequest, { params }: Params) {
   }
 
   const maxOrder = await prisma.project_sections.aggregate({
-    where: { project_id: params.id },
+    where: { project_id: id },
     _max: { sort_order: true },
   })
 
   const section = await prisma.project_sections.create({
     data: {
-      project_id: params.id,
+      project_id: id,
       name: body.name.trim(),
       description: body.description ?? null,
       target_rows: body.target_rows ?? null,

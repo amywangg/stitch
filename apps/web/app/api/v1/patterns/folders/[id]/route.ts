@@ -98,5 +98,5 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 
   await prisma.pattern_folders.delete({ where: { id } })
 
-  return NextResponse.json({ success: true, message: 'Folder deleted' })
+  return NextResponse.json({ success: true, data: {} })
 }

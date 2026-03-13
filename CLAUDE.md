@@ -51,6 +51,7 @@ stitch/
 5. **Swift views are presentational** — business logic lives in ViewModels (MVVM strict)
 6. **Never use `service_role` key client-side** — only in server-side API routes
 7. **Never expose API keys to the iOS client** — all secrets live in `.env.local` and Next.js routes
+8. **No third-party cloud storage integrations** (Google Drive, Dropbox, iCloud, etc.) — all file storage uses Supabase Storage. External integrations are limited to Ravelry only.
 
 ---
 

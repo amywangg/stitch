@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 // MARK: - ViewModel
 
@@ -29,13 +30,31 @@ final class SuppliesViewModel {
             self.error = error.localizedDescription
         }
     }
+
+    func uploadPhoto(for item: Supply, data: Data) async {
+        do {
+            let response: APIResponse<Supply> = try await APIClient.shared.upload(
+                "/supplies/\(item.id)/photo",
+                imageData: data,
+                mimeType: "image/jpeg",
+                fileName: "photo.jpg"
+            )
+            if let index = items.firstIndex(where: { $0.id == item.id }) {
+                items[index] = response.data
+            }
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
 }
 
 // MARK: - View
 
 struct SuppliesView: View {
-    @State private var viewModel = SuppliesViewModel()
-    @State private var showAddSheet = false
+    @Environment(ThemeManager.self) private var theme
+    @Bindable var viewModel: SuppliesViewModel
+    @Binding var showAddSheet: Bool
+    var viewMode: StashViewMode
 
     var body: some View {
         Group {
@@ -49,48 +68,11 @@ struct SuppliesView: View {
                     description: Text("Track your stitch markers, blocking mats, and other notions.")
                 )
             } else {
-                List {
-                    ForEach(grouped, id: \.category) { group in
-                        Section(formatCategory(group.category)) {
-                            ForEach(group.items) { item in
-                                SupplyRowView(item: item)
-                            }
-                            .onDelete { indexSet in
-                                for index in indexSet {
-                                    let item = group.items[index]
-                                    Task { await viewModel.delete(item) }
-                                }
-                            }
-                        }
-                    }
-
-                    Section {
-                        Button {
-                            showAddSheet = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.title3)
-                                Text("Add supply")
-                                    .font(.subheadline.weight(.medium))
-                            }
-                            .foregroundStyle(Color(hex: "#4ECDC4"))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 4)
-                        }
-                        .listRowBackground(Color(hex: "#4ECDC4").opacity(0.06))
-                    }
-                }
-                .listStyle(.insetGrouped)
-                .refreshable { await viewModel.load() }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showAddSheet = true
-                } label: {
-                    Image(systemName: "plus")
+                switch viewMode {
+                case .list, .large:
+                    suppliesListLayout
+                case .grid:
+                    suppliesGridLayout
                 }
             }
         }
@@ -120,17 +102,150 @@ struct SuppliesView: View {
     }
 }
 
-// MARK: - Supply Row
+// MARK: - Supply Layouts
 
-struct SupplyRowView: View {
+extension SuppliesView {
+    var suppliesListLayout: some View {
+        List {
+            ForEach(grouped, id: \.category) { group in
+                Section(formatCategory(group.category)) {
+                    ForEach(group.items) { item in
+                        SupplyRowView(item: item, viewModel: viewModel)
+                    }
+                    .onDelete { indexSet in
+                        for index in indexSet {
+                            let item = group.items[index]
+                            Task { await viewModel.delete(item) }
+                        }
+                    }
+                }
+            }
+
+            Section {
+                Button {
+                    showAddSheet = true
+                } label: {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                        Text("Add supply")
+                            .font(.subheadline.weight(.medium))
+                    }
+                    .foregroundStyle(theme.primary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 4)
+                }
+                .listRowBackground(theme.primary.opacity(0.06))
+            }
+        }
+        .listStyle(.insetGrouped)
+        .refreshable { await viewModel.load() }
+    }
+
+    var suppliesGridLayout: some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+                ForEach(viewModel.items) { item in
+                    SupplyGridCell(item: item)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+        }
+        .refreshable { await viewModel.load() }
+    }
+}
+
+// MARK: - Supply Grid Cell
+
+struct SupplyGridCell: View {
+    @Environment(ThemeManager.self) private var theme
     let item: Supply
 
     var body: some View {
+        VStack(spacing: 6) {
+            if let photoUrl = item.photoUrl, !photoUrl.isEmpty,
+               let url = URL(string: photoUrl) {
+                AsyncImage(url: url) { image in
+                    image.resizable().aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Color(.systemGray5)
+                }
+                .frame(height: 80)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            } else {
+                Image(systemName: categoryIcon(item.category))
+                    .font(.title2)
+                    .foregroundStyle(theme.primary)
+                    .frame(height: 40)
+            }
+
+            VStack(spacing: 2) {
+                Text(item.name)
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
+                if let brand = item.brand, !brand.isEmpty {
+                    Text(brand)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                if item.quantity > 1 {
+                    Text("Qty: \(item.quantity)")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(12)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+
+    private func categoryIcon(_ category: String) -> String {
+        SupplyCategoryIcon.icon(for: category)
+    }
+}
+
+// MARK: - Supply Row
+
+struct SupplyRowView: View {
+    @Environment(ThemeManager.self) private var theme
+    let item: Supply
+    var viewModel: SuppliesViewModel?
+    @State private var selectedPhoto: PhotosPickerItem?
+
+    var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: categoryIcon(item.category))
-                .font(.title3)
-                .foregroundStyle(Color(hex: "#4ECDC4"))
-                .frame(width: 32)
+            // Photo or category icon
+            if let photoUrl = item.photoUrl, !photoUrl.isEmpty,
+               let url = URL(string: photoUrl) {
+                AsyncImage(url: url) { image in
+                    image.resizable().aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Color(.systemGray5)
+                }
+                .frame(width: 40, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+            } else if let viewModel {
+                PhotosPicker(selection: $selectedPhoto, matching: .images) {
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(theme.primary.opacity(0.08))
+                        .frame(width: 40, height: 40)
+                        .overlay {
+                            Image(systemName: "camera.fill")
+                                .font(.caption)
+                                .foregroundStyle(theme.primary.opacity(0.5))
+                        }
+                }
+                .buttonStyle(.plain)
+            } else {
+                Image(systemName: SupplyCategoryIcon.icon(for: item.category))
+                    .font(.title3)
+                    .foregroundStyle(theme.primary)
+                    .frame(width: 40)
+            }
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(item.name)
@@ -150,9 +265,21 @@ struct SupplyRowView: View {
             }
         }
         .padding(.vertical, 2)
+        .onChange(of: selectedPhoto) { _, newItem in
+            guard let newItem, let viewModel else { return }
+            Task {
+                if let data = try? await newItem.loadTransferable(type: Data.self) {
+                    await viewModel.uploadPhoto(for: item, data: data)
+                }
+            }
+        }
     }
+}
 
-    private func categoryIcon(_ category: String) -> String {
+// MARK: - Category Icon Helper
+
+enum SupplyCategoryIcon {
+    static func icon(for category: String) -> String {
         switch category {
         case "stitch_markers": return "smallcircle.filled.circle"
         case "tape_measure": return "ruler"
@@ -176,12 +303,16 @@ struct SupplyRowView: View {
 struct AddSupplySheet: View {
     let onAdded: (Supply) -> Void
     @Environment(\.dismiss) private var dismiss
+    @Environment(ThemeManager.self) private var theme
 
     @State private var name = ""
     @State private var category = "other"
     @State private var brand = ""
     @State private var quantity = 1
     @State private var notes = ""
+    @State private var selectedPhoto: PhotosPickerItem?
+    @State private var photoData: Data?
+    @State private var photoImage: Image?
     @State private var isSubmitting = false
 
     private let categories = [
@@ -204,20 +335,50 @@ struct AddSupplySheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Name", text: $name)
-
-                Picker("Category", selection: $category) {
-                    ForEach(categories, id: \.0) { value, label in
-                        Text(label).tag(value)
+                // Photo section
+                Section {
+                    HStack {
+                        Spacer()
+                        PhotosPicker(selection: $selectedPhoto, matching: .images) {
+                            if let photoImage {
+                                photoImage
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 80, height: 80)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                            } else {
+                                VStack(spacing: 6) {
+                                    Image(systemName: "camera.fill")
+                                        .font(.title3)
+                                    Text("Add photo")
+                                        .font(.caption)
+                                }
+                                .foregroundStyle(theme.primary)
+                                .frame(width: 80, height: 80)
+                                .background(theme.primary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        Spacer()
                     }
                 }
 
-                TextField("Brand", text: $brand)
+                Section {
+                    TextField("Name", text: $name)
 
-                Stepper("Quantity: \(quantity)", value: $quantity, in: 1...999)
+                    Picker("Category", selection: $category) {
+                        ForEach(categories, id: \.0) { value, label in
+                            Text(label).tag(value)
+                        }
+                    }
 
-                TextField("Notes", text: $notes, axis: .vertical)
-                    .lineLimit(3)
+                    TextField("Brand", text: $brand)
+
+                    Stepper("Quantity: \(quantity)", value: $quantity, in: 1...999)
+
+                    TextField("Notes", text: $notes, axis: .vertical)
+                        .lineLimit(3)
+                }
             }
             .navigationTitle("Add supply")
             .navigationBarTitleDisplayMode(.inline)
@@ -232,8 +393,19 @@ struct AddSupplySheet: View {
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || isSubmitting)
                 }
             }
+            .onChange(of: selectedPhoto) { _, newItem in
+                Task {
+                    if let newItem,
+                       let data = try? await newItem.loadTransferable(type: Data.self) {
+                        photoData = data
+                        if let uiImage = UIImage(data: data) {
+                            photoImage = Image(uiImage: uiImage)
+                        }
+                    }
+                }
+            }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 
     private func addSupply() async {
@@ -259,7 +431,20 @@ struct AddSupplySheet: View {
                     notes: notes.isEmpty ? nil : notes
                 )
             )
-            onAdded(response.data)
+            var supply = response.data
+
+            // Upload photo if selected
+            if let photoData {
+                let photoResponse: APIResponse<Supply> = try await APIClient.shared.upload(
+                    "/supplies/\(supply.id)/photo",
+                    imageData: photoData,
+                    mimeType: "image/jpeg",
+                    fileName: "photo.jpg"
+                )
+                supply = photoResponse.data
+            }
+
+            onAdded(supply)
             dismiss()
         } catch {}
     }

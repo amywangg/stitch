@@ -60,6 +60,7 @@ final class AddFromCatalogViewModel {
 // MARK: - Brand List View
 
 struct AddFromCatalogView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = AddFromCatalogViewModel()
     @State private var showAILookup = false
 
@@ -73,16 +74,7 @@ struct AddFromCatalogView: View {
                     ForEach(viewModel.brands) { brand in
                         NavigationLink(value: Route.toolSetDetail(id: brand.id)) {
                             HStack(spacing: 12) {
-                                if let logoUrl = brand.logoUrl, !logoUrl.isEmpty,
-                                   let url = URL(string: logoUrl) {
-                                    AsyncImage(url: url) { image in
-                                        image.resizable().aspectRatio(contentMode: .fit)
-                                    } placeholder: {
-                                        Color(.systemGray5)
-                                    }
-                                    .frame(width: 40, height: 40)
-                                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                                }
+                                BrandLogoView(brand: brand)
 
                                 Text(brand.name)
                                     .font(.body)
@@ -101,7 +93,7 @@ struct AddFromCatalogView: View {
                             showAILookup = true
                         } label: {
                             Label("Can't find your set?", systemImage: "sparkles")
-                                .foregroundStyle(Color(hex: "#FF6B6B"))
+                                .foregroundStyle(theme.primary)
                         }
                     }
                 }
@@ -172,6 +164,7 @@ final class ToolSetDetailViewModel {
 
 struct ToolSetDetailView: View {
     let setId: String
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = ToolSetDetailViewModel()
 
     var body: some View {
@@ -218,7 +211,7 @@ struct ToolSetDetailView: View {
                                 ForEach(items) { item in
                                     HStack {
                                         Image(systemName: itemIcon(item.type))
-                                            .foregroundStyle(Color(hex: "#FF6B6B"))
+                                            .foregroundStyle(theme.primary)
                                             .frame(width: 24)
                                         VStack(alignment: .leading, spacing: 2) {
                                             Text(itemLabel(item))
@@ -311,14 +304,67 @@ struct ToolSetDetailView: View {
     private func itemLabel(_ item: ToolSetItem) -> String {
         if item.type == "interchangeable_cable" {
             if let length = item.lengthCm {
-                return "Cable \(length)cm"
+                let inches = Double(length) / 2.54
+                return "Cable \(length)cm / \(String(format: "%.0f", inches))″"
             }
             return "Cable"
         }
-        var label = item.sizeLabel ?? String(format: "%.1fmm", item.sizeMm)
+        // Show US size + mm for needles/hooks
+        var parts: [String] = []
+        if let sizeLabel = item.sizeLabel, !sizeLabel.isEmpty {
+            parts.append(sizeLabel)
+        }
+        let mm = item.sizeMm
+        if mm > 0 {
+            let mmStr = mm.truncatingRemainder(dividingBy: 1) == 0
+                ? String(format: "%.0fmm", mm)
+                : String(format: "%.1fmm", mm)
+            if parts.isEmpty || !(parts[0].contains("mm")) {
+                parts.append(mmStr)
+            }
+        }
+        var label = parts.isEmpty ? "Unknown" : parts.joined(separator: " / ")
         if let length = item.lengthCm {
-            label += " (\(length)cm)"
+            let inches = Double(length) / 2.54
+            label += " (\(length)cm / \(String(format: "%.0f", inches))″)"
         }
         return label
+    }
+}
+
+// MARK: - Brand Logo
+
+private struct BrandLogoView: View {
+    @Environment(ThemeManager.self) private var theme
+    let brand: ToolBrand
+
+    var body: some View {
+        if let logoUrl = brand.logoUrl, !logoUrl.isEmpty,
+           let url = URL(string: logoUrl), !logoUrl.hasSuffix(".svg") {
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .success(let image):
+                    image.resizable().aspectRatio(contentMode: .fit)
+                default:
+                    initialsPlaceholder
+                }
+            }
+            .frame(width: 40, height: 40)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+        } else {
+            initialsPlaceholder
+        }
+    }
+
+    private var initialsPlaceholder: some View {
+        let initials = brand.name.split(separator: " ").prefix(2).map { String($0.prefix(1)) }.joined()
+        return RoundedRectangle(cornerRadius: 8)
+            .fill(theme.primary.opacity(0.12))
+            .frame(width: 40, height: 40)
+            .overlay {
+                Text(initials.isEmpty ? "?" : initials)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(theme.primary)
+            }
     }
 }

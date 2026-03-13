@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 struct PDFUploadView: View {
     var onUploaded: ((PdfUpload) -> Void)?
 
+    @Environment(ThemeManager.self) private var theme
     @State private var isPickerPresented = false
     @State private var isUploading = false
     @State private var errorMessage: String?
@@ -31,7 +32,7 @@ struct PDFUploadView: View {
                         dismiss()
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(Color(hex: "#FF6B6B"))
+                    .tint(theme.primary)
                 } else if isUploading {
                     ProgressView()
                         .scaleEffect(1.2)
@@ -42,7 +43,7 @@ struct PDFUploadView: View {
                 } else {
                     Image(systemName: "doc.badge.plus")
                         .font(.system(size: 48))
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
 
                     Text("Upload pattern PDF")
                         .font(.headline)
@@ -59,7 +60,7 @@ struct PDFUploadView: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(Color(hex: "#FF6B6B"))
+                    .tint(theme.primary)
                     .padding(.horizontal, 40)
                 }
 

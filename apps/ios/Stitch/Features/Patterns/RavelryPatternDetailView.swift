@@ -106,6 +106,7 @@ struct RavelryPatternDetailView: View {
     let patternName: String
     let previewPhotoUrl: String?
 
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = RavelryPatternDetailViewModel()
     @State private var selectedPhotoIndex = 0
 
@@ -241,7 +242,7 @@ struct RavelryPatternDetailView: View {
                 if let rating = detail.rating {
                     HStack(spacing: 4) {
                         Image(systemName: "star.fill")
-                            .foregroundStyle(Color(hex: "#FF6B6B"))
+                            .foregroundStyle(theme.primary)
                         Text(String(format: "%.1f", rating))
                             .fontWeight(.medium)
                         Text("(\(detail.ratingCount))")
@@ -253,7 +254,7 @@ struct RavelryPatternDetailView: View {
                 if detail.free {
                     Text("Free")
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color(hex: "#4ECDC4"))
+                        .foregroundStyle(theme.primary)
                 }
             }
             .padding(.top, 2)
@@ -289,7 +290,7 @@ struct RavelryPatternDetailView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .background(
-                        viewModel.downloadedPatternId != nil ? Color(hex: "#4ECDC4") : Color(hex: "#FF6B6B"),
+                        viewModel.downloadedPatternId != nil ? theme.primary : theme.primary,
                         in: RoundedRectangle(cornerRadius: 12)
                     )
                     .foregroundStyle(.white)
@@ -314,7 +315,7 @@ struct RavelryPatternDetailView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .background(
-                        viewModel.didSave ? Color(hex: "#4ECDC4") : Color(hex: "#FF6B6B"),
+                        viewModel.didSave ? theme.primary : theme.primary,
                         in: RoundedRectangle(cornerRadius: 12)
                     )
                     .foregroundStyle(.white)
@@ -376,7 +377,7 @@ struct RavelryPatternDetailView: View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: icon)
                 .font(.subheadline)
-                .foregroundStyle(Color(hex: "#FF6B6B"))
+                .foregroundStyle(theme.primary)
                 .frame(width: 20)
 
             VStack(alignment: .leading, spacing: 2) {
@@ -405,7 +406,7 @@ struct RavelryPatternDetailView: View {
                 HStack(spacing: 10) {
                     Image(systemName: "circle.fill")
                         .font(.system(size: 6))
-                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                        .foregroundStyle(theme.primary)
                         .padding(.top, 4)
 
                     VStack(alignment: .leading, spacing: 2) {

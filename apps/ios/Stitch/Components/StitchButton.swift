@@ -3,6 +3,7 @@ import SwiftUI
 struct StitchButton: View {
     enum Style { case primary, secondary, destructive }
 
+    @Environment(ThemeManager.self) private var theme
     let title: String
     let style: Style
     let action: () async -> Void
@@ -37,7 +38,7 @@ struct StitchButton: View {
 
     private var backgroundColor: Color {
         switch style {
-        case .primary:    return Color(hex: "#FF6B6B")
+        case .primary:    return theme.primary
         case .secondary:  return Color(.systemGray5)
         case .destructive: return Color.red
         }

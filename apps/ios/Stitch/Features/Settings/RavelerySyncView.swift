@@ -3,6 +3,7 @@ import SwiftUI
 /// Full-screen sync progress view shown after connecting Ravelry.
 /// Triggers sync automatically, polls status, and shows animated progress.
 struct RavelerySyncView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var status: RavelryConnection?
     @State private var syncTriggered = false
     @State private var syncStartedOnServer = false
@@ -52,7 +53,7 @@ struct RavelerySyncView: View {
             // Progress bar
             VStack(spacing: 8) {
                 ProgressView(value: progress, total: 1.0)
-                    .tint(Color(hex: "#FF6B6B"))
+                    .tint(theme.primary)
                     .scaleEffect(y: 2)
 
                 Text("\(Int(progress * 100))%")
@@ -109,7 +110,7 @@ struct RavelerySyncView: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(Color(hex: "#FF6B6B"))
+                        .background(theme.primary)
                         .foregroundStyle(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
@@ -208,7 +209,7 @@ struct RavelerySyncView: View {
     private func phaseColor(_ key: String) -> Color {
         switch phaseState(key) {
         case .done: return Color.primary
-        case .active: return Color(hex: "#FF6B6B")
+        case .active: return theme.primary
         case .pending: return Color.secondary.opacity(0.5)
         }
     }

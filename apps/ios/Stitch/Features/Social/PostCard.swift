@@ -3,6 +3,8 @@ import SwiftUI
 struct PostCard: View {
     let post: FeedPost
     let onLike: () -> Void
+    let onComment: () -> Void
+    @Environment(ThemeManager.self) private var theme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -55,15 +57,18 @@ struct PostCard: View {
                         "\(post.count?.likes ?? 0)",
                         systemImage: post.isLiked ? "heart.fill" : "heart"
                     )
-                    .foregroundStyle(post.isLiked ? Color(hex: "#FF6B6B") : .secondary)
+                    .foregroundStyle(post.isLiked ? theme.primary : .secondary)
                 }
                 .buttonStyle(.plain)
 
-                Label(
-                    "\(post.count?.comments ?? 0)",
-                    systemImage: "bubble.right"
-                )
-                .foregroundStyle(.secondary)
+                Button(action: onComment) {
+                    Label(
+                        "\(post.count?.comments ?? 0)",
+                        systemImage: "bubble.right"
+                    )
+                    .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
 
                 Spacer()
             }

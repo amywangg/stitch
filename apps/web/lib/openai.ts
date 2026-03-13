@@ -1,7 +1,29 @@
 import OpenAI from 'openai'
+import {
+  buildMetadataPrompt,
+  buildSizeParsePrompt,
+  type ParsedMetadata,
+  type ParsedSizeInstructions,
+} from '@/lib/prompts/pattern-parse'
 
-// Singleton OpenAI client
-export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+export type { ParsedMetadata, ParsedSizeInstructions }
+
+// Lazy singleton — avoids crashing at import time when OPENAI_API_KEY is unset
+let _openai: OpenAI | null = null
+
+export function getOpenAI(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  }
+  return _openai
+}
+
+/** @deprecated Use getOpenAI() — kept for backwards compat */
+export const openai = new Proxy({} as OpenAI, {
+  get(_target, prop) {
+    return (getOpenAI() as unknown as Record<string | symbol, unknown>)[prop]
+  },
+})
 
 // Knitting abbreviation glossary injected into the system prompt
 const KNITTING_ABBREVIATIONS = `
@@ -68,4 +90,50 @@ ${rawText.slice(0, 12000)}`
 
   const content = completion.choices[0].message.content ?? '{}'
   return JSON.parse(content) as ParsedPattern
+}
+
+/**
+ * Stage 1: Extract pattern metadata — title, sizes, gauge, section names.
+ * Fast and cheap. No row-by-row parsing.
+ */
+export async function parsePatternMetadata(rawText: string): Promise<ParsedMetadata> {
+  const prompt = buildMetadataPrompt(rawText)
+
+  const completion = await getOpenAI().chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+      { role: 'system', content: prompt.system },
+      { role: 'user', content: prompt.user },
+    ],
+    response_format: { type: 'json_object' },
+    temperature: 0.1,
+  })
+
+  const content = completion.choices[0].message.content ?? '{}'
+  return JSON.parse(content) as ParsedMetadata
+}
+
+/**
+ * Stage 2: Parse instruction steps for a specific size.
+ * Thorough — resolves all parenthetical notation, groups into steps.
+ */
+export async function parsePatternForSize(
+  rawText: string,
+  sizeName: string,
+  sectionNames: string[]
+): Promise<ParsedSizeInstructions> {
+  const prompt = buildSizeParsePrompt(rawText, sizeName, sectionNames)
+
+  const completion = await getOpenAI().chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+      { role: 'system', content: prompt.system },
+      { role: 'user', content: prompt.user },
+    ],
+    response_format: { type: 'json_object' },
+    temperature: 0.1,
+  })
+
+  const content = completion.choices[0].message.content ?? '{}'
+  return JSON.parse(content) as ParsedSizeInstructions
 }

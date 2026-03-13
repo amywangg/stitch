@@ -1,10 +1,43 @@
 import SwiftUI
 
 struct FindFriendsView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = FindFriendsViewModel()
 
     var body: some View {
         List {
+            // Invite banner
+            Section {
+                ShareLink(
+                    item: URL(string: "https://stitch.app")!,
+                    message: Text("Come join me on Stitch — it's like Goodreads for knitting and crochet!")
+                ) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "envelope.fill")
+                            .font(.title3)
+                            .foregroundStyle(.white)
+                            .frame(width: 36, height: 36)
+                            .background(theme.primary)
+                            .clipShape(Circle())
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Invite friends to Stitch")
+                                .font(.subheadline.weight(.semibold))
+                            Text("Share a link via message, email, or social")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.body)
+                            .foregroundStyle(theme.primary)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+
             // Search section
             Section {
                 TextField("Search by username", text: $viewModel.searchQuery)
@@ -64,7 +97,7 @@ struct FindFriendsView: View {
                                 ) {
                                     Text("Invite")
                                         .font(.subheadline.weight(.medium))
-                                        .foregroundStyle(Color(hex: "#4ECDC4"))
+                                        .foregroundStyle(theme.primary)
                                 }
                             }
                         }
@@ -119,7 +152,7 @@ struct FindFriendsView: View {
                     .foregroundColor(following ? .secondary : .white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 6)
-                    .background(following ? Color(.systemGray5) : Color(hex: "#FF6B6B"))
+                    .background(following ? Color(.systemGray5) : theme.primary)
                     .clipShape(Capsule())
             }
             .buttonStyle(.plain)

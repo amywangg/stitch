@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct NotificationsView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = NotificationsViewModel()
 
     var body: some View {
@@ -59,7 +60,7 @@ struct NotificationsView: View {
 
             if !notification.read {
                 Circle()
-                    .fill(Color(hex: "#FF6B6B"))
+                    .fill(theme.primary)
                     .frame(width: 8, height: 8)
             }
         }

@@ -312,6 +312,13 @@ export class RavelryClient {
     return this.get(`/people/${this.username}/needles.json`)
   }
 
+  async searchStash(query: string, page = 1, pageSize = 100): Promise<{
+    stashes: Array<{ colorway_name?: string; id: number; name: string }>
+    paginator: Paginator & { page_size: number }
+  }> {
+    return this.get('/stash/search.json', { query, page, page_size: pageSize })
+  }
+
   async listFriends(page = 1): Promise<{ friendships: RavelryFriend[]; paginator: Paginator }> {
     return this.get(`/people/${this.username}/friends/list.json`, { page, page_size: 100 })
   }

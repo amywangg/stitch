@@ -85,6 +85,13 @@ struct Project: Codable, Identifiable {
     var gauge: ProjectGauge?
     var pdfUpload: PdfUpload?
     var tags: [ProjectTag]?
+    var pattern: PatternRef?
+}
+
+struct PatternRef: Codable {
+    let id: String
+    let title: String
+    let sizes: [PatternSize]?
 }
 
 struct ProjectTag: Codable, Identifiable {
@@ -106,7 +113,11 @@ struct ProjectSection: Codable, Identifiable {
     let description: String?
     var targetRows: Int?
     var currentRow: Int
+    let currentStep: Int?
+    let completed: Bool?
+    let patternSectionId: String?
     let sortOrder: Int
+    let patternSection: PatternSection?
 }
 
 struct ProjectPhoto: Codable, Identifiable {
@@ -196,11 +207,89 @@ struct Pattern: Codable, Identifiable, Hashable {
     let coverImageUrl: String?
     let isPublic: Bool
     let aiParsed: Bool
+    let needleSizeMm: Double?
+    let gaugeStitchesPer10cm: Double?
+    let gaugeRowsPer10cm: Double?
+    let yarnWeight: String?
+    let selectedSize: String?
     let createdAt: Date
     let updatedAt: Date
     let folder: PatternFolderRef?
+    let sections: [PatternSection]?
+    let sizes: [PatternSize]?
+
+    // Explicit keys for fields where convertFromSnakeCase may not match
+    // (e.g., gauge_stitches_per_10cm → gaugeStitchesPer10cm)
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userId = "user_id"
+        case folderId = "folder_id"
+        case slug, title, description
+        case craftType = "craft_type"
+        case difficulty
+        case garmentType = "garment_type"
+        case designerName = "designer_name"
+        case sourceUrl = "source_url"
+        case pdfUrl = "pdf_url"
+        case coverImageUrl = "cover_image_url"
+        case isPublic = "is_public"
+        case aiParsed = "ai_parsed"
+        case needleSizeMm = "needle_size_mm"
+        case gaugeStitchesPer10cm = "gauge_stitches_per_10cm"
+        case gaugeRowsPer10cm = "gauge_rows_per_10cm"
+        case yarnWeight = "yarn_weight"
+        case selectedSize = "selected_size"
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+        case folder, sections, sizes
+    }
 
     static func == (lhs: Pattern, rhs: Pattern) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+// MARK: - Pattern Section
+
+struct PatternSection: Codable, Identifiable, Hashable {
+    let id: String
+    let patternId: String
+    let name: String
+    let content: String?
+    let sortOrder: Int
+    let rows: [PatternInstruction]?
+
+    static func == (lhs: PatternSection, rhs: PatternSection) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+struct PatternInstruction: Codable, Identifiable, Hashable {
+    let id: String
+    let sectionId: String
+    let rowNumber: Int
+    let instruction: String
+    let notes: String?
+    let stitchCount: Int?
+    let rowType: String?
+    let rowsInStep: Int?
+    let isRepeat: Bool?
+    let repeatCount: Int?
+    let rowsPerRepeat: Int?
+    let targetMeasurementCm: Double?
+
+    static func == (lhs: PatternInstruction, rhs: PatternInstruction) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+struct PatternSize: Codable, Identifiable, Hashable {
+    let id: String
+    let patternId: String
+    let name: String
+    let sortOrder: Int
+    let finishedBustCm: Double?
+    let finishedLengthCm: Double?
+    let yardage: Int?
+
+    static func == (lhs: PatternSize, rhs: PatternSize) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
@@ -517,7 +606,8 @@ struct QueueItem: Identifiable, Codable {
             yarns: nil,
             gauge: nil,
             pdfUpload: pdfUpload,
-            tags: nil
+            tags: nil,
+            pattern: nil
         )
     }
 }
@@ -534,6 +624,10 @@ struct Needle: Identifiable, Codable {
     let brand: String?
     let notes: String?
     let toolSetId: String?
+    let toolSetName: String?
+    let toolSetType: String?
+    let toolSetBrandName: String?
+    let toolSetImageUrl: String?
     let ravelryId: String?
 }
 
@@ -584,6 +678,31 @@ struct AddSetResult: Codable {
     let setName: String
 }
 
+// MARK: - Tool Product Lines (individual needles/hooks catalog)
+
+struct ToolProductLine: Codable, Identifiable {
+    let id: String
+    let brandId: String
+    let name: String
+    let type: String // circular, straight, dpn, crochet_hook
+    let material: String?
+    let sizes: [ProductLineSize]?
+    let lengthsCm: [Int]?
+    let imageUrl: String?
+    let brand: ToolProductLineBrand?
+
+    struct ToolProductLineBrand: Codable {
+        let id: String
+        let name: String
+        let logoUrl: String?
+    }
+}
+
+struct ProductLineSize: Codable, Hashable {
+    let mm: Double
+    let label: String
+}
+
 // MARK: - Supplies
 
 struct Supply: Codable, Identifiable {
@@ -593,6 +712,7 @@ struct Supply: Codable, Identifiable {
     let brand: String?
     let quantity: Int
     let notes: String?
+    let photoUrl: String?
     let createdAt: Date?
 }
 
@@ -654,6 +774,85 @@ struct CounterState: Codable {
     let sectionId: String
     let currentRow: Int
     let targetRows: Int?
+}
+
+struct CounterResponse: Codable {
+    let sectionId: String
+    let currentRow: Int
+    let currentStep: Int?
+    let previousRow: Int?
+    let instruction: InstructionData?
+}
+
+struct InstructionData: Codable {
+    let stepNumber: Int
+    let instruction: String
+    let stitchCount: Int?
+    let rowType: String?
+    let isRepeat: Bool?
+    let position: StepPosition?
+    let progress: SectionProgress?
+    let autoAdvanced: Bool?
+    let sectionCompleted: Bool?
+}
+
+struct StepPosition: Codable {
+    let stepNumber: Int
+    let tapInStep: Int
+    let totalTapsInStep: Int?
+    let stepLabel: String?
+}
+
+struct SectionProgress: Codable {
+    let currentStep: Int
+    let totalSteps: Int
+    let stepsCompleted: Int?
+    let stepPct: Int?
+    let overallPct: Int?
+}
+
+struct InstructionDetailResponse: Codable {
+    let sectionName: String
+    let sectionCompleted: Bool
+    let step: StepDetail
+    let position: StepPosition
+    let progress: SectionProgress
+    let userNotes: [StepNote]?
+    let context: InstructionContext?
+}
+
+struct StepDetail: Codable {
+    let stepNumber: Int
+    let instruction: String
+    let hasOverride: Bool?
+    let originalInstruction: String?
+    let stitchCount: Int?
+    let rowType: String?
+    let notes: String?
+    let isOpenEnded: Bool?
+    let targetMeasurementCm: Double?
+    let isRepeat: Bool?
+    let repeatCount: Int?
+    let rowsPerRepeat: Int?
+}
+
+struct StepNote: Codable, Identifiable {
+    let id: String
+    let stepNumber: Int
+    let content: String
+    let noteType: String
+    let createdAt: Date
+}
+
+struct InstructionContext: Codable {
+    let previous: ContextStep?
+    let next: ContextStep?
+}
+
+struct ContextStep: Codable {
+    let stepNumber: Int
+    let instruction: String
+    let rowType: String?
 }
 
 // MARK: - PDF Upload

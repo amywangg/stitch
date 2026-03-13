@@ -5,6 +5,7 @@ import ClerkKit
 struct StitchApp: App {
     @State private var router = AppRouter()
     @State private var subscriptionManager = SubscriptionManager.shared
+    @State private var themeManager = ThemeManager.shared
 
     init() {
         ClerkManager.shared.configure()
@@ -17,6 +18,7 @@ struct StitchApp: App {
                 .environment(router)
                 .environment(Clerk.shared)
                 .environment(subscriptionManager)
+                .environment(themeManager)
         }
     }
 }

@@ -96,6 +96,7 @@ export async function POST(req: NextRequest) {
       garment_type: garment_type ?? null,
       source_url: source_url ?? null,
       folder_id: folder_id ?? null,
+      source_free: true, // user-created patterns can be shared publicly
     },
   })
 

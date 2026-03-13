@@ -6,6 +6,7 @@ import RevenueCatUI
 struct SettingsView: View {
     @Environment(Clerk.self) private var clerk
     @Environment(SubscriptionManager.self) private var subscriptions
+    @Environment(ThemeManager.self) private var theme
 
     @State private var showPaywall = false
     @State private var showCustomerCenter = false
@@ -16,7 +17,7 @@ struct SettingsView: View {
                 Section("Subscription") {
                     if subscriptions.isPro {
                         Label("Stitch Pro — Active", systemImage: "checkmark.seal.fill")
-                            .foregroundStyle(Color(hex: "#FF6B6B"))
+                            .foregroundStyle(theme.primary)
 
                         Button("Manage Subscription") {
                             showCustomerCenter = true
@@ -39,11 +40,27 @@ struct SettingsView: View {
 
                 RavelrySection()
 
+                Section("Appearance") {
+                    NavigationLink {
+                        ThemeSettingsView()
+                    } label: {
+                        Label("Appearance", systemImage: "paintbrush")
+                    }
+                }
+
                 Section("Body measurements") {
                     NavigationLink {
                         MeasurementsView()
                     } label: {
                         Label("My measurements", systemImage: "figure.stand")
+                    }
+                }
+
+                Section("Feed") {
+                    NavigationLink {
+                        ActivitySharingView()
+                    } label: {
+                        Label("Activity sharing", systemImage: "antenna.radiowaves.left.and.right")
                     }
                 }
 
@@ -58,6 +75,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .listStyle(.plain)
             .navigationTitle("Settings")
             .sheet(isPresented: $showPaywall) {
                 PaywallView()

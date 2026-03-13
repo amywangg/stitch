@@ -15,14 +15,15 @@ const BUCKET = 'stash-photos'
 const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic']
 
-type Params = { params: { id: string } }
+type Params = { params: Promise<{ id: string }> }
 
 export async function POST(req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const item = await prisma.user_stash.findFirst({ where: { id: params.id, user_id: user.id } })
+  const item = await prisma.user_stash.findFirst({ where: { id, user_id: user.id } })
   if (!item) return NextResponse.json({ error: 'Stash item not found' }, { status: 404 })
 
   // Free-tier photo limit (replacing an existing photo doesn't count as new)
@@ -98,11 +99,12 @@ export async function POST(req: NextRequest, { params }: Params) {
 }
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-  const item = await prisma.user_stash.findFirst({ where: { id: params.id, user_id: user.id } })
+  const item = await prisma.user_stash.findFirst({ where: { id, user_id: user.id } })
   if (!item) return NextResponse.json({ error: 'Stash item not found' }, { status: 404 })
 
   if (item.photo_path) {
@@ -114,5 +116,5 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     data: { photo_url: null, photo_path: null },
   })
 
-  return NextResponse.json({ success: true, message: 'Photo deleted' })
+  return NextResponse.json({ success: true, data: {} })
 }

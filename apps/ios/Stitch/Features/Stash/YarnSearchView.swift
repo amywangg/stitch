@@ -13,6 +13,8 @@ final class YarnSearchViewModel {
     var totalResults = 0
     var error: String?
     var addedIds: Set<Int> = []
+    var colorways: [String] = []
+    var selectedWeight: String?
 
     private var searchTask: Task<Void, Never>?
 
@@ -31,9 +33,11 @@ final class YarnSearchViewModel {
             currentPage = 1
             do {
                 let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
-                let response: APIResponse<YarnSearchResponse> = try await APIClient.shared.get(
-                    "/yarns/search?q=\(encoded)&page=1&page_size=20"
-                )
+                var path = "/yarns/search?q=\(encoded)&page=1&page_size=20"
+                if let weight = selectedWeight {
+                    path += "&weight=\(weight)"
+                }
+                let response: APIResponse<YarnSearchResponse> = try await APIClient.shared.get(path)
                 guard !Task.isCancelled else { return }
                 results = response.data.yarns
                 totalResults = response.data.paginator.results
@@ -52,9 +56,11 @@ final class YarnSearchViewModel {
         let nextPage = currentPage + 1
         do {
             let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
-            let response: APIResponse<YarnSearchResponse> = try await APIClient.shared.get(
-                "/yarns/search?q=\(encoded)&page=\(nextPage)&page_size=20"
-            )
+            var path = "/yarns/search?q=\(encoded)&page=\(nextPage)&page_size=20"
+            if let weight = selectedWeight {
+                path += "&weight=\(weight)"
+            }
+            let response: APIResponse<YarnSearchResponse> = try await APIClient.shared.get(path)
             results.append(contentsOf: response.data.yarns)
             currentPage = nextPage
             hasMore = response.data.paginator.page < response.data.paginator.pageCount
@@ -63,8 +69,14 @@ final class YarnSearchViewModel {
         }
     }
 
-    func addToStash(yarn: YarnSearchResult, colorway: String?, skeins: Int) async {
-        // Optimistic: mark as added immediately
+    /// Quick search by brand name
+    func searchBrand(_ brand: String) {
+        query = brand
+        search()
+    }
+
+    /// Returns true on success
+    func addToStash(yarn: YarnSearchResult, colorway: String?, skeins: Int) async -> Bool {
         addedIds.insert(yarn.ravelryId)
 
         do {
@@ -85,12 +97,29 @@ final class YarnSearchViewModel {
             )
             struct StashResult: Decodable {}
             let _: APIResponse<StashResult> = try await APIClient.shared.post("/stash", body: body)
+            return true
         } catch {
-            // Revert on failure
             addedIds.remove(yarn.ravelryId)
             self.error = error.localizedDescription
+            return false
         }
     }
+
+    func loadColorways(yarn: YarnSearchResult) async {
+        do {
+            let encodedName = yarn.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? yarn.name
+            let response: APIResponse<ColorwaysResponse> = try await APIClient.shared.get(
+                "/yarns/\(yarn.ravelryId)/colorways?name=\(encodedName)"
+            )
+            colorways = response.data.colorways
+        } catch {
+            colorways = []
+        }
+    }
+}
+
+private struct ColorwaysResponse: Decodable {
+    let colorways: [String]
 }
 
 private struct AddYarnToStashBody: Encodable {
@@ -110,9 +139,52 @@ private struct AddYarnToStashBody: Encodable {
     }
 }
 
+// MARK: - Weight Categories
+
+private struct YarnWeightCategory: Identifiable {
+    let id: String
+    let name: String
+    let icon: String
+    let description: String
+}
+
+private let yarnWeights: [YarnWeightCategory] = [
+    .init(id: "lace", name: "Lace", icon: "wind", description: "0–1"),
+    .init(id: "fingering", name: "Fingering", icon: "leaf", description: "1"),
+    .init(id: "sport", name: "Sport", icon: "figure.walk", description: "2"),
+    .init(id: "dk", name: "DK", icon: "circle.grid.2x1", description: "3"),
+    .init(id: "worsted", name: "Worsted", icon: "circle.grid.2x2", description: "4"),
+    .init(id: "aran", name: "Aran", icon: "square.grid.2x2", description: "4"),
+    .init(id: "bulky", name: "Bulky", icon: "circle.grid.3x3", description: "5"),
+    .init(id: "super-bulky", name: "Super bulky", icon: "square.grid.3x3", description: "6"),
+]
+
+// MARK: - Popular Brands
+
+private struct PopularYarnBrand: Identifiable {
+    let id: String
+    let name: String
+}
+
+private let popularBrands: [PopularYarnBrand] = [
+    .init(id: "malabrigo", name: "Malabrigo"),
+    .init(id: "cascade", name: "Cascade"),
+    .init(id: "madelinetosh", name: "Madelinetosh"),
+    .init(id: "knit-picks", name: "Knit Picks"),
+    .init(id: "berroco", name: "Berroco"),
+    .init(id: "rowan", name: "Rowan"),
+    .init(id: "hedgehog-fibres", name: "Hedgehog Fibres"),
+    .init(id: "spud-chloe", name: "Spud & Chloë"),
+    .init(id: "drops", name: "DROPS"),
+    .init(id: "lion-brand", name: "Lion Brand"),
+    .init(id: "brooklyn-tweed", name: "Brooklyn Tweed"),
+    .init(id: "noro", name: "Noro"),
+]
+
 // MARK: - Search View
 
 struct YarnSearchView: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var viewModel = YarnSearchViewModel()
     @State private var selectedYarn: YarnSearchResult?
     @Environment(\.dismiss) private var dismiss
@@ -121,61 +193,181 @@ struct YarnSearchView: View {
 
     var body: some View {
         NavigationStack {
-            searchContent
-                .overlay { searchOverlay }
-                .navigationTitle("Add yarn")
-                .navigationBarTitleDisplayMode(.inline)
-                .searchable(text: $viewModel.query, prompt: "Search yarns (e.g. Cascade 220)")
-                .onSubmit(of: .search) { viewModel.search() }
-                .onChange(of: viewModel.query) { _, newValue in
-                    if newValue.isEmpty {
-                        viewModel.results = []
-                        viewModel.totalResults = 0
+            Group {
+                if viewModel.results.isEmpty && !viewModel.isSearching {
+                    if viewModel.query.isEmpty {
+                        browseContent
+                    } else {
+                        ContentUnavailableView.search(text: viewModel.query)
                     }
+                } else {
+                    resultsList
                 }
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Done") { dismiss() }
-                    }
+            }
+            .overlay { searchOverlay }
+            .navigationTitle("Add yarn")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $viewModel.query, prompt: "Search yarns (e.g. Cascade 220)")
+            .onSubmit(of: .search) { viewModel.search() }
+            .onChange(of: viewModel.query) { _, newValue in
+                if newValue.isEmpty {
+                    viewModel.results = []
+                    viewModel.totalResults = 0
                 }
-                .sheet(item: $selectedYarn) { yarn in
-                    AddToStashSheet(yarn: yarn) { colorway, skeins in
-                        Task {
-                            await viewModel.addToStash(yarn: yarn, colorway: colorway, skeins: skeins)
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .sheet(item: $selectedYarn) { yarn in
+                AddToStashSheet(yarn: yarn, colorways: viewModel.colorways) { colorway, skeins in
+                    Task {
+                        let success = await viewModel.addToStash(yarn: yarn, colorway: colorway, skeins: skeins)
+                        if success {
                             onAdded?()
+                            dismiss()
                         }
                     }
                 }
-                .alert("Error", isPresented: .init(
-                    get: { viewModel.error != nil },
-                    set: { if !$0 { viewModel.error = nil } }
-                )) {
-                    Button("OK") { viewModel.error = nil }
-                } message: {
-                    Text(viewModel.error ?? "")
+            }
+            .onChange(of: selectedYarn) { _, yarn in
+                if let yarn {
+                    Task { await viewModel.loadColorways(yarn: yarn) }
                 }
+            }
+            .alert("Error", isPresented: .init(
+                get: { viewModel.error != nil },
+                set: { if !$0 { viewModel.error = nil } }
+            )) {
+                Button("OK") { viewModel.error = nil }
+            } message: {
+                Text(viewModel.error ?? "")
+            }
         }
     }
 
-    @ViewBuilder
-    private var searchContent: some View {
-        if viewModel.results.isEmpty && !viewModel.isSearching {
-            if viewModel.query.isEmpty {
-                ContentUnavailableView {
-                    Label("Search yarn", systemImage: "magnifyingglass")
-                } description: {
-                    Text("Search Ravelry's yarn database to add to your stash.")
+    // MARK: - Browse Content (pre-search)
+
+    private var browseContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                // Weight filter chips
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Browse by weight")
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.horizontal, 16)
+
+                    LazyVGrid(columns: [
+                        GridItem(.flexible(), spacing: 10),
+                        GridItem(.flexible(), spacing: 10),
+                        GridItem(.flexible(), spacing: 10),
+                        GridItem(.flexible(), spacing: 10),
+                    ], spacing: 10) {
+                        ForEach(yarnWeights) { weight in
+                            Button {
+                                viewModel.selectedWeight = weight.id
+                                viewModel.query = weight.name
+                                viewModel.search()
+                            } label: {
+                                VStack(spacing: 4) {
+                                    Image(systemName: weight.icon)
+                                        .font(.title3)
+                                        .frame(height: 24)
+                                    Text(weight.name)
+                                        .font(.caption.weight(.medium))
+                                    Text("Weight \(weight.description)")
+                                        .font(.system(size: 9))
+                                        .foregroundStyle(.secondary)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 10)
+                                .background(theme.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
+                                .foregroundStyle(.primary)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, 16)
                 }
-            } else {
-                ContentUnavailableView.search(text: viewModel.query)
+
+                // Popular brands
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Popular brands")
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.horizontal, 16)
+
+                    LazyVGrid(columns: [
+                        GridItem(.flexible(), spacing: 10),
+                        GridItem(.flexible(), spacing: 10),
+                    ], spacing: 10) {
+                        ForEach(popularBrands) { brand in
+                            Button {
+                                viewModel.searchBrand(brand.name)
+                            } label: {
+                                HStack(spacing: 10) {
+                                    brandInitials(brand.name)
+                                    Text(brand.name)
+                                        .font(.subheadline.weight(.medium))
+                                        .lineLimit(1)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption2)
+                                        .foregroundStyle(.tertiary)
+                                }
+                                .padding(10)
+                                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                }
             }
-        } else {
-            resultsList
+            .padding(.top, 16)
+            .padding(.bottom, 32)
         }
     }
+
+    private func brandInitials(_ name: String) -> some View {
+        let initials = name.split(separator: " ").prefix(2).map { String($0.prefix(1)) }.joined()
+        return RoundedRectangle(cornerRadius: 6)
+            .fill(theme.primary.opacity(0.12))
+            .frame(width: 32, height: 32)
+            .overlay {
+                Text(initials.isEmpty ? "?" : initials)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(theme.primary)
+            }
+    }
+
+    // MARK: - Results List
 
     private var resultsList: some View {
         List {
+            // Active weight filter chip
+            if let weight = viewModel.selectedWeight {
+                Section {
+                    HStack {
+                        Text("Weight: \(weight.capitalized)")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(theme.primary)
+                        Spacer()
+                        Button {
+                            viewModel.selectedWeight = nil
+                            viewModel.search()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.vertical, 2)
+                }
+            }
+
             ForEach(viewModel.results) { yarn in
                 YarnSearchRow(
                     yarn: yarn,
@@ -233,6 +425,7 @@ struct YarnSearchRow: View {
     let isAdded: Bool
     let onTap: () -> Void
 
+    @Environment(ThemeManager.self) private var theme
     var body: some View {
         Button { onTap() } label: { rowContent }
             .buttonStyle(.plain)
@@ -317,7 +510,7 @@ struct YarnSearchRow: View {
         HStack(spacing: 2) {
             Image(systemName: "star.fill")
                 .font(.system(size: 10))
-                .foregroundStyle(Color(hex: "#FF6B6B"))
+                .foregroundStyle(theme.primary)
             Text(String(format: "%.1f", rating))
                 .font(.caption2)
             Text("(\(count))")
@@ -330,10 +523,10 @@ struct YarnSearchRow: View {
     private var statusIcon: some View {
         if isAdded {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(Color(hex: "#4ECDC4"))
+                .foregroundStyle(theme.primary)
         } else {
             Image(systemName: "plus.circle")
-                .foregroundStyle(Color(hex: "#FF6B6B"))
+                .foregroundStyle(theme.primary)
         }
     }
 }
@@ -342,8 +535,10 @@ struct YarnSearchRow: View {
 
 struct AddToStashSheet: View {
     let yarn: YarnSearchResult
+    let colorways: [String]
     let onAdd: (String?, Int) -> Void
 
+    @Environment(ThemeManager.self) private var theme
     @State private var colorway = ""
     @State private var skeins = 1
     @State private var isAdding = false
@@ -461,8 +656,48 @@ struct AddToStashSheet: View {
     private var detailsSection: some View {
         Section("Details") {
             TextField("Colorway (optional)", text: $colorway)
+
+            if !colorways.isEmpty {
+                colorwaySuggestions
+            }
+
             Stepper("Skeins: \(skeins)", value: $skeins, in: 1...999)
         }
+    }
+
+    @ViewBuilder
+    private var colorwaySuggestions: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Popular colorways")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            FlowLayout(spacing: 8) {
+                ForEach(colorways.prefix(10), id: \.self) { cw in
+                    Button {
+                        colorway = cw
+                    } label: {
+                        Text(cw)
+                            .font(.caption)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(
+                                colorway == cw
+                                    ? theme.primary.opacity(0.15)
+                                    : Color(.systemGray5)
+                            )
+                            .foregroundStyle(
+                                colorway == cw
+                                    ? theme.primary
+                                    : .primary
+                            )
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .padding(.vertical, 4)
     }
 
     @ViewBuilder
@@ -497,7 +732,6 @@ struct AddToStashSheet: View {
         Button {
             isAdding = true
             onAdd(colorway.isEmpty ? nil : colorway, skeins)
-            dismiss()
         } label: {
             if isAdding {
                 ProgressView().controlSize(.small)

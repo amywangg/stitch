@@ -5,6 +5,7 @@ import SwiftUI
 struct PDFPickerView: View {
     var onSelected: (PdfUpload) -> Void
 
+    @Environment(ThemeManager.self) private var theme
     @State private var uploads: [PdfUpload] = []
     @State private var isLoading = false
     @State private var error: String?
@@ -25,7 +26,7 @@ struct PDFPickerView: View {
                     } actions: {
                         Button("Upload PDF") { showUploadSheet = true }
                             .buttonStyle(.borderedProminent)
-                            .tint(Color(hex: "#FF6B6B"))
+                            .tint(theme.primary)
                     }
                 } else {
                     List {
@@ -36,7 +37,7 @@ struct PDFPickerView: View {
                             } label: {
                                 HStack(spacing: 12) {
                                     Image(systemName: "doc.fill")
-                                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                                        .foregroundStyle(theme.primary)
                                         .font(.title3)
 
                                     VStack(alignment: .leading, spacing: 2) {

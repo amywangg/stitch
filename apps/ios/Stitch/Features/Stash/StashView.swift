@@ -1,9 +1,28 @@
 import SwiftUI
 
 struct StashView: View {
-    @State private var viewModel = StashViewModel()
-    @State private var ravelryConnected = false
-    @State private var showYarnSearch = false
+    @Environment(ThemeManager.self) private var theme
+    @Bindable var viewModel: StashViewModel
+    @Binding var ravelryConnected: Bool
+    @Binding var showYarnSearch: Bool
+    var viewMode: StashViewMode
+
+    // Standalone init with internal state
+    init() {
+        let vm = StashViewModel()
+        self._viewModel = Bindable(vm)
+        self._ravelryConnected = .constant(false)
+        self._showYarnSearch = .constant(false)
+        self.viewMode = .list
+    }
+
+    // Parent-managed init
+    init(viewModel: StashViewModel, ravelryConnected: Binding<Bool>, showYarnSearch: Binding<Bool>, viewMode: StashViewMode) {
+        self._viewModel = Bindable(viewModel)
+        self._ravelryConnected = ravelryConnected
+        self._showYarnSearch = showYarnSearch
+        self.viewMode = viewMode
+    }
 
     var body: some View {
         Group {
@@ -22,7 +41,7 @@ struct StashView: View {
                         Label("Search yarn", systemImage: "magnifyingglass")
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(Color(hex: "#FF6B6B"))
+                    .tint(theme.primary)
 
                     if ravelryConnected {
                         Button {
@@ -34,62 +53,13 @@ struct StashView: View {
                     }
                 }
             } else {
-                List {
-                    ForEach(viewModel.items) { item in
-                        NavigationLink(value: Route.stashItemDetail(id: item.id)) {
-                            StashRowView(item: item)
-                        }
-                    }
-                    .onDelete { indexSet in
-                        for index in indexSet {
-                            let item = viewModel.items[index]
-                            Task { await viewModel.delete(item) }
-                        }
-                    }
-
-                    Section {
-                        Button {
-                            showYarnSearch = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.title3)
-                                Text("Add yarn")
-                                    .font(.subheadline.weight(.medium))
-                            }
-                            .foregroundStyle(Color(hex: "#FF6B6B"))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 4)
-                        }
-                        .listRowBackground(Color(hex: "#FF6B6B").opacity(0.06))
-                    }
-                }
-                .listStyle(.plain)
-                .refreshable { await viewModel.load() }
-            }
-        }
-        .navigationTitle("Yarn stash")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                HStack(spacing: 12) {
-                    if ravelryConnected {
-                        Button {
-                            Task { await viewModel.syncRavelry() }
-                        } label: {
-                            if viewModel.isSyncing {
-                                ProgressView().controlSize(.small)
-                            } else {
-                                Image(systemName: "arrow.triangle.2.circlepath")
-                            }
-                        }
-                        .disabled(viewModel.isSyncing)
-                    }
-
-                    Button {
-                        showYarnSearch = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
+                switch viewMode {
+                case .list:
+                    listLayout
+                case .grid:
+                    gridLayout
+                case .large:
+                    largeLayout
                 }
             }
         }
@@ -100,7 +70,6 @@ struct StashView: View {
         }
         .task {
             await viewModel.load()
-            await loadRavelryStatus()
         }
         .alert("Error", isPresented: .init(
             get: { viewModel.error != nil },
@@ -119,19 +88,197 @@ struct StashView: View {
             Text(viewModel.syncMessage ?? "")
         }
     }
+}
 
-    private func loadRavelryStatus() async {
-        do {
-            struct StatusResponse: Decodable { let connected: Bool }
-            let res: APIResponse<StatusResponse> = try await APIClient.shared.get(
-                "/integrations/ravelry/status"
-            )
-            ravelryConnected = res.data.connected
-        } catch {}
+// MARK: - Layouts
+
+extension StashView {
+    private var listLayout: some View {
+        List {
+            ForEach(viewModel.items) { item in
+                NavigationLink(value: Route.stashItemDetail(id: item.id)) {
+                    StashRowView(item: item)
+                }
+            }
+            .onDelete { indexSet in
+                for index in indexSet {
+                    let item = viewModel.items[index]
+                    Task { await viewModel.delete(item) }
+                }
+            }
+
+            Section {
+                Button {
+                    showYarnSearch = true
+                } label: {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                        Text("Add yarn")
+                            .font(.subheadline.weight(.medium))
+                    }
+                    .foregroundStyle(theme.primary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 4)
+                }
+                .listRowBackground(theme.primary.opacity(0.06))
+            }
+        }
+        .listStyle(.plain)
+        .refreshable { await viewModel.load() }
+    }
+
+    private var gridLayout: some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+                ForEach(viewModel.items) { item in
+                    NavigationLink(value: Route.stashItemDetail(id: item.id)) {
+                        StashGridCell(item: item)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+        }
+        .refreshable { await viewModel.load() }
+    }
+
+    private var largeLayout: some View {
+        ScrollView {
+            LazyVStack(spacing: 16) {
+                ForEach(viewModel.items) { item in
+                    NavigationLink(value: Route.stashItemDetail(id: item.id)) {
+                        StashLargeCard(item: item)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+        }
+        .refreshable { await viewModel.load() }
     }
 }
 
+// MARK: - Grid Cell
+
+struct StashGridCell: View {
+    @Environment(ThemeManager.self) private var theme
+    let item: StashItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let imageUrl = item.yarn?.imageUrl, !imageUrl.isEmpty,
+               let url = URL(string: imageUrl) {
+                AsyncImage(url: url) { image in
+                    image.resizable().aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Color(.systemGray5)
+                }
+                .frame(height: 120)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            } else {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(theme.primary.opacity(0.1))
+                    .frame(height: 120)
+                    .overlay {
+                        Image(systemName: "wand.and.rays.inverse")
+                            .font(.title2)
+                            .foregroundStyle(theme.primary.opacity(0.4))
+                    }
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.yarn?.name ?? "Unknown yarn")
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(2)
+                    .foregroundStyle(.primary)
+                if let company = item.yarn?.company?.name {
+                    Text(company)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+                if let colorway = item.colorway {
+                    Text(colorway)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+        }
+        .padding(8)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// MARK: - Large Card
+
+struct StashLargeCard: View {
+    @Environment(ThemeManager.self) private var theme
+    let item: StashItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if let imageUrl = item.yarn?.imageUrl, !imageUrl.isEmpty,
+               let url = URL(string: imageUrl) {
+                AsyncImage(url: url) { image in
+                    image.resizable().aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Color(.systemGray5)
+                }
+                .frame(height: 200)
+                .frame(maxWidth: .infinity)
+                .clipped()
+            } else {
+                RoundedRectangle(cornerRadius: 0)
+                    .fill(theme.primary.opacity(0.08))
+                    .frame(height: 200)
+                    .overlay {
+                        Image(systemName: "wand.and.rays.inverse")
+                            .font(.largeTitle)
+                            .foregroundStyle(theme.primary.opacity(0.3))
+                    }
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(item.yarn?.name ?? "Unknown yarn")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                if let company = item.yarn?.company?.name {
+                    Text(company)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                HStack(spacing: 8) {
+                    if let colorway = item.colorway {
+                        Text(colorway)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    if let weight = item.yarn?.weight {
+                        Text(weight.capitalized)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Text("\(item.skeins, specifier: "%.0f") skein\(item.skeins == 1 ? "" : "s")")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(12)
+        }
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+}
+
+// MARK: - List Row
+
 struct StashRowView: View {
+    @Environment(ThemeManager.self) private var theme
     let item: StashItem
 
     var body: some View {
@@ -147,12 +294,12 @@ struct StashRowView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 6))
             } else {
                 RoundedRectangle(cornerRadius: 6)
-                    .fill(item.colorway != nil ? Color(hex: "#4ECDC4").opacity(0.3) : Color.secondary.opacity(0.15))
+                    .fill(item.colorway != nil ? theme.primary.opacity(0.3) : Color.secondary.opacity(0.15))
                     .frame(width: 44, height: 44)
                     .overlay {
                         Image(systemName: "wand.and.rays.inverse")
                             .font(.system(size: 16))
-                            .foregroundStyle(item.colorway != nil ? Color(hex: "#4ECDC4") : .secondary)
+                            .foregroundStyle(item.colorway != nil ? theme.primary : .secondary)
                     }
             }
 
@@ -167,7 +314,7 @@ struct StashRowView: View {
                             .foregroundStyle(.white)
                             .padding(.horizontal, 5)
                             .padding(.vertical, 2)
-                            .background(Color(hex: "#FF6B6B"), in: RoundedRectangle(cornerRadius: 4))
+                            .background(theme.primary, in: RoundedRectangle(cornerRadius: 4))
                     }
                 }
                 if let company = item.yarn?.company?.name {

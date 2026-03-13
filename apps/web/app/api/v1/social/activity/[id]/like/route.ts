@@ -3,20 +3,21 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
 
-type Params = { params: { id: string } }
+type Params = { params: Promise<{ id: string }> }
 
 export async function POST(_req: NextRequest, { params }: Params) {
+  const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
 
-  const activity = await prisma.activity_events.findUnique({ where: { id: params.id } })
+  const activity = await prisma.activity_events.findUnique({ where: { id } })
   if (!activity) return NextResponse.json({ error: 'Activity not found' }, { status: 404 })
 
   // Toggle like (using composite unique: user_id + activity_event_id + reaction)
   const existing = await prisma.likes.findFirst({
-    where: { user_id: user.id, activity_event_id: params.id, reaction: null },
+    where: { user_id: user.id, activity_event_id: id, reaction: null },
   })
 
   if (existing) {
@@ -25,7 +26,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
   }
 
   await prisma.likes.create({
-    data: { user_id: user.id, activity_event_id: params.id },
+    data: { user_id: user.id, activity_event_id: id },
   })
 
   // Notify the activity owner (if not self)
@@ -36,7 +37,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
         sender_id: user.id,
         type: 'like',
         resource_type: 'activity_event',
-        resource_id: params.id,
+        resource_id: id,
       },
     }).catch(() => {})
   }

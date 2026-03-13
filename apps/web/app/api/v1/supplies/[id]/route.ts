@@ -19,7 +19,7 @@ export async function PATCH(
   })
   if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-  const allowedFields = ['name', 'category', 'brand', 'quantity', 'notes'] as const
+  const allowedFields = ['name', 'category', 'brand', 'quantity', 'notes', 'photo_url'] as const
   const updates: Record<string, unknown> = {}
   for (const field of allowedFields) {
     if (field in body) updates[field] = body[field]

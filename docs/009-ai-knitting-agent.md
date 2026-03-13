@@ -1,108 +1,308 @@
-# AI Knitting Agent
+# AI Tooling & Pro Features
 
-**Status:** Schema not yet in database, no implementation
+**Status:** Partially implemented (core backend routes + lib functions exist, no iOS UI)
 
-## Problem Statement
+## Design Philosophy
 
-Knitting patterns contain dense, abbreviation-heavy instructions that confuse beginners and even intermediate crafters. Users frequently need help understanding instructions, choosing the right size, substituting yarn, or figuring out what to make next from their stash. Currently, they leave the app to search forums or ask in Ravelry groups.
+AI in Stitch is an **invisible engine, not a chatbot**. There are no chat interfaces, no freeform prompts, no conversational UI, no streaming text. Users interact through structured controls (buttons, pickers, toggles, wizards). The AI runs behind those controls and returns structured data rendered by purpose-built components.
 
-## Solution Overview
+See also: `.claude/skills/ai-tooling/SKILL.md` for the full design guide.
 
-An in-app AI assistant powered by GPT-4o that answers knitting and crochet questions, recommends patterns based on the user's stash and preferences, and guides through pattern instructions. The agent has access to the user's data (stash, projects, measurements, saved patterns) via tool calling. All inference runs server-side through Next.js API routes.
+---
 
-## Key Components
+## Implemented Features
 
-### Backend (Next.js API)
+### 1. Stash-to-Pattern Matching (Pro)
 
-- `POST /api/v1/agent/conversations` - create a new conversation. **Not started.**
-- `GET /api/v1/agent/conversations` - list user's conversations. **Not started.**
-- `DELETE /api/v1/agent/conversations/:id` - delete a conversation and its messages. **Not started.**
-- `POST /api/v1/agent/conversations/:id/messages` - send a message, stream the response via SSE (Server-Sent Events). Calls OpenAI with tool definitions, executes tool calls against the database, streams partial responses back. **Not started.**
-- `GET /api/v1/agent/conversations/:id/messages` - fetch message history for a conversation. **Not started.**
-- Tool definitions for OpenAI function calling: **Not started.**
-  - `search_patterns` - search saved_patterns and patterns by craft, weight, yardage, difficulty
-  - `read_stash` - fetch user's yarn stash with filters
-  - `read_measurements` - fetch user's body measurements
-  - `read_projects` - fetch user's projects with status filter
-  - `read_pattern_detail` - fetch full pattern with sections and rows
-  - `gauge_calculator` - compute row/stitch estimates from gauge
-  - `search_ravelry` - proxy search to Ravelry API (if user has connection)
-- System prompt engineering with knitting domain knowledge, abbreviation glossary, and instructions for tone/format. **Not started.**
+**"What can I make with this yarn?"** — User selects a stash item, app searches Ravelry for matching patterns.
 
-### iOS (SwiftUI)
+| Layer | Status |
+|-------|--------|
+| API route | Done — `POST /api/v1/ai/stash-match` |
+| Business logic | Done — `lib/agent.ts → matchStashToPatterns()` |
+| Ravelry search proxy | Done — `lib/ravelry-search.ts` |
+| iOS UI | Not started |
+| Web UI | Not started |
 
-- `AgentChatView` - chat interface with message bubbles, streaming text display, suggested prompts for new conversations. **Not started.**
-- `ConversationListView` - list of past conversations with titles and timestamps. **Not started.**
-- `AgentViewModel` - manages conversation state, SSE streaming, message history. **Not started.**
-- Suggested prompts: "What can I make with my stash?", "Explain this instruction: [paste]", "What size should I make?", "Help me substitute yarn for this pattern". **Not started.**
-- Tab bar or nav entry point. **Not started.**
+**How it works:** Reads the stash item's yarn weight + calculates total yardage from skeins × yardage_per_skein → proxies to Ravelry search filtered by weight and max yardage → returns ranked results.
 
-### Web (Next.js)
+**Input:** `{ stash_item_id, craft?, category?, page? }`
+**Output:** Stash item summary + array of Ravelry pattern results with photos, designer, difficulty.
 
-- `(app)/agent/page.tsx` - chat page with conversation sidebar and message area. **Not started.**
-- `components/features/agent/ChatMessage.tsx` - message bubble with markdown rendering. **Not started.**
-- `components/features/agent/ChatInput.tsx` - text input with send button. **Not started.**
-- `components/features/agent/SuggestedPrompts.tsx` - starter prompts for empty conversations. **Not started.**
-- `hooks/use-agent-stream.ts` - SSE hook for streaming responses. **Not started.**
+**curl test:**
+```bash
+curl -X POST http://localhost:3000/api/v1/ai/stash-match \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <clerk_token>" \
+  -d '{"stash_item_id": "<uuid>", "craft": "knitting", "category": "sweater"}'
+```
 
-### Database
+---
 
-Tables needed (not yet in schema):
+### 2. Saved Pattern ↔ Stash Cross-Reference
 
-- `agent_conversations` - id, user_id, title (auto-generated from first message), created_at, updated_at.
-- `agent_messages` - id, conversation_id, role ("user" | "assistant" | "tool"), content (text), tool_calls (JSON, for assistant messages that invoke tools), tool_call_id (for tool response messages), metadata (JSON, for token usage tracking), created_at.
+**"Which saved pattern should I cast on?"** — Cross-references all saved patterns against user's stash, ranks by match quality.
 
-## Implementation Checklist
+| Layer | Status |
+|-------|--------|
+| API route | Done — `GET /api/v1/ai/saved-matches` |
+| Business logic | Done — `lib/agent.ts → matchSavedPatternsToStash()` |
+| iOS UI | Not started |
+| Web UI | Not started |
 
-- [ ] Add agent_conversations and agent_messages tables to Prisma schema
-- [ ] Run db:push / db:generate
-- [ ] Conversation CRUD API routes
-- [ ] Message creation route with OpenAI integration
-- [ ] SSE streaming endpoint
-- [ ] Tool definitions for OpenAI function calling
-- [ ] Tool execution layer (read stash, patterns, measurements, projects, gauge calc)
-- [ ] Ravelry search proxy tool (only for users with ravelry_connections)
-- [ ] System prompt with knitting domain knowledge
-- [ ] Token usage tracking in message metadata
-- [ ] Pro gate on all agent routes
-- [ ] Rate limiting (e.g., 50 messages/day)
-- [ ] iOS AgentChatView with streaming display
-- [ ] iOS ConversationListView
-- [ ] iOS AgentViewModel with SSE parsing
-- [ ] iOS suggested prompts
-- [ ] Web agent chat page
-- [ ] Web ChatMessage with markdown rendering
-- [ ] Web ChatInput component
-- [ ] Web SSE streaming hook
-- [ ] Web suggested prompts
+**How it works:** Fetches user's saved patterns + stash → groups stash by weight → for each pattern, finds best matching yarn → scores as perfect (full yardage) / good (meets minimum) / possible (weight matches) → returns sorted list.
 
-## Dependencies
+**No Pro gate** — pure DB logic, no LLM call.
 
-- Auth (Clerk) - required for user identity and data access
-- OpenAI API key - required for GPT-4o inference
-- User stash (010) - tool reads user_stash and yarns tables
-- User measurements - tool reads user_measurements table
-- Projects and patterns - tools read these for context
-- Ravelry connection (optional) - enables search_ravelry tool
-- Prisma schema update - agent tables do not exist yet
+**curl test:**
+```bash
+curl http://localhost:3000/api/v1/ai/saved-matches \
+  -H "Authorization: Bearer <clerk_token>"
+```
+
+---
+
+### 3. Pattern Gauge Conversion (Pro)
+
+**"Convert this pattern for my yarn"** — GPT-4o rewrites row-by-row instructions with adjusted stitch/row counts.
+
+| Layer | Status |
+|-------|--------|
+| API route | Done — `POST /api/v1/ai/convert-gauge` (maxDuration=60) |
+| Business logic | Done — `lib/agent.ts → convertPatternGauge()` |
+| iOS UI | Not started |
+| Web UI | Not started |
+
+**How it works:** Calculates stitch ratio and row ratio → sends pattern sections to GPT-4o with strict instructions to only modify numeric counts → returns original + converted instructions side-by-side.
+
+**Input:** `{ pattern_id, original_stitches_per_10cm, original_rows_per_10cm, new_stitches_per_10cm, new_rows_per_10cm }`
+**Output:** `{ pattern_title, original_gauge, new_gauge, stitch_ratio, row_ratio, sections[].rows[].{original_instruction, converted_instruction} }`
+
+**curl test:**
+```bash
+curl -X POST http://localhost:3000/api/v1/ai/convert-gauge \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <clerk_token>" \
+  -d '{"pattern_id": "<uuid>", "original_stitches_per_10cm": 22, "original_rows_per_10cm": 30, "new_stitches_per_10cm": 18, "new_rows_per_10cm": 26}'
+```
+
+---
+
+### 4. Row Instruction Explainer
+
+**"What does this row mean?"** — GPT-4o-mini explains a single pattern instruction in plain language.
+
+| Layer | Status |
+|-------|--------|
+| API route | Done — `POST /api/v1/ai/explain-row` |
+| Business logic | Done — `lib/agent.ts → explainPatternRow()` |
+| iOS UI | Not started |
+| Web UI | Not started |
+
+**How it works:** Sends the instruction + optional context (craft type, experience level, previous row) to GPT-4o-mini → returns plain English explanation + estimated stitch count after.
+
+**No Pro gate** — uses cheap model (GPT-4o-mini), available to all users.
+
+**Input:** `{ instruction, craft_type?, experience_level?, previous_row? }`
+**Output:** `{ explanation, stitch_count_after }`
+
+**curl test:**
+```bash
+curl -X POST http://localhost:3000/api/v1/ai/explain-row \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <clerk_token>" \
+  -d '{"instruction": "K2, *yo, k2tog, k3*, repeat to last 2 sts, k2", "craft_type": "knitting", "experience_level": "beginner"}'
+```
+
+---
+
+### 5. Gauge Calculator (deterministic, no AI)
+
+Pure math — no LLM. Three functions in `lib/gauge.ts`:
+
+| Route | What | Status |
+|-------|------|--------|
+| `POST /api/v1/gauge/measurement-to-rows` | target_cm + rows_per_10cm → estimated rows + checkpoints | Done |
+| `POST /api/v1/gauge/rows-to-measurement` | row_count + rows_per_10cm → estimated cm/inches | Done |
+| `POST /api/v1/gauge/compare` | Pattern gauge vs user gauge → ratios + needle advice | Done |
+
+---
+
+### 6. Pattern Discovery Wizard (no AI, Ravelry proxy)
+
+Guided multi-step flow: craft → yarn/weight → category → filtered results.
+
+| Layer | Status |
+|-------|--------|
+| API route | Done — `GET /api/v1/ravelry/search` (proxy) |
+| Save/unsave | Done — `POST/DELETE /api/v1/ravelry/patterns/save` |
+| List saved | Done — `GET /api/v1/ravelry/patterns/saved` |
+| Web UI | Done — `PatternDiscovery.tsx` wizard component |
+| iOS UI | Not started |
+
+---
+
+### 7. Needle/Hook Set Lookup (Pro)
+
+**"What's in this set?"** — GPT-4o identifies the contents of a commercial needle/hook set by brand + name.
+
+| Layer | Status |
+|-------|--------|
+| Prompt | Done — `lib/prompts/tool-lookup.ts` |
+| API route | Not started |
+| iOS UI | Not started |
+
+---
+
+### 8. Yarn Colorway Identification (Pro)
+
+**"What color is this?"** — GPT-4o vision identifies a yarn colorway from a photo.
+
+| Layer | Status |
+|-------|--------|
+| Prompt | Done — `lib/prompts/colorway-identify.ts` |
+| API route | Not started |
+| iOS UI | Not started |
+
+---
+
+## Planned Features (Not Started)
+
+### 9. PDF Pattern Parsing (Pro)
+
+Upload a PDF → extract text with `pdf-parse` → GPT-4o structures it into sections, rows, stitch counts, sizes → save to pattern library.
+
+| Layer | Status |
+|-------|--------|
+| API route | Exists — `POST /api/v1/pdf/parse` (has type errors, needs fixing) |
+| PDF extraction | Done — `lib/pdf.ts` |
+| iOS UI | Not started |
+
+### 10. Size Recommendation (Pro)
+
+Pattern ID + user measurements → recommended size with fit notes.
+
+**Input:** Pattern ID (auto-pulls user_measurements)
+**Output:** Recommended size, ease comparison, fit notes
+
+### 11. Yarn Substitution (Pro)
+
+Pattern ID + preferences → ranked yarn matches from stash with yardage calculations.
+
+Differs from stash-match (#1) in that it starts from a pattern and finds suitable yarns, rather than starting from a yarn and finding patterns.
+
+### 12. Project Time Estimate (Pro)
+
+Pattern ID → estimated hours based on user's crafting session history and pattern complexity.
+
+---
+
+## Architecture
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `apps/web/lib/agent.ts` | Core business logic — 4 discrete action functions |
+| `apps/web/lib/gauge.ts` | Deterministic gauge math (no AI) |
+| `apps/web/lib/ravelry-search.ts` | Ravelry search proxy with Basic Auth + caching |
+| `apps/web/lib/openai.ts` | OpenAI client instance |
+| `apps/web/lib/prompts/*.ts` | Prompt templates (tool-lookup, colorway-identify) |
+| `apps/web/app/api/v1/ai/` | AI route handlers (stash-match, saved-matches, convert-gauge, explain-row) |
+| `apps/web/app/api/v1/gauge/` | Gauge calculator routes |
+| `apps/web/app/api/v1/ravelry/` | Ravelry proxy routes (search, save, saved list) |
+
+### Request Flow
+
+```
+User taps button → iOS ViewModel calls APIClient.post("/ai/feature", body)
+  → API route: auth() → getDbUser() → requirePro()
+  → Gather context from DB (stash, patterns, measurements)
+  → Build prompt (if AI) or compute (if deterministic)
+  → Call OpenAI with response_format: { type: 'json_object' }
+  → Parse + validate response
+  → Return { success: true, data: <typed result> }
+→ ViewModel receives typed response → View renders with purpose-built components
+```
+
+### Rules
+
+- **All AI routes are Pro-gated** except explain-row (gpt-4o-mini, cheap) and saved-matches (pure DB).
+- **All LLM calls use `response_format: { type: 'json_object' }`** — always parse into typed structs.
+- **Prompts live in `lib/prompts/`** — never inline in route handlers.
+- **No streaming.** Full response → parse → validate → return. Client shows skeleton loading.
+- **No chat.** No conversations, no message history, no SSE, no typing indicators.
+- **Context is automatic.** Pull user data (stash, gauge, measurements) from DB — don't ask the user to re-enter it.
+
+---
 
 ## Tier Gating
 
 | Feature | Free | Pro |
 |---------|------|-----|
-| AI agent access | No | Yes |
-| All conversations and tools | No | Yes |
+| Row instruction explainer | Yes | Yes |
+| Saved pattern ↔ stash matching | Yes | Yes |
+| Pattern discovery (Ravelry search) | Yes | Yes |
+| Gauge calculator | Yes | Yes |
+| Stash-to-pattern matching | No | Yes |
+| Gauge conversion | No | Yes |
+| PDF pattern parsing | 2/month | Unlimited |
+| Needle set lookup | No | Yes |
+| Colorway identification | No | Yes |
+| Size recommendation | No | Yes |
+| Yarn substitution | No | Yes |
+| Time estimate | No | Yes |
 
-This feature is Pro only. Free users see a preview/upsell screen.
+---
 
-## Technical Notes
+## Database Tables
 
-- All OpenAI calls go through Next.js API routes. The iOS app never calls OpenAI directly. This keeps the API key server-side and allows centralized rate limiting.
-- Use OpenAI's streaming API (`stream: true`) with Server-Sent Events for the response. The endpoint sends `data: { content: "partial text" }` chunks. iOS and web clients parse the SSE stream incrementally.
-- Tool calling flow: (1) send user message + tool definitions to OpenAI, (2) if the response includes `tool_calls`, execute each tool against the database, (3) send tool results back to OpenAI, (4) stream the final response. This may involve multiple round-trips.
-- The agent should only query the current user's data. All tool executions must include `user_id` in the WHERE clause. Never expose other users' data.
-- For "What can I make with my stash?", the agent reads the user's stash (yarn weights, yardage), then either searches saved_patterns locally or proxies to Ravelry's pattern search API filtered by weight and yardage range.
-- The system prompt should include a knitting abbreviation glossary (k, p, yo, k2tog, ssk, etc.) so the model can explain instructions without hallucinating.
-- Conversation titles should be auto-generated from the first user message (truncated to 60 characters). Update the title after the first message is created.
-- Store token usage (prompt_tokens, completion_tokens) in `agent_messages.metadata` for cost monitoring.
-- Rate limit: 50 messages per day per user. Check count of user's messages created today before processing.
+No chat tables needed. Relevant existing tables:
+
+- `saved_patterns` — lightweight Ravelry pattern snapshots (weight, yardage, difficulty, etc.)
+- `user_stash` + `yarns` + `yarn_companies` — user's yarn inventory
+- `user_measurements` — body measurements for size recommendations
+- `patterns` + `pattern_sections` + `pattern_rows` — parsed patterns for gauge conversion
+- `pdf_uploads` — tracking PDF parse usage for free tier limits
+- `project_gauge` — user gauge records per project
+
+---
+
+## Testing (Terminal Only)
+
+All routes can be tested via curl. You need a valid Clerk session token.
+
+**Get a test token** (from browser dev tools → Application → Cookies → `__session`, or from Clerk dashboard).
+
+**Quick smoke tests:**
+```bash
+# Health check — gauge calculator (no auth needed for testing math)
+curl -X POST http://localhost:3000/api/v1/gauge/measurement-to-rows \
+  -H "Content-Type: application/json" \
+  -d '{"target_cm": 50, "rows_per_10cm": 28}'
+
+curl -X POST http://localhost:3000/api/v1/gauge/compare \
+  -H "Content-Type: application/json" \
+  -d '{"pattern_stitches": 22, "pattern_rows": 30, "user_stitches": 20, "user_rows": 28}'
+
+# Ravelry search (needs RAVELRY_CLIENT_KEY + RAVELRY_CLIENT_SECRET in .env.local)
+curl "http://localhost:3000/api/v1/ravelry/search?craft=knitting&weight=worsted&pc=sweater&page=1" \
+  -H "Authorization: Bearer <token>"
+
+# AI explain row
+curl -X POST http://localhost:3000/api/v1/ai/explain-row \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"instruction": "K2, *yo, k2tog, k3*, repeat to last 2 sts, k2"}'
+```
+
+---
+
+## Dependencies
+
+- `openai` npm package — GPT-4o and GPT-4o-mini
+- `pdf-parse` — PDF text extraction
+- Ravelry API credentials (`RAVELRY_CLIENT_KEY`, `RAVELRY_CLIENT_SECRET`)
+- `OPENAI_API_KEY` in `.env.local`
+- Clerk auth (all routes require valid session)
+- Prisma/Supabase (all context queries)

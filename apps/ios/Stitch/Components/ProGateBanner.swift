@@ -6,13 +6,14 @@ import RevenueCatUI
 struct ProGateBanner: View {
     let featureName: String
     @Environment(SubscriptionManager.self) private var subscriptions
+    @Environment(ThemeManager.self) private var theme
     @State private var showPaywall = false
 
     var body: some View {
         VStack(spacing: 16) {
             Image(systemName: "crown.fill")
                 .font(.largeTitle)
-                .foregroundStyle(Color(hex: "#FF6B6B"))
+                .foregroundStyle(theme.primary)
 
             Text("Stitch Pro")
                 .font(.title2.bold())
@@ -30,7 +31,7 @@ struct ProGateBanner: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
-                    .background(Color(hex: "#FF6B6B"))
+                    .background(theme.primary)
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }

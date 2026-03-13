@@ -1,8 +1,13 @@
 import SwiftUI
 
+struct SectionRef: Hashable, Codable {
+    let id: String
+    let name: String
+}
+
 enum Route: Hashable {
     case projectDetail(id: String)
-    case counter(sectionId: String)
+    case counter(sectionId: String, allSections: [SectionRef] = [], projectId: String? = nil, pdfUploadId: String? = nil)
     case patternDetail(id: String)
     case profile(username: String)
     case findFriends

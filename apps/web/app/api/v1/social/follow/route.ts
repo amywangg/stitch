@@ -51,5 +51,5 @@ export async function DELETE(req: NextRequest) {
     where: { follower_id: user.id, following_id: targetId },
   })
 
-  return NextResponse.json({ success: true, message: 'Unfollowed' })
+  return NextResponse.json({ success: true, data: {} })
 }

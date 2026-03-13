@@ -13,6 +13,8 @@ enum PatternsTab: String, CaseIterable {
 }
 
 struct PatternsView: View {
+    @Environment(ThemeManager.self) private var theme
+    @Binding var initialSubTab: PatternsTab
     @State private var viewModel = PatternsViewModel()
     @State private var selectedTab: PatternsTab = .myPatterns
     @State private var showUploadSheet = false
@@ -48,6 +50,9 @@ struct PatternsView: View {
             }
         }
         .task { await viewModel.loadRoot() }
+        .onChange(of: initialSubTab) { _, newValue in
+            selectedTab = newValue
+        }
         .sheet(isPresented: $showUploadSheet) { PDFUploadView() }
         .alert("New folder", isPresented: $showNewFolder) {
             TextField("Folder name", text: $newFolderName)
@@ -139,7 +144,7 @@ struct PatternsView: View {
                             .font(.body.weight(.medium))
                     }
                 }
-                .foregroundStyle(Color(hex: "#FF6B6B"))
+                .foregroundStyle(theme.primary)
             }
         }
         .padding(.horizontal, 16)
@@ -199,7 +204,7 @@ struct PatternsView: View {
                             .font(.subheadline.weight(selectedTab == tab ? .semibold : .regular))
                             .foregroundStyle(selectedTab == tab ? .primary : .secondary)
                         Rectangle()
-                            .fill(selectedTab == tab ? Color(hex: "#FF6B6B") : .clear)
+                            .fill(selectedTab == tab ? theme.primary : .clear)
                             .frame(height: 2)
                     }
                 }
@@ -250,7 +255,7 @@ struct PatternsView: View {
                 Label("Discover patterns", systemImage: "magnifyingglass")
             }
             .buttonStyle(.borderedProminent)
-            .tint(Color(hex: "#FF6B6B"))
+            .tint(theme.primary)
 
             Button {
                 showUploadSheet = true
@@ -399,6 +404,7 @@ struct PatternsView: View {
 // MARK: - Folder Card
 
 private struct FolderCard: View {
+    @Environment(ThemeManager.self) private var theme
     let folder: PatternFolder
 
     var body: some View {
@@ -434,13 +440,14 @@ private struct FolderCard: View {
         if let hex = folder.color {
             return Color(hex: hex)
         }
-        return Color(hex: "#FF6B6B")
+        return theme.primary
     }
 }
 
 // MARK: - Pattern Row
 
 struct PatternRow: View {
+    @Environment(ThemeManager.self) private var theme
     let pattern: Pattern
 
     private var hasPatternData: Bool {
@@ -522,6 +529,7 @@ struct PatternRow: View {
 // MARK: - Folder Detail View
 
 struct PatternFolderView: View {
+    @Environment(ThemeManager.self) private var theme
     let folderId: String
     let folderName: String
     @Bindable var viewModel: PatternsViewModel
@@ -645,6 +653,7 @@ struct PatternFolderView: View {
 // MARK: - Move to Folder Sheet
 
 private struct MoveToFolderSheet: View {
+    @Environment(ThemeManager.self) private var theme
     let pattern: Pattern
     let folders: [PatternFolder]
     let onMove: (String?) -> Void
@@ -673,12 +682,12 @@ private struct MoveToFolderSheet: View {
                                 Spacer()
                                 if pattern.folderId == folder.id {
                                     Image(systemName: "checkmark")
-                                        .foregroundStyle(Color(hex: "#FF6B6B"))
+                                        .foregroundStyle(theme.primary)
                                 }
                             }
                         } icon: {
                             Image(systemName: "folder.fill")
-                                .foregroundStyle(folder.color.map { Color(hex: $0) } ?? Color(hex: "#FF6B6B"))
+                                .foregroundStyle(folder.color.map { Color(hex: $0) } ?? theme.primary)
                         }
                     }
                     .disabled(pattern.folderId == folder.id)
@@ -699,6 +708,7 @@ private struct MoveToFolderSheet: View {
 // MARK: - Pattern Grid Card
 
 private struct PatternGridCard: View {
+    @Environment(ThemeManager.self) private var theme
     let pattern: Pattern
 
     private var hasPatternData: Bool {
