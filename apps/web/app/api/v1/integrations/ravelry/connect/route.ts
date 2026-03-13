@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { encrypt } from '@/lib/encrypt'
 import crypto from 'crypto'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * Step 1 of Ravelry OAuth 1.0a (HMAC-SHA1).
  * Obtains a request token from Ravelry. The request token secret is encrypted
