@@ -1,3 +1,0 @@
-# Stitch AI Service
-
-

@@ -1,286 +1,92 @@
-# Stitch Feature Comparison
+# Stitch - Master Feature Index
 
-## Feature Matrix: Stitch vs Ravelry vs Others
+Stitch is a knitting and crochet companion app built as a modern alternative to Ravelry. It combines project tracking with a row counter, a pattern library with AI-powered PDF parsing, yarn stash management, social features, and bidirectional Ravelry sync. The app ships as a SwiftUI iOS app (primary) and a Next.js 14 web app, backed by Supabase PostgreSQL and Prisma ORM.
 
-| Feature | Ravelry | KnitCompanion | RowCounter | **Stitch** |
-|---------|---------|---------------|------------|------------|
-| **Pattern Discovery** |
-| Pattern marketplace | ✅ | ❌ | ❌ | ✅ |
-| Advanced filters | ✅ | ❌ | ❌ | ✅ |
-| Designer profiles | ✅ | ❌ | ❌ | ✅ |
-| Pattern previews | ✅ | ✅ | ❌ | ✅ |
-| **AI Features** |
-| PDF pattern parsing | ❌ | ❌ | ❌ | ✅ |
-| Size-filtered instructions | ❌ | ❌ | ❌ | ✅ |
-| Voice row navigation | ❌ | ❌ | ❌ | ✅ |
-| AI pattern generation | ❌ | ❌ | ❌ | ✅ |
-| Smart row estimation | ❌ | ❌ | ❌ | ✅ |
-| **Project Tracking** |
-| Basic project info | ✅ | ✅ | ✅ | ✅ |
-| Progress photos | ✅ | ❌ | ❌ | ✅ |
-| Time tracking | ❌ | ✅ | ❌ | ✅ |
-| Row counters | ❌ | ✅ | ✅ | ✅ |
-| Multiple counters | ❌ | ✅ | ✅ | ✅ |
-| Linked counters | ❌ | ✅ | ✅ | ✅ |
-| Repeat tracking | ❌ | ✅ | ✅ | ✅ |
-| **Yarn & Tools** |
-| Yarn database | ✅ | ❌ | ❌ | ✅ |
-| Stash management | ✅ | ❌ | ❌ | ✅ |
-| Needle inventory | ✅ | ❌ | ❌ | ✅ |
-| Yarn tracking per project | ✅ | ❌ | ❌ | ✅ |
-| **Social** |
-| User profiles | ✅ | ❌ | ❌ | ✅ |
-| Following | ✅ | ❌ | ❌ | ✅ |
-| Groups | ✅ | ❌ | ❌ | ✅ |
-| KALs | ✅ | ❌ | ❌ | ✅ |
-| Comments | ✅ | ❌ | ❌ | ✅ |
-| **Pattern Reading** |
-| PDF viewing | ❌ | ✅ | ❌ | ✅ |
-| Highlights | ❌ | ✅ | ❌ | ✅ |
-| Annotations | ❌ | ✅ | ❌ | ✅ |
-| Split view | ❌ | ✅ | ❌ | ✅ |
-| **Designer Tools** |
-| Upload patterns | ✅ | ❌ | ❌ | ✅ |
-| Sell patterns | ✅ | ❌ | ❌ | ✅ |
-| Sales tracking | ✅ | ❌ | ❌ | ✅ |
-| Pattern updates | ✅ | ❌ | ❌ | ✅ |
-| AI pattern writing | ❌ | ❌ | ❌ | ✅ |
-| **Calculators** |
-| Needle converter | External | ❌ | ❌ | ✅ |
-| Gauge calculator | External | ❌ | ❌ | ✅ |
-| Yarn substitution | External | ❌ | ❌ | ✅ |
+This document serves as both a feature summary and an implementation checklist. Each feature has a dedicated PRD in the `docs/` directory.
 
 ---
 
-## Database Tables by Feature
+## Feature Index
 
-### 1. Pattern Discovery & Marketplace
-
-```
-patterns                  - Core pattern data
-pattern_sizes             - Size options with measurements
-pattern_sections          - Pattern parts (body, sleeves, etc.)
-pattern_rows              - Row-by-row instructions
-pattern_images            - Gallery images
-pattern_tags              - Tags for discovery
-pattern_favorites         - User bookmarks
-pattern_queue             - "Want to make" list
-pattern_listings          - Marketplace listings
-purchases                 - Purchase records
-pattern_reviews           - User reviews
-designer_profiles         - Seller profiles
-```
-
-### 2. Project Tracking
-
-```
-projects                  - Core project data
-project_sections          - Sections being worked
-project_photos            - Progress photos with context
-project_time_sessions     - Time tracking sessions
-project_yarns             - Yarn used per project
-project_gauge             - Gauge swatch data
-project_measurements      - Actual measurements taken
-project_notes             - Journal entries
-row_counter_history       - Counter history with input type
-```
-
-### 3. Pattern Storage & Library
-
-```
-user_pattern_library      - Owned/purchased patterns
-pattern_annotations       - Highlights, notes, markers
-pattern_reading_progress  - Current place in pattern
-pattern_pdf_uploads       - Uploaded PDFs for parsing
-```
-
-### 4. Yarn Database & Stash
-
-```
-yarn_companies            - Yarn brands
-yarns                     - Comprehensive yarn database
-yarn_colorways            - Color options per yarn
-yarn_weights              - Weight categories with gauges
-user_stash                - User's yarn stash
-stash_photos              - Photos of stashed yarn
-```
-
-### 5. Needle/Hook Inventory
-
-```
-needle_brands             - Needle manufacturers
-user_needles              - User's needle collection
-```
-
-### 6. Social Features
-
-```
-follows                   - Following relationships
-posts                     - Social posts
-post_images               - Post images
-comments                  - Comments on posts/projects/patterns
-likes                     - Likes
-groups                    - Community groups
-group_members             - Group membership
-group_posts               - Group discussions
-knit_alongs               - KAL events
-kal_participants          - KAL participation
-kal_clues                 - Mystery KAL clues
-notifications             - User notifications
-```
-
-### 7. Pattern Viewing Tools
-
-```
-pattern_annotations       - Highlights, notes, markers
-pattern_reading_progress  - Reading state
-pattern_abbreviations     - Pattern-specific abbreviations
-```
-
-### 8. Designer Tools
-
-```
-designer_profiles         - Shop settings
-pattern_listings          - Listing management
-purchases                 - Sales tracking
-pattern_reviews           - Customer reviews
-```
-
-### 9. Tools & Calculators
-
-```
-needle_size_chart         - Size conversions
-standard_measurements     - Body measurement standards
-yarn_weights              - Gauge ranges by weight
-```
-
-### 10. AI Features
-
-```
-pattern_pdf_uploads       - PDF processing queue
-ai_pattern_sessions       - Pattern generation sessions
-pattern_rows              - AI-simplified instructions
-patterns                  - ai_parsed_data, ai_confidence_score
-```
+| #   | Feature                              | PRD                                          | Status              | Notes                                                                                                          |
+| --- | ------------------------------------ | -------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 001 | Authentication and Onboarding        | [PRD](001-authentication-and-onboarding.md)  | Mostly complete     | Clerk iOS + web auth, custom sign-in/sign-up screens, 5-step onboarding flow, Clerk webhook user sync all done |
+| 002 | Subscriptions and Pro Tier           | [PRD](002-subscriptions-and-pro-tier.md)     | Partially complete  | RevenueCat SDK on iOS (PaywallView, CustomerCenterView, SubscriptionManager), webhook route, free limits, DB schema ready. Needs App Store Connect products, RevenueCat dashboard config, web Stripe checkout |
+| 003 | Projects and Row Counter             | [PRD](003-projects-and-row-counter.md)       | Schema + API only   | Schema complete, API routes scaffolded. Row counter has sections, history tracking, realtime sync via Supabase. iOS and web UI not built |
+| 004 | Pattern Library and PDF Parsing      | [PRD](004-pattern-library-and-pdf-parsing.md)| Schema + API only   | Schema complete (patterns, sections, rows, sizes, tags). PDF upload tracking added. AI parsing route exists (GPT-4o). No UI built |
+| 005 | Ravelry Sync                         | [PRD](005-ravelry-sync.md)                   | Complete            | Bidirectional OAuth sync for projects, stash, queue, needles. Encrypted token storage. Per-type sync timestamps. Write-back toggle. All API routes built |
+| 006 | Social Feed and Activity             | [PRD](006-social-feed-and-activity.md)       | Schema only         | Schema complete (posts, activity_events, comments, likes with reactions, follows, notifications, bookmarks). Goodreads/Letterboxd style activity feed. No UI built |
+| 007 | Crafting Activity Heatmap            | [PRD](007-crafting-activity-heatmap.md)       | Schema only         | Schema complete (crafting_sessions with date, duration, source). GitHub contributions style. No UI or tracking logic built |
+| 008 | Pattern Reviews and Ratings          | [PRD](008-pattern-reviews-and-ratings.md)     | Schema only         | Schema complete (pattern_reviews with rating, difficulty_rating, would_make_again). Letterboxd style. No UI or API built |
+| 009 | AI Knitting Agent                    | [PRD](009-ai-knitting-agent.md)               | Schema only         | Schema complete (agent_conversations, agent_messages with metadata). Strategy defined: reads user stash + saved patterns, proxies Ravelry search. No implementation |
+| 010 | Yarn Stash Management                | [PRD](010-yarn-stash-management.md)           | Schema only         | Schema complete (user_stash with status, yarns catalog, yarn_companies). Ravelry sync imports stash. No dedicated UI |
+| 011 | Pattern Queue                        | [PRD](011-pattern-queue.md)                   | Schema only         | Schema complete (pattern_queue with Ravelry sync). No dedicated UI |
+| 012 | Needle and Hook Collection           | [PRD](012-needle-and-hook-collection.md)      | Schema only         | Schema complete (user_needles with type, size, material). Ravelry sync imports needles. No dedicated UI |
+| 013 | Tutorials and Learning               | [PRD](013-tutorials-and-learning.md)          | Schema only         | Schema complete (tutorials, tutorial_steps, user_tutorial_progress). No content or UI |
+| 014 | User Measurements and Size Selection | [PRD](014-user-measurements-and-size-selection.md) | Schema only    | Schema added (user_measurements with 12+ body measurements stored in cm). No UI or size matching logic |
+| 015 | Gauge Calculator                     | [PRD](015-gauge-calculator.md)                | API only            | API routes exist (measurement-to-rows, rows-to-measurement, compare). No iOS UI |
+| 016 | Saved Ravelry Patterns               | [PRD](016-saved-ravelry-patterns.md)          | Schema only         | Schema complete (saved_patterns with Ravelry metadata, needle_sizes array, difficulty). Lightweight snapshots for AI agent dataset. No UI |
 
 ---
 
-## Unique Stitch Features (No Other Platform Has)
+## Status Legend
 
-### 1. AI Pattern Parsing
-- Upload any PDF pattern
-- AI extracts structured data
-- Automatically creates row-by-row instructions
-- Detects sizes, gauge, yarn requirements
-
-### 2. Size-Filtered Instructions
-- Select your size once
-- See only relevant stitch counts
-- No more mental math or highlighting
-
-### 3. Voice-Controlled Row Counter
-- "Next row" - advances counter
-- "Go back" - decrements
-- "Undo" - reverts last action
-- "Where am I?" - reads current row
-- "Read instruction" - speaks the current row
-
-### 4. Smart Row Estimation
-- Pattern says "knit for 2 inches"
-- Enter your gauge
-- App calculates ~20 rows (example)
-- Reminds you to measure every 10 rows
-
-### 5. AI Pattern Builder
-- Describe what you want
-- AI generates complete pattern
-- Row-by-row instructions
-- Multiple sizes
-
-### 6. Cross-WIP Insights
-- Total time across all projects
-- Estimated completion dates
-- "You've knit 50,000 stitches this month!"
+| Label              | Meaning                                                    |
+| ------------------ | ---------------------------------------------------------- |
+| Complete           | Fully implemented across all layers (schema, API, UI)      |
+| Mostly complete    | Core functionality works, minor gaps remain                |
+| Partially complete | Some layers done (e.g. SDK integrated but config pending)  |
+| Schema + API only  | Database schema and API routes exist, no UI                |
+| Schema only        | Database tables defined, no API routes or UI               |
+| API only           | API routes exist, no schema changes needed, no UI          |
+| Not started        | Nothing built yet                                          |
 
 ---
 
-## Data Model Highlights
+## Roadmap
 
-### Progress Photos
-```sql
-project_photos (
-    progress_percent,      -- What % done at photo time
-    taken_at_row,          -- Row number when taken
-    taken_at_section,      -- Which section
-    is_finished_photo      -- Mark as FO photo
-)
-```
+### Phase 1 - Foundation
 
-### Time Tracking
-```sql
-project_time_sessions (
-    started_at,
-    ended_at,
-    duration_minutes,
-    rows_completed,        -- Rows done this session
-    start_row,             -- Where you started
-    end_row                -- Where you ended
-)
+The baseline infrastructure that every other feature depends on.
 
-user_stats (
-    total_knitting_time_minutes  -- Lifetime hours!
-)
-```
+- [x] 001 - Authentication and Onboarding (mostly complete)
+- [ ] 002 - Subscriptions and Pro Tier (partially complete, needs App Store + Stripe config)
 
-### Smart Row Tracking
-```sql
-pattern_rows (
-    instruction_type,      -- 'counted', 'measured', 'repeat'
-    target_measurement_cm, -- For "knit 2 inches"
-    estimated_rows,        -- Calculated from gauge
-    measure_every_n_rows,  -- Reminder frequency
-    instruction_simplified -- AI-simplified version
-)
+### Phase 2 - Core MVP
 
-project_sections (
-    current_row,
-    total_rows,
-    is_estimated_total,    -- True if from measurement
-    current_repeat,        -- For repeat tracking
-    total_repeats
-)
-```
+The primary crafting tools that define the app's core value.
 
-### Repeat Tracking
-```sql
-project_sections (
-    current_repeat,
-    total_repeats,
-    rows_per_repeat        -- Rows in one repeat
-)
-```
+- [ ] 003 - Projects and Row Counter (schema + API done, needs iOS and web UI)
+- [ ] 004 - Pattern Library and PDF Parsing (schema + API done, needs UI)
+- [ ] 010 - Yarn Stash Management (schema done, needs UI)
+- [ ] 011 - Pattern Queue (schema done, needs UI)
+- [ ] 012 - Needle and Hook Collection (schema done, needs UI)
+- [ ] 015 - Gauge Calculator (API done, needs iOS UI)
 
-### Pattern Annotations
-```sql
-pattern_annotations (
-    page_number,           -- PDF page
-    x_percent, y_percent,  -- Position on page
-    annotation_type,       -- 'highlight', 'note', 'marker'
-    color,                 -- Highlight color
-    content                -- Note text
-)
-```
+### Phase 3 - Ravelry Integration
 
-### Voice Counter
-```sql
-row_counter_history (
-    input_type,            -- 'click', 'voice', 'gesture'
-    voice_transcript       -- What the user said
-)
+Importing and syncing data from users' existing Ravelry accounts.
 
-project_sections (
-    counter_voice_enabled  -- Enable voice for this section
-)
-```
+- [x] 005 - Ravelry Sync (complete)
+- [ ] 016 - Saved Ravelry Patterns (schema done, needs UI)
 
+### Phase 4 - Social
 
+Community features inspired by Goodreads and Letterboxd.
+
+- [ ] 006 - Social Feed and Activity (schema done, needs API + UI)
+- [ ] 007 - Crafting Activity Heatmap (schema done, needs tracking logic + UI)
+- [ ] 008 - Pattern Reviews and Ratings (schema done, needs API + UI)
+
+### Phase 5 - AI
+
+An intelligent knitting assistant powered by the user's own data.
+
+- [ ] 009 - AI Knitting Agent (schema done, needs full implementation)
+
+### Phase 6 - Polish
+
+Quality-of-life features that round out the experience.
+
+- [ ] 013 - Tutorials and Learning (schema done, needs content + UI)
+- [ ] 014 - User Measurements and Size Selection (schema done, needs UI + matching logic)

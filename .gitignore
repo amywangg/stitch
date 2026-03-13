@@ -1,72 +1,56 @@
 # Dependencies
 node_modules/
-.pnpm-store/
+.pnp
+.pnp.js
 
 # Build outputs
+.next/
 dist/
 build/
-*.js.map
+out/
+
+# Turbo cache
+.turbo/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Prisma
+packages/db/src/generated/
+
+# TypeScript
+*.tsbuildinfo
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
-venv/
-env/
+*.pyc
 .venv/
-ENV/
-*.egg-info/
-.eggs/
+venv/
+ai-service/.venv/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # IDE
-.idea/
 .vscode/
+.idea/
 *.swp
-*.swo
-*~
-.DS_Store
 
-# Environment
-.env
-.env.local
-.env.*.local
-*.local
+# iOS
+apps/ios/Stitch.xcodeproj/xcuserdata/
+apps/ios/*.xcworkspace/xcuserdata/
+apps/ios/DerivedData/
+apps/ios/*.ipa
+apps/ios/Pods/
+apps/ios/project.local.yml
 
 # Logs
-logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Testing
-coverage/
-.nyc_output/
-.pytest_cache/
-htmlcov/
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Uploads
-uploads/
-temp/
-
-# Docker
-docker-compose.override.yml
-
-# OS
-Thumbs.db
-.DS_Store
-
-# TypeScript
-*.tsbuildinfo
-
-# Prisma
-prisma/migrations/.migration_lock.toml
-
-

@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light mode */
+    --background: 0 0% 100%;
+    --surface: 0 0% 98%;
+    --background-muted: 240 5% 96%;
+    --content-default: 222 47% 11%;
+    --content-secondary: 215 16% 47%;
+    --content-tertiary: 215 14% 65%;
+    --border-default: 220 13% 91%;
+    --border-emphasis: 215 25% 75%;
+  }
+
+  .dark {
+    --background: 222 47% 8%;
+    --surface: 222 47% 11%;
+    --background-muted: 222 39% 14%;
+    --content-default: 210 40% 98%;
+    --content-secondary: 215 20% 65%;
+    --content-tertiary: 215 14% 45%;
+    --border-default: 215 28% 18%;
+    --border-emphasis: 215 25% 28%;
+  }
+
+  * {
+    @apply border-border-default;
+  }
+
+  body {
+    @apply bg-background text-content-default antialiased;
+  }
+}
