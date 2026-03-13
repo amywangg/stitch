@@ -23,11 +23,14 @@ export async function POST(req: NextRequest) {
     data: {
       user_id: user.id,
       content: body.content.trim(),
-      image_url: body.image_url ?? null,
       project_id: body.project_id ?? null,
+      ...(body.image_url ? {
+        photos: { create: { url: body.image_url } },
+      } : {}),
     },
     include: {
       user: { select: { id: true, username: true, display_name: true, avatar_url: true } },
+      photos: true,
     },
   })
 
