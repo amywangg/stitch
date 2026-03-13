@@ -16,11 +16,11 @@ export async function POST(_req: NextRequest, { params }: Params) {
 
   // Toggle like
   const existing = await prisma.likes.findUnique({
-    where: { post_id_user_id: { post_id: id, user_id: user.id } },
+    where: { user_id_post_id: { post_id: id, user_id: user.id } },
   })
 
   if (existing) {
-    await prisma.likes.delete({ where: { post_id_user_id: { post_id: id, user_id: user.id } } })
+    await prisma.likes.delete({ where: { user_id_post_id: { post_id: id, user_id: user.id } } })
     return NextResponse.json({ success: true, data: { liked: false } })
   }
 
