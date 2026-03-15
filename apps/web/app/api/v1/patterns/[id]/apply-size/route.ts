@@ -2,28 +2,19 @@ import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
-import { requirePro } from '@/lib/pro-gate'
+import { requireCapacity } from '@/lib/pro-gate'
 import { parsePatternForSize } from '@/lib/openai'
 
 export const maxDuration = 60
 
 type Params = { params: Promise<{ id: string }> }
 
-/**
- * POST /api/v1/patterns/[id]/apply-size
- * Stage 2: Parse instruction steps for a selected size.
- * Requires stored raw_text on the pattern.
- * Pro required (expensive AI call).
- */
 export async function POST(req: NextRequest, { params }: Params) {
   const { id } = await params
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
-
-  const proError = requirePro(user, 'AI pattern parsing')
-  if (proError) return proError
 
   const body = await req.json()
   const sizeName = body.size_name as string | undefined
@@ -33,7 +24,7 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const pattern = await prisma.patterns.findFirst({
     where: { id, user_id: user.id, deleted_at: null },
-    include: { sizes: true, sections: true },
+    include: { sizes: true },
   })
   if (!pattern) return NextResponse.json({ error: 'Pattern not found' }, { status: 404 })
 
@@ -52,8 +43,55 @@ export async function POST(req: NextRequest, { params }: Params) {
     )
   }
 
+  // Check if we already have cached sections for this size
+  const cachedSections = await prisma.pattern_sections.findMany({
+    where: { pattern_id: id, size_id: size.id },
+    include: { rows: { orderBy: { row_number: 'asc' } } },
+    orderBy: { sort_order: 'asc' },
+  })
+
+  if (cachedSections.length > 0) {
+    // Cached — just update selected_size and return
+    await prisma.patterns.update({
+      where: { id },
+      data: { selected_size: sizeName },
+    })
+
+    const updated = await prisma.patterns.findUnique({
+      where: { id },
+      include: {
+        sections: {
+          where: { size_id: size.id },
+          include: { rows: { orderBy: { row_number: 'asc' } } },
+          orderBy: { sort_order: 'asc' },
+        },
+        sizes: { orderBy: { sort_order: 'asc' } },
+      },
+    })
+
+    return NextResponse.json({ success: true, data: updated })
+  }
+
+  // Not cached — check tier capacity before making AI call
+  const startOfMonth = new Date()
+  startOfMonth.setDate(1)
+  startOfMonth.setHours(0, 0, 0, 0)
+
+  const monthlyCount = await prisma.pdf_uploads.count({
+    where: { user_id: user.id, created_at: { gte: startOfMonth } },
+  })
+
+  const capacityError = requireCapacity(user, 'pdfUploadsPerMonth', monthlyCount, 'PDF parses')
+  if (capacityError) return capacityError
+
+  // Get existing size-agnostic section names (from Stage 1) to guide the parse
+  const shellSections = await prisma.pattern_sections.findMany({
+    where: { pattern_id: id, size_id: null },
+    orderBy: { sort_order: 'asc' },
+  })
+  const sectionNames = shellSections.map((s) => s.name)
+
   // Parse with AI for this specific size
-  const sectionNames = pattern.sections.map((s) => s.name)
   let parsed
   try {
     parsed = await parsePatternForSize(pattern.raw_text, sizeName, sectionNames)
@@ -61,25 +99,14 @@ export async function POST(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: 'AI parsing failed for this size' }, { status: 500 })
   }
 
-  // Delete existing rows (re-parse case) and recreate
+  // Create new sections with size_id — do NOT delete other sizes' data
   await prisma.$transaction(async (tx) => {
-    // Delete old rows for all sections
-    const existingSectionIds = pattern.sections.map((s) => s.id)
-    if (existingSectionIds.length > 0) {
-      await tx.pattern_rows.deleteMany({
-        where: { section_id: { in: existingSectionIds } },
-      })
-      await tx.pattern_sections.deleteMany({
-        where: { pattern_id: id },
-      })
-    }
-
-    // Create new sections with steps
     for (let i = 0; i < parsed.sections.length; i++) {
       const section = parsed.sections[i]
       await tx.pattern_sections.create({
         data: {
           pattern_id: id,
+          size_id: size.id,
           name: section.name,
           sort_order: i,
           rows: {
@@ -94,6 +121,7 @@ export async function POST(req: NextRequest, { params }: Params) {
               rows_per_repeat: step.rows_per_repeat,
               target_measurement_cm: step.target_measurement_cm,
               notes: step.notes,
+              size_id: size.id,
             })),
           },
         },
@@ -107,11 +135,12 @@ export async function POST(req: NextRequest, { params }: Params) {
     })
   })
 
-  // Return the full updated pattern
+  // Return the full updated pattern (only sections for this size)
   const updated = await prisma.patterns.findUnique({
     where: { id },
     include: {
       sections: {
+        where: { size_id: size.id },
         include: { rows: { orderBy: { row_number: 'asc' } } },
         orderBy: { sort_order: 'asc' },
       },

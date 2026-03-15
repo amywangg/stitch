@@ -127,8 +127,26 @@ struct StashItemDetailView: View {
                         aiColorwayButton
                     }
                 }
+            } else if let productUrl = item.yarn?.imageUrl, !productUrl.isEmpty,
+                      let url = URL(string: productUrl) {
+                // Product photo fallback
+                AsyncImage(url: url) { image in
+                    image.resizable().aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 250)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 250)
+                .clipped()
+
+                PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                    Label("Add your own photo", systemImage: "camera")
+                        .font(.subheadline)
+                }
             } else {
-                // No photo — upload prompt
+                // No photo at all — upload prompt
                 photoPlaceholder
             }
 

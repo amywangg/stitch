@@ -22,6 +22,10 @@ enum Route: Hashable {
     case stashItemDetail(id: String)
     case patternFolder(id: String, name: String)
     case ravelryPatternDetail(ravelryId: Int, name: String, photoUrl: String?)
+    case glossaryDetail(slug: String)
+    case tutorialDetail(id: String)
+    case glossaryBrowse(category: String? = nil)
+    case tutorialBrowse
 }
 
 @Observable

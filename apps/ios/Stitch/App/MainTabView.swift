@@ -47,5 +47,24 @@ struct MainTabView: View {
         }
         .tint(theme.primary)
         .preferredColorScheme(theme.colorScheme)
+        .overlay(alignment: .bottom) {
+            if CraftingSessionManager.shared.showSummaryToast,
+               let summary = CraftingSessionManager.shared.lastSummary {
+                SessionSummaryToast(summary: summary)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .padding(.bottom, 100)
+                    .onTapGesture {
+                        withAnimation { CraftingSessionManager.shared.showSummaryToast = false }
+                    }
+                    .task {
+                        try? await Task.sleep(for: .seconds(3))
+                        withAnimation { CraftingSessionManager.shared.showSummaryToast = false }
+                    }
+            }
+        }
+        .animation(.easeInOut, value: CraftingSessionManager.shared.showSummaryToast)
+        .task {
+            await CraftingSessionManager.shared.cleanupAbandonedSession()
+        }
     }
 }

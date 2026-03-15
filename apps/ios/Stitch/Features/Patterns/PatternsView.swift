@@ -3,11 +3,13 @@ import SwiftUI
 enum PatternsTab: String, CaseIterable {
     case myPatterns
     case discover
+    case learn
 
     var label: String {
         switch self {
         case .myPatterns: return "My patterns"
         case .discover: return "Discover"
+        case .learn: return "Learn"
         }
     }
 }
@@ -44,6 +46,14 @@ struct PatternsView: View {
                     PatternFolderView(folderId: id, folderName: name, viewModel: viewModel)
                 case .ravelryPatternDetail(let ravelryId, let name, let photoUrl):
                     RavelryPatternDetailView(ravelryId: ravelryId, patternName: name, previewPhotoUrl: photoUrl)
+                case .glossaryBrowse(let category):
+                    GlossaryView(initialCategory: category)
+                case .glossaryDetail(let slug):
+                    GlossaryDetailView(slug: slug)
+                case .tutorialBrowse:
+                    TutorialListView()
+                case .tutorialDetail(let id):
+                    TutorialDetailView(tutorialId: id)
                 default:
                     EmptyView()
                 }
@@ -53,7 +63,12 @@ struct PatternsView: View {
         .onChange(of: initialSubTab) { _, newValue in
             selectedTab = newValue
         }
-        .sheet(isPresented: $showUploadSheet) { PDFUploadView() }
+        .sheet(isPresented: $showUploadSheet) {
+            PDFParseFlowView { projectId in
+                // Navigate to the new project
+                // The projects tab handles navigation via its own router
+            }
+        }
         .alert("New folder", isPresented: $showNewFolder) {
             TextField("Folder name", text: $newFolderName)
             Button("Cancel", role: .cancel) { newFolderName = "" }
@@ -226,6 +241,8 @@ struct PatternsView: View {
                 .refreshable { await viewModel.loadRoot() }
         case .discover:
             PatternDiscoverView()
+        case .learn:
+            LearnView()
         }
     }
 
@@ -511,8 +528,13 @@ struct PatternRow: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
+                if pattern.firstPdfUploadId != nil {
+                    Label("PDF", systemImage: "doc.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                }
                 if pattern.aiParsed {
-                    Label("AI parsed", systemImage: "sparkles")
+                    Label("Parsed", systemImage: "sparkles")
                         .font(.caption2)
                         .foregroundStyle(.purple)
                 }
@@ -780,8 +802,13 @@ private struct PatternGridCard: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
+                if pattern.firstPdfUploadId != nil {
+                    Label("PDF", systemImage: "doc.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                }
                 if pattern.aiParsed {
-                    Label("AI parsed", systemImage: "sparkles")
+                    Label("Parsed", systemImage: "sparkles")
                         .font(.caption2)
                         .foregroundStyle(.purple)
                 } else if !hasPatternData {
@@ -862,8 +889,16 @@ private struct PatternLargeCard: View {
                         .background(.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 6))
                         .foregroundStyle(.white)
                 }
+                if pattern.firstPdfUploadId != nil {
+                    Label("PDF", systemImage: "doc.fill")
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(.green.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
+                        .foregroundStyle(.white)
+                }
                 if pattern.aiParsed {
-                    Label("AI parsed", systemImage: "sparkles")
+                    Label("Parsed", systemImage: "sparkles")
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)

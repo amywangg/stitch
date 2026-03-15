@@ -53,12 +53,14 @@ export async function POST(req: NextRequest) {
   })
   if (!pattern) return NextResponse.json({ error: 'Pattern not found' }, { status: 404 })
 
-  if (pattern.sections.length === 0) {
-    return NextResponse.json(
-      { error: 'Pattern has no sections. Apply a size first.' },
-      { status: 422 }
-    )
-  }
+  // Find attached PDF upload for this pattern
+  const pdfUpload = await prisma.pdf_uploads.findFirst({
+    where: { pattern_id: patternId, user_id: user.id },
+    orderBy: { created_at: 'desc' },
+  })
+
+  const sizeName = body.size_name as string | undefined
+  const manualSections = body.manual_sections as Array<{ name: string; target_rows?: number }> | undefined
 
   // Generate unique slug
   let slug = slugify(pattern.title)
@@ -68,17 +70,59 @@ export async function POST(req: NextRequest) {
     slug = `${slugify(pattern.title)}-${attempt}`
   }
 
-  const project = await prisma.projects.create({
-    data: {
-      user_id: user.id,
-      pattern_id: patternId,
-      slug,
-      title: pattern.title,
-      craft_type: pattern.craft_type,
-      size_made: pattern.selected_size,
-      started_at: new Date(),
-      sections: {
-        create: pattern.sections.map((section, idx) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let sectionData: any[]
+
+  if (manualSections && manualSections.length > 0) {
+    // Manual setup — no pattern_section_id link
+    sectionData = manualSections.map((s, idx) => ({
+      name: s.name,
+      sort_order: idx,
+      target_rows: s.target_rows ?? null,
+      current_step: 1,
+      current_row: 0,
+      completed: false,
+    }))
+  } else if (sizeName) {
+    // Find size-specific pattern_sections
+    const patternSize = await prisma.pattern_sizes.findFirst({
+      where: { pattern_id: patternId, name: sizeName },
+    })
+    const sizeSections = patternSize
+      ? await prisma.pattern_sections.findMany({
+          where: { pattern_id: patternId, size_id: patternSize.id },
+          include: { rows: { orderBy: { row_number: 'asc' } } },
+          orderBy: { sort_order: 'asc' },
+        })
+      : []
+
+    if (sizeSections.length > 0) {
+      sectionData = sizeSections.map((section, idx) => ({
+        pattern_section_id: section.id,
+        name: section.name,
+        sort_order: idx,
+        target_rows: section.rows.length > 0 ? getTotalExpandedRows(section.rows) : null,
+        current_step: 1,
+        current_row: 0,
+        completed: false,
+      }))
+    } else {
+      // Fall back to size-agnostic sections
+      sectionData = pattern.sections.length > 0
+        ? pattern.sections.map((section, idx) => ({
+            pattern_section_id: section.id,
+            name: section.name,
+            sort_order: idx,
+            target_rows: section.rows.length > 0 ? getTotalExpandedRows(section.rows) : null,
+            current_step: 1,
+            current_row: 0,
+            completed: false,
+          }))
+        : [{ name: 'Main', sort_order: 0 }]
+    }
+  } else {
+    sectionData = pattern.sections.length > 0
+      ? pattern.sections.map((section, idx) => ({
           pattern_section_id: section.id,
           name: section.name,
           sort_order: idx,
@@ -86,11 +130,25 @@ export async function POST(req: NextRequest) {
           current_step: 1,
           current_row: 0,
           completed: false,
-        })),
-      },
+        }))
+      : [{ name: 'Main', sort_order: 0 }]
+  }
+
+  const project = await prisma.projects.create({
+    data: {
+      user_id: user.id,
+      pattern_id: patternId,
+      pdf_upload_id: pdfUpload?.id ?? null,
+      slug,
+      title: pattern.title,
+      craft_type: pattern.craft_type,
+      size_made: sizeName ?? pattern.selected_size,
+      started_at: new Date(),
+      sections: { create: sectionData },
     },
     include: {
       sections: { orderBy: { sort_order: 'asc' } },
+      pdf_upload: true,
     },
   })
 

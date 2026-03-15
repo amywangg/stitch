@@ -86,6 +86,10 @@ A calendar grid showing one cell per day for the past year. Cell color intensity
 
 This feature is free for all users. No tier gating.
 
+## Monetization Role
+
+The heatmap is a **habit-building and retention feature**. Progress visualization (streaks, totals, the satisfying green grid) drives daily return visits. It also feeds into the AI time estimator (Pro), which uses crafting session data to calculate knitting speed and project completion dates — creating a natural upgrade path.
+
 ## Technical Notes
 
 - The heatmap query should use Prisma's `groupBy` on the `date` field with `_sum` on `duration_minutes`, filtered to the past 365 days. This is efficient with the `[user_id, date]` composite index.

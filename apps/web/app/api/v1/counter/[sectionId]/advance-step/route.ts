@@ -37,23 +37,32 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   let newStep: number
   let completed = false
+  let newRow = 0
 
   if (direction === 'back') {
     newStep = Math.max(1, section.current_step - 1)
+    // When going back, land at the last row of that step
+    const prevStepData = await prisma.pattern_rows.findFirst({
+      where: { section_id: section.pattern_section_id!, row_number: newStep },
+    })
+    newRow = prevStepData?.rows_in_step ?? 0
+    // Going back always un-completes
+    completed = false
   } else {
     newStep = section.current_step + 1
     if (newStep > totalSteps) {
       completed = true
       newStep = totalSteps // stay on last step, mark section complete
     }
+    newRow = 0 // start of new step
   }
 
   await prisma.project_sections.update({
     where: { id: sectionId },
     data: {
       current_step: newStep,
-      current_row: 0, // reset tap count for new step
-      completed,
+      current_row: newRow,
+      ...(direction === 'back' ? { completed: false } : completed ? { completed: true } : {}),
     },
   })
 

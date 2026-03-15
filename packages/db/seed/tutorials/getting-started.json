@@ -1,0 +1,192 @@
+[
+  {
+    "slug": "long-tail-cast-on",
+    "title": "Long-Tail Cast On",
+    "description": "Learn the most versatile and commonly used cast-on method, perfect for nearly every project",
+    "category": "stitches",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 1,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Estimate your tail length",
+        "content": "Before you begin, you need enough yarn in the tail to cast on all your stitches. A good rule of thumb is to allow about 1 inch of tail per stitch, plus an extra 6 inches for weaving in later. For example, if you are casting on 40 stitches, pull out roughly 46 inches of yarn from the ball before making your slip knot. It is better to overestimate than to run out partway through."
+      },
+      {
+        "step_number": 2,
+        "title": "Make a slip knot",
+        "content": "Create a loop with the yarn so the working yarn (the strand connected to the ball) crosses over the tail. Reach through the loop from behind, grab the working yarn, and pull it through to form a new loop. Slide this loop onto your needle and gently tighten it by pulling both strands. This slip knot counts as your first stitch. It should be snug on the needle but still slide freely."
+      },
+      {
+        "step_number": 3,
+        "title": "Position the yarn in your hand",
+        "content": "Hold the needle in your right hand with the slip knot on it. With your left hand, grab both yarn strands between your ring finger and pinky to anchor them against your palm. Separate the two strands by inserting your left thumb and index finger between them, then spread your thumb and index finger apart like a slingshot. The tail yarn should drape over your thumb and the working yarn over your index finger. This is called the slingshot position."
+      },
+      {
+        "step_number": 4,
+        "title": "Form the first cast-on stitch",
+        "content": "Bring the needle down and scoop it under the yarn on the outside of your thumb, moving from the bottom up. You will see a loop around your thumb. Now swing the needle tip over to the yarn on your index finger and scoop it by going over and behind that strand, catching it on the needle. Pull this strand back through the thumb loop by bringing the needle back down through the loop on your thumb. Release your thumb from the loop and gently tug the tail yarn to snug the new stitch onto the needle."
+      },
+      {
+        "step_number": 5,
+        "title": "Repeat to cast on remaining stitches",
+        "content": "Re-spread your thumb and index finger back into the slingshot position. The yarn will naturally fall back into place. Repeat the same motion: needle under the thumb loop, over and behind the index finger yarn, back through the thumb loop, then release and tighten. Keep your tension even so each stitch is the same size. The stitches should sit snugly on the needle but slide without forcing. Count your stitches as you go, remembering that the slip knot counts as one."
+      },
+      {
+        "step_number": 6,
+        "title": "Check your cast-on edge",
+        "content": "Once all stitches are on the needle, examine your cast-on edge. It should look like a neat row of interlocking V shapes along the bottom. The stitches should be evenly spaced and uniform in size. If some stitches are noticeably tighter or looser than others, it is worth starting over to practice consistent tension. A well-executed long-tail cast on creates a stretchy, attractive edge that works beautifully for most garments, accessories, and swatches."
+      }
+    ]
+  },
+  {
+    "slug": "the-knit-stitch",
+    "title": "The Knit Stitch",
+    "description": "Master the fundamental knit stitch, the building block of every knitting project",
+    "category": "stitches",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 2,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Hold your needles and yarn",
+        "content": "Hold the needle with your cast-on stitches in your left hand and the empty needle in your right hand, like holding a pencil or a knife, whichever feels more natural. The working yarn (attached to the ball) should hang down from the last stitch on the left needle, trailing behind your work. Wrap the yarn around your right index finger to maintain tension, or weave it through your fingers in whatever way lets you feed the yarn smoothly. Consistent tension is more important than which hold you choose."
+      },
+      {
+        "step_number": 2,
+        "title": "Insert the right needle",
+        "content": "Look at the first stitch on your left needle. Insert the tip of your right needle into this stitch from left to right, going in through the front of the loop. The right needle should pass behind the left needle, forming an X shape with the right needle sitting underneath the left. The tip of the right needle pokes out to the back of your work. This is the standard way to enter a stitch for a knit stitch and is sometimes described as going in knitwise."
+      },
+      {
+        "step_number": 3,
+        "title": "Wrap the yarn",
+        "content": "With your right index finger, bring the working yarn between the two needle tips from right to left, wrapping it counterclockwise around the right needle. The yarn should sit between the two needles, resting in the space where they cross. Be careful not to wrap too tightly or the stitch will be difficult to work on the next row. Equally, do not leave it so loose that the wrap slips off. A relaxed but controlled wrap is what you are aiming for."
+      },
+      {
+        "step_number": 4,
+        "title": "Pull through the new loop",
+        "content": "Using the tip of your right needle, catch the wrapped yarn and draw it back through the stitch on the left needle. You are pulling the yarn forward through the old stitch to create a new loop on the right needle. This can feel awkward at first because the needles are close together. Use a gentle scooping motion, angling the right needle tip slightly downward as you pull through. You should now have one new stitch sitting on your right needle."
+      },
+      {
+        "step_number": 5,
+        "title": "Slide the old stitch off",
+        "content": "Once the new loop is securely on the right needle, slide the old stitch off the left needle by gently pushing it toward the tip with your left thumb or by pulling the right needle to the right. The old stitch drops off the left needle, and the new stitch remains on the right. You have completed one knit stitch. The stitch on the right needle should look like a small V."
+      },
+      {
+        "step_number": 6,
+        "title": "Continue across the row",
+        "content": "Repeat the process for every stitch on the left needle: insert, wrap, pull through, slide off. When you reach the end of the row, all stitches will have moved from the left needle to the right. Swap hands so the full needle is in your left hand and the empty needle is in your right, then begin the next row. Knitting every stitch on every row produces garter stitch, a squishy, reversible fabric with ridged horizontal lines. Practice several rows until the motion feels rhythmic and your tension evens out."
+      }
+    ]
+  },
+  {
+    "slug": "the-purl-stitch",
+    "title": "The Purl Stitch",
+    "description": "Learn the purl stitch, the knit stitch's mirror image that unlocks stockinette and countless stitch patterns",
+    "category": "stitches",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 3,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Set up with yarn in front",
+        "content": "Hold the needle with stitches in your left hand and the empty needle in your right, just as for a knit stitch. The key difference is yarn position: bring the working yarn to the front of your work, between the two needle tips, so it hangs in front of the left needle. If the yarn is in back (as it would be for a knit stitch), simply drape it forward between the needles before you start. Having the yarn in front is essential for forming a purl stitch correctly."
+      },
+      {
+        "step_number": 2,
+        "title": "Insert the right needle purlwise",
+        "content": "Insert the tip of the right needle into the first stitch on the left needle from right to left, entering through the front of the loop. The right needle should point toward you and sit in front of the left needle. This is the opposite direction from a knit stitch and is called inserting purlwise. The two needles will form an X with the right needle on top, in front of your work."
+      },
+      {
+        "step_number": 3,
+        "title": "Wrap the yarn around the right needle",
+        "content": "With the yarn still in front, wrap it counterclockwise around the tip of the right needle. Bring the yarn over the top of the right needle from right to left, then let it drop back down to the front. The wrapped yarn should sit between the two needles. Keep your tension relaxed and even. This wrap is the yarn that will form your new purl stitch. It can help to hold the wrap gently with your right index finger to keep it from slipping off."
+      },
+      {
+        "step_number": 4,
+        "title": "Pull through the new loop",
+        "content": "Scoop the wrapped yarn back through the stitch on the left needle by pushing the right needle tip away from you, through the old stitch. This draws the new loop to the back of the work and leaves it sitting on the right needle. The motion feels like pushing the right needle backward through the stitch. It can be trickier than the knit stitch at first because you are pushing rather than pulling, but it becomes natural with practice."
+      },
+      {
+        "step_number": 5,
+        "title": "Drop the old stitch and continue",
+        "content": "Slide the old stitch off the left needle, just as you would for a knit stitch. The new purl stitch stays on the right needle. Continue purling across the entire row. When you look at the side facing you, purl stitches create small horizontal bumps. If you alternate one row of knit stitches with one row of purl stitches when working flat, you create stockinette stitch, the smooth V-patterned fabric seen in most commercial knitwear. Practice purling until your tension matches your knit stitches for an even fabric."
+      }
+    ]
+  },
+  {
+    "slug": "standard-bind-off",
+    "title": "Standard Bind Off",
+    "description": "Learn how to securely finish your knitting with the basic bind-off technique",
+    "category": "stitches",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 4,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Knit the first two stitches",
+        "content": "When you are ready to bind off, knit the first two stitches on your left needle as you normally would. You should now have exactly two stitches on your right needle and the rest of the row still waiting on the left needle. These two stitches are the starting point for the bind-off chain. Make sure you knit them at your normal tension or even slightly looser, as bind offs tend to come out tighter than the rest of your fabric."
+      },
+      {
+        "step_number": 2,
+        "title": "Pass the first stitch over the second",
+        "content": "Insert the tip of your left needle into the first stitch you knitted (the one farthest from the tip of the right needle). Lift this stitch up and over the second stitch and completely off the right needle. One stitch remains on the right needle. You have bound off one stitch. The passed-over stitch now forms the first link in a chain that will run along the top edge of your work."
+      },
+      {
+        "step_number": 3,
+        "title": "Knit one more and repeat",
+        "content": "Knit the next stitch from the left needle so you have two stitches on the right needle again. Pass the first stitch over the second, just as before. Continue this rhythm: knit one stitch, pass the previous stitch over it. Each pass-over binds off one more stitch. Work at a relaxed tension to keep the bind-off edge from pulling in. If you know your bind off tends to be tight, try using a needle one size larger in your right hand."
+      },
+      {
+        "step_number": 4,
+        "title": "Bind off the last stitch",
+        "content": "When you have worked all the way across and only one stitch remains on the right needle with no stitches left on the left needle, cut the yarn leaving a tail of about 6 inches. Pull the tail through the last loop on the needle and tug gently to close it. This secures the end so your work cannot unravel. Thread the tail onto a tapestry needle and weave it in along the bind-off edge or through nearby stitches on the wrong side to hide it completely."
+      },
+      {
+        "step_number": 5,
+        "title": "Check your bind-off edge",
+        "content": "Lay your work flat and examine the bind-off edge. It should form a neat chain of interlocking loops along the top. The edge should lie flat without curling or flaring. Gently stretch it to make sure it has enough give for its intended purpose. If the edge is too tight and pulls the fabric in, you may need to rip back and redo the bind off using a looser tension or a larger needle. A good bind off is firm enough to prevent unraveling but flexible enough to match the stretch of the knitted fabric below it."
+      }
+    ]
+  },
+  {
+    "slug": "reading-a-knitting-pattern",
+    "title": "Reading a Knitting Pattern",
+    "description": "Decode the abbreviations, structure, and conventions used in written knitting patterns",
+    "category": "stitches",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 5,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Understand the header information",
+        "content": "Every knitting pattern starts with essential details you should read before casting on. Look for the finished measurements or sizes offered, the yarn weight and yardage required, the recommended needle size, the gauge swatch instructions, and any notions you will need like stitch markers or cable needles. The gauge section is especially important: it tells you how many stitches and rows per inch or centimeter the designer used. If your gauge does not match, your finished piece will be the wrong size."
+      },
+      {
+        "step_number": 2,
+        "title": "Learn common abbreviations",
+        "content": "Knitting patterns use standard abbreviations to save space. The most common ones you will encounter are: k (knit), p (purl), st or sts (stitch or stitches), RS (right side), WS (wrong side), rep (repeat), tog (together), sl (slip), yo (yarn over), CO (cast on), BO (bind off), inc (increase), dec (decrease), beg (beginning), and rem (remaining). Most patterns include an abbreviation key. Always check the pattern's own key first, since some designers use non-standard abbreviations for specialty stitches."
+      },
+      {
+        "step_number": 3,
+        "title": "Read brackets, asterisks, and parentheses",
+        "content": "Patterns use punctuation to indicate repeats. An asterisk (*) marks the beginning of a section you will repeat. For example, *k2, p2; rep from * to end means you alternate knitting two and purling two across the entire row. Square brackets [ ] or parentheses ( ) group stitches that are worked together or repeated a specific number of times, like [k1, yo, k1] in same st or (k2, p2) 5 times. Multiple sizes are often listed in parentheses separated by commas, such as CO 80 (90, 100, 110) sts, where you follow the number for your chosen size throughout."
+      },
+      {
+        "step_number": 4,
+        "title": "Follow the pattern structure",
+        "content": "Most patterns are organized into sections: body, sleeves, yoke, finishing, and so on. Read through the entire pattern once before you start knitting so you know what is coming and can spot any techniques you need to learn ahead of time. Pay attention to phrases like at the same time, which means you will need to do two things in parallel, such as shaping armholes while continuing a stitch pattern. Mark your current row and size with a highlighter or row counter so you do not lose your place."
+      },
+      {
+        "step_number": 5,
+        "title": "Understand stitch counts and checking",
+        "content": "Patterns frequently include stitch counts at the end of key rows, written as something like 48 sts or (42, 48, 54, 60) sts. Always count your stitches when you see these checkpoints. If your count does not match, go back and find the error before continuing. It is much easier to fix a mistake one row back than to discover ten rows later that your piece is the wrong width. Use stitch markers between pattern repeats to make counting and error-catching easier as you work."
+      }
+    ]
+  }
+]

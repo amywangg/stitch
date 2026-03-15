@@ -88,7 +88,7 @@ Patterns are stored with full structured data: sections, rows with instructions,
 - [ ] Web PDF upload page with drag-and-drop
 - [ ] Web pattern review page
 - [ ] Pattern search by craft type, difficulty, yarn weight, tags
-- [ ] Enforce free tier limits (10 patterns, 2 PDF uploads/month)
+- [ ] Enforce free tier limits (15 patterns, 2 PDF uploads/month)
 
 ## Dependencies
 
@@ -99,14 +99,18 @@ Patterns are stored with full structured data: sections, rows with instructions,
 
 ## Tier Gating
 
-| Feature | Free | Pro |
-|---|---|---|
-| Saved patterns | 10 max | Unlimited |
-| PDF uploads | 2/month | Unlimited |
-| AI pattern parsing | No | Yes |
-| Manual pattern creation | Yes | Yes |
-| Pattern reading mode | Yes | Yes |
-| Gauge calculator | Yes | Yes |
+| Feature | Free | Plus | Pro |
+|---|---|---|---|
+| Saved patterns | 15 max | Unlimited | Unlimited |
+| PDF parsing (AI) | 2/month | 5/month | Unlimited |
+| PDF storage | 2 | 5 | Unlimited |
+| Manual pattern creation | Yes | Yes | Yes |
+| Pattern reading mode | Yes | Yes | Yes |
+| Gauge calculator | Yes | Yes | Yes |
+
+PDF parsing is available on all tiers (metered). This is critical because the row counter, glossary linking, and AI tools all depend on patterns being in structured format. Without parsing, most of the app's value is inaccessible.
+
+New users receive 14 days of full Pro access (reverse trial). All limits expand to unlimited during trial, then revert to the user's tier. Patterns created during trial are never deleted.
 
 ## Technical Notes
 

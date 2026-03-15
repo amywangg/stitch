@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getDbUser } from '@/lib/auth'
 import { getRavelryPatternDetail } from '@/lib/ravelry-search'
+import { fetchRavelryDownload } from '@/lib/ravelry-download'
 import { FREE_LIMITS } from '@/lib/pro-gate'
 import { slugify } from '@/lib/utils'
 import { createClient } from '@supabase/supabase-js'
@@ -70,37 +71,20 @@ export async function POST(_req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: 'Pattern is not free or has no download link' }, { status: 400 })
   }
 
-  // Download the PDF from Ravelry's download URL
+  // Download the PDF from Ravelry's download URL (requires authentication)
   let pdfBuffer: Buffer
-  let contentType = 'application/pdf'
   try {
-    const dlRes = await fetch(detail.download_location.url, {
-      redirect: 'follow',
-      headers: { 'User-Agent': 'Stitch/1.0' },
-    })
-
-    if (!dlRes.ok) {
+    const buf = await fetchRavelryDownload(detail.download_location.url, user.id)
+    if (!buf) {
       return NextResponse.json(
-        { error: `Download failed: ${dlRes.status}` },
+        { error: 'Downloaded file is not a valid PDF' },
         { status: 502 },
       )
     }
-
-    contentType = dlRes.headers.get('content-type') ?? 'application/pdf'
-
-    // Verify it's actually a PDF
-    const arrayBuf = await dlRes.arrayBuffer()
-    pdfBuffer = Buffer.from(arrayBuf)
+    pdfBuffer = buf
 
     if (pdfBuffer.length > MAX_PDF_SIZE) {
       return NextResponse.json({ error: 'PDF is too large (max 20MB)' }, { status: 400 })
-    }
-
-    if (pdfBuffer.length < 100) {
-      return NextResponse.json(
-        { error: 'Downloaded file is too small — may not be a valid PDF' },
-        { status: 502 },
-      )
     }
   } catch (err) {
     console.error('[ravelry-download] fetch failed:', err)
@@ -113,8 +97,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
   // Upload to Supabase Storage
   const timestamp = Date.now()
   const safeFileName = slugify(detail.name).slice(0, 80)
-  const ext = contentType.includes('pdf') ? 'pdf' : 'pdf'
-  const storagePath = `${user.id}/${timestamp}-ravelry-${ravelryId}-${safeFileName}.${ext}`
+  const storagePath = `${user.id}/${timestamp}-ravelry-${ravelryId}-${safeFileName}.pdf`
 
   const { error: uploadError } = await supabaseAdmin.storage
     .from(BUCKET)
@@ -151,11 +134,37 @@ export async function POST(_req: NextRequest, { params }: Params) {
     where: { user_id: user.id, ravelry_id: String(ravelryId) },
   })
 
+  const richData = {
+    title: detail.name,
+    description: detail.notes ?? null,
+    notes_html: detail.notes_html ?? null,
+    craft_type: detail.craft ?? 'knitting',
+    difficulty: detail.difficulty ? String(detail.difficulty) : null,
+    garment_type: detail.pattern_categories?.[0] ?? null,
+    designer_name: detail.designer ?? null,
+    yarn_weight: detail.weight ?? null,
+    needle_size_mm: detail.gauge_needle_mm ?? null,
+    needle_sizes: detail.needle_sizes ?? [],
+    sizes_available: detail.sizes_available ?? null,
+    gauge_stitches_per_10cm: detail.gauge_stitches ?? null,
+    gauge_rows_per_10cm: detail.gauge_rows ?? null,
+    gauge_stitch_pattern: detail.gauge_stitch_pattern ?? null,
+    rating: detail.rating ?? null,
+    rating_count: detail.rating_count ?? null,
+    yardage_min: detail.yardage_min,
+    yardage_max: detail.yardage_max,
+    source_url: detail.url,
+    pdf_url: pdfUrl,
+    cover_image_url: detail.photo_url ?? null,
+    ravelry_id: String(ravelryId),
+    source_free: detail.free,
+  }
+
   let pattern
   if (existingPattern) {
     pattern = await prisma.patterns.update({
       where: { id: existingPattern.id },
-      data: { pdf_url: pdfUrl, deleted_at: null },
+      data: { ...richData, deleted_at: null },
     })
   } else {
     let slug = slugify(detail.name)
@@ -169,17 +178,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
       data: {
         user_id: user.id,
         slug,
-        title: detail.name,
-        craft_type: detail.craft,
-        difficulty: detail.difficulty ? String(detail.difficulty) : null,
-        designer_name: detail.designer,
-        yarn_weight: detail.weight,
-        yardage_min: detail.yardage_min,
-        yardage_max: detail.yardage_max,
-        source_url: detail.url,
-        pdf_url: pdfUrl,
-        cover_image_url: detail.photo_url,
-        ravelry_id: String(ravelryId),
+        ...richData,
       },
     })
   }
@@ -189,6 +188,18 @@ export async function POST(_req: NextRequest, { params }: Params) {
     where: { id: pdfUpload.id },
     data: { pattern_id: pattern.id },
   })
+
+  // Store all photos
+  if (detail.photos && detail.photos.length > 0) {
+    await prisma.pattern_photos.deleteMany({ where: { pattern_id: pattern.id } })
+    await prisma.pattern_photos.createMany({
+      data: detail.photos.map((url: string, i: number) => ({
+        pattern_id: pattern.id,
+        url,
+        sort_order: i,
+      })),
+    })
+  }
 
   return NextResponse.json({ success: true, data: pattern }, { status: 201 })
 }

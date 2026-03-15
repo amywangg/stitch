@@ -40,6 +40,7 @@ struct RavelryConnection: Codable {
     let importError: String?
     let syncToRavelry: Bool
     let connected: Bool
+    let tokenValid: Bool?
 
     struct ImportStats: Codable {
         let currentPhase: String?
@@ -71,6 +72,7 @@ struct Project: Codable, Identifiable {
     var craftType: String
     var sizeMade: String?
     var modsNotes: String?
+    let category: String?
     let ravelryId: String?
     let ravelryPermalink: String?
     var pdfUploadId: String?
@@ -86,11 +88,36 @@ struct Project: Codable, Identifiable {
     var pdfUpload: PdfUpload?
     var tags: [ProjectTag]?
     var pattern: PatternRef?
+    var patternId: String?
+
+    /// Best available cover image URL with fallback chain:
+    /// 1. User's own project photos (highest priority)
+    /// 2. Linked pattern's cover image
+    var coverImageUrl: String? {
+        if let userPhoto = photos?.first?.url {
+            return userPhoto
+        }
+        if let patternCover = pattern?.coverImageUrl {
+            return patternCover
+        }
+        return nil
+    }
 }
 
 struct PatternRef: Codable {
     let id: String
     let title: String
+    let designerName: String?
+    let coverImageUrl: String?
+    let craftType: String?
+    let difficulty: String?
+    let yarnWeight: String?
+    let gaugeStitchesPer10cm: Double?
+    let gaugeRowsPer10cm: Double?
+    let needleSizeMm: Double?
+    let sizesAvailable: String?
+    let sourceUrl: String?
+    let aiParsed: Bool?
     let sizes: [PatternSize]?
 }
 
@@ -206,45 +233,56 @@ struct Pattern: Codable, Identifiable, Hashable {
     let pdfUrl: String?
     let coverImageUrl: String?
     let isPublic: Bool
+    let sourceFree: Bool?
+    let ravelryId: String?
     let aiParsed: Bool
     let needleSizeMm: Double?
+    let needleSizes: [String]?
+    let sizesAvailable: String?
     let gaugeStitchesPer10cm: Double?
     let gaugeRowsPer10cm: Double?
+    let gaugeStitchPattern: String?
     let yarnWeight: String?
     let selectedSize: String?
+    let rating: Double?
+    let ratingCount: Int?
+    let notesHtml: String?
     let createdAt: Date
     let updatedAt: Date
+    let yardageMin: Int?
+    let yardageMax: Int?
+    let isQueued: Bool?
     let folder: PatternFolderRef?
     let sections: [PatternSection]?
     let sizes: [PatternSize]?
+    let photos: [PatternPhoto]?
+    let pdfUploads: [PdfUpload]?
 
-    // Explicit keys for fields where convertFromSnakeCase may not match
-    // (e.g., gauge_stitches_per_10cm → gaugeStitchesPer10cm)
-    enum CodingKeys: String, CodingKey {
-        case id
-        case userId = "user_id"
-        case folderId = "folder_id"
-        case slug, title, description
-        case craftType = "craft_type"
-        case difficulty
-        case garmentType = "garment_type"
-        case designerName = "designer_name"
-        case sourceUrl = "source_url"
-        case pdfUrl = "pdf_url"
-        case coverImageUrl = "cover_image_url"
-        case isPublic = "is_public"
-        case aiParsed = "ai_parsed"
-        case needleSizeMm = "needle_size_mm"
-        case gaugeStitchesPer10cm = "gauge_stitches_per_10cm"
-        case gaugeRowsPer10cm = "gauge_rows_per_10cm"
-        case yarnWeight = "yarn_weight"
-        case selectedSize = "selected_size"
-        case createdAt = "created_at"
-        case updatedAt = "updated_at"
-        case folder, sections, sizes
+    var firstPdfUploadId: String? { pdfUploads?.first?.id }
+
+    /// All carousel image URLs: photos array if available, otherwise fallback to cover image
+    var allPhotoUrls: [String] {
+        if let photos, !photos.isEmpty {
+            return photos.map(\.url)
+        }
+        if let coverImageUrl {
+            return [coverImageUrl]
+        }
+        return []
     }
 
     static func == (lhs: Pattern, rhs: Pattern) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+struct PatternPhoto: Codable, Identifiable, Hashable {
+    let id: String
+    let patternId: String
+    let url: String
+    let sortOrder: Int
+    let caption: String?
+
+    static func == (lhs: PatternPhoto, rhs: PatternPhoto) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
@@ -578,38 +616,6 @@ struct QueueItem: Identifiable, Codable {
     var pattern: Pattern?
     var pdfUpload: PdfUpload?
 
-    /// Synthesize a Project so queue items can reuse project card views
-    var queueProject: Project? {
-        guard let pattern else { return nil }
-        return Project(
-            id: id,
-            userId: "",
-            slug: pattern.slug,
-            title: pattern.title,
-            description: pattern.description,
-            status: "queued",
-            craftType: pattern.craftType,
-            sizeMade: nil,
-            modsNotes: nil,
-            ravelryId: ravelryQueueId,
-            ravelryPermalink: nil,
-            pdfUploadId: pdfUploadId,
-            startedAt: nil,
-            finishedAt: nil,
-            deletedAt: nil,
-            createdAt: pattern.createdAt,
-            updatedAt: pattern.updatedAt,
-            sections: nil,
-            photos: pattern.coverImageUrl.map {
-                [ProjectPhoto(id: "cover", projectId: id, url: $0, caption: nil, sortOrder: 0)]
-            },
-            yarns: nil,
-            gauge: nil,
-            pdfUpload: pdfUpload,
-            tags: nil,
-            pattern: nil
-        )
-    }
 }
 
 // MARK: - Needles
@@ -790,6 +796,7 @@ struct InstructionData: Codable {
     let stitchCount: Int?
     let rowType: String?
     let isRepeat: Bool?
+    let isOpenEnded: Bool?
     let position: StepPosition?
     let progress: SectionProgress?
     let autoAdvanced: Bool?
@@ -876,5 +883,169 @@ struct PdfSignedUrl: Codable {
     let status: String
     let url: String
     let expiresIn: Int
+}
+
+// MARK: - PDF Parse Flow
+
+struct RavelryMatchCandidate: Codable, Identifiable {
+    var id: Int { ravelryId }
+    let ravelryId: Int
+    let name: String
+    let permalink: String
+    let craft: String?
+    let weight: String?
+    let designer: String?
+    let photoUrl: String?
+    let free: Bool
+    let difficulty: Double?
+    let rating: Double?
+}
+
+struct ParseResponse: Codable {
+    let pattern: Pattern
+    let meta: ParseMeta
+    let ravelryMatches: [RavelryMatchCandidate]?
+    let nextStep: String?
+
+    struct ParseMeta: Codable {
+        let pageCount: Int
+        let parsedTitle: String?
+        let parsedDesigner: String?
+    }
+}
+
+struct SizeRecommendation: Codable, Identifiable {
+    var id: String { name }
+    let name: String
+    let sortOrder: Int
+    let easeCm: Double?
+    let fit: String?
+    let recommendation: String?
+    let score: Int?
+}
+
+// MARK: - Crafting Sessions
+
+struct CraftingSession: Codable, Identifiable {
+    let id: String
+    let userId: String
+    let projectId: String?
+    let date: Date
+    let startedAt: Date?
+    let endedAt: Date?
+    let durationMinutes: Int
+    let activeMinutes: Int?
+    let source: String
+    let notes: String?
+    let rowsStart: Int?
+    let rowsEnd: Int?
+    let sectionStart: String?
+    let sectionEnd: String?
+    let stepStart: Int?
+    let stepEnd: Int?
+    let createdAt: Date
+    let project: SessionProjectRef?
+}
+
+struct SessionProjectRef: Codable {
+    let id: String
+    let title: String
+    let slug: String
+}
+
+// MARK: - Glossary
+
+struct GlossaryTerm: Codable, Identifiable {
+    let id: String
+    let abbreviation: String?
+    let name: String
+    let slug: String
+    let category: String
+    let craftType: String
+    let definition: String
+    let howTo: String?
+    let tips: String?
+    let videoUrl: String?
+    let videoStartS: Int?
+    let videoEndS: Int?
+    let videoIsShort: Bool?
+    let videoAlternates: [String]?
+    let difficulty: String
+    let sortOrder: Int?
+    let synonyms: [GlossarySynonym]?
+}
+
+struct GlossarySynonym: Codable, Identifiable {
+    let id: String
+    let synonym: String
+    let region: String?
+}
+
+// MARK: - Tutorial
+
+struct Tutorial: Codable, Identifiable {
+    let id: String
+    let slug: String
+    let title: String
+    let description: String?
+    let category: String
+    let craftType: String
+    let difficulty: String
+    let sortOrder: Int
+    let steps: [TutorialStep]?
+    let count: TutorialCount?
+
+    enum CodingKeys: String, CodingKey {
+        case id, slug, title, description, category, craftType, difficulty, sortOrder, steps
+        case count = "_count"
+    }
+}
+
+struct TutorialStep: Codable, Identifiable {
+    let id: String
+    let tutorialId: String
+    let stepNumber: Int
+    let title: String
+    let content: String
+    let imageUrl: String?
+    let videoUrl: String?
+}
+
+struct TutorialCount: Codable {
+    let steps: Int
+}
+
+struct TutorialProgress: Codable {
+    let id: String
+    let userId: String
+    let tutorialId: String
+    let completed: Bool
+    let lastStep: Int
+    let completedAt: Date?
+}
+
+// MARK: - Manual Section (Start Pattern Flow)
+
+struct ManualSection: Identifiable {
+    let id = UUID()
+    var name: String
+    var targetRows: Int?
+}
+
+// MARK: - Crafting Sessions
+
+struct SessionSummary: Codable {
+    let totalMinutes: Int
+    let activeMinutes: Int
+    let rowsWorked: Int
+    let sectionStart: String?
+    let sectionEnd: String?
+    let stepStart: Int?
+    let stepEnd: Int?
+}
+
+struct EndSessionResponse: Codable {
+    let session: CraftingSession
+    let summary: SessionSummary
 }
 

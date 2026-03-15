@@ -1,0 +1,623 @@
+[
+  {
+    "abbreviation": null,
+    "name": "Mattress Stitch",
+    "slug": "mattress-stitch",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "An invisible seaming technique that joins two pieces of knitted fabric by working under the horizontal bars between the first and second stitches on each side. The seam is virtually undetectable on the right side and creates a smooth, flat join.",
+    "how_to": "1. Lay both pieces flat, right sides facing up, with edges aligned side by side.\n2. Thread a tapestry needle with matching yarn.\n3. Insert the needle under the horizontal bar between the first and second stitches on the right piece, pulling yarn through.\n4. Cross to the left piece and insert the needle under the corresponding horizontal bar between the first and second stitches.\n5. Continue alternating between sides, picking up one or two bars at a time.\n6. After every few stitches, gently pull the yarn to draw the pieces together.\n7. The edge stitches will roll to the wrong side, creating an invisible seam.",
+    "tips": "Work with a long tail if possible to avoid joining new yarn mid-seam. Pull the seaming yarn firmly but not so tight that the fabric puckers. Matching the row tension on both pieces makes this seam nearly invisible.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "invisible seam",
+        "region": null
+      },
+      {
+        "synonym": "ladder stitch seam",
+        "region": null
+      },
+      {
+        "synonym": "vertical invisible seam",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=PbgYNvkEZQM",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Kitchener Stitch",
+    "slug": "kitchener-stitch",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A grafting technique that joins two sets of live stitches seamlessly by mimicking a row of knitting with a tapestry needle. Named after Field Marshal Horatio Herbert Kitchener, it produces a completely invisible join and is most commonly used to close the toes of socks.",
+    "how_to": "1. Place live stitches on two parallel needles, with wrong sides together and needle tips pointing to the right.\n2. Thread a tapestry needle with a tail at least three times the width of the piece.\n3. Setup: go through the first stitch on the front needle purlwise (leave on), then through the first stitch on the back needle knitwise (leave on).\n4. Front needle: go through the first stitch knitwise and slip it off, then through the next stitch purlwise and leave it on.\n5. Back needle: go through the first stitch purlwise and slip it off, then through the next stitch knitwise and leave it on.\n6. Repeat steps 4-5 until all stitches are grafted.\n7. Adjust tension by working back through the grafted row with the needle tip, evening out each stitch.",
+    "tips": "Repeat the mantra: knit off, purl on (front); purl off, knit on (back). Keep your working yarn below the needles at all times. Adjust tension at the end rather than trying to get it perfect as you go. Practice on scrap yarn first.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "grafting",
+        "region": null
+      },
+      {
+        "synonym": "Kitchener grafting",
+        "region": null
+      },
+      {
+        "synonym": "stocking stitch grafting",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=DaJDKUEdUJQ",
+    "video_is_short": false,
+    "video_alternates": [
+      "1L2QrZfe67s"
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Wet Blocking",
+    "slug": "wet-blocking",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A finishing process where knitted fabric is fully submerged in water, then pinned to specific measurements to set the final shape and dimensions. Wet blocking evens out stitches, opens up lace patterns, and relaxes the fabric into its intended drape.",
+    "how_to": "1. Fill a basin or sink with lukewarm water and add a small amount of wool wash or no-rinse soak if desired.\n2. Submerge the knitted piece completely, gently pressing it down to saturate the fibers. Soak for 15-30 minutes.\n3. Lift the piece out, supporting its weight to avoid stretching. Do not wring.\n4. Lay it flat on a clean towel, roll the towel up, and press firmly to remove excess water.\n5. Lay the damp piece on blocking mats or a clean flat surface.\n6. Pin to the desired dimensions using rust-proof T-pins or blocking pins, measuring as you go.\n7. Allow to dry completely before removing pins, typically 24-48 hours.",
+    "tips": "Always check the yarn label for fiber content before wet blocking. Superwash wool and cotton can stretch significantly when wet, so pin carefully. Acrylic yarn does not respond well to wet blocking; use steam blocking instead. For lace, use blocking wires along straight edges for a smooth finish.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "soaking",
+        "region": null
+      },
+      {
+        "synonym": "wash blocking",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=XsX8K7RlhoQ",
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": null,
+    "name": "Steam Blocking",
+    "slug": "steam-blocking",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A finishing technique that uses steam from an iron or garment steamer held above the knitted fabric to relax fibers and set the shape without fully wetting the piece. Particularly effective for synthetic fibers and blends that do not respond well to wet blocking.",
+    "how_to": "1. Pin the knitted piece to blocking mats or an ironing board at the desired dimensions.\n2. Set your iron to the steam setting appropriate for the fiber content, or use a garment steamer.\n3. Hold the iron or steamer 1-2 inches above the fabric surface. Never press the iron directly onto the knitting.\n4. Move slowly across the entire surface, allowing steam to penetrate the fibers.\n5. For stubborn areas, hold the steam slightly longer.\n6. Allow the piece to cool and dry completely before removing pins.\n7. Check measurements and repeat if needed.",
+    "tips": "Never touch the iron directly to the knitted surface, as this can flatten the texture permanently, especially with acrylic. Test on a swatch first. Steam blocking is faster than wet blocking but gives less dramatic results on natural fibers. It is the preferred method for acrylic and acrylic blends.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "steam pressing",
+        "region": null
+      },
+      {
+        "synonym": "hover steaming",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Spray Blocking",
+    "slug": "spray-blocking",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A quick blocking method where the knitted piece is pinned to shape while dry, then thoroughly misted with water from a spray bottle. It is a lighter alternative to wet blocking, useful for pieces that need minor adjustment or for fibers that should not be fully submerged.",
+    "how_to": "1. Lay the knitted piece on blocking mats or a clean towel.\n2. Pin it to the desired dimensions using rust-proof pins.\n3. Fill a clean spray bottle with room-temperature water.\n4. Mist the piece evenly and thoroughly until the fabric is damp but not dripping.\n5. Gently pat the surface to help water absorb into the fibers.\n6. Allow to dry completely before removing pins.",
+    "tips": "Spray blocking works best for minor shape adjustments. For heavily textured or lace work, wet blocking gives more dramatic and lasting results. This method is convenient for quick finishes or pieces that are nearly the right shape already.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "mist blocking",
+        "region": null
+      },
+      {
+        "synonym": "spritz blocking",
+        "region": null
+      }
+    ],
+    "video_url": null,
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": null,
+    "name": "Seaming",
+    "slug": "seaming",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "The general process of joining two or more knitted pieces together using a tapestry needle and yarn. Seaming encompasses various techniques including mattress stitch, backstitch, and whip stitch, each producing different results in terms of bulk, visibility, and stretch.",
+    "how_to": "1. Block all pieces before seaming so they are the correct size and shape.\n2. Pin the pieces together, matching key points such as armhole markers, decreases, and row counts.\n3. Choose a seaming method appropriate for the edge type and the desired finish.\n4. Thread a tapestry needle with matching yarn or the cast-on/bind-off tail if available.\n5. Work the chosen seaming technique along the edge.\n6. Weave in the seaming yarn securely when finished.",
+    "tips": "Always seam in the same direction (bottom to top) to avoid twisting. Pin pieces together before seaming to ensure even distribution. Use the same yarn as the project unless it is too thick or textured, in which case use a smoother yarn in a matching color.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "sewing up",
+        "region": null
+      },
+      {
+        "synonym": "joining",
+        "region": null
+      },
+      {
+        "synonym": "assembly",
+        "region": null
+      }
+    ],
+    "video_url": null,
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": null,
+    "name": "Backstitch Seam",
+    "slug": "backstitch-seam",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A firm, stable seaming technique borrowed from hand sewing. The backstitch creates a strong, non-stretchy seam by working one stitch forward and then one stitch back along the edge. It is ideal for shoulder seams and areas requiring structural support.",
+    "how_to": "1. Pin the two pieces together with right sides facing each other.\n2. Thread a tapestry needle with matching yarn.\n3. Bring the needle up through both layers, one stitch in from the edge.\n4. Insert the needle one stitch back (toward the starting point) and bring it up two stitches ahead of where the yarn last emerged.\n5. Insert the needle back into the point where the previous stitch ended, and bring it up two stitches ahead again.\n6. Repeat along the entire seam.\n7. Secure the yarn at the end.",
+    "tips": "Work the seam one stitch in from the edge to keep it neat. Keep stitches small and even for the best result. The backstitch seam adds some bulk, so it is best for areas that will not be visible or where stability matters more than a flat finish.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "back stitch seam",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Whip Stitch Seam",
+    "slug": "whip-stitch-seam",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A simple seaming technique where the needle wraps over the edges of both pieces in a spiral motion. Whip stitch is quick and easy but creates a visible ridge on one side, making it best for seams that will be hidden or for less experienced knitters.",
+    "how_to": "1. Align the two pieces with right sides together (or wrong sides together if you want the ridge on the outside as a design element).\n2. Thread a tapestry needle with matching yarn.\n3. Insert the needle through both layers from back to front, close to the edge.\n4. Bring the needle over the top of both edges and insert it again from back to front, one stitch to the left.\n5. Continue along the entire seam, keeping stitches evenly spaced.\n6. Secure the yarn at the end.",
+    "tips": "Keep stitches consistent in depth and spacing for the neatest result. Do not pull too tightly or the seam will pucker. Whip stitch is a good choice for joining granny squares and other motifs.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "overcast stitch",
+        "region": null
+      },
+      {
+        "synonym": "overcasting",
+        "region": null
+      },
+      {
+        "synonym": "overhand seam",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Picking Up Stitches",
+    "slug": "picking-up-stitches",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "The technique of creating new live stitches along a finished edge of knitted fabric (such as a neckline, armhole, or button band) using a knitting needle. Technically distinct from picking up and knitting, this step only places loops on the needle without working them.",
+    "how_to": "1. With the right side facing, insert the knitting needle under both legs of a stitch along the edge (or through the selvedge stitch).\n2. Wrap the working yarn around the needle as if to knit.\n3. Pull the loop through to the front, placing a new stitch on the needle.\n4. Continue along the edge, spacing pick-ups evenly according to the pattern instructions.\n5. Once all stitches are picked up, begin working the new section (ribbing, collar, band, etc.).",
+    "tips": "Use a needle one or two sizes smaller than the main needle to pick up stitches, then switch to the correct size on the first working row. For vertical edges, pick up roughly 3 stitches for every 4 rows. For horizontal edges, pick up stitch for stitch. Mark the edge into equal sections and pick up an even number in each section to avoid gaps or bunching.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "pick up stitches",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=M0iS93ZcopU",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "PU&K",
+    "name": "Picking Up and Knitting",
+    "slug": "picking-up-and-knitting",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A combined technique where new stitches are created and knitted in a single motion along a finished edge. The needle is inserted through the fabric edge, yarn is wrapped around and pulled through, creating a live stitch on the needle. This is what most patterns mean when they say 'pick up stitches.'",
+    "how_to": "1. Hold the finished piece with the right side facing you and the edge along the top.\n2. Insert the working needle from front to back through the edge stitch or between stitches.\n3. Wrap the yarn around the needle and pull through, exactly as if knitting a stitch.\n4. One new stitch is now on the needle.\n5. Repeat along the edge, following the pattern's stitch count.\n6. Once all stitches are on the needle, turn and work the next row.",
+    "tips": "The distinction between picking up and picking up and knitting matters for appearance. When a pattern says 'pick up and knit,' it generally means this combined method. Space stitches evenly and avoid picking up through loose or stretched edge loops.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "pick up and knit",
+        "region": null
+      },
+      {
+        "synonym": "PUK",
+        "region": null
+      }
+    ],
+    "video_url": null,
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": null,
+    "name": "Weaving In Ends",
+    "slug": "weaving-in-ends",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "The process of securing yarn tails from cast-on, bind-off, color changes, and new yarn joins by threading them through the back of the knitted fabric with a tapestry needle. Properly woven ends are invisible from the right side and resist working loose over time.",
+    "how_to": "1. Thread the yarn tail onto a tapestry needle.\n2. On the wrong side of the fabric, weave the needle through the backs of stitches (the purl bumps in stockinette) for 1-2 inches.\n3. Change direction and weave back for about half an inch to lock the end in place.\n4. Gently stretch the fabric to allow the woven end to settle, then trim the excess close to the surface.\n5. For ribbing or textured stitches, follow the path of existing stitches to keep the end hidden.",
+    "tips": "Weave ends in the same direction as the row for the most invisible result. In colorwork, weave each color into stitches of the same color to avoid show-through. Do not weave across more than a few inches or the fabric may lose stretch. Leave at least a 6-inch tail when joining new yarn to make weaving easier.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "darning in ends",
+        "region": null
+      },
+      {
+        "synonym": "sewing in ends",
+        "region": null
+      },
+      {
+        "synonym": "finishing ends",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=XL4hfv2ZHhw",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Duplicate Stitch",
+    "slug": "duplicate-stitch",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "An embroidery technique worked on top of finished stockinette fabric that traces the path of existing knit stitches with a contrasting yarn. Also known as Swiss darning, it is used to add small colorwork motifs after knitting, correct color mistakes, or reinforce worn areas.",
+    "how_to": "1. Thread a tapestry needle with the contrast yarn.\n2. Bring the needle up from the wrong side at the base of the V of the stitch to be covered.\n3. Insert the needle under both legs of the stitch directly above (right to left), pulling the yarn through.\n4. Insert the needle back down at the base of the V where you started.\n5. The contrast yarn now covers the original stitch completely.\n6. Move to the next stitch and repeat.\n7. Weave in ends on the wrong side when finished.",
+    "tips": "Use yarn of the same weight as the original fabric for the best coverage. Work with a loose tension so the duplicate stitches sit on top of the original stitches without distorting the fabric. This technique is ideal for adding small motifs (initials, small flowers) without knitting intarsia.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "Swiss darning",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Crochet Edging",
+    "slug": "crochet-edging",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A decorative or functional border added to a finished knitted piece using a crochet hook. Single crochet edging is the most common, providing a neat, firm edge that prevents curling. More elaborate crochet edgings such as picot or shell can add a decorative finish.",
+    "how_to": "1. With the right side facing, insert a crochet hook through the edge stitch of the knitted fabric.\n2. Yarn over and pull through a loop.\n3. Chain 1 to set the height.\n4. Insert the hook through the next stitch or space along the edge, yarn over, pull through, yarn over, pull through both loops (single crochet).\n5. Continue along the edge, working one single crochet per stitch along horizontal edges and approximately 3 single crochets for every 4 rows along vertical edges.\n6. At corners, work 3 single crochets in the same stitch to turn neatly.\n7. Slip stitch to the first single crochet to join, if working in the round. Fasten off and weave in ends.",
+    "tips": "Use a crochet hook that matches the knitting needle size for consistent tension. A single round of single crochet is enough to stabilize most edges. Test on a swatch to make sure the edging does not pull the fabric in or cause ruffling.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "crocheted border",
+        "region": null
+      },
+      {
+        "synonym": "crochet trim",
+        "region": null
+      },
+      {
+        "synonym": "crochet finishing",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "I-Cord Edging",
+    "slug": "i-cord-edging",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A knitted cord worked along the edge of a finished piece to create a clean, rounded, professional border. Applied I-cord is worked by knitting a small number of stitches (usually 3-4) while simultaneously attaching them to the fabric edge, producing a cord that frames the piece.",
+    "how_to": "1. Using double-pointed needles, cast on 3 stitches.\n2. With the right side of the work facing, pick up 1 stitch from the edge of the knitted piece.\n3. Slide the 4 stitches to the other end of the needle (do not turn).\n4. Knit 2, knit 2 together through the back loop (joining the last I-cord stitch with the picked-up stitch).\n5. Pick up the next stitch from the edge.\n6. Repeat steps 3-5 along the entire edge.\n7. When complete, graft the live stitches to the cast-on end for a seamless join.",
+    "tips": "Keep the I-cord stitches snug so the cord lies flat against the fabric edge. At corners, work 2-3 rows of I-cord without picking up from the edge to create enough length to turn the corner smoothly. Blocking helps the I-cord settle into a neat line.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "applied I-cord",
+        "region": null
+      },
+      {
+        "synonym": "attached I-cord",
+        "region": null
+      },
+      {
+        "synonym": "I-cord bind off edge",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Pompom Making",
+    "slug": "pompom-making",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "The process of creating a spherical yarn decoration by wrapping yarn around a form (cardboard circles, a fork, fingers, or a pompom maker), tying it tightly at the center, and cutting the loops. Pompoms are commonly used to top hats, decorate scarves, and embellish home decor projects.",
+    "how_to": "1. Cut two identical donut-shaped circles from cardboard (outer diameter determines pompom size, inner hole determines density).\n2. Place the two circles together and wrap yarn around them repeatedly, passing through the center hole, until the hole is nearly filled.\n3. Insert scissors between the two cardboard circles and cut all the yarn loops around the outer edge.\n4. Slide a separate piece of yarn between the two cardboard pieces and tie it tightly around the center bundle.\n5. Remove the cardboard circles.\n6. Fluff the pompom into a sphere and trim any uneven strands.\n7. Use the long center tie to attach the pompom to the finished project.",
+    "tips": "The more yarn you wrap, the denser and fuller the pompom will be. Use a pompom maker tool for faster, more consistent results. Trim the pompom while rotating it to get an even sphere. Leave long tails on the center tie for easy attachment.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "pom pom",
+        "region": null
+      },
+      {
+        "synonym": "pom-pom",
+        "region": null
+      },
+      {
+        "synonym": "yarn pompom",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Tassel Making",
+    "slug": "tassel-making",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "The process of creating a hanging yarn ornament by wrapping yarn around a flat form, tying it at one end, cutting the opposite end, and wrapping the neck to form a structured tassel. Tassels are used to embellish corners of shawls, blankets, scarves, and home decor items.",
+    "how_to": "1. Cut a piece of cardboard to the desired tassel length.\n2. Wrap yarn around the cardboard 20-40 times depending on desired fullness.\n3. Thread a separate piece of yarn under the wraps at the top edge and tie tightly. This becomes the hanging loop.\n4. Cut through all the wraps at the bottom edge.\n5. Remove the cardboard.\n6. About 1 cm below the top tie, wrap another piece of yarn tightly around the bundle several times to form the tassel neck. Secure with a knot.\n7. Thread the wrapping tail through the tassel head using a tapestry needle to hide it.\n8. Trim the bottom ends evenly.",
+    "tips": "Use a book or ruler as a wrapping form for consistent tassel length. For a more structured tassel, steam the bottom fringe lightly and trim while hanging. Mix yarn colors or textures in the wraps for decorative effect.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "yarn tassel",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Fringe",
+    "slug": "fringe",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A decorative border of hanging yarn strands attached along the edge of a finished piece such as a scarf, shawl, or blanket. Each fringe group is made by folding cut yarn lengths in half and pulling them through the edge with a crochet hook.",
+    "how_to": "1. Cut yarn into lengths twice the desired fringe length, plus 2 cm for the knot.\n2. Group 2-4 strands together and fold the group in half.\n3. Insert a crochet hook from wrong side to right side through the edge stitch.\n4. Catch the folded loop with the hook and pull it partway through the edge.\n5. Pull the cut ends through the loop and tug firmly to tighten the knot.\n6. Repeat evenly across the edge, spacing groups 1-2 stitches apart.\n7. Trim all fringe to an even length.",
+    "tips": "Wrap yarn around a book or piece of cardboard and cut one end for consistent lengths. Add fringe before the final blocking so it hangs straight. For a twisted fringe effect, twist each group and fold in half before attaching.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "knotted fringe",
+        "region": null
+      },
+      {
+        "synonym": "yarn fringe",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Felting",
+    "slug": "felting",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "The process of agitating knitted fabric made from animal fibers (typically non-superwash wool) in hot soapy water, causing the fiber scales to open and interlock, shrinking and thickening the fabric into a dense, sturdy material. The finished felt has no visible stitch definition.",
+    "how_to": "1. Knit the piece larger than the desired finished size (typically 30-40% larger, depending on the yarn).\n2. Place the item in a pillowcase or mesh laundry bag to contain loose fibers.\n3. Set the washing machine to a hot wash cycle with cold rinse. Add a small amount of detergent or soap.\n4. Add an old towel or pair of jeans for extra agitation.\n5. Check progress every 5 minutes. The piece will shrink and the stitch definition will blur.\n6. When the desired size and density are reached, remove and rinse in cold water to stop the process.\n7. Shape the piece by hand (stuff bags with towels, shape hats over bowls) and allow to air dry completely.",
+    "tips": "Always knit and felt a swatch first to determine the shrinkage rate for your specific yarn. Only 100% non-superwash animal fibers (wool, alpaca, mohair) will felt. Superwash wool, cotton, acrylic, and plant fibers will not felt. Check frequently during the washing cycle, as over-felting cannot be undone.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "fulling",
+        "region": null
+      },
+      {
+        "synonym": "wet felting",
+        "region": null
+      },
+      {
+        "synonym": "machine felting",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Button Loops",
+    "slug": "button-loops",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "Small yarn or crochet chain loops attached to the edge of a garment to serve as buttonhole alternatives. Button loops are often used on delicate garments, baby knits, and neckline closures where a traditional buttonhole would be too bulky or disruptive to the stitch pattern.",
+    "how_to": "1. Determine button placement and mark positions on the garment edge.\n2. Thread a tapestry needle with matching yarn.\n3. At the first marked position, anchor the yarn on the wrong side.\n4. Bring the needle through to the right side, make a loop large enough to fit the button, and insert the needle back through the edge a few stitches away.\n5. Work blanket stitch or buttonhole stitch over the loop to cover and reinforce it.\n6. Secure the yarn on the wrong side and move to the next position.\n7. Alternatively, crochet a short chain at each button position for a quicker loop.",
+    "tips": "Test the loop size with the actual button before finishing. The loop should hold the button snugly without being so tight that it is difficult to use. Reinforcing loops with buttonhole stitch makes them more durable and gives a polished look.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "thread loops",
+        "region": null
+      },
+      {
+        "synonym": "yarn loops",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Horizontal Buttonhole",
+    "slug": "horizontal-buttonhole",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A buttonhole worked across a row by binding off a small number of stitches on one row and casting them back on in the next row. Horizontal buttonholes run parallel to the rows and are the most common type, suitable for most garment closures.",
+    "how_to": "1. Work to the buttonhole position.\n2. Bind off the number of stitches specified by the pattern (typically 2-4, depending on button size).\n3. Continue knitting to the end of the row.\n4. On the return row, work to the gap created by the bound-off stitches.\n5. Cast on the same number of stitches using the cable cast-on or backward loop method.\n6. Continue the row as normal.\n7. On subsequent rows, work the cast-on stitches as regular stitches.",
+    "tips": "The one-row buttonhole (worked entirely on one row) gives a neater result than the two-row method. Use cable cast-on rather than backward loop for a firmer edge. After blocking, reinforce buttonholes with buttonhole stitch if they feel loose.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "bind-off buttonhole",
+        "region": null
+      },
+      {
+        "synonym": "two-row buttonhole",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Vertical Buttonhole",
+    "slug": "vertical-buttonhole",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A buttonhole created by working two separate sections of fabric independently for several rows, then rejoining them. The resulting opening runs parallel to the selvedge edge, perpendicular to the rows. Vertical buttonholes are less common but useful for specific design situations.",
+    "how_to": "1. Work to the buttonhole position.\n2. Turn and work back and forth on the stitches before the buttonhole opening only, for the desired number of rows (determined by button size).\n3. Cut the yarn, leaving a tail.\n4. Rejoin yarn to the stitches on the other side of the opening.\n5. Work the same number of rows on this second section.\n6. On the next row, work across all stitches to rejoin the two sections.\n7. Weave in the cut yarn tails on the wrong side.",
+    "tips": "Vertical buttonholes can gap at the top and bottom corners. To minimize this, twist the yarns together where the sections rejoin. Work one extra row on the second side if the opening is slightly too small. These buttonholes work best in button bands that run vertically.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "split buttonhole",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Zipper Installation",
+    "slug": "zipper-installation",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "The process of sewing a zipper into a knitted garment, typically along the front opening of a cardigan or jacket. Proper zipper installation requires pinning and basting to prevent the knitted fabric from stretching, and uses a backstitch or whip stitch to attach the zipper tape to the wrong side of the fabric.",
+    "how_to": "1. Block the garment pieces and allow them to dry completely.\n2. Close the zipper and pin it to the wrong side of the garment opening, aligning the zipper teeth with the center front edges. The knitted fabric should just meet over the teeth.\n3. Baste the zipper in place with contrasting waste yarn, removing pins as you go.\n4. Using matching sewing thread and a sharp sewing needle, backstitch the zipper tape to the knitted fabric along both sides, working from the bottom up.\n5. Stitch close to the zipper teeth on the inner edge and along the outer edge of the tape.\n6. Remove the basting yarn.\n7. On the right side, the zipper teeth should be barely visible between the knitted edges.",
+    "tips": "Choose a separating zipper for cardigans and a non-separating zipper for bags and accessories. Use sewing thread rather than yarn for a smoother finish. Pin the zipper to the garment while it is laid flat, not while wearing it. A zipper that is slightly shorter than the opening is easier to install than one that is too long.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "sewing in a zipper",
+        "region": null
+      },
+      {
+        "synonym": "zipper sewing",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Short Row Shoulder Shaping",
+    "slug": "short-row-shoulder-shaping",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "A technique that uses short rows instead of traditional bind-off steps to shape shoulder slopes. The stitches remain live on the needle, creating a smooth diagonal line without stair-step edges. The shoulder is then typically joined using three-needle bind-off or Kitchener stitch for a seamless finish.",
+    "how_to": "1. On the shoulder edge, work to the point where the first bind-off group would begin. Turn the work (leaving remaining stitches unworked).\n2. Work a wrap-and-turn or German short row at the turning point.\n3. Work back across the row.\n4. On the next shoulder-side row, work to the next turning point (fewer stitches before the turn). Turn and wrap.\n5. Repeat until all shoulder stitch groups have been worked.\n6. Work one final row across all stitches, picking up and working the wraps together with their stitches to close gaps.\n7. Place the live stitches on a holder or join immediately using three-needle bind-off.",
+    "tips": "German short rows or Japanese short rows produce cleaner results than wrap-and-turn for shoulder shaping. This method pairs especially well with three-needle bind-off for joining front and back shoulders, as the live stitches are already on the needles.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "short row shoulders",
+        "region": null
+      },
+      {
+        "synonym": "sloped shoulder shaping",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Invisible Seam (Crochet)",
+    "slug": "invisible-seam-crochet",
+    "category": "finishing",
+    "craft_type": "crochet",
+    "definition": "A crochet joining technique that creates a nearly invisible seam by working through the inner loops or back loops of stitches on two pieces placed side by side. Similar in concept to mattress stitch in knitting, it produces a flat, clean join that blends with the surrounding fabric.",
+    "how_to": "1. Lay both crocheted pieces flat, right sides facing up, with the edges to be joined aligned side by side.\n2. Thread a tapestry needle with matching yarn.\n3. Working under the top two loops of the first stitch on the right piece, pull the yarn through.\n4. Cross to the left piece and work under the corresponding top two loops, pulling through.\n5. Continue alternating between the two pieces, working stitch by stitch.\n6. Pull gently every few stitches to close the seam.\n7. The seam should be invisible on the right side.",
+    "tips": "Use the same yarn weight and color for seaming. Work loosely enough that the seam has the same give as the surrounding fabric. This technique works best on single crochet and half double crochet fabrics where the stitch tops are clearly defined.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "invisible crochet join",
+        "region": null
+      },
+      {
+        "synonym": "mattress stitch for crochet",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Slip Stitch Join (Crochet)",
+    "slug": "slip-stitch-join-crochet",
+    "category": "finishing",
+    "craft_type": "crochet",
+    "definition": "A method of joining two crocheted pieces by working slip stitches through both layers simultaneously using a crochet hook. It is fast and creates a visible ridge that can be decorative when worked on the right side or hidden when worked on the wrong side.",
+    "how_to": "1. Place the two pieces together with edges aligned. Right sides together for a hidden seam, or wrong sides together for a decorative ridge on the right side.\n2. Insert the crochet hook through both layers at the starting corner.\n3. Yarn over and pull through both layers, creating a loop on the hook.\n4. Insert the hook through both layers at the next stitch, yarn over, and pull through all loops on the hook (slip stitch made).\n5. Continue across the entire seam.\n6. Fasten off and weave in the end.",
+    "tips": "Use a hook one size smaller than the project hook to keep the join tight. This method is especially popular for joining granny squares and motifs. For a flatter seam, work through the back loops only of each piece.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "slip stitch crochet seam",
+        "region": null
+      },
+      {
+        "synonym": "crochet slip stitch join",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Surface Crochet",
+    "slug": "surface-crochet",
+    "category": "finishing",
+    "craft_type": "crochet",
+    "definition": "A decorative technique where crochet slip stitches or chain stitches are worked on the surface of a finished crocheted or knitted fabric to add lines, designs, or lettering. The hook is inserted through the fabric from front to back, and yarn held behind the work is pulled through to create a raised chain on the surface.",
+    "how_to": "1. Hold the working yarn behind the finished fabric.\n2. Insert the crochet hook from the right side through a stitch in the fabric.\n3. Catch the yarn on the back side and pull a loop through to the front.\n4. Insert the hook through the next stitch along your design line.\n5. Catch the yarn on the back and pull through the fabric and through the loop on the hook (slip stitch made).\n6. Continue along the desired path, following a chart or freehand.\n7. Fasten off by pulling the yarn tail through the last loop. Pull the tail to the wrong side and weave in.",
+    "tips": "Use a contrasting color for maximum visibility of the design. Practice on a swatch to find the right tension; too tight and the fabric puckers, too loose and the chain floats above the surface. This technique works best on single crochet or similar dense fabrics.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "surface slip stitch",
+        "region": null
+      },
+      {
+        "synonym": "surface chain",
+        "region": null
+      },
+      {
+        "synonym": "surface embroidery crochet",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Stiffening",
+    "slug": "stiffening",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "definition": "The process of applying a stiffening agent (starch, sugar water, white glue solution, or commercial fabric stiffener) to a finished knitted or crocheted piece to make it hold a rigid shape. Commonly used for doilies, ornaments, baskets, bowls, and snowflakes.",
+    "how_to": "1. Block the piece to the desired shape and allow it to dry.\n2. Prepare the stiffening solution: mix equal parts white glue and water, or dissolve 1 tablespoon of cornstarch in 250 ml of water and heat until thickened, or use commercial fabric stiffener per its instructions.\n3. Submerge the piece in the stiffening solution, working it through the fibers completely.\n4. Remove and gently squeeze out the excess solution. Do not wring.\n5. Shape the piece over or inside a form (balloon, bowl, dowel, etc.) or pin flat on blocking mats.\n6. Allow to dry completely, which may take 24-48 hours.\n7. Remove from the form. The piece should hold its shape firmly.",
+    "tips": "Cotton and linen yarns stiffen the most effectively. Acrylic can be stiffened with glue-based solutions. Sugar-water stiffening is not permanent and will soften in humid conditions. Spray starch gives a lighter hold for pieces that need some body but not full rigidity. Always test on a swatch first.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "starching",
+        "region": null
+      },
+      {
+        "synonym": "fabric stiffening",
+        "region": null
+      }
+    ]
+  }
+]

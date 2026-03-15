@@ -55,13 +55,14 @@ struct StashTabView: View {
     @State private var needlesViewModel = NeedlesViewModel()
     @State private var showAddManualNeedle = false
     @State private var navigateToNeedleCatalog = false
+    @State private var navigationPath = NavigationPath()
 
     // Supplies state
     @State private var suppliesViewModel = SuppliesViewModel()
     @State private var showAddSupply = false
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             VStack(spacing: 0) {
                 sectionPicker
 
@@ -88,6 +89,12 @@ struct StashTabView: View {
                 default:
                     EmptyView()
                 }
+            }
+        }
+        .onChange(of: navigateToNeedleCatalog) { _, navigate in
+            if navigate {
+                navigateToNeedleCatalog = false
+                navigationPath.append(Route.addFromCatalog)
             }
         }
         .task { await loadRavelryStatus() }
@@ -143,7 +150,7 @@ struct StashTabView: View {
             } label: {
                 Image(systemName: "arrow.up.arrow.down")
                     .font(.body.weight(.medium))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(theme.primary)
             }
 
             // Add button (section-specific)
@@ -194,11 +201,13 @@ struct StashTabView: View {
 
     private func loadRavelryStatus() async {
         do {
-            struct StatusResponse: Decodable { let connected: Bool }
-            let res: APIResponse<StatusResponse> = try await APIClient.shared.get(
-                "/integrations/ravelry/status"
+            let res: APIResponse<RavelryConnection> = try await APIClient.shared.get(
+                "/integrations/ravelry/status?validate=true"
             )
             ravelryConnected = res.data.connected
+            if res.data.tokenValid == false {
+                ravelryConnected = false // treat expired tokens as disconnected
+            }
         } catch {}
     }
 

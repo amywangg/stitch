@@ -1,15 +1,21 @@
 import { clerkClient } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 import { slugify } from '@/lib/utils'
-import type { users } from '@stitch/db'
+import type { users, subscriptions } from '@stitch/db'
+
+export type UserWithSubscription = users & { subscription: subscriptions | null }
 
 /**
  * Fetches (or lazily creates) the DB user row for a given Clerk user ID.
+ * Always includes the subscription relation so tier gating works correctly.
  * Falls back to upsert via the Clerk backend API so webhooks aren't required
  * in local dev.
  */
-export async function getDbUser(clerkId: string): Promise<users> {
-  const existing = await prisma.users.findUnique({ where: { clerk_id: clerkId } })
+export async function getDbUser(clerkId: string): Promise<UserWithSubscription> {
+  const existing = await prisma.users.findUnique({
+    where: { clerk_id: clerkId },
+    include: { subscription: true },
+  })
   if (existing) return existing
 
   // User not in DB yet (webhook hasn't fired or is misconfigured).
@@ -48,5 +54,6 @@ export async function getDbUser(clerkId: string): Promise<users> {
       subscription: { create: { plan: 'free', status: 'active' } },
       onboarding: { create: {} },
     },
+    include: { subscription: true },
   })
 }

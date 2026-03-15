@@ -110,13 +110,19 @@ Projects contain one or more sections, each with its own row counter. Every coun
 
 ## Tier Gating
 
-| Feature | Free | Pro |
-|---|---|---|
-| Active projects | 3 max | Unlimited |
-| Row counter | Yes | Yes |
-| Sections per project | Unlimited | Unlimited |
-| Cross-device realtime sync | No | Yes |
-| Photo uploads | Yes | Yes |
+| Feature | Free | Plus | Pro |
+|---|---|---|---|
+| Active projects | 3 max | Unlimited | Unlimited |
+| Row counter | Yes | Yes | Yes |
+| Sections per project | Unlimited | Unlimited | Unlimited |
+| Cross-device realtime sync | No | Yes | Yes |
+| Photo uploads | Yes | Yes | Yes |
+
+## Monetization Role
+
+The row counter is the **#1 retention hook**. It is the "open the app every time you pick up needles" feature. Every knitting session = an app open. This feature must remain free, unlimited, and fast for all users. The 3 active project limit for free tier is designed to bite at exactly the right moment (most knitters have 2-4 WIPs).
+
+During the 14-day reverse trial, users get unlimited projects. Projects created during trial are never deleted when the trial ends — users just cannot create new ones beyond the free limit.
 
 ## Technical Notes
 

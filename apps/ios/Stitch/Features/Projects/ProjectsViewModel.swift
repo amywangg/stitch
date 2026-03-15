@@ -78,6 +78,8 @@ final class ProjectsViewModel {
     var isLoading = false
     var error: String?
 
+    private var hasEnriched = false
+
     func loadGrouped() async {
         isLoading = true
         defer { isLoading = false }
@@ -91,6 +93,17 @@ final class ProjectsViewModel {
         } catch {
             self.error = error.localizedDescription
         }
+
+        // Enrich sparse Ravelry patterns once per session
+        if !hasEnriched {
+            hasEnriched = true
+            struct EnrichResult: Decodable { let enriched: Int?; let failed: Int?; let total: Int? }
+            do {
+                let _: APIResponse<EnrichResult> = try await APIClient.shared.post("/patterns/enrich")
+            } catch {
+                // Non-critical
+            }
+        }
     }
 
     func syncRavelry() async {
@@ -98,12 +111,24 @@ final class ProjectsViewModel {
             let imported: Int?
             let updated: Int?
         }
+        struct EnrichResult: Decodable {
+            let enriched: Int?
+            let failed: Int?
+            let total: Int?
+        }
         do {
             let _: APIResponse<SyncResult> = try await APIClient.shared.post("/integrations/ravelry/sync")
         } catch is CancellationError {
-            // Ignore
+            return
         } catch {
             // Non-critical — don't surface sync errors on pull-to-refresh
+        }
+
+        // Enrich any sparse Ravelry patterns after sync
+        do {
+            let _: APIResponse<EnrichResult> = try await APIClient.shared.post("/patterns/enrich")
+        } catch {
+            // Non-critical
         }
     }
 
@@ -120,6 +145,21 @@ final class ProjectsViewModel {
         }
     }
 
+    func createFromPattern(patternId: String) async -> Project? {
+        struct Body: Encodable { let pattern_id: String }
+        do {
+            let response: APIResponse<Project> = try await APIClient.shared.post(
+                "/projects/create-from-pattern",
+                body: Body(pattern_id: patternId)
+            )
+            inProgressProjects.insert(response.data, at: 0)
+            return response.data
+        } catch {
+            self.error = error.localizedDescription
+            return nil
+        }
+    }
+
     func deleteProject(_ project: Project) async {
         // Optimistic: remove immediately
         let prevInProgress = inProgressProjects
@@ -129,13 +169,24 @@ final class ProjectsViewModel {
 
         struct Empty: Decodable {}
         do {
-            let _: Empty = try await APIClient.shared.delete("/projects/\(project.id)")
+            let _: APIResponse<Empty> = try await APIClient.shared.delete("/projects/\(project.id)")
         } catch {
             // Revert on failure
             inProgressProjects = prevInProgress
             completedProjects = prevCompleted
             self.error = error.localizedDescription
         }
+    }
+
+    func startProjectFromQueue(_ item: QueueItem) async -> Project? {
+        let project = await createFromPattern(patternId: item.patternId)
+        if project != nil {
+            // Remove from queue after successfully creating project
+            queueItems.removeAll { $0.id == item.id }
+            struct Empty: Decodable {}
+            try? await APIClient.shared.delete("/queue/\(item.id)") as APIResponse<Empty>
+        }
+        return project
     }
 
     func removeQueueItem(_ item: QueueItem) async {
@@ -145,7 +196,7 @@ final class ProjectsViewModel {
 
         struct Empty: Decodable {}
         do {
-            let _: Empty = try await APIClient.shared.delete("/queue/\(item.id)")
+            let _: APIResponse<Empty> = try await APIClient.shared.delete("/queue/\(item.id)")
         } catch {
             // Revert on failure
             queueItems = prevQueue

@@ -14,7 +14,7 @@ Auto-generated activity events capture user actions (starting a project, finishi
 
 ### Backend (Next.js API)
 
-- `POST /api/v1/posts` - create a post with optional photos and project link (Pro only). **Not started.**
+- `POST /api/v1/posts` - create a post with optional photos and project link. **Not started.**
 - `GET /api/v1/posts` - paginated post list (own + followed users). **Not started.**
 - `PATCH /api/v1/posts/:id` - edit post content. **Not started.**
 - `DELETE /api/v1/posts/:id` - soft delete. **Not started.**
@@ -85,7 +85,7 @@ Auto-generated activity events capture user actions (starting a project, finishi
 - [ ] Activity event auto-creation in review routes (on post review)
 - [ ] Notification triggers (follow, like, comment, mention)
 - [ ] Photo upload to Supabase Storage for posts
-- [ ] Pro gate on post creation
+- [x] ~~Pro gate on post creation~~ — removed, posting is free for all users
 - [ ] iOS FeedView with mixed post/event cards
 - [ ] iOS PostComposerView with photo picker
 - [ ] iOS PostDetailView with comments
@@ -114,10 +114,10 @@ Auto-generated activity events capture user actions (starting a project, finishi
 | Follow users | Yes | Yes |
 | Like/react | Yes | Yes |
 | Comment | Yes | Yes |
-| Create posts | No | Yes |
+| Create posts | Yes | Yes |
 | Bookmark posts | Yes | Yes |
 
-Free users can read, follow, like, and comment, but cannot create original posts. Activity events are generated for all users regardless of tier.
+All social features are free for all users. Community participation drives daily visits, organic growth, and word-of-mouth. Activity events are generated for all users regardless of tier. See `017-monetization-and-growth.md` §3 for rationale.
 
 ## Technical Notes
 

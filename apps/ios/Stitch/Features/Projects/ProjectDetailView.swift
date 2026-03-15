@@ -30,6 +30,19 @@ final class ProjectDetailViewModel {
         }
     }
 
+    var sessions: [CraftingSession] = []
+
+    func loadSessions(projectId: String) async {
+        do {
+            let response: APIResponse<PaginatedData<CraftingSession>> = try await APIClient.shared.get(
+                "/sessions?project_id=\(projectId)&page_size=5"
+            )
+            sessions = response.data.items
+        } catch {
+            // Non-critical — don't show error
+        }
+    }
+
     var isDeleting = false
     var didDelete = false
 
@@ -39,7 +52,7 @@ final class ProjectDetailViewModel {
         defer { isDeleting = false }
         struct Empty: Decodable {}
         do {
-            let _: Empty = try await APIClient.shared.delete("/projects/\(project.id)")
+            let _: APIResponse<Empty> = try await APIClient.shared.delete("/projects/\(project.id)")
             didDelete = true
         } catch {
             self.error = error.localizedDescription
@@ -99,15 +112,29 @@ struct ProjectDetailView: View {
     @State private var showDeleteConfirmation = false
     @State private var showPdfPicker = false
     @State private var showPdfViewer = false
+    @State private var showLogSession = false
+    @State private var showNoteEditor = false
+    @State private var editingNoteField: NoteField = .description
+    @State private var editingNoteText = ""
     @Environment(AppRouter.self) private var router
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         contentView
             .task {
-                if viewModel.project == nil {
-                    await viewModel.load(projectId: projectId)
+                await viewModel.load(projectId: projectId)
+            }
+            .onAppear {
+                // Refresh when returning from counter/edit/other views
+                if viewModel.project != nil {
+                    Task {
+                        await viewModel.load(projectId: projectId)
+                        await viewModel.loadSessions(projectId: projectId)
+                    }
                 }
+            }
+            .task {
+                await viewModel.loadSessions(projectId: projectId)
             }
     }
 
@@ -127,6 +154,14 @@ struct ProjectDetailView: View {
                                 isEditing = true
                             } label: {
                                 Label("Edit", systemImage: "pencil")
+                            }
+
+                            if project.status != "completed" {
+                                Button {
+                                    showLogSession = true
+                                } label: {
+                                    Label("Log session", systemImage: "clock.badge.checkmark")
+                                }
                             }
 
                             if project.pdfUpload != nil {
@@ -194,6 +229,27 @@ struct ProjectDetailView: View {
                         }
                     }
                 }
+                .sheet(isPresented: $showLogSession) {
+                    ManualSessionSheet(projectId: projectId) {
+                        Task { await viewModel.loadSessions(projectId: projectId) }
+                    }
+                }
+                .sheet(isPresented: $showNoteEditor) {
+                    NoteEditorSheet(
+                        title: editingNoteField == .description ? "Notes" : "Modifications",
+                        text: $editingNoteText
+                    ) {
+                        switch editingNoteField {
+                        case .description:
+                            viewModel.project?.description = editingNoteText.isEmpty ? nil : editingNoteText
+                        case .modsNotes:
+                            viewModel.project?.modsNotes = editingNoteText.isEmpty ? nil : editingNoteText
+                        }
+                        Task {
+                            await viewModel.save()
+                        }
+                    }
+                }
         } else if let error = viewModel.error {
             ScrollView {
                 VStack(spacing: 12) {
@@ -220,13 +276,31 @@ struct ProjectDetailView: View {
     private func projectContent(_ project: Project) -> some View {
         ScrollView {
             VStack(spacing: 0) {
-                // Photo carousel
+                // Photo carousel — user photos first, pattern cover as fallback
                 if let photos = project.photos, !photos.isEmpty {
                     photoCarousel(photos)
+                } else if let patternCover = project.pattern?.coverImageUrl, let url = URL(string: patternCover) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 260)
+                                .clipped()
+                        default:
+                            EmptyView()
+                        }
+                    }
                 }
 
                 VStack(spacing: 20) {
                     headerBadges(project)
+
+                    // Linked pattern card
+                    if let pattern = project.pattern {
+                        patternCard(pattern)
+                    }
 
                     // Master progress card
                     if let sections = project.sections, !sections.isEmpty {
@@ -237,12 +311,12 @@ struct ProjectDetailView: View {
                         quickStats(project)
                     }
 
-                    if let desc = project.description, !desc.isEmpty {
-                        notesBlock("Notes", desc)
-                    }
+                    editableNotesBlock("Notes", field: .description)
 
-                    if let mods = project.modsNotes, !mods.isEmpty {
-                        notesBlock("Modifications", mods)
+                    editableNotesBlock("Modifications", field: .modsNotes)
+
+                    if let tags = project.tags, !tags.isEmpty {
+                        tagsBlock(tags)
                     }
 
                     if let pdf = project.pdfUpload {
@@ -262,8 +336,8 @@ struct ProjectDetailView: View {
                         sectionsBlock(sections)
                     }
 
-                    if let permalink = project.ravelryPermalink {
-                        ravelryLink(permalink)
+                    if !viewModel.sessions.isEmpty {
+                        sessionsBlock(isCompleted: project.status == "completed")
                     }
 
                     // Spacer for continue button
@@ -311,8 +385,8 @@ struct ProjectDetailView: View {
         HStack(spacing: 8) {
             badge(project.status.capitalized, icon: statusIcon(project.status), color: statusColor(project.status))
             badge(project.craftType.capitalized, icon: "leaf", color: .secondary)
-            if project.ravelryId != nil {
-                badge("Ravelry", icon: "link", color: theme.primary)
+            if let category = project.category, !category.isEmpty {
+                badge(category, icon: "tag", color: .secondary)
             }
             Spacer()
         }
@@ -345,6 +419,75 @@ struct ProjectDetailView: View {
         }
     }
 
+    // MARK: - Pattern Card
+
+    private func patternCard(_ pattern: PatternRef) -> some View {
+        NavigationLink(value: Route.patternDetail(id: pattern.id)) {
+            HStack(spacing: 12) {
+                // Cover image thumbnail
+                if let coverUrl = pattern.coverImageUrl, let url = URL(string: coverUrl) {
+                    AsyncImage(url: url) { image in
+                        image.resizable().aspectRatio(contentMode: .fill)
+                    } placeholder: {
+                        Color.secondary.opacity(0.1)
+                    }
+                    .frame(width: 56, height: 72)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                } else {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(theme.primary.opacity(0.1))
+                        .frame(width: 56, height: 72)
+                        .overlay {
+                            Image(systemName: "book.closed")
+                                .foregroundStyle(theme.primary)
+                        }
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Pattern")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(pattern.title)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.primary)
+                        .lineLimit(2)
+                    if let designer = pattern.designerName {
+                        Text("by \(designer)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    // Quick info chips
+                    HStack(spacing: 6) {
+                        if let weight = pattern.yarnWeight {
+                            Text(weight)
+                                .font(.caption2)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.secondary.opacity(0.08), in: Capsule())
+                        }
+                        if let difficulty = pattern.difficulty {
+                            Text(difficulty)
+                                .font(.caption2)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.secondary.opacity(0.08), in: Capsule())
+                        }
+                    }
+                    .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(12)
+            .background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+    }
+
     // MARK: - Quick Stats
 
     private func quickStats(_ project: Project) -> some View {
@@ -374,10 +517,57 @@ struct ProjectDetailView: View {
 
     // MARK: - Notes
 
-    private func notesBlock(_ title: String, _ text: String) -> some View {
+    private enum NoteField {
+        case description, modsNotes
+    }
+
+    private func editableNotesBlock(_ title: String, field: NoteField) -> some View {
+        let text: String? = switch field {
+        case .description: viewModel.project?.description
+        case .modsNotes: viewModel.project?.modsNotes
+        }
+        let hasContent = text != nil && !(text?.isEmpty ?? true)
+
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(title).font(.headline)
+                Spacer()
+                Button {
+                    editingNoteField = field
+                    editingNoteText = text ?? ""
+                    showNoteEditor = true
+                } label: {
+                    Text(hasContent ? "Edit" : "Add")
+                        .font(.subheadline)
+                        .foregroundStyle(theme.primary)
+                }
+            }
+            if let text, !text.isEmpty {
+                Text(text).font(.body).foregroundStyle(.secondary)
+            } else {
+                Text("No \(title.lowercased()) yet")
+                    .font(.body)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: - Tags
+
+    private func tagsBlock(_ tags: [ProjectTag]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title).font(.headline)
-            Text(text).font(.body).foregroundStyle(.secondary)
+            Text("Tags").font(.headline)
+            FlowLayout(spacing: 6) {
+                ForEach(tags) { tag in
+                    Text(tag.tag.name)
+                        .font(.caption)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(Color.secondary.opacity(0.1), in: Capsule())
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -508,6 +698,7 @@ struct ProjectDetailView: View {
         guard totalTarget > 0 else { return 0 }
         let totalDone = sections.reduce(0) { sum, s in
             let target = s.targetRows ?? 1
+            if s.completed == true { return sum + target }
             return sum + min(s.currentRow, target)
         }
         return Double(totalDone) / Double(totalTarget)
@@ -521,9 +712,62 @@ struct ProjectDetailView: View {
 
     private func sectionCompletionPct(_ section: ProjectSection) -> Double {
         if section.completed == true { return 1.0 }
+
+        // For multi-step sections, calculate progress across all steps
+        if let ps = section.patternSection, let rows = ps.rows, !rows.isEmpty {
+            let currentStep = section.currentStep ?? 1
+            let sortedRows = rows.sorted { $0.rowNumber < $1.rowNumber }
+            let totalSteps = sortedRows.count
+
+            // Steps fully completed (before current step)
+            let stepsCompleted = max(0, currentStep - 1)
+
+            // Progress within current step
+            let currentStepRows = sortedRows.first(where: { $0.rowNumber == currentStep })?.rowsInStep
+            let withinStepPct: Double
+            if let stepTarget = currentStepRows, stepTarget > 0 {
+                withinStepPct = min(Double(section.currentRow) / Double(stepTarget), 1.0)
+            } else {
+                // Open-ended step — count it as 0 progress within the step
+                withinStepPct = section.currentRow > 0 ? 0.5 : 0
+            }
+
+            guard totalSteps > 0 else { return 0 }
+            return (Double(stepsCompleted) + withinStepPct) / Double(totalSteps)
+        }
+
+        // Simple: just row-based progress
         let target = section.targetRows ?? 1
         guard target > 0 else { return 0 }
         return min(Double(section.currentRow) / Double(target), 1.0)
+    }
+
+    private func sectionProgressDonut(_ section: ProjectSection) -> some View {
+        let isComplete = section.completed == true
+        let pct = sectionCompletionPct(section)
+
+        return ZStack {
+            Circle()
+                .stroke(Color(.systemGray4), lineWidth: 3)
+            Circle()
+                .trim(from: 0, to: isComplete ? 1.0 : pct)
+                .stroke(
+                    isComplete ? Color.green : theme.primary,
+                    style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+
+            if isComplete {
+                Image(systemName: "checkmark")
+                    .font(.caption2.bold())
+                    .foregroundStyle(.green)
+            } else if pct > 0 {
+                Text("\(Int(pct * 100))")
+                    .font(.system(size: 8, weight: .bold, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(width: 32, height: 32)
     }
 
     // MARK: - Sections
@@ -561,24 +805,7 @@ struct ProjectDetailView: View {
                             }
                         }
                         Spacer()
-                        if let target = section.targetRows, target > 0 {
-                            let pct = min(Double(section.currentRow) / Double(target), 1.0)
-                            ZStack {
-                                Circle().stroke(Color(.systemGray4), lineWidth: 3)
-                                Circle().trim(from: 0, to: pct)
-                                    .stroke(theme.primary, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                                    .rotationEffect(.degrees(-90))
-                                if section.completed == true {
-                                    Image(systemName: "checkmark")
-                                        .font(.caption2.bold())
-                                        .foregroundStyle(theme.primary)
-                                }
-                            }
-                            .frame(width: 28, height: 28)
-                        } else if section.completed == true {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(theme.primary)
-                        }
+                        sectionProgressDonut(section)
                         Image(systemName: "chevron.right").font(.caption).foregroundStyle(.tertiary)
                     }
                     .padding(12)
@@ -598,6 +825,81 @@ struct ProjectDetailView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: - Sessions
+
+    private func sessionsBlock(isCompleted: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Recent sessions").font(.headline)
+                Spacer()
+                if !isCompleted {
+                    Button {
+                        showLogSession = true
+                    } label: {
+                        Image(systemName: "plus.circle")
+                            .font(.body)
+                            .foregroundStyle(theme.primary)
+                    }
+                }
+            }
+
+            ForEach(viewModel.sessions) { session in
+                HStack(spacing: 12) {
+                    Image(systemName: "clock")
+                        .font(.subheadline)
+                        .foregroundStyle(theme.primary)
+                        .frame(width: 28)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(formatSessionDuration(session))
+                            .font(.subheadline.weight(.medium))
+                        Text(formatSessionDate(session.startedAt ?? session.date))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Spacer()
+
+                    if let rowsStart = session.rowsStart, let rowsEnd = session.rowsEnd, rowsEnd > rowsStart {
+                        Text("+\(rowsEnd - rowsStart) rows")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(10)
+                .background(Color(.secondarySystemGroupedBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func formatSessionDuration(_ session: CraftingSession) -> String {
+        let mins = session.activeMinutes ?? session.durationMinutes
+        if mins < 60 {
+            return "\(mins) min"
+        }
+        let hours = mins / 60
+        let remaining = mins % 60
+        if remaining == 0 {
+            return "\(hours) hr"
+        }
+        return "\(hours) hr \(remaining) min"
+    }
+
+    private func formatSessionDate(_ date: Date) -> String {
+        let cal = Calendar.current
+        if cal.isDateInToday(date) {
+            return "Today"
+        } else if cal.isDateInYesterday(date) {
+            return "Yesterday"
+        }
+        let fmt = DateFormatter()
+        fmt.dateStyle = .medium
+        fmt.timeStyle = .none
+        return fmt.string(from: date)
     }
 
     // MARK: - Continue Knitting
@@ -674,24 +976,35 @@ struct ProjectDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // MARK: - Ravelry Link
+}
 
-    private func ravelryLink(_ permalink: String) -> some View {
-        Group {
-            if let url = URL(string: "https://www.ravelry.com/projects/\(permalink)") {
-                Link(destination: url) {
-                    HStack {
-                        Image(systemName: "globe")
-                        Text("View on Ravelry")
-                        Spacer()
-                        Image(systemName: "arrow.up.right").font(.caption)
+// MARK: - Note Editor Sheet
+
+private struct NoteEditorSheet: View {
+    @Environment(ThemeManager.self) private var theme
+    @Environment(\.dismiss) private var dismiss
+    let title: String
+    @Binding var text: String
+    let onSave: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            TextEditor(text: $text)
+                .padding()
+                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { dismiss() }
                     }
-                    .foregroundStyle(theme.primary)
-                    .padding(12)
-                    .background(theme.primary.opacity(0.08))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") {
+                            onSave()
+                            dismiss()
+                        }
+                        .fontWeight(.semibold)
+                    }
                 }
-            }
         }
     }
 }

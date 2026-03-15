@@ -8,14 +8,22 @@ export async function GET(req: NextRequest) {
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const search = req.nextUrl.searchParams.get('search')?.trim()
+  const setType = req.nextUrl.searchParams.get('set_type')
+
+  // Build where clause: filter brands that have sets of the given type
+  const where: Record<string, unknown> = {}
+  if (search) where.name = { contains: search, mode: 'insensitive' }
+  if (setType) where.tool_sets = { some: { set_type: setType } }
 
   const brands = await prisma.tool_brands.findMany({
-    where: search
-      ? { name: { contains: search, mode: 'insensitive' } }
-      : undefined,
+    where,
     orderBy: { name: 'asc' },
     include: {
-      _count: { select: { tool_sets: true } },
+      _count: {
+        select: {
+          tool_sets: setType ? { where: { set_type: setType } } : true,
+        },
+      },
     },
   })
 

@@ -88,6 +88,10 @@ Letterboxd-style reviews tied to project completion. When a user marks a project
 
 This feature is free for all users. No tier gating.
 
+## Monetization Role
+
+Reviews are free for all users and serve as a **community content driver**. They create a Letterboxd-style social layer around patterns, driving return visits and organic discovery. Reviews also generate `review_posted` activity events that appear in the social feed, reinforcing the engagement loop.
+
 ## Technical Notes
 
 - Ratings use Float to support half-star increments (1.0, 1.5, 2.0, ..., 5.0). Validate at the API layer that values are multiples of 0.5 within the 1-5 range.

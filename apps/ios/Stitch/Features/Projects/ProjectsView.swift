@@ -7,6 +7,8 @@ struct ProjectsView: View {
     @Environment(ThemeManager.self) private var theme
     @State private var viewModel = ProjectsViewModel()
     @State private var showingNewProject = false
+    @State private var showingPatternPicker = false
+    @State private var showPdfParseFlow = false
     @State private var showRavelryPrompt = false
     @State private var showDeleteConfirmation = false
     @State private var projectToDelete: Project?
@@ -39,6 +41,12 @@ struct ProjectsView: View {
             await viewModel.loadGrouped()
             await checkRavelryOnboarding()
         }
+        .onAppear {
+            // Refresh when returning from detail/counter views where status may have changed
+            if !viewModel.inProgressProjects.isEmpty || !viewModel.completedProjects.isEmpty {
+                Task { await viewModel.loadGrouped() }
+            }
+        }
         .refreshable {
             await viewModel.syncRavelry()
             await viewModel.loadGrouped()
@@ -46,6 +54,27 @@ struct ProjectsView: View {
         .sheet(isPresented: $showingNewProject) {
             NewProjectSheet { title in
                 await viewModel.createProject(title: title)
+            }
+        }
+        .sheet(isPresented: $showingPatternPicker) {
+            PatternPickerSheet(
+                onSelect: { patternId in
+                    if let project = await viewModel.createFromPattern(patternId: patternId) {
+                        router.push(.projectDetail(id: project.id))
+                    }
+                },
+                onDiscover: {
+                    patternsSubTab = .discover
+                    selectedTab = .patterns
+                },
+                onUploadPdf: {
+                    showPdfParseFlow = true
+                }
+            )
+        }
+        .sheet(isPresented: $showPdfParseFlow) {
+            PDFParseFlowView { projectId in
+                router.push(.projectDetail(id: projectId))
             }
         }
         .sheet(isPresented: $showRavelryPrompt) {
@@ -106,8 +135,16 @@ struct ProjectsView: View {
         sort.sorted(viewModel.inProgressProjects)
     }
 
-    private var sortedQueue: [Project] {
-        sort.sorted(viewModel.queueItems.compactMap(\.queueProject))
+    private var sortedQueue: [QueueItem] {
+        viewModel.queueItems.sorted { a, b in
+            guard let pa = a.pattern, let pb = b.pattern else { return false }
+            switch sort {
+            case .newest: return pa.createdAt > pb.createdAt
+            case .oldest: return pa.createdAt < pb.createdAt
+            case .alphabetical: return pa.title.localizedCaseInsensitiveCompare(pb.title) == .orderedAscending
+            case .recentlyUpdated: return pa.updatedAt > pb.updatedAt
+            }
+        }
     }
 
     private var sortedCompleted: [Project] {
@@ -145,11 +182,11 @@ struct ProjectsView: View {
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(.secondary)
 
-                HStack(spacing: 12) {
+                VStack(spacing: 10) {
                     Button {
-                        showingNewProject = true
+                        showingPatternPicker = true
                     } label: {
-                        Label("Start project", systemImage: "plus")
+                        Label("Start from pattern", systemImage: "book")
                             .font(.subheadline.weight(.medium))
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
@@ -158,17 +195,31 @@ struct ProjectsView: View {
                             .clipShape(Capsule())
                     }
 
-                    Button {
-                        patternsSubTab = .discover
-                        selectedTab = .patterns
-                    } label: {
-                        Label("Find a pattern", systemImage: "magnifyingglass")
-                            .font(.subheadline.weight(.medium))
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(theme.primary.opacity(0.15))
-                            .foregroundStyle(theme.primary)
-                            .clipShape(Capsule())
+                    HStack(spacing: 12) {
+                        Button {
+                            showingNewProject = true
+                        } label: {
+                            Text("Blank project")
+                                .font(.subheadline.weight(.medium))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(theme.primary.opacity(0.15))
+                                .foregroundStyle(theme.primary)
+                                .clipShape(Capsule())
+                        }
+
+                        Button {
+                            patternsSubTab = .discover
+                            selectedTab = .patterns
+                        } label: {
+                            Text("Find a pattern")
+                                .font(.subheadline.weight(.medium))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(theme.primary.opacity(0.15))
+                                .foregroundStyle(theme.primary)
+                                .clipShape(Capsule())
+                        }
                     }
                 }
             }
@@ -185,12 +236,92 @@ struct ProjectsView: View {
     @ViewBuilder
     private var queueSection: some View {
         if !sortedQueue.isEmpty {
-            projectSection(
-                title: "Queue",
-                projects: sortedQueue,
-                sectionKey: "queue",
-                showNew: false
-            )
+            VStack(alignment: .leading, spacing: 12) {
+                sectionHeader(title: "Queue", count: sortedQueue.count, sectionKey: "queue")
+
+                let isExpanded = expandedSections.contains("queue")
+                let limit = layout.previewCount
+                let visible = isExpanded ? sortedQueue : Array(sortedQueue.prefix(limit))
+
+                switch layout {
+                case .grid:
+                    queueGrid(visible)
+                case .list:
+                    queueListContent(visible)
+                case .largeList:
+                    queueLargeListContent(visible)
+                }
+
+                if !isExpanded && sortedQueue.count > limit {
+                    seeAllButton(remaining: sortedQueue.count - limit, sectionKey: "queue")
+                }
+            }
+        }
+    }
+
+    // MARK: - Queue Grid
+
+    private func queueGrid(_ items: [QueueItem]) -> some View {
+        LazyVGrid(columns: [
+            GridItem(.flexible(), spacing: 14),
+            GridItem(.flexible(), spacing: 14),
+        ], spacing: 16) {
+            ForEach(items) { item in
+                NavigationLink(value: Route.patternDetail(id: item.patternId)) {
+                    QueueGridCard(item: item)
+                }
+                .buttonStyle(.plain)
+                .contextMenu { queueContextMenu(item) }
+            }
+        }
+        .padding(.horizontal, 16)
+    }
+
+    // MARK: - Queue List
+
+    private func queueListContent(_ items: [QueueItem]) -> some View {
+        VStack(spacing: 0) {
+            ForEach(items) { item in
+                NavigationLink(value: Route.patternDetail(id: item.patternId)) {
+                    QueueListRow(item: item)
+                }
+                .buttonStyle(.plain)
+                .contextMenu { queueContextMenu(item) }
+            }
+        }
+    }
+
+    // MARK: - Queue Large List
+
+    private func queueLargeListContent(_ items: [QueueItem]) -> some View {
+        VStack(spacing: 16) {
+            ForEach(items) { item in
+                NavigationLink(value: Route.patternDetail(id: item.patternId)) {
+                    QueueLargeCard(item: item)
+                }
+                .buttonStyle(.plain)
+                .contextMenu { queueContextMenu(item) }
+            }
+        }
+        .padding(.horizontal, 16)
+    }
+
+    @ViewBuilder
+    private func queueContextMenu(_ item: QueueItem) -> some View {
+        Button {
+            Task {
+                if let project = await viewModel.startProjectFromQueue(item) {
+                    router.path.append(Route.projectDetail(id: project.id))
+                }
+            }
+        } label: {
+            Label("Start project", systemImage: "play.fill")
+        }
+
+        Button(role: .destructive) {
+            Task { await viewModel.removeQueueItem(item) }
+        } label: {
+            Label("Remove from queue", systemImage: "trash")
         }
     }
 
@@ -286,20 +417,38 @@ struct ProjectsView: View {
     // MARK: - New Project Button
 
     private var newProjectButton: some View {
-        Button {
-            showingNewProject = true
-        } label: {
-            HStack {
-                Image(systemName: "plus.circle.fill")
-                    .font(.title3)
-                Text("New project")
-                    .font(.subheadline.weight(.medium))
+        HStack(spacing: 10) {
+            Button {
+                showingPatternPicker = true
+            } label: {
+                HStack {
+                    Image(systemName: "book")
+                        .font(.subheadline)
+                    Text("From pattern")
+                        .font(.subheadline.weight(.medium))
+                }
+                .foregroundStyle(theme.primary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(theme.primary.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
-            .foregroundStyle(theme.primary)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(theme.primary.opacity(0.08))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            Button {
+                showingNewProject = true
+            } label: {
+                HStack {
+                    Image(systemName: "plus")
+                        .font(.subheadline)
+                    Text("Blank")
+                        .font(.subheadline.weight(.medium))
+                }
+                .foregroundStyle(theme.primary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(theme.primary.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
         }
         .padding(.horizontal, 16)
     }
@@ -376,8 +525,22 @@ struct ProjectsView: View {
                 sortPicker
                 layoutPicker
 
-                Button {
-                    showingNewProject = true
+                Menu {
+                    Button {
+                        showingPatternPicker = true
+                    } label: {
+                        Label("Start from pattern", systemImage: "book")
+                    }
+                    Button {
+                        showPdfParseFlow = true
+                    } label: {
+                        Label("Upload PDF", systemImage: "doc.badge.plus")
+                    }
+                    Button {
+                        showingNewProject = true
+                    } label: {
+                        Label("Blank project", systemImage: "plus")
+                    }
                 } label: {
                     Image(systemName: "plus")
                         .font(.body.weight(.medium))
@@ -584,7 +747,7 @@ private struct ProjectGridCard: View {
         Color.clear
             .aspectRatio(1, contentMode: .fit)
             .overlay {
-                if let photoURL = project.photos?.first?.url, let url = URL(string: photoURL) {
+                if let photoURL = project.coverImageUrl, let url = URL(string: photoURL) {
                     AsyncImage(url: url) { phase in
                         switch phase {
                         case .success(let image):
@@ -629,6 +792,19 @@ private struct ProjectGridCard: View {
                     .foregroundStyle(.secondary)
             }
 
+            HStack(spacing: 4) {
+                if project.pdfUploadId != nil {
+                    Label("PDF", systemImage: "doc.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                }
+                if project.pattern?.aiParsed == true {
+                    Label("Parsed", systemImage: "sparkles")
+                        .font(.caption2)
+                        .foregroundStyle(.purple)
+                }
+            }
+
             if let tags = project.tags, !tags.isEmpty {
                 ProjectTagChips(tags: tags, limit: 2)
             }
@@ -667,7 +843,7 @@ private struct ProjectListRow: View {
         Color.clear
             .frame(width: 52, height: 52)
             .overlay {
-                if let photoURL = project.photos?.first?.url, let url = URL(string: photoURL) {
+                if let photoURL = project.coverImageUrl, let url = URL(string: photoURL) {
                     AsyncImage(url: url) { phase in
                         switch phase {
                         case .success(let image):
@@ -714,6 +890,16 @@ private struct ProjectListRow: View {
                 Text(project.craftType.capitalized)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                if project.pdfUploadId != nil {
+                    Label("PDF", systemImage: "doc.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                }
+                if project.pattern?.aiParsed == true {
+                    Label("Parsed", systemImage: "sparkles")
+                        .font(.caption2)
+                        .foregroundStyle(.purple)
+                }
             }
             if let tags = project.tags, !tags.isEmpty {
                 ProjectTagChips(tags: tags, limit: 3)
@@ -742,7 +928,7 @@ private struct ProjectLargeCard: View {
     private var heroImage: some View {
         Color(.systemGray5)
             .overlay {
-                if let photoURL = project.photos?.first?.url, let url = URL(string: photoURL) {
+                if let photoURL = project.coverImageUrl, let url = URL(string: photoURL) {
                     AsyncImage(url: url) { phase in
                         switch phase {
                         case .success(let image):
@@ -788,6 +974,22 @@ private struct ProjectLargeCard: View {
                         .padding(.vertical, 2)
                         .background(.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 4))
                 }
+                if project.pdfUploadId != nil {
+                    Label("PDF", systemImage: "doc.fill")
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(.green.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
+                        .foregroundStyle(.white)
+                }
+                if project.pattern?.aiParsed == true {
+                    Label("Parsed", systemImage: "sparkles")
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(.purple.opacity(0.5), in: RoundedRectangle(cornerRadius: 6))
+                        .foregroundStyle(.white)
+                }
             }
 
             Text(project.title)
@@ -831,6 +1033,255 @@ private struct ProjectLargeCard: View {
             .background(projectStatusColor(project.status).opacity(0.85))
             .foregroundStyle(.white)
             .clipShape(Capsule())
+    }
+}
+
+// MARK: - Queue Grid Card
+
+private struct QueueGridCard: View {
+    let item: QueueItem
+    @Environment(ThemeManager.self) private var theme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            coverImage
+            textContent
+        }
+    }
+
+    private var coverImage: some View {
+        Color.clear
+            .aspectRatio(1, contentMode: .fit)
+            .overlay {
+                if let coverUrl = item.pattern?.coverImageUrl, let url = URL(string: coverUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().aspectRatio(contentMode: .fill)
+                        default:
+                            placeholder
+                        }
+                    }
+                } else {
+                    placeholder
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+
+    private var placeholder: some View {
+        ZStack {
+            Color(.systemGray5)
+            Image(systemName: "book.closed")
+                .font(.system(size: 28))
+                .foregroundStyle(.quaternary)
+        }
+    }
+
+    private var textContent: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 5) {
+                Text(item.pattern?.title ?? "Unknown pattern")
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                    .foregroundStyle(.primary)
+                if item.ravelryQueueId != nil {
+                    ProjectRavelryBadge()
+                }
+            }
+            HStack(spacing: 6) {
+                ProjectStatusDot(status: "queued")
+                Text("Queued")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            if let designer = item.pattern?.designerName {
+                Text(designer)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+        }
+    }
+}
+
+// MARK: - Queue List Row
+
+private struct QueueListRow: View {
+    let item: QueueItem
+    @Environment(ThemeManager.self) private var theme
+
+    var body: some View {
+        HStack(spacing: 12) {
+            thumbnail
+            titleAndMeta
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+    }
+
+    private var thumbnail: some View {
+        Color.clear
+            .frame(width: 52, height: 52)
+            .overlay {
+                if let coverUrl = item.pattern?.coverImageUrl, let url = URL(string: coverUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().aspectRatio(contentMode: .fill)
+                        default:
+                            placeholder
+                        }
+                    }
+                } else {
+                    placeholder
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    private var placeholder: some View {
+        ZStack {
+            Color(.systemGray5)
+            Image(systemName: "book.closed")
+                .font(.system(size: 16))
+                .foregroundStyle(.quaternary)
+        }
+    }
+
+    private var titleAndMeta: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text(item.pattern?.title ?? "Unknown pattern")
+                    .font(.subheadline.weight(.medium))
+                    .lineLimit(1)
+                    .foregroundStyle(.primary)
+                if item.ravelryQueueId != nil {
+                    ProjectRavelryBadge()
+                }
+            }
+            HStack(spacing: 4) {
+                ProjectStatusDot(status: "queued")
+                Text("Queued")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                if let craft = item.pattern?.craftType {
+                    Text("·")
+                        .font(.caption)
+                        .foregroundStyle(.quaternary)
+                    Text(craft.capitalized)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            if let designer = item.pattern?.designerName {
+                Text(designer)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+        }
+    }
+}
+
+// MARK: - Queue Large Card
+
+private struct QueueLargeCard: View {
+    let item: QueueItem
+    @Environment(ThemeManager.self) private var theme
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            heroImage
+            gradient
+            cardOverlay
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 240)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private var heroImage: some View {
+        Color(.systemGray5)
+            .overlay {
+                if let coverUrl = item.pattern?.coverImageUrl, let url = URL(string: coverUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().aspectRatio(contentMode: .fill)
+                        default:
+                            largePlaceholder
+                        }
+                    }
+                } else {
+                    largePlaceholder
+                }
+            }
+    }
+
+    private var largePlaceholder: some View {
+        ZStack {
+            Color(.systemGray6)
+            Image(systemName: "book.closed")
+                .font(.system(size: 40))
+                .foregroundStyle(.quaternary)
+        }
+    }
+
+    private var gradient: some View {
+        LinearGradient(
+            colors: [.clear, .black.opacity(0.7)],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+
+    private var cardOverlay: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Spacer()
+
+            HStack(spacing: 8) {
+                Text("Queued")
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(projectStatusColor("queued").opacity(0.85))
+                    .foregroundStyle(.white)
+                    .clipShape(Capsule())
+                if item.ravelryQueueId != nil {
+                    Text("R")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.9))
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 4))
+                }
+            }
+
+            Text(item.pattern?.title ?? "Unknown pattern")
+                .font(.title3.weight(.bold))
+                .foregroundStyle(.white)
+                .lineLimit(2)
+
+            HStack(spacing: 8) {
+                if let craft = item.pattern?.craftType {
+                    Text(craft.capitalized)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.75))
+                }
+                if let designer = item.pattern?.designerName {
+                    Text("·")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.5))
+                    Text(designer)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.75))
+                        .lineLimit(1)
+                }
+            }
+        }
+        .padding(16)
     }
 }
 
@@ -911,6 +1362,164 @@ private struct SafariSheetView: UIViewControllerRepresentable {
         SFSafariViewController(url: url)
     }
     func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {}
+}
+
+// MARK: - Pattern Picker Sheet
+
+struct PatternPickerSheet: View {
+    let onSelect: (String) async -> Void
+    var onDiscover: (() -> Void)?
+    var onUploadPdf: (() -> Void)?
+    @Environment(ThemeManager.self) private var theme
+    @Environment(\.dismiss) private var dismiss
+    @State private var patterns: [Pattern] = []
+    @State private var isLoading = true
+    @State private var searchText = ""
+    @State private var isCreating = false
+
+    private var filtered: [Pattern] {
+        guard !searchText.isEmpty else { return patterns }
+        let query = searchText.lowercased()
+        return patterns.filter {
+            $0.title.lowercased().contains(query) ||
+            ($0.designerName?.lowercased().contains(query) ?? false)
+        }
+    }
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if patterns.isEmpty {
+                    VStack(spacing: 16) {
+                        Spacer()
+                        Image(systemName: "book.closed")
+                            .font(.system(size: 40))
+                            .foregroundStyle(theme.primary.opacity(0.4))
+                        Text("No patterns yet")
+                            .font(.headline)
+                        Text("Add a pattern to your library first")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        HStack(spacing: 12) {
+                            Button {
+                                dismiss()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    onDiscover?()
+                                }
+                            } label: {
+                                Label("Discover", systemImage: "magnifyingglass")
+                                    .font(.subheadline.weight(.medium))
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 10)
+                                    .background(theme.primary)
+                                    .foregroundStyle(.white)
+                                    .clipShape(Capsule())
+                            }
+                            Button {
+                                dismiss()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    onUploadPdf?()
+                                }
+                            } label: {
+                                Label("Upload PDF", systemImage: "doc.badge.plus")
+                                    .font(.subheadline.weight(.medium))
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 10)
+                                    .background(theme.primary.opacity(0.15))
+                                    .foregroundStyle(theme.primary)
+                                    .clipShape(Capsule())
+                            }
+                        }
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                } else {
+                    List(filtered) { pattern in
+                        Button {
+                            guard !isCreating else { return }
+                            isCreating = true
+                            Task {
+                                await onSelect(pattern.id)
+                                dismiss()
+                            }
+                        } label: {
+                            HStack(spacing: 12) {
+                                // Cover thumbnail
+                                if let coverUrl = pattern.coverImageUrl, let url = URL(string: coverUrl) {
+                                    AsyncImage(url: url) { image in
+                                        image.resizable().aspectRatio(contentMode: .fill)
+                                    } placeholder: {
+                                        Color(.systemGray5)
+                                    }
+                                    .frame(width: 44, height: 58)
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                                } else {
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(Color(.systemGray5))
+                                        .frame(width: 44, height: 58)
+                                        .overlay {
+                                            Image(systemName: "book.closed")
+                                                .font(.caption)
+                                                .foregroundStyle(.tertiary)
+                                        }
+                                }
+
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text(pattern.title)
+                                        .font(.subheadline.weight(.medium))
+                                        .lineLimit(2)
+                                    if let designer = pattern.designerName {
+                                        Text(designer)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    if let sections = pattern.sections, !sections.isEmpty {
+                                        Text("\(sections.count) sections")
+                                            .font(.caption2)
+                                            .foregroundStyle(.tertiary)
+                                    }
+                                }
+
+                                Spacer()
+
+                                if isCreating {
+                                    ProgressView()
+                                        .controlSize(.small)
+                                }
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(isCreating)
+                    }
+                    .listStyle(.plain)
+                }
+            }
+            .navigationTitle("Start from pattern")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $searchText, prompt: "Search patterns")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+            .task { await loadPatterns() }
+        }
+    }
+
+    private func loadPatterns() async {
+        do {
+            let response: APIResponse<PaginatedData<Pattern>> = try await APIClient.shared.get(
+                "/patterns?limit=100"
+            )
+            patterns = response.data.items
+            isLoading = false
+        } catch {
+            isLoading = false
+        }
+    }
 }
 
 // MARK: - New Project Sheet

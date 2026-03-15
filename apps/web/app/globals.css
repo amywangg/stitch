@@ -34,3 +34,29 @@
     @apply bg-background text-content-default antialiased;
   }
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 6s ease-in-out 3s infinite;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.bg-radial-gradient {
+  background: radial-gradient(
+    ellipse 60% 50% at center,
+    hsl(var(--background)) 30%,
+    hsl(var(--background) / 0.85) 55%,
+    transparent 80%
+  );
+}

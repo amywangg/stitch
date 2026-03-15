@@ -1,0 +1,490 @@
+[
+  {
+    "abbreviation": "SSK",
+    "name": "Slip Slip Knit",
+    "slug": "ssk",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A left-leaning single decrease that mirrors Knit Two Together (K2TOG). Two stitches are slipped individually knitwise, then knitted together through the back loops. The result slants to the left on the right side of the work, making it ideal for paired decreases on the left side of a neckline, raglan, or lace motif.",
+    "how_to": "1. Insert the right needle into the next stitch on the left needle as if to knit, and slip it to the right needle without working it.\n2. Repeat with the following stitch, slipping it knitwise to the right needle.\n3. Insert the left needle into the front of both slipped stitches from left to right.\n4. Wrap the yarn around the right needle and knit the two stitches together through the back loops.\n5. One stitch remains on the right needle where two existed before.",
+    "tips": "If your SSK looks looser than your K2TOG, try slipping the first stitch knitwise and the second stitch purlwise before knitting them together. This tightens the resulting stitch and gives a neater finish. Some knitters prefer this modified version for all their SSK decreases.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "skpo",
+        "region": "UK"
+      },
+      {
+        "synonym": "sl sl k",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=RKRzXWElrhA",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "K2TOG",
+    "name": "Knit Two Together",
+    "slug": "k2tog",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "The most common right-leaning single decrease in knitting. Two stitches are knitted together as one, producing a decrease that slants to the right on the right side of the work. It is the natural mirror of SSK and is typically used on the right side of paired decreases in shaping.",
+    "how_to": "1. Insert the right needle through the front of the next two stitches on the left needle at the same time, going from left to right as if to knit.\n2. Wrap the yarn around the right needle.\n3. Pull the yarn through both stitches.\n4. Slide both old stitches off the left needle.\n5. One stitch remains on the right needle where two existed before.",
+    "tips": "K2TOG is often the first decrease a beginner learns because the motion is identical to a regular knit stitch, just worked through two stitches instead of one. Keep your tension even to avoid a tight spot in the fabric.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "k2 tog",
+        "region": null
+      },
+      {
+        "synonym": "dec 1",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=FrWD0WnlUzU",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "K3TOG",
+    "name": "Knit Three Together",
+    "slug": "k3tog",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A right-leaning double decrease that removes two stitches at once by knitting three stitches together as one. The decrease slants to the right on the right side of the work. It is commonly used in lace patterns and rapid shaping where two stitches need to be eliminated in a single action.",
+    "how_to": "1. Insert the right needle through the front of the next three stitches on the left needle at the same time, going from left to right.\n2. Wrap the yarn around the right needle.\n3. Pull the yarn through all three stitches.\n4. Slide the three old stitches off the left needle.\n5. One stitch remains on the right needle where three existed before.",
+    "tips": "Knitting through three stitches can feel tight. If you struggle to insert the needle, try using a needle one size smaller in your right hand, or gently spread the stitches on the left needle before inserting. Working on the tips of your needles also helps.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "k3 tog",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=0uePVsxAekg",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "P2TOG",
+    "name": "Purl Two Together",
+    "slug": "p2tog",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A single decrease worked on the purl (wrong) side of stockinette fabric. Two stitches are purled together as one. When viewed from the right side, P2TOG produces a right-leaning decrease, making it the wrong-side equivalent of K2TOG.",
+    "how_to": "1. Insert the right needle through the front of the next two stitches on the left needle from right to left, as if to purl.\n2. Wrap the yarn around the right needle.\n3. Pull the yarn through both stitches.\n4. Slide both old stitches off the left needle.\n5. One stitch remains on the right needle where two existed before.",
+    "tips": "P2TOG is used when your pattern calls for a right-leaning decrease on a wrong-side row. If your pattern says to decrease on every row (not just right-side rows), you will alternate between K2TOG on knit rows and P2TOG on purl rows to maintain consistent right-leaning shaping.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "p2 tog",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=S7iqXXbLSd4",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "P3TOG",
+    "name": "Purl Three Together",
+    "slug": "p3tog",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A double decrease worked on the purl side by purling three stitches together as one. It eliminates two stitches in a single action. When viewed from the right side, P3TOG produces a right-leaning double decrease, making it the wrong-side equivalent of K3TOG.",
+    "how_to": "1. Insert the right needle through the front of the next three stitches on the left needle from right to left, as if to purl.\n2. Wrap the yarn around the right needle.\n3. Pull the yarn through all three stitches.\n4. Slide the three old stitches off the left needle.\n5. One stitch remains on the right needle where three existed before.",
+    "tips": "This decrease can be very tight and awkward to work. If you find it difficult, try loosening the tension on the three stitches beforehand, or consider working a slip-based alternative on the knit side instead. Some knitters find it easier to use a crochet hook to pull the yarn through.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "p3 tog",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "SKP",
+    "name": "Slip, Knit, Pass Slipped Stitch Over",
+    "slug": "skp",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A left-leaning single decrease and one of the oldest decrease methods in knitting. A stitch is slipped, the next stitch is knitted, and then the slipped stitch is passed over the knitted stitch. The result is functionally identical to SSK but uses a different technique. Some patterns prefer SKP notation.",
+    "how_to": "1. Slip the next stitch from the left needle to the right needle knitwise.\n2. Knit the following stitch normally.\n3. Using the left needle tip, lift the slipped stitch on the right needle up and over the knitted stitch and off the needle.\n4. One stitch remains where two existed before.",
+    "tips": "SKP and SSK produce nearly identical results. SSK tends to give a slightly neater finish in most knitters' hands, which is why many modern patterns prefer SSK. However, if your pattern calls for SKP, use it as written since the designer may have chosen it for a specific visual effect.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "sl1 k1 psso",
+        "region": null
+      },
+      {
+        "synonym": "skpo",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "S2KP",
+    "name": "Slip 2, Knit 1, Pass Slipped Stitches Over",
+    "slug": "s2kp",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A centered double decrease that eliminates two stitches while keeping the center stitch on top, creating a neat vertical line. Two stitches are slipped together knitwise, the next stitch is knitted, and then both slipped stitches are passed over. This is the most common centered double decrease in lace and shawl patterns.",
+    "how_to": "1. Insert the right needle into the next two stitches on the left needle as if to knit them together (knitwise), and slip them both to the right needle without working them.\n2. Knit the next stitch on the left needle normally.\n3. Using the left needle tip, lift both slipped stitches together over the knitted stitch and off the right needle.\n4. One stitch remains where three existed before, with the center stitch sitting neatly on top.",
+    "tips": "The key to a clean S2KP is slipping both stitches together in one motion. If you slip them one at a time, the center stitch will not sit as neatly on top and the decrease will look uneven. This decrease is a staple of lace knitting, so practice it until it feels smooth.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "sl2 k1 p2sso",
+        "region": null
+      },
+      {
+        "synonym": "s2kp2",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=J0zfvbYjUM0",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "CDD",
+    "name": "Central Double Decrease",
+    "slug": "cdd",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A centered double decrease that removes two stitches symmetrically, leaving the center stitch on top. The technique is functionally the same as S2KP: slip two stitches together knitwise, knit one, pass slipped stitches over. CDD is a common abbreviation in patterns that want to emphasize the centered nature of the decrease rather than spell out the individual steps.",
+    "how_to": "1. Insert the right needle into the next two stitches together as if to knit, and slip them to the right needle.\n2. Knit the next stitch.\n3. Pass both slipped stitches over the knitted stitch and off the needle.\n4. One stitch remains where three existed before.",
+    "tips": "CDD and S2KP are the same decrease under different names. When you see CDD in a pattern, work it exactly like S2KP. The abbreviation CDD is more common in North American patterns, while S2KP appears more often in Japanese and European patterns.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "s2kp",
+        "region": null
+      },
+      {
+        "synonym": "sl2-k1-p2sso",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=NW-5xX2Q7-0",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "SSP",
+    "name": "Slip Slip Purl",
+    "slug": "ssp",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A left-leaning single decrease worked on the purl side. It is the purl-side equivalent of SSK. When viewed from the right side of stockinette fabric, SSP produces a left-leaning decrease, making it useful for maintaining consistent decrease direction when shaping on wrong-side rows.",
+    "how_to": "1. Slip the next stitch knitwise from the left needle to the right needle.\n2. Slip the following stitch knitwise from the left needle to the right needle.\n3. Slip both stitches back to the left needle, keeping them in their twisted orientation.\n4. Insert the right needle through the back loops of both stitches from left to right (behind the left needle), and purl them together.\n5. One stitch remains where two existed before.",
+    "tips": "SSP is one of the more awkward decreases to execute because of the multiple slipping steps. Take your time and make sure both stitches are properly reseated on the left needle before purling through the back. If you find it too fiddly, some knitters prefer to work the decrease on the knit side as an SSK instead of flipping to the purl side.",
+    "difficulty": "intermediate",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "SK2P",
+    "name": "Slip 1, Knit 2 Together, Pass Slipped Stitch Over",
+    "slug": "sk2p",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A left-leaning double decrease that eliminates two stitches. One stitch is slipped, the next two are knitted together, and then the slipped stitch is passed over. Unlike S2KP/CDD which are centered, SK2P leans to the left, making it useful when directional double decreases are needed in lace or shaping.",
+    "how_to": "1. Slip the next stitch knitwise from the left needle to the right needle.\n2. Knit the next two stitches together (K2TOG).\n3. Using the left needle tip, lift the slipped stitch over the K2TOG stitch and off the right needle.\n4. One stitch remains where three existed before.",
+    "tips": "SK2P is sometimes confused with S2KP, but they produce different results. SK2P leans left because the slipped stitch travels over the top. S2KP is centered because two stitches are slipped and the center stitch stays on top. Pay close attention to which one your pattern calls for.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "sl1 k2tog psso",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=J0zfvbYjUM0",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "PSSO",
+    "name": "Pass Slipped Stitch Over",
+    "slug": "psso",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A technique rather than a standalone decrease. PSSO refers to lifting a previously slipped stitch over another stitch on the right needle and dropping it off the needle, similar to binding off. It is always used in combination with other actions (slip, knit) to form decreases like SKP, SK2P, and S2KP.",
+    "how_to": "1. After slipping a stitch and working one or more subsequent stitches, insert the left needle tip into the slipped stitch on the right needle from left to right.\n2. Lift the slipped stitch up and over the last worked stitch on the right needle.\n3. Drop the slipped stitch off the needle.\n4. The stitch count is reduced by one.",
+    "tips": "PSSO is a component of many decreases, not a decrease by itself. When you see it in a pattern, it always follows a slip instruction. Think of it like binding off a single stitch mid-row. Keep the motion smooth and avoid pulling too tightly, which can distort the stitch below.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "pass slipped st over",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "P2TOGTBL",
+    "name": "Purl Two Together Through Back Loop",
+    "slug": "p2togtbl",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A left-leaning single decrease worked on the purl side by purling two stitches together through their back loops. When viewed from the right side, it produces a left-leaning decrease. It is an alternative to SSP for achieving a left-leaning decrease on wrong-side rows, though the technique feels quite different.",
+    "how_to": "1. Turn your work slightly toward you to see the back loops of the next two stitches.\n2. Insert the right needle from left to right through the back loops of the next two stitches on the left needle.\n3. Wrap the yarn and purl the two stitches together.\n4. Slide both old stitches off the left needle.\n5. One stitch remains where two existed before.",
+    "tips": "This is one of the more awkward maneuvers in knitting. The needle insertion can feel counterintuitive. Some knitters find it helpful to use the tip of the right needle to gently reposition the stitches before inserting through the back loops. Practice on a swatch before using it in a project.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "p2tog tbl",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "K2TOGTBL",
+    "name": "Knit Two Together Through Back Loop",
+    "slug": "k2togtbl",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A left-leaning single decrease created by knitting two stitches together through the back loops. It twists the stitches while decreasing, producing a left-leaning result that looks slightly different from SSK. Some patterns use this as an alternative to SSK, particularly in older or translated patterns.",
+    "how_to": "1. Insert the right needle through the back loops of the next two stitches on the left needle, going from right to left behind the left needle.\n2. Wrap the yarn around the right needle.\n3. Pull the yarn through both stitches.\n4. Slide both old stitches off the left needle.\n5. One stitch remains where two existed before.",
+    "tips": "K2TOGTBL creates a slightly twisted stitch compared to SSK. In most contexts, SSK is preferred for a cleaner left-leaning decrease, but K2TOGTBL is faster to work since it is a single motion rather than the multi-step SSK. Use whichever your pattern specifies.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "k2tog tbl",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "SL1-K2TOG-PSSO",
+    "name": "Slip 1, Knit 2 Together, Pass Slipped Stitch Over",
+    "slug": "sl1-k2tog-psso",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A left-leaning double decrease written in its fully expanded notation. This is the same decrease as SK2P, spelled out step by step. One stitch is slipped, the next two are knitted together, and the slipped stitch is passed over. It eliminates two stitches and leans to the left. Patterns use this longer notation for clarity, especially when the abbreviation SK2P might be unfamiliar to the reader.",
+    "how_to": "1. Slip the next stitch knitwise from the left needle to the right needle.\n2. Knit the next two stitches together (K2TOG) as one stitch.\n3. Insert the left needle tip into the slipped stitch on the right needle.\n4. Lift the slipped stitch over the K2TOG stitch and off the right needle.\n5. One stitch remains where three existed before.",
+    "tips": "If you see both SK2P and SL1-K2TOG-PSSO in different patterns, know they are the same decrease. The longer form is often used in beginner-friendly patterns where the designer wants to make every step explicit.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "sk2p",
+        "region": null
+      },
+      {
+        "synonym": "sl1 k2tog psso",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "SSSK",
+    "name": "Slip Slip Slip Knit",
+    "slug": "sssk",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A left-leaning double decrease that mirrors K3TOG. Three stitches are slipped individually knitwise, then all three are knitted together through the back loops. The result slants to the left on the right side of the work, eliminating two stitches. It is less common than S2KP or SK2P but appears in some lace and shawl patterns where a left-leaning double decrease is needed.",
+    "how_to": "1. Slip the next stitch knitwise from the left needle to the right needle.\n2. Slip the following stitch knitwise.\n3. Slip the third stitch knitwise.\n4. Insert the left needle into the front of all three slipped stitches from left to right.\n5. Knit all three stitches together through the back loops.\n6. One stitch remains where three existed before.",
+    "tips": "SSSK can feel very tight since you are knitting three twisted stitches together. Work on the tips of your needles and keep your tension relaxed. If your pattern calls for a left-leaning double decrease and does not specify SSSK, SK2P is usually easier to execute.",
+    "difficulty": "intermediate",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "K4TOG",
+    "name": "Knit Four Together",
+    "slug": "k4tog",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A right-leaning triple decrease that eliminates three stitches by knitting four stitches together as one. This aggressive decrease is uncommon in everyday knitting but appears in some lace patterns, entrelac, and rapid shaping situations where multiple stitches must be removed quickly.",
+    "how_to": "1. Insert the right needle through the front of the next four stitches on the left needle at the same time, going from left to right.\n2. Wrap the yarn around the right needle.\n3. Pull the yarn through all four stitches.\n4. Slide the four old stitches off the left needle.\n5. One stitch remains where four existed before.",
+    "tips": "This decrease requires forcing your needle through four layers of yarn, which can be very tight. Use sharp-tipped needles and work at the very tips. Some knitters find it helpful to gently fan the four stitches on the left needle before inserting. If you cannot get the needle through, try going down a needle size on the right hand only.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "k4 tog",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "P2TOG TBL",
+    "name": "Purl Two Together Through Back Loop",
+    "slug": "p2tog-tbl",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "An alternate notation for P2TOGTBL. A left-leaning single decrease worked on the purl side by purling two stitches together through their back loops. The space in the abbreviation is a stylistic difference in pattern notation; the technique is identical to P2TOGTBL. When viewed from the right side, it produces a left-leaning decrease.",
+    "how_to": "1. Identify the back loops of the next two stitches on the left needle.\n2. Insert the right needle from left to right through the back loops of both stitches.\n3. Wrap the yarn and purl the two stitches together.\n4. Slide both old stitches off the left needle.\n5. One stitch remains where two existed before.",
+    "tips": "Patterns vary in whether they write this as P2TOGTBL, P2TOG TBL, or p2tog-tbl. They all mean the same thing. If your pattern key defines the abbreviation, always follow that definition, as some designers use non-standard abbreviations.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "p2togtbl",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "sc2tog",
+    "name": "Single Crochet Two Together",
+    "slug": "sc2tog",
+    "category": "decrease",
+    "craft_type": "crochet",
+    "definition": "The most common decrease in crochet. Two single crochet stitches are worked partway and then joined at the top by pulling the yarn through all remaining loops on the hook. It reduces the stitch count by one and is used for shaping in amigurumi, garments, hats, and virtually every crochet project that requires tapering.",
+    "how_to": "1. Insert the hook into the next stitch.\n2. Yarn over and pull up a loop (two loops on hook).\n3. Insert the hook into the following stitch.\n4. Yarn over and pull up a loop (three loops on hook).\n5. Yarn over and pull through all three loops on the hook.\n6. One stitch remains where two existed before.",
+    "tips": "For a neater sc2tog, keep your tension consistent on both partial stitches. In amigurumi worked in the round, sc2tog can leave visible gaps. Consider using the invisible decrease (inv dec) instead for a cleaner look on stuffed pieces.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "sc dec",
+        "region": null
+      },
+      {
+        "synonym": "dec sc",
+        "region": null
+      },
+      {
+        "synonym": "dc2tog",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "dc2tog",
+    "name": "Double Crochet Two Together",
+    "slug": "dc2tog",
+    "category": "decrease",
+    "craft_type": "crochet",
+    "definition": "A decrease that joins two double crochet stitches into one. Each double crochet is worked to the last yarn-over-pull-through, leaving the final loop on the hook, and then all remaining loops are drawn together. It reduces the stitch count by one and is used in garments, shawls, and lace crochet for shaping.",
+    "how_to": "1. Yarn over, insert the hook into the next stitch.\n2. Yarn over and pull up a loop (three loops on hook).\n3. Yarn over and pull through the first two loops (two loops on hook).\n4. Yarn over, insert the hook into the following stitch.\n5. Yarn over and pull up a loop (four loops on hook).\n6. Yarn over and pull through the first two loops (three loops on hook).\n7. Yarn over and pull through all three remaining loops on the hook.\n8. One stitch remains where two existed before.",
+    "tips": "The key to a neat dc2tog is completing each partial double crochet to the same height before joining. If one side is taller than the other, the decrease will look uneven. Count your loops on the hook at each step to make sure you are on track.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "dc dec",
+        "region": null
+      },
+      {
+        "synonym": "tr2tog",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "hdc2tog",
+    "name": "Half Double Crochet Two Together",
+    "slug": "hdc2tog",
+    "category": "decrease",
+    "craft_type": "crochet",
+    "definition": "A decrease that joins two half double crochet stitches into one. Each half double crochet is started but not completed, leaving extra loops on the hook, and then all loops are drawn together in a final pull-through. It is used for shaping in projects that use half double crochet fabric.",
+    "how_to": "1. Yarn over, insert the hook into the next stitch.\n2. Yarn over and pull up a loop (three loops on hook).\n3. Yarn over, insert the hook into the following stitch.\n4. Yarn over and pull up a loop (five loops on hook).\n5. Yarn over and pull through all five loops on the hook.\n6. One stitch remains where two existed before.",
+    "tips": "Half double crochet fabric is thicker than single crochet, so the decrease will create a slight bump. This is normal. For a smoother look in the final piece, try to keep your tension a touch looser when working the final pull-through.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "hdc dec",
+        "region": null
+      },
+      {
+        "synonym": "htr2tog",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "dc3tog",
+    "name": "Double Crochet Three Together",
+    "slug": "dc3tog",
+    "category": "decrease",
+    "craft_type": "crochet",
+    "definition": "A double decrease in crochet that joins three double crochet stitches into one, eliminating two stitches. Three partial double crochets are worked, each leaving the final loop on the hook, and then all remaining loops are drawn together. It is commonly used in granny squares, lace patterns, and V-stitch fabric for rapid shaping or creating points.",
+    "how_to": "1. Yarn over, insert the hook into the next stitch, yarn over and pull up a loop, yarn over and pull through two loops (two loops on hook).\n2. Yarn over, insert the hook into the following stitch, yarn over and pull up a loop, yarn over and pull through two loops (three loops on hook).\n3. Yarn over, insert the hook into the next stitch, yarn over and pull up a loop, yarn over and pull through two loops (four loops on hook).\n4. Yarn over and pull through all four loops on the hook.\n5. One stitch remains where three existed before.",
+    "tips": "When working dc3tog, keep your yarn overs consistent in height. The three partial stitches should all be the same height before you join them. If you lose track of your loop count, stop and count before the final pull-through.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "dc3 tog",
+        "region": null
+      },
+      {
+        "synonym": "tr3tog",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "inv dec",
+    "name": "Invisible Decrease",
+    "slug": "inv-dec",
+    "category": "decrease",
+    "craft_type": "crochet",
+    "definition": "A crochet decrease technique that produces a nearly invisible join, primarily used in amigurumi and other stuffed projects worked in the round. Instead of inserting the hook through both loops of each stitch, the hook goes under only the front loops of the two stitches being decreased, then completes a single crochet. This hides the decrease and prevents the gap that a standard sc2tog creates.",
+    "how_to": "1. Insert the hook under the front loop only of the next stitch (do not yarn over or pull through yet).\n2. Insert the hook under the front loop only of the following stitch (two front loops now on the hook).\n3. Yarn over and pull through both front loops (two loops on hook).\n4. Yarn over and pull through the remaining two loops on the hook.\n5. One stitch remains where two existed before.",
+    "tips": "The invisible decrease is a game-changer for amigurumi. It closes the gap that standard sc2tog leaves, which is especially noticeable on stuffed pieces where the filling can peek through. It takes a few tries to get the hook insertion right, but once you learn it, you will likely never go back to sc2tog for amigurumi.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "invisible decrease",
+        "region": null
+      },
+      {
+        "synonym": "inv sc2tog",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Left-Leaning Decrease",
+    "slug": "left-leaning-decrease",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A general term for any decrease where the resulting stitch slants to the left on the right side of the work. Left-leaning decreases are used on the left side of center in paired shaping (necklines, raglan sleeves, V-necks, lace motifs). The most common left-leaning decreases are SSK, SKP, and K2TOGTBL. Choosing the right left-leaning decrease for your project depends on the look you want and your pattern's instructions.",
+    "how_to": "1. Choose a specific left-leaning decrease technique based on your pattern (SSK, SKP, or K2TOGTBL are the most common).\n2. SSK: Slip two stitches knitwise one at a time, then knit them together through the back loops.\n3. SKP: Slip one stitch, knit the next, pass the slipped stitch over.\n4. K2TOGTBL: Knit two stitches together through the back loops.\n5. All three methods reduce the stitch count by one and lean to the left.",
+    "tips": "When a pattern says to work a left-leaning decrease without specifying which one, SSK is the standard modern choice. If your SSK looks loose or sloppy, try the modified SSK (slip the first stitch knitwise, slip the second purlwise, then knit together through the back loops). Experiment on a swatch to see which version looks best with your yarn and tension.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "left slanting decrease",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Right-Leaning Decrease",
+    "slug": "right-leaning-decrease",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A general term for any decrease where the resulting stitch slants to the right on the right side of the work. Right-leaning decreases are used on the right side of center in paired shaping. K2TOG is the most common right-leaning decrease and is often the first decrease technique a knitter learns. P2TOG is its purl-side equivalent.",
+    "how_to": "1. The standard right-leaning decrease is K2TOG: insert the right needle through the front of two stitches and knit them together.\n2. On the purl side, use P2TOG for the same right-leaning effect when viewed from the right side.\n3. For a double right-leaning decrease, use K3TOG.\n4. All these methods produce a decrease that slants to the right on the right side of the fabric.",
+    "tips": "Right-leaning decreases are usually paired with left-leaning decreases for symmetrical shaping. The classic pair is K2TOG (right-leaning) and SSK (left-leaning). Place the right-leaning decrease on the right side of center and the left-leaning decrease on the left side of center for balanced, professional-looking results.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "right slanting decrease",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Central Decrease",
+    "slug": "central-decrease",
+    "category": "decrease",
+    "craft_type": "knitting",
+    "definition": "A general term for any double decrease that eliminates two stitches symmetrically, with the center stitch sitting on top of its neighbors. Central decreases create a clean vertical line and are the hallmark of top-down triangular shawls, lace patterns, and any design where the decrease point should be visually centered rather than leaning left or right. S2KP and CDD are the most common central decreases.",
+    "how_to": "1. The standard central decrease is S2KP (also called CDD): slip two stitches together knitwise, knit one, pass slipped stitches over.\n2. An alternative method: slip one knitwise, knit two together, pass slipped stitch over (SK2P). Note that SK2P leans slightly left rather than being perfectly centered, despite sometimes being called a central decrease.\n3. For a true centered result, use S2KP/CDD where the middle stitch sits on top.\n4. Three stitches become one, with two stitches eliminated.",
+    "tips": "Central decreases are the spine of many shawl and lace designs. When working a pattern that has a central decrease at the same point every other row, use a stitch marker on either side to keep the center stitch easy to identify. Consistent tension on the center stitch will give you the cleanest vertical line.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "centered double decrease",
+        "region": null
+      },
+      {
+        "synonym": "balanced decrease",
+        "region": null
+      }
+    ]
+  }
+]

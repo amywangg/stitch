@@ -35,7 +35,10 @@ export async function GET(_req: NextRequest, { params }: Params) {
         },
       },
       pattern: {
-        include: { sizes: { orderBy: { sort_order: 'asc' } } },
+        include: {
+          sizes: { orderBy: { sort_order: 'asc' } },
+          photos: { orderBy: { sort_order: 'asc' }, take: 1 },
+        },
       },
       gauge: true,
       photos: { orderBy: { sort_order: 'asc' } },
@@ -62,7 +65,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const body = await req.json()
-  const allowed = ['title', 'description', 'status', 'craft_type', 'size_made', 'mods_notes', 'started_at', 'finished_at', 'pdf_upload_id'] as const
+  const allowed = ['title', 'description', 'status', 'craft_type', 'size_made', 'mods_notes', 'category', 'started_at', 'finished_at', 'pdf_upload_id'] as const
   const updates: Record<string, unknown> = {}
   for (const key of allowed) {
     if (key in body) updates[key] = body[key]
@@ -96,7 +99,17 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       const ravelryUpdates: Record<string, string> = {}
       if ('title' in updates) ravelryUpdates.name = updated.title
       if ('status' in updates) ravelryUpdates.status_name = reverseMapStatus(updated.status)
-      if ('description' in updates && updated.description) ravelryUpdates.notes = updated.description
+      if ('description' in updates || 'mods_notes' in updates) {
+        // Combine notes + mods for Ravelry (it has a single notes field)
+        const parts: string[] = []
+        if (updated.description) parts.push(updated.description)
+        if (updated.mods_notes) parts.push(`**Modifications:**\n${updated.mods_notes}`)
+        if (parts.length > 0) ravelryUpdates.notes = parts.join('\n\n')
+      }
+      if ('size_made' in updates && updated.size_made) ravelryUpdates.size = updated.size_made
+      if ('started_at' in updates && updated.started_at) {
+        ravelryUpdates.started = updated.started_at.toISOString().slice(0, 10)
+      }
       if ('finished_at' in updates && updated.finished_at) {
         ravelryUpdates.completed = updated.finished_at.toISOString().slice(0, 10)
       }

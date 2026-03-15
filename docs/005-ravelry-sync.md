@@ -84,12 +84,12 @@ OAuth 2.0 integration with Ravelry's API. Users authorize Stitch to access their
 
 ## Tier Gating
 
-| Feature | Free | Pro |
-|---|---|---|
-| First Ravelry import | Yes | Yes |
-| Manual re-sync | No | Yes |
-| Automatic re-sync | No | Yes |
-| Write-back to Ravelry | No | Yes |
+| Feature | Free | Plus | Pro |
+|---|---|---|---|
+| First Ravelry import | Yes | Yes | Yes |
+| Manual re-sync | No | No | Yes |
+| Automatic re-sync | No | No | Yes |
+| Write-back to Ravelry | No | No | Yes |
 
 ## Technical Notes
 

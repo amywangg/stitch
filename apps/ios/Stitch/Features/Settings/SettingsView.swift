@@ -40,6 +40,8 @@ struct SettingsView: View {
 
                 RavelrySection()
 
+                CraftPreferenceSection()
+
                 Section("Appearance") {
                     NavigationLink {
                         ThemeSettingsView()
@@ -128,13 +130,26 @@ private struct RavelrySection: View {
             } else if let conn = connection, conn.connected {
                 // Connected state
                 HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
+                    Image(systemName: conn.tokenValid == false ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                        .foregroundStyle(conn.tokenValid == false ? .orange : .green)
                     Text("@\(conn.ravelryUsername ?? "")")
                     Spacer()
-                    Text("Connected")
+                    Text(conn.tokenValid == false ? "Expired" : "Connected")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(conn.tokenValid == false ? .orange : .secondary)
+                }
+
+                if conn.tokenValid == false {
+                    Text("Your Ravelry connection has expired. Reconnect to continue syncing.")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+
+                    Button {
+                        Task { await startOAuthFlow() }
+                    } label: {
+                        Label("Reconnect Ravelry", systemImage: "arrow.clockwise")
+                    }
+                    .disabled(isConnecting)
                 }
 
                 Toggle("Sync changes to Ravelry", isOn: $syncToRavelry)
@@ -293,7 +308,7 @@ private struct RavelrySection: View {
         defer { if showLoading { isLoading = false } }
         do {
             let response: APIResponse<RavelryConnection> = try await APIClient.shared.get(
-                "/integrations/ravelry/status"
+                "/integrations/ravelry/status?validate=true"
             )
             connection = response.data
             syncToRavelry = response.data.syncToRavelry
@@ -327,5 +342,35 @@ private struct RavelrySection: View {
         }
         isSyncing = false
         await loadStatus(showLoading: false)
+    }
+}
+
+// MARK: - Craft Preference Section
+
+private struct CraftPreferenceSection: View {
+    @State private var craftPref: String
+
+    init() {
+        _craftPref = State(initialValue: UserDefaults.standard.string(forKey: "stitch_craft_preference") ?? "both")
+    }
+
+    var body: some View {
+        Section("Craft") {
+            Picker("I make", selection: $craftPref) {
+                Label("Knitting", systemImage: "hand.draw").tag("knitting")
+                Label("Crochet", systemImage: "lasso").tag("crocheting")
+                Label("Both", systemImage: "sparkles").tag("both")
+            }
+            .onChange(of: craftPref) { _, newValue in
+                UserDefaults.standard.set(newValue, forKey: "stitch_craft_preference")
+                // Clear glossary cache so it re-filters on next open
+                GlossaryCache.shared.clearCache()
+                Task { await GlossaryCache.shared.refresh() }
+            }
+
+            Text("Filters glossary terms, tutorials, and suggestions to match your craft")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
     }
 }

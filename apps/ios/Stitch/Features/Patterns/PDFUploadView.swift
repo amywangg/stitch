@@ -2,6 +2,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct PDFUploadView: View {
+    var patternId: String?
     var onUploaded: ((PdfUpload) -> Void)?
 
     @Environment(ThemeManager.self) private var theme
@@ -117,11 +118,16 @@ struct PDFUploadView: View {
         do {
             let data = try Data(contentsOf: url)
 
+            var fields: [String: String] = [:]
+            if let patternId {
+                fields["pattern_id"] = patternId
+            }
             let response: APIResponse<PdfUpload> = try await APIClient.shared.upload(
                 "/pdf/upload",
                 imageData: data,
                 mimeType: "application/pdf",
-                fileName: url.lastPathComponent
+                fileName: url.lastPathComponent,
+                fields: fields
             )
 
             uploadedPdf = response.data

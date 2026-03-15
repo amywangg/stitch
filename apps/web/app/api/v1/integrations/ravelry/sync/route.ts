@@ -5,7 +5,9 @@ import { getDbUser } from '@/lib/auth'
 import { requirePro } from '@/lib/pro-gate'
 import { decrypt } from '@/lib/encrypt'
 import { slugify } from '@/lib/utils'
-import { RavelryClient, RavelryProjectSummary, RavelryProjectDetail } from '@/lib/ravelry-client'
+import { RavelryClient, RavelryAuthError, RavelryProjectSummary, RavelryProjectDetail } from '@/lib/ravelry-client'
+import { getRavelryPatternDetail } from '@/lib/ravelry-search'
+import { emitActivity } from '@/lib/activity'
 
 export const maxDuration = 300
 
@@ -19,6 +21,16 @@ function mapStatus(ravelryStatus: string): string {
     Hibernating: 'hibernating',
   }
   return map[ravelryStatus] ?? 'active'
+}
+
+function reverseMapStatus(stitchStatus: string): string {
+  const map: Record<string, string> = {
+    active: 'In Progress',
+    completed: 'Finished',
+    frogged: 'Frogged',
+    hibernating: 'Hibernating',
+  }
+  return map[stitchStatus] ?? 'In Progress'
 }
 
 // Convert Ravelry gauge (stitches over N inches) to per-10cm
@@ -87,20 +99,54 @@ async function importProjectDetail(
   const ravelryId = String(summary.id)
   const existing = await prisma.projects.findFirst({ where: { user_id: userId, ravelry_id: ravelryId } })
 
+  // Link pattern if the project references one
+  let linkedPatternId: string | null = null
+  if (detail.pattern_id) {
+    try {
+      linkedPatternId = await upsertPatternRich(userId, detail.pattern_id)
+    } catch {
+      // Fall back to basic upsert if full fetch fails
+      if (detail.pattern) {
+        try {
+          linkedPatternId = await upsertPattern(
+            userId, detail.pattern_id, detail.pattern.name, null, detail.pattern.permalink,
+          )
+        } catch { /* non-critical */ }
+      }
+    }
+  }
+
   let projectId: string
+
+  // Build category string from Ravelry's nested pattern_categories
+  let category: string | null = null
+  if (detail.pattern_categories && detail.pattern_categories.length > 0) {
+    const cat = detail.pattern_categories[0]
+    const parts: string[] = []
+    if (cat.parent?.parent?.name) parts.push(cat.parent.parent.name)
+    if (cat.parent?.name) parts.push(cat.parent.name)
+    parts.push(cat.name)
+    category = parts.join(' → ')
+  }
+
+  const status = mapStatus(detail.status_name)
+  const isCompleted = status === 'completed'
 
   if (existing) {
     await prisma.projects.update({
       where: { id: existing.id },
       data: {
         title: detail.name,
-        status: mapStatus(detail.status_name),
+        status,
         craft_type: detail.craft_name?.toLowerCase() === 'crochet' ? 'crochet' : 'knitting',
         description: detail.notes ?? undefined,
         size_made: detail.size ?? undefined,
+        category: category ?? undefined,
         started_at: detail.started ? new Date(detail.started) : null,
         finished_at: detail.completed ? new Date(detail.completed) : null,
         ravelry_permalink: detail.permalink,
+        // Link pattern if not already linked
+        ...(linkedPatternId && !existing.pattern_id ? { pattern_id: linkedPatternId } : {}),
       },
     })
     projectId = existing.id
@@ -114,15 +160,25 @@ async function importProjectDetail(
         slug,
         title: detail.name,
         craft_type: detail.craft_name?.toLowerCase() === 'crochet' ? 'crochet' : 'knitting',
-        status: mapStatus(detail.status_name),
+        status,
         description: detail.notes ?? null,
         size_made: detail.size ?? null,
+        category,
         started_at: detail.started ? new Date(detail.started) : null,
         finished_at: detail.completed ? new Date(detail.completed) : null,
-        sections: { create: [{ name: 'Main', sort_order: 0 }] },
+        pattern_id: linkedPatternId,
+        sections: { create: [{ name: 'Main', sort_order: 0, completed: isCompleted }] },
       },
     })
     projectId = created.id
+  }
+
+  // Mark all sections completed if project is completed
+  if (isCompleted) {
+    await prisma.project_sections.updateMany({
+      where: { project_id: projectId, completed: false },
+      data: { completed: true },
+    })
   }
 
   // Photos: delete + recreate
@@ -172,6 +228,48 @@ async function importProjectDetail(
     })
   }
 
+  // Tags: sync from Ravelry
+  const tagNames = detail.tag_names ?? []
+  if (tagNames.length > 0) {
+    // Remove existing tags and re-create
+    await prisma.project_tags.deleteMany({ where: { project_id: projectId } })
+    for (const name of tagNames) {
+      const tag = await prisma.tags.upsert({
+        where: { name },
+        create: { name },
+        update: {},
+      })
+      await prisma.project_tags.create({
+        data: { project_id: projectId, tag_id: tag.id },
+      }).catch(() => {}) // ignore duplicate
+    }
+  }
+
+  // Backfill activity events for newly imported projects (skip re-syncs)
+  if (!existing) {
+    if (detail.started) {
+      await emitActivity({
+        userId, type: 'project_started', projectId,
+        createdAt: new Date(detail.started),
+        metadata: { source: 'ravelry_import' },
+      })
+    }
+    if (status === 'completed' && detail.completed) {
+      await emitActivity({
+        userId, type: 'project_completed', projectId,
+        createdAt: new Date(detail.completed),
+        metadata: { source: 'ravelry_import' },
+      })
+    }
+    if (status === 'frogged') {
+      await emitActivity({
+        userId, type: 'project_frogged', projectId,
+        createdAt: detail.completed ? new Date(detail.completed) : new Date(),
+        metadata: { source: 'ravelry_import' },
+      })
+    }
+  }
+
   return existing ? 'updated' : 'imported'
 }
 
@@ -213,6 +311,78 @@ async function upsertPattern(
   return created.id
 }
 
+/**
+ * Fetch full Ravelry pattern data and create/update a rich pattern record.
+ * Falls back to basic upsert if full detail fetch fails.
+ */
+async function upsertPatternRich(userId: string, ravelryPatternId: number, force = false): Promise<string> {
+  const existing = await prisma.patterns.findFirst({
+    where: { user_id: userId, ravelry_id: String(ravelryPatternId) },
+  })
+
+  // If we already have a rich record (has description or gauge), skip re-fetch unless forced
+  if (!force && existing && (existing.description || existing.gauge_stitches_per_10cm)) {
+    return existing.id
+  }
+
+  const detail = await getRavelryPatternDetail(ravelryPatternId, userId)
+
+  const richData = {
+    title: detail.name,
+    description: detail.notes ?? null,
+    notes_html: detail.notes_html ?? null,
+    craft_type: detail.craft ?? 'knitting',
+    difficulty: detail.difficulty ? String(detail.difficulty) : null,
+    garment_type: detail.pattern_categories?.[0] ?? null,
+    designer_name: detail.designer ?? null,
+    yarn_weight: detail.weight ?? null,
+    needle_size_mm: detail.gauge_needle_mm ?? null,
+    needle_sizes: detail.needle_sizes ?? [],
+    sizes_available: detail.sizes_available ?? null,
+    gauge_stitches_per_10cm: detail.gauge_stitches ?? null,
+    gauge_rows_per_10cm: detail.gauge_rows ?? null,
+    gauge_stitch_pattern: detail.gauge_stitch_pattern ?? null,
+    rating: detail.rating ?? null,
+    rating_count: detail.rating_count ?? null,
+    yardage_min: detail.yardage_min,
+    yardage_max: detail.yardage_max,
+    source_url: detail.url,
+    cover_image_url: detail.photo_url ?? null,
+    ravelry_id: String(ravelryPatternId),
+    source_free: detail.free,
+  }
+
+  let patternId: string
+
+  if (existing) {
+    await prisma.patterns.update({
+      where: { id: existing.id },
+      data: richData,
+    })
+    patternId = existing.id
+  } else {
+    const slug = await uniquePatternSlug(userId, detail.name)
+    const created = await prisma.patterns.create({
+      data: { user_id: userId, slug, ...richData },
+    })
+    patternId = created.id
+  }
+
+  // Store all photos
+  if (detail.photos && detail.photos.length > 0) {
+    await prisma.pattern_photos.deleteMany({ where: { pattern_id: patternId } })
+    await prisma.pattern_photos.createMany({
+      data: detail.photos.map((url: string, i: number) => ({
+        pattern_id: patternId,
+        url,
+        sort_order: i,
+      })),
+    })
+  }
+
+  return patternId
+}
+
 // ─── Route ────────────────────────────────────────────────────────────────────
 
 export async function POST(_req: NextRequest) {
@@ -247,6 +417,26 @@ export async function POST(_req: NextRequest) {
     connection.ravelry_username,
   )
 
+  // Verify OAuth tokens are still valid before starting the full sync
+  try {
+    await client.getProfile()
+  } catch (err) {
+    await prisma.ravelry_connections.update({
+      where: { user_id: user.id },
+      data: {
+        import_status: 'error',
+        import_error: 'Ravelry session expired. Please disconnect and reconnect your Ravelry account.',
+      },
+    })
+    if (err instanceof RavelryAuthError) {
+      return NextResponse.json(
+        { error: 'Ravelry session expired', code: 'RAVELRY_AUTH_EXPIRED', message: err.message },
+        { status: 401 }
+      )
+    }
+    throw err
+  }
+
   const stats = {
     profile: { updated: false },
     projects: { imported: 0, updated: 0, total: 0 },
@@ -265,6 +455,44 @@ export async function POST(_req: NextRequest) {
       data: { import_stats: { ...stats, current_phase: phase } },
     })
   }
+
+  // ── Phase 0: Push local changes to Ravelry before pulling ───────────────
+  if (connection.sync_to_ravelry) {
+    try {
+      const localProjects = await prisma.projects.findMany({
+        where: {
+          user_id: user.id,
+          ravelry_permalink: { not: null },
+          deleted_at: null,
+          updated_at: { gt: connection.synced_at ?? new Date(0) },
+        },
+      })
+
+      for (const proj of localProjects) {
+        try {
+          const ravelryUpdates: Record<string, string> = {}
+          ravelryUpdates.name = proj.title
+          ravelryUpdates.status_name = reverseMapStatus(proj.status)
+          if (proj.description || proj.mods_notes) {
+            const parts: string[] = []
+            if (proj.description) parts.push(proj.description)
+            if (proj.mods_notes) parts.push(`**Modifications:**\n${proj.mods_notes}`)
+            ravelryUpdates.notes = parts.join('\n\n')
+          }
+          if (proj.size_made) ravelryUpdates.size = proj.size_made
+          if (proj.started_at) ravelryUpdates.started = proj.started_at.toISOString().slice(0, 10)
+          if (proj.finished_at) ravelryUpdates.completed = proj.finished_at.toISOString().slice(0, 10)
+
+          await client.updateProject(proj.ravelry_permalink!, ravelryUpdates)
+        } catch (err) {
+          errors.push(`push project ${proj.ravelry_permalink}: ${err instanceof Error ? err.message : String(err)}`)
+        }
+      }
+    } catch (err) {
+      errors.push(`push: ${err instanceof Error ? err.message : String(err)}`)
+    }
+  }
+  await updateProgress('profile')
 
   // ── Phase 1: Profile ─────────────────────────────────────────────────────
   try {
@@ -320,13 +548,18 @@ export async function POST(_req: NextRequest) {
         const existing = await prisma.patterns.findFirst({
           where: { user_id: user.id, ravelry_id: String(vol.pattern.id) },
         })
-        await upsertPattern(
-          user.id,
-          vol.pattern.id,
-          vol.pattern.name,
-          vol.pattern.designer?.name ?? null,
-          vol.pattern.permalink,
-        )
+        // Try rich upsert first, fall back to basic
+        try {
+          await upsertPatternRich(user.id, vol.pattern.id)
+        } catch {
+          await upsertPattern(
+            user.id,
+            vol.pattern.id,
+            vol.pattern.name,
+            vol.pattern.designer?.name ?? null,
+            vol.pattern.permalink,
+          )
+        }
         if (existing) stats.patterns.updated++
         else stats.patterns.imported++
       } catch (err) {
@@ -431,10 +664,11 @@ export async function POST(_req: NextRequest) {
         let yarnId: string
 
         if (item.yarn) {
+          const companyName = item.yarn.company_name || 'Unknown'
           const company = await prisma.yarn_companies.upsert({
-            where: { name: item.yarn.company_name },
+            where: { name: companyName },
             update: {},
-            create: { name: item.yarn.company_name },
+            create: { name: companyName },
           })
           let yarn = await prisma.yarns.findFirst({ where: { ravelry_id: String(item.yarn.id) } })
           if (!yarn) {

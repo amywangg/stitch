@@ -1,0 +1,141 @@
+[
+  {
+    "slug": "stretchy-bind-off",
+    "title": "Stretchy Bind Off",
+    "description": "A flexible bind off that matches the stretch of ribbing and other elastic stitch patterns",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 1,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Understand why stretch matters",
+        "content": "The standard bind off creates a firm, inelastic edge. This is fine for shoulder seams and straight edges, but it causes problems on necklines, sock cuffs, hat brims, and any edge that needs to stretch over a body part. A stretchy bind off solves this by adding a yarn over between each stitch, creating extra slack in the chain. The result is an edge that stretches as much as the ribbing below it. There are several stretchy bind-off methods; this one, sometimes called Jeny's surprisingly stretchy bind off, is the most popular."
+      },
+      {
+        "step_number": 2,
+        "title": "Work a yarn over before each stitch",
+        "content": "The core technique is simple: before every stitch, work a yarn over. If the next stitch is a knit stitch, bring the yarn from back to front over the top of the right needle (a regular yarn over), then knit the stitch. If the next stitch is a purl stitch, bring the yarn from front to back over the top of the right needle (a reverse yarn over), then purl the stitch. The direction of the yarn over changes depending on whether you are knitting or purling so that it creates the right amount of slack for each type of stitch."
+      },
+      {
+        "step_number": 3,
+        "title": "Pass stitches over",
+        "content": "After working the yarn over and the first stitch, you have two loops on the right needle: the yarn over and the stitch. Pass the yarn over over the stitch and off the needle, just like a standard bind off. Now work the next yarn over and stitch. You will have two loops on the right needle again: the previous stitch and the new stitch. Pass the previous stitch over the new one. Continue this rhythm: yarn over, work stitch, pass yarn over off, pass previous stitch off. Each stitch gets bound off with the extra yarn from the yarn over tucked into the chain."
+      },
+      {
+        "step_number": 4,
+        "title": "Maintain consistent tension",
+        "content": "The stretchy bind off can look loopy and uneven if your tension is inconsistent. Try to keep each yarn over the same size by wrapping with the same amount of slack each time. Do not pull the yarn overs tight, as that defeats the purpose of the extra stretch. After binding off, gently stretch the edge once or twice to even out the stitches. Blocking will also help smooth out any irregularities. If the edge is too loose for your taste, try working the bind off with a needle one size smaller than your working needle."
+      },
+      {
+        "step_number": 5,
+        "title": "Finish the last stitch",
+        "content": "When only one stitch remains on the right needle, cut the yarn leaving a 6-inch tail. Pull the tail through the last loop and tighten. Weave in the end along the bind-off edge on the wrong side. Test the finished edge by stretching it: it should expand easily and spring back. Compare it to a standard bind off on a swatch and you will see dramatically more give. This bind off is especially transformative on sock cuffs and hat brims, where a tight edge can make the item unwearable."
+      }
+    ]
+  },
+  {
+    "slug": "three-needle-bind-off",
+    "title": "Three-Needle Bind Off",
+    "description": "Join two pieces together and bind off simultaneously for a strong, neat seam",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "difficulty": "intermediate",
+    "sort_order": 2,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Prepare your two pieces",
+        "content": "The three-needle bind off joins two sets of live stitches while binding off, eliminating the need to seam separately. Both pieces must have the same number of stitches. Place the stitches of each piece on separate needles. Hold the two needles parallel in your left hand with the right sides of the fabric facing each other (wrong sides facing out). The needle tips should both point to the right. When finished, the seam will be on the inside of the work. If you want a decorative exposed seam, hold the wrong sides together instead so right sides face out."
+      },
+      {
+        "step_number": 2,
+        "title": "Knit the first pair of stitches together",
+        "content": "Using a third needle in your right hand (the same size or one size larger), insert it knitwise through the first stitch on the front needle and then through the first stitch on the back needle at the same time. Both stitches are on the right needle together. Wrap the yarn and knit them as one stitch, pulling the loop through both stitches and sliding both old stitches off their respective left needles. You now have one stitch on the right needle, formed from one stitch of each piece."
+      },
+      {
+        "step_number": 3,
+        "title": "Continue binding off",
+        "content": "Knit the next pair of stitches together the same way: through the first stitch on the front needle and the first stitch on the back needle simultaneously. You now have two stitches on the right needle. Pass the first stitch over the second, just like a standard bind off. Continue across: knit a pair together, pass the previous stitch over, knit a pair together, pass the previous stitch over. The rhythm is the same as a regular bind off but you are working through two layers each time."
+      },
+      {
+        "step_number": 4,
+        "title": "Finish and weave in ends",
+        "content": "When you reach the last pair of stitches, knit them together and pass the previous stitch over. Cut the yarn, pull the tail through the final loop, and tighten. Turn the piece right side out and examine the seam. It should form a neat, flat ridge on the inside. The three-needle bind off creates one of the sturdiest seams in knitting and is the standard technique for joining shoulder seams. It is also used to join the tops of pocket linings, close pillow covers, and anywhere you need a strong structural join with minimal bulk."
+      }
+    ]
+  },
+  {
+    "slug": "i-cord-bind-off",
+    "title": "I-Cord Bind Off",
+    "description": "Create a beautiful rounded cord edge that binds off and finishes in one step",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "difficulty": "intermediate",
+    "sort_order": 3,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Set up the I-cord stitches",
+        "content": "The I-cord bind off creates a small knitted tube along the edge of your work as you bind off, producing a polished, rounded finish. You will need double-pointed needles or a short circular needle. Using a cable cast on or knitted cast on, add 3 stitches to the beginning of your left needle (before the existing stitches). These 3 stitches will form the I-cord tube. Some patterns use 2 or 4 cord stitches depending on the desired thickness, but 3 is the most common."
+      },
+      {
+        "step_number": 2,
+        "title": "Work the first bind-off sequence",
+        "content": "Knit 2 of the cord stitches. Then knit the third cord stitch together with the first live stitch from your project using K2TOG or SSK, depending on which looks neater with your stitch pattern. You have joined one project stitch to the cord. Now, instead of turning your work, slide all 3 cord stitches back to the left needle tip without turning. The yarn will be hanging from the leftmost cord stitch. Pull the yarn snugly across the back of the 3 cord stitches to the right side, ready to knit again."
+      },
+      {
+        "step_number": 3,
+        "title": "Repeat the I-cord rhythm",
+        "content": "Knit 2, knit the third cord stitch together with the next project stitch, slide the stitches back to the left needle. Repeat this sequence for every stitch along the edge. The pulling of yarn across the back of the 3 stitches is what closes the tube into a cord. Make sure you pull the yarn firmly on the first stitch of each repeat to close the back of the cord neatly. The cord gradually consumes the project stitches one by one while maintaining a constant 3-stitch I-cord along the top."
+      },
+      {
+        "step_number": 4,
+        "title": "Shape corners if needed",
+        "content": "If you are working the I-cord bind off around a corner, such as on a blanket border, you need to add extra rows at each corner to prevent the cord from pulling tight and distorting the corner. At a corner stitch, work the I-cord row without joining a project stitch: knit all 3 cord stitches, slide back, and repeat this un-joined row 1 to 2 extra times before resuming the normal bind off. This adds enough cord length to turn the corner smoothly. For a 90-degree corner, 2 extra un-joined rows usually works well."
+      },
+      {
+        "step_number": 5,
+        "title": "Close the cord and finish",
+        "content": "When all project stitches have been consumed, you will have only the 3 cord stitches remaining on the left needle. Cut the yarn, thread it through a tapestry needle, and draw it through all 3 stitches. Pull tight to close the end of the cord. If you are working in the round, graft the 3 live cord stitches to the 3 cast-on stitches at the beginning of the bind off using Kitchener stitch for a seamless join. The finished I-cord bind off is a professional touch that elevates any project and is particularly striking on blanket edges, cardigan fronts, and necklines."
+      }
+    ]
+  },
+  {
+    "slug": "tubular-bind-off",
+    "title": "Tubular Bind Off",
+    "description": "An invisible, supremely stretchy bind off that mirrors a tubular cast on for the perfect ribbed edge",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "difficulty": "advanced",
+    "sort_order": 4,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Work the setup rows",
+        "content": "The tubular bind off works on 1x1 ribbing (k1, p1) and creates an edge that looks like a continuous loop of fabric folding back on itself. Before binding off, you need to work 2 to 4 setup rows that separate the knit and purl stitches. On the first setup row, knit the knit stitches and slip the purl stitches with yarn in front. On the second setup row, slip the knit stitches with yarn in back and purl the purl stitches. Repeat these two rows once more. These rows gradually pull the knit stitches to the front and the purl stitches to the back, as if the fabric were separating into two layers."
+      },
+      {
+        "step_number": 2,
+        "title": "Prepare for grafting",
+        "content": "Cut the yarn, leaving a tail about three times the width of your bind-off edge. Thread the tail onto a tapestry needle with a blunt tip. The tubular bind off is essentially Kitchener stitch worked on the rib stitches as if they were two separate layers. Think of the knit stitches as the front layer and the purl stitches as the back layer. You will move through the stitches in a specific sequence, alternating between front-layer and back-layer stitches."
+      },
+      {
+        "step_number": 3,
+        "title": "Graft through the stitches",
+        "content": "Start with a setup pass: bring the tapestry needle through the first knit stitch purlwise (from right to left) and leave it on the knitting needle. Then bring the tapestry needle through the first purl stitch knitwise (from left to right) and leave it on. Now begin the main sequence. Go through the first knit stitch knitwise and drop it off. Go through the next knit stitch purlwise and leave it on. Go through the first purl stitch purlwise and drop it off. Go through the next purl stitch knitwise and leave it on. Repeat this four-step cycle across all stitches."
+      },
+      {
+        "step_number": 4,
+        "title": "Adjust tension and finish",
+        "content": "After working through all stitches, go back and even out the tension by starting at the beginning of the bind off and gently tugging each loop to match the size of the stitches in the ribbing below. Use a knitting needle tip or tapestry needle to adjust individual loops. This is the most time-consuming part but makes the difference between a lumpy edge and an invisible one. When the tension is even, weave the tail into the wrong side along the edge. A well-executed tubular bind off is completely invisible and looks like the ribbing simply continues in a seamless fold."
+      },
+      {
+        "step_number": 5,
+        "title": "When to use tubular bind off",
+        "content": "The tubular bind off is the professional choice for any visible ribbed edge where appearance matters: hat brims, sweater hems, neckbands, and cuffs. It pairs beautifully with a tubular cast on for edges that look identical at top and bottom. It is slower than other bind offs and takes practice to get the grafting sequence right, so it is not the best choice for practice projects or edges that will be seamed. Start by practicing on a small swatch of 1x1 ribbing until the four-step grafting sequence feels automatic, then graduate to actual garment edges."
+      }
+    ]
+  }
+]

@@ -87,16 +87,20 @@ A personal yarn inventory where each stash item links to a yarn from a shared ca
 
 ## Tier Gating
 
-| Feature | Free | Pro |
-|---------|------|-----|
-| View stash | Yes | Yes |
-| Add/edit/delete stash items | Yes | Yes |
-| Stash stats | Yes | Yes |
-| Ravelry initial import | Yes | Yes |
-| Ravelry re-sync | No | Yes |
-| AI recommendations from stash | No | Yes |
+| Feature | Free | Plus | Pro |
+|---------|------|------|-----|
+| View stash | Yes | Yes | Yes |
+| Add/edit/delete stash items | Yes | Yes | Yes |
+| Stash stats | Yes | Yes | Yes |
+| Ravelry initial import | Yes | Yes | Yes |
+| Ravelry re-sync | No | No | Yes |
+| AI recommendations from stash | No | No | Yes |
 
-Stash management is free. Ravelry re-sync (after initial import) and AI-powered recommendations require Pro.
+Stash management is free and unlimited for all tiers. Ravelry re-sync and AI-powered recommendations require Pro.
+
+## Monetization Role
+
+Stash is free, unlimited, and creates **data lock-in via the endowment effect** — users value what they already possess 2x more than identical things they don't own. The more yarn they catalog, the harder it is to leave the app. Stash data also feeds directly into Pro AI tools (stash-match, stash-planner, yarn-sub, yarn-equiv), creating a natural upgrade path: "You have 50 yarns in your stash — unlock AI to find the perfect pattern match."
 
 ## Technical Notes
 

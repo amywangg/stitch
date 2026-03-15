@@ -1,0 +1,141 @@
+[
+  {
+    "slug": "cable-cast-on",
+    "title": "Cable Cast On",
+    "description": "A firm, rope-like cast on that is perfect for adding stitches mid-row or starting projects that need a sturdy edge",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 1,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Start with a slip knot and one stitch",
+        "content": "Make a slip knot and place it on the left needle. Insert the right needle into the slip knot as if to knit, wrap the yarn, and pull through a loop. Place this new loop onto the left needle by inserting the left needle tip into the loop from right to left and slipping it off the right needle. You now have two stitches on the left needle. Gently snug the new stitch but do not pull it tight. These first two stitches establish the foundation for the cable cast on."
+      },
+      {
+        "step_number": 2,
+        "title": "Insert between the two stitches",
+        "content": "Here is where the cable cast on differs from a simple knitted cast on. Instead of inserting the right needle into a stitch, insert it between the last two stitches on the left needle. Push the right needle tip through the gap between the stitches from front to back. You should see the right needle poking out behind the left needle, sitting in the space between the two stitches rather than inside either one. This placement is what gives the cable cast on its distinctive firm, corded edge."
+      },
+      {
+        "step_number": 3,
+        "title": "Wrap and pull through",
+        "content": "With the right needle positioned between the two stitches, wrap the working yarn around the right needle tip counterclockwise, just as you would for a knit stitch. Pull this wrap through the gap toward you, creating a new loop on the right needle. The motion feels similar to knitting but the needle placement between stitches rather than through a stitch is the key difference. Keep your tension moderate so the new loop is not too tight to work on the first row."
+      },
+      {
+        "step_number": 4,
+        "title": "Place the new stitch on the left needle",
+        "content": "Transfer the new loop from the right needle to the left needle by inserting the left needle tip into the loop from right to left and slipping it over. The new stitch sits at the tip of the left needle, ready for the next cast-on stitch. Continue inserting between the last two stitches, wrapping, pulling through, and placing the loop on the left needle until you have cast on the required number of stitches. The finished edge looks like a twisted rope or cable running along the bottom."
+      },
+      {
+        "step_number": 5,
+        "title": "When to use the cable cast on",
+        "content": "The cable cast on produces a firm, structured edge that does not stretch much, making it ideal for buttonhole bands, necklines, and anywhere you want a crisp edge. It is also the best cast on for adding stitches at the beginning or end of a row mid-project, such as when casting on for sleeve stitches in a drop-shoulder sweater. Because you do not need a long tail, you never have to estimate yardage in advance. The tradeoff is less elasticity than the long-tail cast on, so avoid it where stretch is needed, like sock cuffs."
+      }
+    ]
+  },
+  {
+    "slug": "provisional-cast-on",
+    "title": "Provisional Cast On",
+    "description": "A temporary cast on using waste yarn that can be removed later to expose live stitches",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "difficulty": "intermediate",
+    "sort_order": 2,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Understand why you need a provisional cast on",
+        "content": "A provisional cast on creates a temporary starting edge that can be unzipped later to reveal live stitches. This is essential when you want to knit in both directions from the cast-on edge, graft two ends together seamlessly with Kitchener stitch, or add a border or edging that needs to flow seamlessly from the cast on. It is commonly used for toe-up socks, shawl centers, and garments where the hem is picked up and knitted downward after the body is complete. You will need a smooth waste yarn in a contrasting color and a crochet hook similar in size to your knitting needles."
+      },
+      {
+        "step_number": 2,
+        "title": "Create a crochet chain foundation",
+        "content": "Using the waste yarn and crochet hook, chain several more stitches than you need to cast on (about 5 extra gives you a comfortable margin). The chain should be loose enough that you can easily pick up stitches through the bumps on the back. Cut the waste yarn, pull the tail through the last loop, and set the crochet hook aside. Look at the chain and identify the back bumps: they form a row of small horizontal bars on the reverse side of the chain. These bumps are where you will pick up your project stitches."
+      },
+      {
+        "step_number": 3,
+        "title": "Pick up stitches through the chain",
+        "content": "With your project yarn and knitting needle, insert the needle under the first back bump of the crochet chain, wrap the yarn, and pull through a loop. This is your first cast-on stitch. Continue picking up one stitch through each back bump until you have the required number of stitches on your needle. Skip the extra chain stitches at the end. The stitches should sit on the needle just like any other cast-on stitches, and you can begin knitting your project immediately."
+      },
+      {
+        "step_number": 4,
+        "title": "Remove the waste yarn later",
+        "content": "When you are ready to work the live stitches at the cast-on edge, find the end of the crochet chain where you pulled the tail through (this is the end where you can unzip it). Gently pull the tail to start unraveling the chain one stitch at a time. As each chain stitch comes undone, a live stitch is released. Slide each live stitch onto a knitting needle as it appears. Work carefully and slowly to avoid dropping any stitches. You will have one fewer stitch than you picked up because of how the stitches interlock. You can now knit from these live stitches in the opposite direction or graft them to another piece."
+      }
+    ]
+  },
+  {
+    "slug": "german-twisted-cast-on",
+    "title": "German Twisted Cast On",
+    "description": "An extra-stretchy variation of the long-tail cast on, ideal for ribbed edges and sock cuffs",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "difficulty": "intermediate",
+    "sort_order": 3,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Set up in slingshot position",
+        "content": "The German twisted cast on starts exactly like the long-tail cast on. Estimate your tail length (about 1.5 inches per stitch to account for the extra twist), make a slip knot, and place it on the needle. Hold the needle in your right hand and arrange the two yarn strands in the slingshot position on your left hand: tail over your thumb, working yarn over your index finger, both strands anchored in your palm. Everything up to this point is identical to the long-tail method."
+      },
+      {
+        "step_number": 2,
+        "title": "Add the twist to the thumb loop",
+        "content": "Here is where this cast on diverges. Instead of scooping under the outside of the thumb yarn, you will first twist the thumb loop. Bring the needle down toward you and then up through the center of the thumb loop from below, going under both strands of yarn that wrap around your thumb. Then bring the needle over the strand closest to you (the far side of the thumb loop) and scoop under the strand farthest from you. You are essentially entering the thumb loop from the bottom and catching the back strand."
+      },
+      {
+        "step_number": 3,
+        "title": "Catch the index finger yarn and complete the stitch",
+        "content": "Swing the needle tip toward your index finger and scoop the yarn from the index finger, going over and behind it just as you would for a regular long-tail cast on. Bring this yarn back through the twisted thumb loop. Release your thumb from the loop and gently tighten the stitch on the needle. The twist in the thumb loop creates an extra wrap at the base of each stitch, which is what gives this cast on its superior elasticity."
+      },
+      {
+        "step_number": 4,
+        "title": "Repeat and check your edge",
+        "content": "Re-form the slingshot position and repeat the twisted motion for each stitch. The rhythm takes a few stitches to get comfortable with, but once you have it, the speed is nearly the same as a regular long-tail cast on. When you have all your stitches, examine the bottom edge. You should see pairs of small bumps at the base of each stitch, almost like a braided cord. This braided appearance is the hallmark of the German twisted cast on. The edge stretches significantly more than a standard long-tail and springs back without becoming loose or sloppy."
+      },
+      {
+        "step_number": 5,
+        "title": "When to choose this cast on",
+        "content": "The German twisted cast on is the best choice whenever you need the cast-on edge to stretch as much as the ribbing or fabric above it. It is particularly popular for sock cuffs, where a standard cast on can be too tight to stretch over the heel. It is also excellent for hat brims, mitten cuffs, and any 1x1 or 2x2 ribbed edge. The finished look is very similar to the long-tail cast on, so it works as a drop-in replacement whenever you want more give. Avoid it when you actually need a firm, non-stretchy edge, such as for a button band."
+      }
+    ]
+  },
+  {
+    "slug": "judys-magic-cast-on",
+    "title": "Judy's Magic Cast On",
+    "description": "A seamless cast on for toe-up socks and other projects that start from a closed center",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "difficulty": "intermediate",
+    "sort_order": 4,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Set up with two circular needles or magic loop",
+        "content": "Judy's Magic Cast On creates stitches on two needles simultaneously, forming a closed base with no seam. You can use two circular needles or one long circular needle in the magic loop configuration. Hold both needle tips together in your right hand, parallel and pointing to the right. Drape the yarn over the top needle with the tail hanging in front and the working yarn (ball end) hanging behind. Pinch the yarn tails against the needles with your right thumb and index finger to anchor them."
+      },
+      {
+        "step_number": 2,
+        "title": "Cast on the first stitch",
+        "content": "With your left hand, tension the two yarn strands in a slingshot position similar to the long-tail cast on: tail over your index finger, ball yarn over your thumb. Bring the bottom needle over the strand on your index finger (the tail), scooping it from front to back. This wraps the tail yarn around the bottom needle, creating the first stitch on that needle. Pull gently to snug it. You now have one stitch on the bottom needle and the initial wrap still on the top needle."
+      },
+      {
+        "step_number": 3,
+        "title": "Alternate stitches between needles",
+        "content": "Now bring the top needle over the strand on your thumb (the ball yarn), scooping it from back to front. This creates a stitch on the top needle. Then bring the bottom needle over the index finger strand again for the next bottom-needle stitch. Continue alternating: top needle scoops the thumb yarn, bottom needle scoops the index finger yarn. Each scoop adds one stitch to one needle. Count your stitches on each needle to make sure they stay even. If your pattern calls for 12 stitches per needle, continue until each needle holds 12 stitches."
+      },
+      {
+        "step_number": 4,
+        "title": "Begin knitting in the round",
+        "content": "Once all stitches are cast on, rotate the needles so the tips point to the left and the bottom needle is now closest to you. The yarn should be coming from the last stitch on the top (far) needle. Knit across the stitches on the top needle first. When those are done, turn your work and knit across the stitches on the bottom needle. You are now knitting in the round. Note that the bottom-needle stitches may be mounted backward (twisted on the needle), so you may need to knit them through the back loop on the first round only to avoid twisted stitches. After the first round, all stitches will be oriented normally."
+      },
+      {
+        "step_number": 5,
+        "title": "Check the closed edge",
+        "content": "After knitting a few rounds, examine the cast-on edge. It should be completely closed with no gap or hole at either end. The stitches at the base should look like a smooth fold, almost as if the knitting were folded in half. This seamless start is why Judy's Magic Cast On is the gold standard for toe-up socks, mitten tips, and the bottom of bags. If you see a small hole at one end, you can close it when weaving in the tail. With practice, the alternating motion becomes second nature and this cast on is just as fast as any other."
+      }
+    ]
+  }
+]

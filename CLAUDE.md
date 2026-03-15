@@ -63,6 +63,53 @@ Key rules: Letterboxd/Goodreads editorial style, content-forward layouts, warm n
 
 ---
 
+## Instant UI Feedback (CRITICAL)
+
+**Every mutation must be immediately reflected in the UI. No stale data. No requiring the user to navigate away and back to see changes.**
+
+### Rules
+
+1. **Optimistic updates first**: When a user performs an action (add comment, change status, toggle, delete, etc.), update the local ViewModel state immediately before or alongside the API call. Do not wait for the API response to update the UI.
+2. **Reload after mutation**: After any successful POST/PATCH/DELETE, the ViewModel must refresh the relevant data. If the view shows a list, reload the list. If it shows a detail, reload the detail. Never assume the user will navigate away.
+3. **Loading indicators for slow operations**: If an action takes >200ms (file uploads, AI calls, sync operations), show a loading spinner or progress indicator. The user must always know something is happening.
+4. **No fire-and-forget API calls**: Every API call must have its result handled — either update local state on success, or show an error on failure. `Task { await apiCall() }` without updating state afterward is a bug.
+5. **Parent-child refresh**: When a child view modifies data (e.g., editing a project in a sheet), the parent view must refresh when the child dismisses. Use `onChange(of: isPresented)`, completion callbacks, or shared state to trigger reloads.
+6. **Callbacks on dismiss**: Any sheet or navigation that allows editing must notify the presenting view when data changes, via an `onDismiss` reload or a shared `@Observable` ViewModel.
+
+### iOS Implementation Pattern
+
+```swift
+// GOOD: Optimistic update + API call
+func markActive() async {
+    project?.status = "active"  // Update UI immediately
+    do {
+        let _: APIResponse<Project> = try await APIClient.shared.patch(
+            "/projects/\(projectId)", body: ["status": "active"]
+        )
+        await load()  // Refresh with server state
+    } catch {
+        project?.status = previousStatus  // Revert on failure
+        self.error = error.localizedDescription
+    }
+}
+
+// BAD: Fire-and-forget, UI doesn't update
+func markActive() async {
+    try? await APIClient.shared.patch("/projects/\(projectId)", body: ["status": "active"])
+    // User sees stale "Completed" status until they navigate away and back
+}
+```
+
+### Common Violations to Avoid
+
+- Changing project status without updating the local `project` object
+- Adding/deleting a comment without updating the comments array
+- Toggling a setting without reflecting the new value
+- Uploading a photo without showing it when the upload completes
+- Editing in a sheet without reloading the parent view on dismiss
+
+---
+
 ## AI Tooling Guide
 
 Load `/ai-tooling` before building any AI-powered feature. Full spec at `.claude/skills/ai-tooling/SKILL.md`.
@@ -452,16 +499,34 @@ import { prisma } from '@stitch/db'      // in packages
 
 ## Tier Definitions
 
-| Feature | Free | Pro ($4.99/mo) |
-|---|---|---|
-| Active projects | 3 | Unlimited |
-| Saved patterns | 10 | Unlimited |
-| Ravelry import | First import only | Auto re-sync |
-| PDF upload | 2/month | Unlimited |
-| AI pattern parsing | — | ✓ |
-| Social posting | — | ✓ (read-only free) |
-| Row counter | ✓ | ✓ |
-| Cross-device realtime | — | ✓ |
+| Feature | Free | Plus ($1.99/mo) | Pro ($4.99/mo) |
+|---|---|---|---|
+| Row counter | ✓ | ✓ | ✓ |
+| Stash / needles | Unlimited | Unlimited | Unlimited |
+| Social posting | ✓ | ✓ | ✓ |
+| Active projects | 3 | Unlimited | Unlimited |
+| Saved patterns | 15 | Unlimited | Unlimited |
+| PDF parsing (AI) | 2/month | 5/month | Unlimited |
+| Cross-device realtime | — | ✓ | ✓ |
+| AI tools (other 8 routes) | — | — | ✓ |
+| Row instruction explainer | ✓ (GPT-4o-mini) | ✓ | ✓ |
+| Ravelry auto re-sync | — | — | ✓ |
+
+### Tier Implementation
+
+- **Config**: All tier limits are centralized in `apps/web/lib/pro-gate.ts` → `TIER_LIMITS`. Changing a limit there updates all gates.
+- **Server**: `getUserTier(user)` derives tier from `subscription.plan`. Use `requirePlus()`, `requirePro()`, or `requireCapacity()` to gate routes.
+- **iOS**: `SubscriptionManager.shared.tier` (`.free` / `.plus` / `.pro`) synced from RevenueCat entitlements. Use `.isPlusOrAbove` for Plus+ features, `.isPro` for Pro-only.
+- **Webhook**: `POST /api/webhooks/revenuecat` maps product IDs to tiers. Product ID mapping in `PRODUCT_TIER_MAP`.
+- **DB**: `subscriptions.plan` stores `"free" | "plus" | "pro"`. `users.is_pro` is a legacy boolean kept in sync for backward compatibility.
+
+### Feature Tier Annotation Rule (CRITICAL)
+
+**Every new feature documented in `docs/` or implemented in code MUST specify its tier gate (free/plus/pro).** When implementing a gated feature:
+1. Add the tier to the feature's doc entry or code comment
+2. Apply the correct server-side gate (`requirePlus`, `requirePro`, or `requireCapacity`)
+3. Apply the correct client-side gate (check `SubscriptionManager.shared.tier` in iOS)
+4. Show an upgrade prompt when a free/plus user hits the gate — never silently fail or hide the feature entirely
 
 ---
 

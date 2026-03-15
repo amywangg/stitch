@@ -45,7 +45,10 @@ export async function GET(req: NextRequest, { params }: Params) {
 
   const stepParam = req.nextUrl.searchParams.get('step')
   const tapParam = req.nextUrl.searchParams.get('tap')
-  const targetStep = stepParam ? parseInt(stepParam, 10) : section.current_step
+  // Clamp to valid range — completed sections may have current_step past the last step
+  const maxStep = patternSteps.length
+  const rawStep = stepParam ? parseInt(stepParam, 10) : section.current_step
+  const targetStep = Math.min(Math.max(rawStep, 1), maxStep)
   const tapInStep = tapParam ? parseInt(tapParam, 10) : section.current_row
 
   if (isNaN(targetStep) || targetStep < 1) {

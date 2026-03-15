@@ -11,19 +11,28 @@ export async function GET(_req: NextRequest, { params }: Params) {
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await getDbUser(clerkId)
+
+  // Look up user's own pattern (include soft-deleted so project links still work)
   const pattern = await prisma.patterns.findFirst({
-    where: { id, user_id: user.id, deleted_at: null },
+    where: { id, user_id: user.id },
     include: {
       sections: {
         orderBy: { sort_order: 'asc' },
         include: { rows: { orderBy: { row_number: 'asc' } } },
       },
       sizes: { orderBy: { sort_order: 'asc' } },
+      photos: { orderBy: { sort_order: 'asc' } },
+      pdf_uploads: { orderBy: { created_at: 'desc' }, take: 1 },
     },
   })
 
   if (!pattern) return NextResponse.json({ error: 'Pattern not found' }, { status: 404 })
-  return NextResponse.json({ success: true, data: pattern })
+
+  const queueEntry = await prisma.pattern_queue.findUnique({
+    where: { user_id_pattern_id: { user_id: user.id, pattern_id: id } },
+  })
+
+  return NextResponse.json({ success: true, data: { ...pattern, is_queued: !!queueEntry } })
 }
 
 export async function PATCH(req: NextRequest, { params }: Params) {
@@ -66,5 +75,16 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   if (!pattern) return NextResponse.json({ error: 'Pattern not found' }, { status: 404 })
 
   await prisma.patterns.update({ where: { id }, data: { deleted_at: new Date() } })
+
+  // Clean up saved_patterns bookmark if this was a Ravelry pattern
+  if (pattern.ravelry_id) {
+    const ravId = parseInt(pattern.ravelry_id, 10)
+    if (!isNaN(ravId)) {
+      await prisma.saved_patterns.deleteMany({
+        where: { user_id: user.id, ravelry_id: ravId },
+      })
+    }
+  }
+
   return NextResponse.json({ success: true, data: {} })
 }

@@ -1,0 +1,1183 @@
+[
+  {
+    "abbreviation": null,
+    "name": "Gauge",
+    "slug": "gauge",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The number of stitches and rows per unit of measurement (usually 4 inches or 10 cm) achieved with a specific yarn, hook or needle size, and stitch pattern. Gauge determines the finished size of a project and must match the pattern's stated gauge for accurate results.",
+    "how_to": null,
+    "tips": "Always knit or crochet a gauge swatch before starting a project. If you have too many stitches per inch, go up a needle/hook size; too few, go down a size.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "tension",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Tension",
+    "slug": "tension",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The tightness or looseness with which a crafter works their stitches. Also used as a synonym for gauge, particularly in British and Australian patterns. Consistent tension throughout a project ensures even fabric and accurate sizing.",
+    "how_to": null,
+    "tips": "Tension can vary with mood, fatigue, and even the type of chair you sit in. Try to work in similar conditions when gauging and when crafting your project.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "gauge",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Swatch",
+    "slug": "swatch",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A small sample of fabric worked in the intended yarn, needle/hook size, and stitch pattern to check gauge and evaluate drape, texture, and color before committing to a full project.",
+    "how_to": "Cast on or chain enough stitches for at least a 6-inch (15 cm) wide piece. Work in the pattern stitch for at least 6 inches in height. Bind off loosely, wash and block the swatch as you would the finished item, then measure gauge over the center 4 inches (10 cm).",
+    "tips": "Make your swatch larger than 4 inches so you can measure from the center, avoiding edge distortion. Keep swatches as a reference library for future projects.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "gauge swatch",
+        "region": null
+      },
+      {
+        "synonym": "tension square",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Gauge Swatch",
+    "slug": "gauge-swatch",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A swatch specifically worked to measure and verify gauge before beginning a project. The gauge swatch is typically worked in the main stitch pattern of the project and should be washed and blocked before measuring.",
+    "how_to": "Cast on or chain enough stitches for a piece at least 6 inches wide. Work the main stitch pattern for at least 6 inches. Bind off, wash, and block. Lay flat and measure stitches and rows over 4 inches (10 cm) in the center of the swatch.",
+    "tips": "Swatching in the round can give different gauge than swatching flat, so match your swatch method to your project construction. Some knitters purl more loosely than they knit, which affects gauge in stockinette worked flat.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "tension swatch",
+        "region": null
+      },
+      {
+        "synonym": "swatch",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "WIP",
+    "name": "Work in Progress",
+    "slug": "wip",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A project that has been started but not yet completed. Crafters often have multiple WIPs going at once across different project types and complexity levels.",
+    "how_to": null,
+    "tips": "Keep notes on each WIP including the row you stopped on, needle/hook size, and any modifications. This makes it much easier to pick back up after a break.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "FO",
+    "name": "Finished Object",
+    "slug": "fo",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A project that has been completed, including all finishing work such as weaving in ends, seaming, blocking, and adding any buttons or closures.",
+    "how_to": null,
+    "tips": "Sharing your FOs in crafting communities is a great way to get feedback, inspire others, and document your progress as a crafter.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "UFO",
+    "name": "Unfinished Object",
+    "slug": "ufo",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A project that has been set aside indefinitely with no immediate plans to complete it. Unlike a WIP, which is actively being worked on, a UFO has been abandoned or forgotten, often languishing in a project bag or closet.",
+    "how_to": null,
+    "tips": "Periodically review your UFOs. Decide whether to frog them for the yarn, finish them, or donate them. Setting a UFO limit can help keep your project queue manageable.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Frogging",
+    "slug": "frogging",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Ripping out stitches by pulling the working yarn to completely unravel rows of knitting or crochet. The name comes from the sound 'rip it, rip it' — like a frog. Frogging is done when a mistake is found many rows back or when reclaiming yarn from a project.",
+    "how_to": "Remove your work from the needles or hook. Gently pull the working yarn to unravel the stitches. To stop at a specific row, place a lifeline first or carefully thread a smaller needle through the target row before ripping. For crochet, simply pull the yarn as each stitch unravels one at a time.",
+    "tips": "Wind the frogged yarn into a ball as you go to prevent tangling. If the yarn is kinked, wind it into a hank, soak it, and hang it to dry with a small weight to straighten it out.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "ripping out",
+        "region": null
+      },
+      {
+        "synonym": "ripping back",
+        "region": null
+      },
+      {
+        "synonym": "unraveling",
+        "region": null
+      }
+    ],
+    "video_url": null,
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": null,
+    "name": "Tinking",
+    "slug": "tinking",
+    "category": "general",
+    "craft_type": "knitting",
+    "definition": "Undoing knitting one stitch at a time, working backwards along the row. The word 'tink' is 'knit' spelled backwards. Tinking is used when a mistake is only a few stitches or rows back and frogging would be excessive.",
+    "how_to": "Insert the left needle into the stitch below the one on the right needle, from front to back. Slide the stitch off the right needle and gently pull the working yarn to undo it. Repeat for each stitch you need to undo.",
+    "tips": "Tinking is slower but safer than frogging because you are less likely to drop stitches. For purl rows, insert the left needle from back to front.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "unknitting",
+        "region": null
+      }
+    ],
+    "video_url": null,
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": null,
+    "name": "Stash",
+    "slug": "stash",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A crafter's personal collection of yarn, fiber, and related materials accumulated over time. A stash may include yarn purchased for specific projects, impulse buys, gifts, and remnants from completed projects.",
+    "how_to": null,
+    "tips": "Organize your stash by weight, fiber content, or color to make it easier to shop from your own collection. Store yarn away from direct sunlight and in moth-proof containers if it contains animal fibers.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "yarn stash",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Destash",
+    "slug": "destash",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The act of reducing one's yarn stash by selling, trading, gifting, or donating yarn. Destashing helps manage stash size and can fund new yarn purchases.",
+    "how_to": null,
+    "tips": "Online crafting communities, local guild swaps, and charity knitting/crochet groups are great outlets for destashing. Include the yarn label information and yardage when selling.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "SABLE",
+    "name": "Stash Acquisition Beyond Life Expectancy",
+    "slug": "sable",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A humorous term describing a yarn stash so large that its owner could never reasonably use it all within their lifetime. Often used self-deprecatingly by prolific yarn collectors.",
+    "how_to": null,
+    "tips": "If you suspect you have reached SABLE status, consider organizing a destash, hosting a stash swap, or challenging yourself to a year of stash-busting projects.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "LYS",
+    "name": "Local Yarn Shop",
+    "slug": "lys",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "An independent, locally owned store specializing in yarn, fiber, needles, hooks, patterns, and other crafting supplies. LYS shops often offer classes, knit nights, and community events, distinguishing them from big-box craft stores.",
+    "how_to": null,
+    "tips": "Supporting your LYS helps keep the local crafting community alive. Many shops offer loyalty programs, and staff can provide expert advice on yarn substitutions and project help.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "local yarn store",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Skein",
+    "slug": "skein",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A length of yarn wound into a loose, oblong twist. Skeins are one of the most common commercial yarn packaging formats. They can typically be used as-is by pulling yarn from the center or outside, though some may need winding first.",
+    "how_to": null,
+    "tips": "Center-pull skeins are convenient but can cause the skein to collapse into a tangled mess toward the end. Consider winding into a cake when you reach the halfway point.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Hank",
+    "slug": "hank",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Yarn wound into a large loop and then twisted on itself for sale. Hanks must be wound into a ball or cake before use. Hand-dyed and indie-dyed yarns are most commonly sold in hank form because the format allows for even dye penetration.",
+    "how_to": "Untwist the hank and open it into a large loop. Drape it over a swift, the back of a chair, or a helper's outstretched hands. Wind into a ball by hand or use a ball winder to create a center-pull cake.",
+    "tips": "Never try to knit or crochet directly from a hank — it will tangle into an unusable mess. Wind carefully to avoid stretching the yarn.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Ball",
+    "slug": "ball",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Yarn wound into a round or oval shape for storage and use. Some commercial yarns are sold pre-wound as balls, and crafters often wind hanks into balls before starting a project.",
+    "how_to": null,
+    "tips": "When winding a ball by hand, wrap loosely to avoid stretching the yarn. A tight ball can distort elastic fibers and affect your gauge.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Cake",
+    "slug": "cake",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A flat-bottomed, cylindrical form of wound yarn produced by a ball winder. Cakes are center-pull, meaning yarn feeds smoothly from the middle without rolling around. The flat bottom keeps them stable while working.",
+    "how_to": null,
+    "tips": "Cakes are the most practical format for working. They sit flat, feed from the center, and stack neatly for storage.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "yarn cake",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Yarn Weight",
+    "slug": "yarn-weight",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A standardized classification system describing the thickness of yarn. The Craft Yarn Council defines categories from 0 (lace) to 7 (jumbo). Yarn weight determines the recommended needle/hook size, gauge, and the drape and warmth of the finished fabric.",
+    "how_to": null,
+    "tips": "Yarn weight names can vary by region. A yarn labeled 'DK' in one country may be called '8-ply' in another. Always check the recommended gauge on the ball band rather than relying solely on the weight name.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "weight",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Ply",
+    "slug": "ply",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "One of the individual strands twisted together to form a yarn. The number of plies can affect a yarn's strength, stitch definition, and tendency to pill. In Australian and New Zealand terminology, ply is also used as a yarn weight classification (e.g., 4-ply, 8-ply).",
+    "how_to": null,
+    "tips": "More plies does not always mean thicker yarn. A 4-ply fingering weight yarn is thinner than a single-ply bulky yarn. Ply structure affects stitch definition — tightly plied yarns show stitch patterns more clearly.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "RS",
+    "name": "Right Side",
+    "slug": "rs",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The public-facing side of a knitted or crocheted fabric — the side intended to be seen when the item is worn or displayed. In stockinette, the right side shows the smooth V-shaped stitches.",
+    "how_to": null,
+    "tips": "When a pattern says 'RS facing,' it means the right side of the work should be toward you. Attach a removable stitch marker to the right side early on so you can always identify it quickly.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "public side",
+        "region": null
+      },
+      {
+        "synonym": "front",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "WS",
+    "name": "Wrong Side",
+    "slug": "ws",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The private or interior-facing side of a knitted or crocheted fabric — the side not intended to be seen when the item is worn or displayed. In stockinette, the wrong side shows the bumpy purl texture.",
+    "how_to": null,
+    "tips": "Some stitch patterns are reversible, making both sides identical. In those cases, choose either side as the RS and be consistent.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "private side",
+        "region": null
+      },
+      {
+        "synonym": "back",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Selvedge",
+    "slug": "selvedge",
+    "category": "general",
+    "craft_type": "knitting",
+    "definition": "The edge stitches on either side of a flat-knitted piece. Selvedge stitches are often worked differently from the body stitches to create a neat, stable edge that is easier to seam or pick up stitches from.",
+    "how_to": "A common selvedge technique is to slip the first stitch of every row purlwise with yarn in front, then knit the last stitch. This creates a chain-like edge with one loop per two rows, making it easy to pick up stitches or mattress-stitch seams.",
+    "tips": "The selvedge method you choose depends on the purpose: chain selvedge for seaming, garter selvedge for edges that will show, or slipped selvedge for picking up stitches.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "selvage",
+        "region": null
+      },
+      {
+        "synonym": "selvedge edge",
+        "region": null
+      },
+      {
+        "synonym": "selvage edge",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Tail",
+    "slug": "tail",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The short end of yarn left after casting on, binding off, joining a new ball, or changing colors. Tails must be woven in (secured into the fabric) during finishing to prevent unraveling.",
+    "how_to": null,
+    "tips": "Leave tails at least 6 inches (15 cm) long for easy weaving in. For cast-on tails in long-tail cast on, estimate roughly 1 inch of tail per stitch plus extra.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "yarn tail",
+        "region": null
+      },
+      {
+        "synonym": "end",
+        "region": null
+      },
+      {
+        "synonym": "yarn end",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Ease",
+    "slug": "ease",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The difference between body measurements and the finished garment measurements. Positive ease means the garment is larger than the body (for a relaxed fit), while negative ease means the garment is smaller (for a close, stretchy fit). Zero ease means the garment matches body measurements exactly.",
+    "how_to": null,
+    "tips": "Most sweater patterns include 2-4 inches of positive ease. Choose your size based on the finished measurements in the schematic, not just your body measurements. The intended ease is usually stated in the pattern.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "wearing ease",
+        "region": null
+      },
+      {
+        "synonym": "design ease",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Schematic",
+    "slug": "schematic",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A technical line drawing included with a pattern showing the shape and finished dimensions of each piece. Schematics display measurements at key points such as width, length, armhole depth, and sleeve circumference for each available size.",
+    "how_to": null,
+    "tips": "Always check the schematic before choosing your size. Compare the finished measurements to a well-fitting garment you already own rather than relying solely on body measurements.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Repeat",
+    "slug": "repeat",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A sequence of stitches or rows that is worked multiple times to create a stitch pattern. In written patterns, repeats are indicated by brackets or asterisks. In charts, the repeat section is usually highlighted or bounded by bold lines.",
+    "how_to": null,
+    "tips": "Place stitch markers between repeats to make it easier to spot errors within a single repeat rather than having to recount the entire row.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "pattern repeat",
+        "region": null
+      },
+      {
+        "synonym": "stitch repeat",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Multiple",
+    "slug": "multiple",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The number of stitches required for one complete pattern repeat, often stated as 'multiple of X plus Y.' For example, a pattern requiring a 'multiple of 4 plus 2' means you must cast on a number of stitches divisible by 4, then add 2 extra for edge balance.",
+    "how_to": null,
+    "tips": "When adapting a pattern to a different size, make sure your new stitch count still satisfies the stitch multiple requirement or the pattern will not align correctly.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "stitch multiple",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Working Yarn",
+    "slug": "working-yarn",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The strand of yarn actively connected to the ball or skein and being used to form new stitches. The working yarn is distinguished from the tail end or any held yarns not currently in use.",
+    "how_to": null,
+    "tips": "When a pattern says 'yarn forward' or 'yarn back,' it is referring to the position of the working yarn relative to the needles.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "active yarn",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Tail End",
+    "slug": "tail-end",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The cut end of yarn not connected to the ball, typically left hanging after casting on, binding off, or joining new yarn. The tail end is woven into the fabric during finishing.",
+    "how_to": null,
+    "tips": "Do not trim tails too short before weaving in. Leave at least 6 inches to work with, and weave in along the direction of the stitches to keep the tail invisible.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "yarn tail",
+        "region": null
+      },
+      {
+        "synonym": "tail",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "DK",
+    "name": "Double Knitting Weight",
+    "slug": "dk",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A medium-light yarn weight (CYC category 3) that typically knits to a gauge of 21-24 stitches per 4 inches on US 5-7 (3.75-4.5 mm) needles. DK weight is versatile and popular for garments, accessories, and baby items.",
+    "how_to": null,
+    "tips": "DK weight is lighter than worsted and heavier than sport. It is one of the most popular weights worldwide and works well for three-season garments.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "DK",
+        "region": null
+      },
+      {
+        "synonym": "8-ply",
+        "region": null
+      },
+      {
+        "synonym": "light worsted",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Worsted Weight",
+    "slug": "worsted",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A medium yarn weight (CYC category 4) that typically knits to a gauge of 16-20 stitches per 4 inches on US 7-9 (4.5-5.5 mm) needles. Worsted weight is the most commonly used yarn weight in North America, suitable for sweaters, blankets, hats, and scarves.",
+    "how_to": null,
+    "tips": "Worsted weight yarn is widely available and affordable, making it a great choice for learning new techniques. It is also called 'aran weight' in some regions, though true aran can be slightly heavier.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "medium weight",
+        "region": null
+      },
+      {
+        "synonym": "10-ply",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Fingering Weight",
+    "slug": "fingering",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A fine yarn weight (CYC category 1) that typically knits to a gauge of 27-32 stitches per 4 inches on US 1-3 (2.25-3.25 mm) needles. Fingering weight is popular for socks, shawls, and lightweight garments with excellent stitch definition.",
+    "how_to": null,
+    "tips": "Fingering weight projects take longer due to the smaller gauge but produce a refined, lightweight fabric. This weight is the standard for hand-knit socks.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "sock weight",
+        "region": null
+      },
+      {
+        "synonym": "4-ply",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Sport Weight",
+    "slug": "sport",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A fine-to-medium yarn weight (CYC category 2) that typically knits to a gauge of 23-26 stitches per 4 inches on US 3-5 (3.25-3.75 mm) needles. Sport weight sits between fingering and DK, producing a light fabric suitable for baby items, garments, and accessories.",
+    "how_to": null,
+    "tips": "Sport weight is sometimes called '5-ply' in Australian terminology. It is a good choice when DK feels too heavy but fingering would take too long.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "5-ply",
+        "region": null
+      },
+      {
+        "synonym": "baby weight",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Bulky Weight",
+    "slug": "bulky",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A thick yarn weight (CYC category 5) that typically knits to a gauge of 12-15 stitches per 4 inches on US 9-11 (5.5-8 mm) needles. Bulky weight knits up quickly and is popular for cozy winter accessories, blankets, and quick-knit garments.",
+    "how_to": null,
+    "tips": "Bulky yarns produce thick, warm fabric that works up fast. Be aware that garments in bulky weight can be quite heavy, so consider that when choosing projects.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "chunky",
+        "region": null
+      },
+      {
+        "synonym": "12-ply",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Lace Weight",
+    "slug": "lace",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A very fine yarn weight (CYC category 0) that typically knits to a gauge of 32-40 stitches per 4 inches on US 000-1 (1.5-2.25 mm) needles. Lace weight is used for delicate shawls, fine garments, and intricate lace patterns.",
+    "how_to": null,
+    "tips": "Lace weight yarn is often worked on larger needles than recommended to create an open, airy fabric. Always use a lifeline when working complex lace patterns.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "2-ply",
+        "region": null
+      },
+      {
+        "synonym": "cobweb",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Aran Weight",
+    "slug": "aran",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A medium-to-heavy yarn weight that sits between worsted and bulky, typically knitting to a gauge of 16-18 stitches per 4 inches on US 8-9 (5-5.5 mm) needles. Named after the Aran Islands tradition of heavily cabled fisherman sweaters.",
+    "how_to": null,
+    "tips": "Aran weight is sometimes grouped with worsted (CYC 4) but tends to be slightly thicker. It is the traditional weight for cabled sweaters and provides excellent stitch definition for textured patterns.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "heavy worsted",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Super Bulky Weight",
+    "slug": "super-bulky",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A very thick yarn weight (CYC category 6) that typically knits to a gauge of 7-11 stitches per 4 inches on US 11-17 (8-12 mm) needles. Super bulky yarn produces fabric very quickly and is used for chunky blankets, cowls, and quick-gift projects.",
+    "how_to": null,
+    "tips": "Super bulky projects are satisfyingly fast but use a lot of yardage by weight. Check the total yardage needed, not just the number of skeins, when purchasing.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "super chunky",
+        "region": null
+      },
+      {
+        "synonym": "roving weight",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Fiber",
+    "slug": "fiber",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The raw material from which yarn is spun. Fibers fall into three main categories: animal (wool, alpaca, silk, cashmere), plant (cotton, linen, bamboo), and synthetic (acrylic, nylon, polyester). The fiber content determines a yarn's properties including warmth, drape, elasticity, and care requirements.",
+    "how_to": null,
+    "tips": "Always check the fiber content on the ball band. Animal fibers generally have more elasticity and warmth, plant fibers are cooler and less stretchy, and synthetics are easy-care and affordable.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "fibre",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Superwash",
+    "slug": "superwash",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A treatment applied to wool yarn that removes or coats the fiber scales, preventing felting and allowing the yarn to be machine washed. Superwash wool is popular for garments, socks, and baby items due to its easy-care properties.",
+    "how_to": null,
+    "tips": "Superwash wool tends to grow and drape more than untreated wool when blocked. It can also be slippery on needles. Account for potential stretching when choosing project sizes.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "machine washable wool",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Merino",
+    "slug": "merino",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A fine, soft wool from Merino sheep, prized for its softness against skin, excellent stitch definition, and elasticity. Merino is one of the most popular fibers in hand knitting and crochet, available in a wide range of yarn weights.",
+    "how_to": null,
+    "tips": "Merino can pill more than coarser wools. Look for plied merino yarns for better durability. Superwash merino is a popular choice for next-to-skin garments.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "merino wool",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Acrylic",
+    "slug": "acrylic",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A synthetic fiber made from polymers. Acrylic yarn is affordable, widely available, machine washable, hypoallergenic, and comes in a vast range of colors. It is commonly used for blankets, amigurumi, and projects requiring easy care.",
+    "how_to": null,
+    "tips": "Acrylic yarn can be 'killed' (made permanently soft and drapey) by steaming or gently ironing with a pressing cloth, but this is irreversible. It does not block with water like natural fibers.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Dye Lot",
+    "slug": "dye-lot",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A number printed on the yarn label identifying the specific batch in which the yarn was dyed. Skeins from different dye lots may have subtle color variations that become visible when used side by side in a project.",
+    "how_to": null,
+    "tips": "Always buy enough yarn from the same dye lot for your entire project. If you must use different dye lots, alternate skeins every two rows to blend the colors gradually.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "lot number",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Hand-dyed",
+    "slug": "hand-dyed",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Yarn that has been dyed by hand in small batches by an indie dyer, as opposed to commercially dyed yarn. Hand-dyed yarns often feature unique colorways and subtle color variations that give finished projects distinctive character.",
+    "how_to": null,
+    "tips": "Alternate skeins of hand-dyed yarn every 1-2 rows throughout your project to prevent visible color pooling or banding where one skein ends and another begins.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "indie-dyed",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Semi-solid",
+    "slug": "semi-solid",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A dyeing style that produces yarn in mostly one color with subtle tonal variations, giving depth and visual interest without the distinct color changes of variegated yarn. Semi-solids showcase stitch patterns better than heavily variegated yarns.",
+    "how_to": null,
+    "tips": "Semi-solid yarns are excellent for textured stitch patterns like cables and lace because the subtle tonal variation adds depth without obscuring the stitch definition.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "tonal",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Variegated",
+    "slug": "variegated",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Yarn dyed with multiple distinct colors that change along the length of the strand. Variegated yarns create unpredictable color patterns in the knitted or crocheted fabric and are best paired with simple stitch patterns that let the colors shine.",
+    "how_to": null,
+    "tips": "Avoid complex stitch patterns with variegated yarn — the color changes will compete with the texture. Stockinette, garter, and simple crochet stitches work best. Watch for unwanted color pooling.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "multicolor",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Self-striping",
+    "slug": "self-striping",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Yarn dyed with long color sections calculated to produce even stripes when knitted or crocheted at a specific gauge, typically for socks. The color changes happen automatically without the crafter needing to switch yarns.",
+    "how_to": null,
+    "tips": "Self-striping yarns are designed for specific stitch counts. If your project has a very different circumference than intended, the stripes may be uneven. They work best in socks and other small-circumference projects.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Tonal",
+    "slug": "tonal",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A yarn dyed in varying shades of a single hue, creating subtle depth and variation without introducing additional colors. Tonal yarns offer more visual interest than solids while still providing good stitch definition.",
+    "how_to": null,
+    "tips": "Tonal yarns are a great middle ground between solids and variegated — they add visual interest while still showing off stitch patterns like cables and lace.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "semi-solid",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Notions",
+    "slug": "notions",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Small tools and accessories used in knitting and crochet beyond needles, hooks, and yarn. Common notions include stitch markers, tapestry needles, row counters, scissors, cable needles, stitch holders, point protectors, and measuring tapes.",
+    "how_to": null,
+    "tips": "Keep a small notions pouch in your project bag with essentials: stitch markers, a tapestry needle, small scissors, and a measuring tape. Having these on hand saves frustration.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "SM",
+    "name": "Stitch Marker",
+    "slug": "stitch-marker",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A small ring or clip placed on the needle or into the fabric to mark a specific position such as the beginning of a round, a pattern repeat boundary, or a shaping point. Stitch markers are slipped from one needle to the other as you work past them.",
+    "how_to": null,
+    "tips": "Use different colors or styles of markers to distinguish between different types of markers in the same project (e.g., one color for repeat boundaries, another for the beginning of round).",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "marker",
+        "region": null
+      },
+      {
+        "synonym": "pm (place marker)",
+        "region": null
+      },
+      {
+        "synonym": "sl m (slip marker)",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Row Counter",
+    "slug": "row-counter",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A device or tool used to track the current row number in a project. Row counters range from simple mechanical clickers that slide onto a needle to digital counters and smartphone apps.",
+    "how_to": null,
+    "tips": "Get into the habit of clicking or incrementing your row counter at the same point in each row — either the beginning or the end — and be consistent.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Tapestry Needle",
+    "slug": "tapestry-needle",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A large, blunt-tipped needle with a wide eye used for weaving in yarn ends and seaming knitted or crocheted pieces together. The blunt tip slides between stitches without splitting the yarn.",
+    "how_to": null,
+    "tips": "Keep several tapestry needles in different sizes. Use a smaller one for fingering weight yarn and a larger one for bulky. A bent-tip tapestry needle can make weaving in ends easier.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "yarn needle",
+        "region": null
+      },
+      {
+        "synonym": "darning needle",
+        "region": null
+      },
+      {
+        "synonym": "finishing needle",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Cable Needle",
+    "slug": "cable-needle",
+    "category": "general",
+    "craft_type": "knitting",
+    "definition": "A short, specialized needle used to hold stitches temporarily while working cable crossings. Cable needles are typically shaped with a bend or hook in the middle to prevent stitches from sliding off.",
+    "how_to": null,
+    "tips": "Use a cable needle one or two sizes smaller than your working needles to prevent stretching the held stitches. Some experienced knitters cable without a cable needle by briefly dropping the stitches and rearranging them.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "cn",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Lifeline",
+    "slug": "lifeline",
+    "category": "general",
+    "craft_type": "knitting",
+    "definition": "A length of smooth, thin yarn or thread threaded through all live stitches on the needle at a specific row. If a mistake is discovered later, the knitter can safely frog back to the lifeline row, where the stitches are secured and can be easily placed back on the needle.",
+    "how_to": "Thread a length of smooth, contrasting waste yarn or dental floss onto a tapestry needle. Slide it through every stitch on the knitting needle, being careful not to catch any stitch markers. Leave the lifeline in place as you continue knitting. If you need to rip back, pull out the knitting needles, frog to the lifeline, and pick up the held stitches.",
+    "tips": "Place lifelines at the end of every successful repeat in lace knitting, or every 10-20 rows in complex patterns. Some circular needles have a small hole in the join where you can thread a lifeline automatically as you knit.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "safety line",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Chart Reading",
+    "slug": "chart-reading",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The skill of following a knitting or crochet chart, which is a visual grid where each square represents a stitch and symbols indicate the type of stitch to work. Charts provide a visual map of the finished fabric and are commonly used for colorwork, lace, and cable patterns.",
+    "how_to": "Read knitting charts from bottom to top (as the fabric grows). For flat knitting, read right-side rows from right to left and wrong-side rows from left to right. For circular knitting, read every row from right to left. Crochet charts are also read from bottom to top. Use a row tracker or sticky note to mark your current row.",
+    "tips": "Enlarge and print charts for easier reading. Use a magnetic board and strip to track your current row. Highlight the repeat section. Learn the standard symbols — most follow international conventions.",
+    "difficulty": "intermediate",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Written Pattern",
+    "slug": "written-pattern",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A pattern presented as line-by-line text instructions using abbreviations and written descriptions of each stitch. Written patterns spell out each row explicitly (e.g., 'K2, P3, K2tog, YO, K1'). They are the traditional format and are preferred by many crafters for their explicitness.",
+    "how_to": null,
+    "tips": "If you struggle with written patterns, try working through one row at a time and marking off completed rows. Some knitters find it helpful to chart out written instructions for better visualization.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "text pattern",
+        "region": null
+      },
+      {
+        "synonym": "line-by-line pattern",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Charted Pattern",
+    "slug": "charted-pattern",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "A pattern presented as a visual grid or diagram where symbols represent different stitches. Charted patterns allow the knitter or crocheter to see the overall design at a glance and are especially useful for colorwork, lace, and cable patterns where spatial relationships matter.",
+    "how_to": null,
+    "tips": "Many patterns include both written and charted versions. Try both to discover which format you prefer. Charts are particularly helpful for seeing how stitches relate to each other vertically.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "chart",
+        "region": null
+      },
+      {
+        "synonym": "stitch chart",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Knitwise",
+    "slug": "knitwise",
+    "category": "general",
+    "craft_type": "knitting",
+    "definition": "Inserting the needle into a stitch as if you were going to knit it — from left to right through the front of the loop. Used to describe how to insert the needle for operations like slipping stitches or picking up dropped stitches.",
+    "how_to": null,
+    "tips": "When a pattern says 'slip 1 knitwise,' it means to insert the right needle as if to knit but transfer the stitch without actually working it. This twists the stitch on the needle, unlike slipping purlwise.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "kwise",
+        "region": null
+      },
+      {
+        "synonym": "as if to knit",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Purlwise",
+    "slug": "purlwise",
+    "category": "general",
+    "craft_type": "knitting",
+    "definition": "Inserting the needle into a stitch as if you were going to purl it — from right to left through the front of the loop. Slipping stitches purlwise preserves their orientation on the needle without twisting them.",
+    "how_to": null,
+    "tips": "Unless a pattern specifies otherwise, slip stitches purlwise to avoid twisting them. The exception is slipping as part of a decrease (like SSK), where knitwise slipping is intentional.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "pwise",
+        "region": null
+      },
+      {
+        "synonym": "as if to purl",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "TBL",
+    "name": "Through Back Loop",
+    "slug": "tbl",
+    "category": "general",
+    "craft_type": "knitting",
+    "definition": "Working a stitch by inserting the needle into the back leg (the part of the loop behind the needle) rather than the front. Knitting or purling through the back loop twists the stitch, creating a firmer, more defined texture often used decoratively or to tighten stitches.",
+    "how_to": "To knit through the back loop, insert the right needle from right to left into the back leg of the stitch on the left needle, wrap the yarn, and pull through. To purl through the back loop, insert the right needle from left to right into the back leg from behind.",
+    "tips": "TBL stitches are tighter and more twisted than regular stitches. They are commonly used after a yarn over to close the hole, or as a decorative element in textured patterns.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "ktbl",
+        "region": null
+      },
+      {
+        "synonym": "ptbl",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "BLO",
+    "name": "Back Loop Only",
+    "slug": "blo",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Working a stitch through only the back loop, creating a twisted stitch. In crochet, BLO creates a distinctive ridged texture because only the back loop of the V at the top of each stitch is worked into, leaving the front loop visible as a horizontal ridge.",
+    "how_to": "In crochet, identify the two loops at the top of the stitch from the previous row. Insert your hook under only the back loop (the one farther from you) and work the stitch as normal. In knitting, insert the needle into the back leg of the stitch.",
+    "tips": "BLO in crochet creates a ribbed, stretchy fabric great for hat brims and cuffs. It also makes a nice visual texture for blankets and scarves.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "through back loop",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "FLO",
+    "name": "Front Loop Only",
+    "slug": "flo",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Working a stitch through only the front loop. In crochet, FLO creates a ridged texture similar to BLO but with the ridge appearing on the opposite side. The unworked back loop creates a visible horizontal line on the fabric.",
+    "how_to": "In crochet, identify the two loops at the top of the stitch from the previous row. Insert your hook under only the front loop (the one closer to you) and work the stitch as normal. In knitting, this is the default stitch orientation.",
+    "tips": "Combining FLO and BLO rows can create interesting textural patterns. FLO is also used in some amigurumi techniques to create defined edges and shape transitions.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "through front loop",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Carrying Yarn",
+    "slug": "carrying-yarn",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "In colorwork (stranded or Fair Isle knitting), the technique of loosely stranding the unused color across the back of the work while stitches are worked in the active color. The carried yarn creates horizontal strands called floats on the wrong side of the fabric.",
+    "how_to": "When switching colors in stranded colorwork, drop the current color and pick up the new one, leaving the unused yarn to float loosely across the back. Keep floats relaxed to prevent puckering. If a float spans more than 5 stitches, catch (trap) the floating yarn by twisting it with the working yarn every 3-4 stitches.",
+    "tips": "Maintain even tension on your floats — too tight and the fabric puckers, too loose and the floats snag. Practice holding one color in each hand (Continental and English style simultaneously) for faster colorwork.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "stranding",
+        "region": null
+      },
+      {
+        "synonym": "floating",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Yarn Over",
+    "slug": "yarn-over",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The concept of wrapping the working yarn around the needle or hook to create a new stitch and an intentional hole in the fabric. Yarn overs are fundamental to lace knitting and are used as increases and decorative eyelets. In crochet, a yarn over is wrapping the yarn around the hook before pulling through loops.",
+    "how_to": null,
+    "tips": "In knitting, a yarn over between two knit stitches is simply bringing the yarn to the front and over the needle to the back. The exact motion varies depending on the stitches before and after the yarn over.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "YO",
+        "region": null
+      },
+      {
+        "synonym": "yarn forward",
+        "region": null
+      },
+      {
+        "synonym": "yarn round needle",
+        "region": null
+      }
+    ],
+    "video_url": null,
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": "sts",
+    "name": "Stitches",
+    "slug": "stitches",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "The individual loops on your needle or hook that make up the fabric. 'Sts' is the standard abbreviation for stitches in written patterns. Stitch count is tracked to ensure the fabric stays the correct width and shaping is on track.",
+    "how_to": null,
+    "tips": "Count your stitches at the end of every row when starting a new project or after increases/decreases. Place a stitch marker every 20-50 stitches on long cast-on rows to make counting easier.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "st",
+        "region": null
+      },
+      {
+        "synonym": "stitch",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Turn",
+    "slug": "turn",
+    "category": "general",
+    "craft_type": "both",
+    "definition": "Flipping your work so the opposite side faces you, typically at the end of a row when working flat. In short row shaping, turns happen mid-row to create curves and shaping without binding off.",
+    "how_to": "1. Complete the stitches specified in the pattern\n2. Swap the needles between your hands (the right needle goes to the left hand and vice versa)\n3. The side that was facing away from you is now facing you\n4. Continue working in the direction specified by the pattern",
+    "tips": "When turning mid-row for short rows, use a wrap-and-turn (W&T) or German short row technique to prevent holes at the turning point.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "turning",
+        "region": null
+      }
+    ]
+  }
+]

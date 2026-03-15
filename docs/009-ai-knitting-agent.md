@@ -1,6 +1,6 @@
 # AI Tooling & Pro Features
 
-**Status:** Partially implemented (core backend routes + lib functions exist, no iOS UI)
+**Status:** Backend mostly complete (9 AI routes + 3 gauge routes + Ravelry proxy, no iOS or web UI)
 
 ## Design Philosophy
 
@@ -166,9 +166,206 @@ Guided multi-step flow: craft → yarn/weight → category → filtered results.
 
 ---
 
+### 9. Yarn Substitution & Pattern Adjustment (Pro)
+
+**"I want to use a different yarn — what changes?"** — User picks a substitute yarn (or multi-strand combo), app recommends needles, estimates gauge, adjusts stitch/row counts, and recalculates yardage. Handles multi-strand knitting (2x fingering held together, mohair + base yarn, etc.).
+
+| Layer | Status |
+|-------|--------|
+| Deterministic math | Done — `lib/yarn-math.ts` (weight estimation, needle ranges, gauge ranges, yardage) |
+| Prompt | Done — `lib/prompts/yarn-sub.ts` (fiber-aware gauge refinement + practical notes) |
+| API route | Done — `POST /api/v1/ai/yarn-sub` (maxDuration=120) |
+| iOS UI | Not started |
+| Web UI | Not started |
+
+**How it works:** Resolves yarn data (from stash, catalog, or manual entry) → estimates effective weight for multi-strand combos (mohair at 0.5x weight contribution) → deterministic needle range + gauge estimate → GPT-4o refines gauge considering fiber content + provides practical knitting notes → compares against pattern gauge → recalculates yardage with per-yarn breakdown → checks user's needle inventory for matches → optionally calls `convertPatternGauge()` for row-by-row instruction adjustment.
+
+**Two-step flow:** Instant deterministic results first (needle + gauge + yardage). Instruction conversion is opt-in via `convert_instructions: true` (expensive GPT-4o call sending all pattern rows). Client shows results, lets user confirm, then triggers conversion.
+
+**Multi-strand examples:**
+| Combo | Weight calc | Effective weight |
+|-------|-------------|-----------------|
+| 2x fingering | 1 + 1 = 2 | sport |
+| fingering + lace mohair | 1 + 0×0.5 = 1.5 → round | sport |
+| DK + lace mohair | 3 + 0×0.5 = 3.5 → round | worsted |
+
+**Input:**
+```json
+{
+  "pattern_id": "uuid",
+  "yarn_combo": [
+    { "source": "stash", "stash_item_id": "uuid", "strands": 1 },
+    { "source": "catalog", "yarn_id": "uuid", "strands": 1 },
+    { "source": "manual", "weight": "dk", "fiber_content": "100% merino", "strands": 1 }
+  ],
+  "needle_size_mm": 4.0,
+  "user_gauge": { "stitches_per_10cm": 22, "rows_per_10cm": 30 },
+  "convert_instructions": false
+}
+```
+
+**Output:** `{ yarn_summary, needle_recommendation, estimated_gauge, gauge_comparison, yardage, notes[], swatch_recommendation, adjustments }`
+
+**curl test:**
+```bash
+curl -X POST http://localhost:3000/api/v1/ai/yarn-sub \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"pattern_id": "<uuid>", "yarn_combo": [{"source": "manual", "weight": "dk", "fiber_content": "100% merino wool", "strands": 1}]}'
+```
+
+---
+
+### 10. Size Recommendation (Pro)
+
+**"What size should I make?"** — Scores all pattern sizes against the user's body measurements, accounting for ease preference and garment type. Bust ease is the primary axis; secondary checks on hip, shoulder, arm length, etc. flag fit issues.
+
+| Layer | Status |
+|-------|--------|
+| Deterministic math | Done — `lib/size-math.ts` (ease tables, size scoring, measurement coverage) |
+| Prompt | Done — `lib/prompts/size-rec.ts` (fit advice, between-sizes guidance, modification suggestions) |
+| API route | Done — `POST /api/v1/ai/size-rec` (maxDuration=30) |
+| iOS UI | Not started |
+| Web UI | Not started |
+
+**How it works:** Pulls body measurements from `user_measurements` (with optional per-request overrides) → checks which measurements the pattern actually has vs what the user has provided → scores each pattern size by bust ease deviation from target + secondary measurement checks → classifies fit as ideal/acceptable/compromise → GPT-4o adds contextual fit notes, between-sizes advice, and simple modification suggestions.
+
+**Ease preferences by garment type:** Each garment type (pullover, cardigan, vest, tank, coat, dress) has its own ease table with 5 levels: negative, close, standard, relaxed, oversized. Cardigans get more ease than pullovers; coats get the most.
+
+**Input:**
+```json
+{
+  "pattern_id": "uuid",
+  "ease_preference": "standard",
+  "measurements": { "bust_cm": 92, "hip_cm": 97 }
+}
+```
+
+**Output:** `{ recommended_size, ease_preference, ranked_sizes[], recommendation_summary, fit_notes[], between_sizes_advice, modification_suggestions[], measurement_coverage }`
+
+**curl test:**
+```bash
+curl -X POST http://localhost:3000/api/v1/ai/size-rec \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"pattern_id": "<uuid>", "ease_preference": "relaxed"}'
+```
+
+---
+
+### 11. Project Time Estimator (Pro)
+
+**"When will I finish this?"** — Calculates remaining time per section and estimated completion date based on the user's actual knitting speed and crafting schedule.
+
+| Layer | Status |
+|-------|--------|
+| Deterministic math | Done — `lib/time-math.ts` (speed calc, section estimates, session frequency, calendar projection) |
+| Prompt | Done — `lib/prompts/time-estimate.ts` (progress summary, pacing advice, milestone notes) |
+| API route | Done — `POST /api/v1/ai/time-estimate` (maxDuration=30) |
+| iOS UI | Not started |
+| Web UI | Not started |
+
+**How it works:** Derives knitting speed (rows/hour) from `crafting_sessions` — prefers sessions with row tracking data, prefers project-specific sessions over global, uses `active_minutes` over `duration_minutes` when available → estimates remaining time per section based on `target_rows - current_row` → calculates session frequency from last 30 days of sessions → projects remaining hours onto the user's schedule for a calendar completion date → GPT-4o-mini (cheap/fast) adds a motivational progress summary, section context, pacing advice, and milestone notes.
+
+**Speed calculation:** Filters to sessions with both `rows_start`/`rows_end` and `duration_minutes > 0`. Falls back to 15 rows/hour default if no data. Confidence: high (5+ sessions), medium (2-4), low (0-1).
+
+**Input:**
+```json
+{
+  "project_id": "uuid",
+  "rows_per_hour": 20
+}
+```
+
+**Output:** `{ progress, speed, sections[], schedule, summary, section_context, pacing_advice, milestone_note }`
+
+**curl test:**
+```bash
+curl -X POST http://localhost:3000/api/v1/ai/time-estimate \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"project_id": "<uuid>"}'
+```
+
+---
+
+### 12. Stash-to-Project Planner (Pro)
+
+**"Which of my yarns works for this pattern?"** — Scans the user's full stash and recommends which yarns could work for a given pattern, considering weight, yardage, fiber suitability, and multi-strand potential. Inverse of stash-match (#1): starts from a pattern, finds suitable stash yarns.
+
+| Layer | Status |
+|-------|--------|
+| Prompt | Done — `lib/prompts/stash-planner.ts` (fiber suitability + multi-strand suggestions) |
+| API route | Done — `POST /api/v1/ai/stash-planner` (maxDuration=30) |
+| iOS UI | Not started |
+| Web UI | Not started |
+
+**How it works:** Fetches user's stash (status = `in_stash`, cap 100) → deterministic pre-filter: exact weight matches first, then adjacent (±1 level), then all → yardage sufficiency check with deficit calculation → top 20 candidates sent to GPT-4o for fiber suitability evaluation → AI also suggests multi-strand combos (e.g. 2x fingering → sport) → merges deterministic yardage data with AI suitability ratings.
+
+**Input:**
+```json
+{
+  "pattern_id": "uuid",
+  "weight_filter": "dk",
+  "include_adjacent_weights": true
+}
+```
+
+**Output:** `{ pattern, candidates[], multi_strand_suggestions[], general_advice, stash_items_evaluated, stash_items_total }`
+
+Each candidate includes: `yarn_name, weight, weight_match, fiber_content, colorway, total_yardage, yardage_sufficient, yardage_deficit, suitability, reason, fiber_notes`
+
+**curl test:**
+```bash
+curl -X POST http://localhost:3000/api/v1/ai/stash-planner \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"pattern_id": "<uuid>"}'
+```
+
+---
+
+### 13. Yarn Equivalence Finder (Pro)
+
+**"What yarn is similar to X?"** — Finds substitute yarns by scoring weight, fiber content, yardage, and put-up similarity, then AI evaluates how each will actually knit up (stitch definition, drape, bloom, gauge behavior).
+
+| Layer | Status |
+|-------|--------|
+| Deterministic math | Done — `lib/yarn-equiv.ts` (fiber parsing, overlap scoring, composite ranking) |
+| Prompt | Done — `lib/prompts/yarn-equiv.ts` (knitting-specific equivalence evaluation) |
+| API route | Done — `POST /api/v1/ai/yarn-equiv` (maxDuration=30) |
+| iOS UI | Not started |
+| Web UI | Not started |
+
+**How it works:** Resolves source yarn (from stash, catalog, or manual entry) → gathers candidates from stash, catalog, or both (filtered to same + adjacent weights) → deterministic scoring: weight match (35%), fiber overlap (35%), yardage similarity (15%), grams similarity (15%) → fiber parsing normalizes breed names (BFL → wool, kid silk → mohair, pima cotton → cotton, etc.) → top candidates scored and ranked → GPT-4o evaluates each with knitting-specific knowledge (stitch definition, drape, memory, pilling, superwash behavior) → verdicts: drop-in / close / workable / not recommended.
+
+**Input:**
+```json
+{
+  "source": { "from": "catalog", "yarn_id": "uuid" },
+  "search_in": "both",
+  "context": "for a lace shawl",
+  "limit": 15
+}
+```
+
+**Output:** `{ source, equivalents[], top_pick, general_notes, candidates_evaluated }`
+
+Each equivalent includes: `yarn_id, name, company, weight, fiber_content, match_score, weight_match, fiber_overlap, verdict, reason, knitting_difference, gauge_notes`
+
+**curl test:**
+```bash
+curl -X POST http://localhost:3000/api/v1/ai/yarn-equiv \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"source": {"from": "manual", "name": "Malabrigo Rios", "weight": "worsted", "fiber_content": "100% superwash merino"}, "search_in": "stash"}'
+```
+
+---
+
 ## Planned Features (Not Started)
 
-### 9. PDF Pattern Parsing (Pro)
+### 14. PDF Pattern Parsing (Pro)
 
 Upload a PDF → extract text with `pdf-parse` → GPT-4o structures it into sections, rows, stitch counts, sizes → save to pattern library.
 
@@ -178,23 +375,6 @@ Upload a PDF → extract text with `pdf-parse` → GPT-4o structures it into sec
 | PDF extraction | Done — `lib/pdf.ts` |
 | iOS UI | Not started |
 
-### 10. Size Recommendation (Pro)
-
-Pattern ID + user measurements → recommended size with fit notes.
-
-**Input:** Pattern ID (auto-pulls user_measurements)
-**Output:** Recommended size, ease comparison, fit notes
-
-### 11. Yarn Substitution (Pro)
-
-Pattern ID + preferences → ranked yarn matches from stash with yardage calculations.
-
-Differs from stash-match (#1) in that it starts from a pattern and finds suitable yarns, rather than starting from a yarn and finding patterns.
-
-### 12. Project Time Estimate (Pro)
-
-Pattern ID → estimated hours based on user's crafting session history and pattern complexity.
-
 ---
 
 ## Architecture
@@ -203,12 +383,22 @@ Pattern ID → estimated hours based on user's crafting session history and patt
 
 | File | Purpose |
 |------|---------|
-| `apps/web/lib/agent.ts` | Core business logic — 4 discrete action functions |
+| `apps/web/lib/agent.ts` | Core business logic — stash matching, pattern matching, gauge conversion, row explanation |
 | `apps/web/lib/gauge.ts` | Deterministic gauge math (no AI) |
+| `apps/web/lib/yarn-math.ts` | Deterministic yarn calculations — weight estimation, needle ranges, gauge ranges, yardage |
+| `apps/web/lib/yarn-equiv.ts` | Deterministic yarn equivalence — fiber parsing, overlap scoring, composite ranking |
+| `apps/web/lib/size-math.ts` | Deterministic size scoring — ease tables, measurement comparison, fit classification |
+| `apps/web/lib/time-math.ts` | Deterministic time estimation — speed calculation, section estimates, calendar projection |
 | `apps/web/lib/ravelry-search.ts` | Ravelry search proxy with Basic Auth + caching |
 | `apps/web/lib/openai.ts` | OpenAI client instance |
-| `apps/web/lib/prompts/*.ts` | Prompt templates (tool-lookup, colorway-identify) |
-| `apps/web/app/api/v1/ai/` | AI route handlers (stash-match, saved-matches, convert-gauge, explain-row) |
+| `apps/web/lib/prompts/yarn-sub.ts` | Yarn substitution prompt — fiber-aware gauge refinement + practical notes |
+| `apps/web/lib/prompts/yarn-equiv.ts` | Yarn equivalence prompt — knitting-specific substitution evaluation |
+| `apps/web/lib/prompts/size-rec.ts` | Size recommendation prompt — fit advice + between-sizes guidance |
+| `apps/web/lib/prompts/time-estimate.ts` | Time estimation prompt — progress summary + pacing advice |
+| `apps/web/lib/prompts/stash-planner.ts` | Stash planner prompt — fiber suitability + multi-strand suggestions |
+| `apps/web/lib/prompts/tool-lookup.ts` | Needle/hook set lookup prompt |
+| `apps/web/lib/prompts/colorway-identify.ts` | Yarn colorway identification prompt |
+| `apps/web/app/api/v1/ai/` | AI route handlers (9 routes — see feature list above) |
 | `apps/web/app/api/v1/gauge/` | Gauge calculator routes |
 | `apps/web/app/api/v1/ravelry/` | Ravelry proxy routes (search, save, saved list) |
 
@@ -238,20 +428,22 @@ User taps button → iOS ViewModel calls APIClient.post("/ai/feature", body)
 
 ## Tier Gating
 
-| Feature | Free | Pro |
-|---------|------|-----|
-| Row instruction explainer | Yes | Yes |
-| Saved pattern ↔ stash matching | Yes | Yes |
-| Pattern discovery (Ravelry search) | Yes | Yes |
-| Gauge calculator | Yes | Yes |
-| Stash-to-pattern matching | No | Yes |
-| Gauge conversion | No | Yes |
-| PDF pattern parsing | 2/month | Unlimited |
-| Needle set lookup | No | Yes |
-| Colorway identification | No | Yes |
-| Size recommendation | No | Yes |
-| Yarn substitution | No | Yes |
-| Time estimate | No | Yes |
+| Feature | Free | Pro | Model |
+|---------|------|-----|-------|
+| Row instruction explainer | Yes | Yes | GPT-4o-mini |
+| Saved pattern ↔ stash matching | Yes | Yes | None (pure DB) |
+| Pattern discovery (Ravelry search) | Yes | Yes | None (Ravelry proxy) |
+| Gauge calculator | Yes | Yes | None (deterministic) |
+| Stash-to-pattern matching | No | Yes | None (Ravelry proxy) |
+| Gauge conversion | No | Yes | GPT-4o |
+| Yarn substitution | No | Yes | GPT-4o |
+| Size recommendation | No | Yes | GPT-4o |
+| Project time estimate | No | Yes | GPT-4o-mini |
+| Stash-to-project planner | No | Yes | GPT-4o |
+| Yarn equivalence finder | No | Yes | GPT-4o |
+| PDF pattern parsing | 2/month | Unlimited | GPT-4o |
+| Needle set lookup | No | Yes | GPT-4o |
+| Colorway identification | No | Yes | GPT-4o (vision) |
 
 ---
 
@@ -260,9 +452,13 @@ User taps button → iOS ViewModel calls APIClient.post("/ai/feature", body)
 No chat tables needed. Relevant existing tables:
 
 - `saved_patterns` — lightweight Ravelry pattern snapshots (weight, yardage, difficulty, etc.)
-- `user_stash` + `yarns` + `yarn_companies` — user's yarn inventory
-- `user_measurements` — body measurements for size recommendations
-- `patterns` + `pattern_sections` + `pattern_rows` — parsed patterns for gauge conversion
+- `user_stash` + `yarns` + `yarn_companies` — user's yarn inventory (stash-match, stash-planner, yarn-equiv)
+- `user_measurements` — body measurements for size recommendations (size-rec)
+- `user_needles` — needle inventory for yarn-sub needle matching
+- `patterns` + `pattern_sections` + `pattern_rows` + `pattern_sizes` — parsed patterns (gauge conversion, size-rec, stash-planner)
+- `projects` + `project_sections` — active projects for time estimation
+- `crafting_sessions` — session timing + row tracking for speed calculation (time-estimate)
+- `row_counter_history` — granular row tracking
 - `pdf_uploads` — tracking PDF parse usage for free tier limits
 - `project_gauge` — user gauge records per project
 

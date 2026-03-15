@@ -1,0 +1,391 @@
+[
+  {
+    "abbreviation": null,
+    "name": "Long-Tail Cast On",
+    "slug": "long-tail-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "The most versatile and commonly taught cast on method, producing a neat, elastic edge that resembles a row of stockinette on one side and a row of purl bumps on the other. It creates both the cast on edge and the first row of knitting simultaneously.",
+    "how_to": "1. Estimate tail length by wrapping yarn around needle once per stitch needed, plus 6 inches extra.\n2. Make a slip knot and place it on the needle, held in your right hand.\n3. Drape the tail over your left thumb and the working yarn over your left index finger, holding both ends in your palm.\n4. Insert the needle upward through the loop on your thumb.\n5. Catch the yarn on your index finger by going over and around it.\n6. Draw the yarn back through the thumb loop.\n7. Release the thumb loop and gently tighten the new stitch on the needle.\n8. Repeat steps 4-7 for each additional stitch.",
+    "tips": "Use this as your default cast on for most projects. To estimate tail length, wrap yarn around the needle once per stitch needed, then add at least 6 inches. If you consistently run out of tail, try wrapping 1.5 times per stitch. For a looser edge, cast on over two needles held together, then remove one.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "slingshot cast on",
+        "region": null
+      },
+      {
+        "synonym": "double cast on",
+        "region": null
+      },
+      {
+        "synonym": "two-tail cast on",
+        "region": null
+      },
+      {
+        "synonym": "CO",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=T-gdAUEjQjU",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Knitted Cast On",
+    "slug": "knitted-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A simple cast on method that uses two needles and the knit stitch itself to create new stitches. It produces a slightly loose, flexible edge and is one of the easiest cast on methods to learn since it only requires knowing the knit stitch.",
+    "how_to": "1. Make a slip knot and place it on the left needle.\n2. Insert the right needle into the slip knot as if to knit (left to right, front to back).\n3. Wrap the working yarn around the right needle counterclockwise.\n4. Draw the yarn through the stitch to form a new loop on the right needle.\n5. Transfer this new loop to the left needle by inserting the left needle into the front of the loop from left to right.\n6. Repeat steps 2-5, knitting into the last stitch placed on the left needle each time.\n7. Continue until you have the required number of stitches.",
+    "tips": "Great for beginners who already know the knit stitch. Also useful for adding stitches at the end of a row mid-project, such as for buttonholes or shaping. The edge it produces is stretchier than cable cast on, making it suitable for projects needing some give. Not ideal for edges that need to hold their shape.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "knit cast on",
+        "region": null
+      },
+      {
+        "synonym": "knitting on",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Cable Cast On",
+    "slug": "cable-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A firm, sturdy cast on method similar to the knitted cast on but with the needle inserted between the last two stitches rather than into the last stitch. It produces a rope-like edge with good structure that mimics a cable twist, making it ideal for edges that need to hold their shape.",
+    "how_to": "1. Make a slip knot and place it on the left needle.\n2. Knit into the slip knot and place the new stitch on the left needle (same as knitted cast on for the first stitch).\n3. For all subsequent stitches, insert the right needle between the last two stitches on the left needle (not into a stitch).\n4. Wrap the working yarn around the right needle counterclockwise.\n5. Draw the yarn through the gap between the stitches.\n6. Transfer the new loop to the left needle by inserting the left needle into the front of the loop.\n7. Repeat steps 3-6 until you have the required number of stitches.",
+    "tips": "Excellent for ribbing edges on sweaters, hats, and cuffs where you need a firm, non-rolling edge. Also ideal for casting on stitches for buttonholes. The edge is less elastic than long-tail, so avoid it where stretch is needed. Works well as a foundation for cables and textured patterns since the edge visually blends with cable motifs.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "cable CO",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=rUCkRq0r_0A",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "PCO",
+    "name": "Provisional Cast On",
+    "slug": "provisional-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A temporary cast on that uses waste yarn to hold stitches, which can later be removed to expose live stitches. This allows you to knit in both directions from the cast on edge or graft two pieces together seamlessly. The crochet chain method is the most common variation.",
+    "how_to": "1. Using waste yarn and a crochet hook, make a crochet chain with a few more chains than stitches needed.\n2. Turn the chain over to find the bump on the back of each chain stitch.\n3. Using your project yarn and knitting needle, pick up and knit one stitch through each back bump of the chain.\n4. Continue knitting your project as directed.\n5. When ready to work the live stitches, carefully unzip the crochet chain by pulling the tail, placing each revealed live stitch onto a needle as it is released.\n6. Work the live stitches as directed in your pattern (knit, graft, or bind off).",
+    "tips": "Essential for top-down shawls, seamless garment construction, and grafting hems. Use a smooth waste yarn in a contrasting color so it is easy to see and remove. Make 3-4 extra chain stitches beyond what you need, as it is easier to have extra than to run short. When unzipping, work slowly and place each stitch on the needle immediately to prevent dropped stitches.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "temporary cast on",
+        "region": null
+      },
+      {
+        "synonym": "invisible cast on",
+        "region": null
+      },
+      {
+        "synonym": "crochet provisional cast on",
+        "region": null
+      },
+      {
+        "synonym": "waste yarn cast on",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=EmzYKX1Pqu4",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Tubular Cast On",
+    "slug": "tubular-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A polished cast on method that creates an edge virtually identical to a folded hem, with stitches that appear to emerge seamlessly from the edge. It produces a rounded, elastic edge that is considered the gold standard for 1x1 ribbing on high-end garments.",
+    "how_to": "1. Using waste yarn, cast on half the total stitches needed using a provisional or backward loop method.\n2. Knit 2-4 rows in stockinette with the waste yarn.\n3. Switch to project yarn and knit one row.\n4. Begin setup rows: on the next row, knit 1, then bring yarn to front and slip 1 purlwise with yarn in front. Repeat across.\n5. On the following row, slip 1 purlwise with yarn in back, purl 1. Repeat across.\n6. Work 2-4 rounds of these setup rows (the exact count depends on the pattern).\n7. Transition to 1x1 ribbing and continue as directed.\n8. Remove the waste yarn when convenient.",
+    "tips": "Worth the extra effort for visible ribbing edges on neckbands, cuffs, and hat brims. The setup rows can feel confusing at first; use stitch markers every 10 stitches to keep track. Go up one needle size for the setup rows to prevent the edge from being too tight. Pair this with a tubular bind off for a perfectly matched top and bottom edge.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "invisible ribbed cast on",
+        "region": null
+      },
+      {
+        "synonym": "tubular CO",
+        "region": null
+      }
+    ],
+    "video_url": null,
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": null,
+    "name": "German Twisted Cast On",
+    "slug": "german-twisted-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A variation of the long-tail cast on that adds an extra twist to create a sturdier, more elastic edge. The additional twist reinforces the bottom of each stitch, making the edge more durable while maintaining excellent stretch. It is especially popular for sock cuffs and hat brims.",
+    "how_to": "1. Estimate tail length the same way as for long-tail cast on.\n2. Make a slip knot and place it on the needle.\n3. Hold the yarn in slingshot position: tail over thumb, working yarn over index finger.\n4. Insert the needle upward through the loop on your thumb as for long-tail.\n5. Before catching the index finger yarn, swing the needle tip to the right and then upward through the back strand of the thumb loop (twisting it).\n6. Now catch the yarn on the index finger by going over and around it.\n7. Draw the yarn back through both thumb loop strands.\n8. Release the thumb and tighten the stitch.\n9. Repeat steps 4-8 for each additional stitch.",
+    "tips": "The go-to cast on for sock cuffs because it provides the stretch needed to get the sock over the heel while still holding the cuff snug. If you find your long-tail cast on edges too tight, try this instead. The extra twist uses slightly more yarn, so add a bit more to your tail estimate. It looks nearly identical to long-tail from the right side but is noticeably stretchier.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "twisted German cast on",
+        "region": null
+      },
+      {
+        "synonym": "old German cast on",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=MlXgS8qh9ck",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Old Norwegian Cast On",
+    "slug": "old-norwegian-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A traditional Scandinavian cast on method that produces a very elastic, decorative braided edge. It is closely related to the German twisted cast on and is particularly associated with Norwegian and Baltic knitting traditions. The edge has a distinctive twisted rope appearance.",
+    "how_to": "1. Estimate a generous tail length (about 1.5 times what you would use for long-tail).\n2. Make a slip knot and place it on the needle.\n3. Hold the yarn in slingshot position: tail over thumb, working yarn over index finger.\n4. Insert the needle upward under both strands of the thumb loop.\n5. Swing the needle over and behind the far thumb strand, catching it.\n6. Bring the needle forward through the near thumb strand.\n7. Catch the index finger yarn by going over it from right to left.\n8. Draw it back through the thumb loop.\n9. Release the thumb and tighten.\n10. Repeat steps 4-9 for remaining stitches.",
+    "tips": "Traditional choice for Norwegian mittens, ski sweaters, and other garments that need a decorative but stretchy edge. The braided appearance pairs beautifully with stranded colorwork. Uses more yarn than long-tail, so be generous with your tail. Practice on larger needles first, as the extra movements can feel awkward until muscle memory develops.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "Norwegian cast on",
+        "region": "Scandinavia"
+      },
+      {
+        "synonym": "Scandinavian cast on",
+        "region": "Scandinavia"
+      },
+      {
+        "synonym": "twisted long-tail cast on",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Backward Loop Cast On",
+    "slug": "backward-loop-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "The simplest possible cast on, made by twisting the working yarn into a loop and placing it on the needle. While extremely easy to execute, it produces a loose, uneven edge that is difficult to knit into. Best reserved for casting on a small number of stitches mid-row rather than as a foundation cast on.",
+    "how_to": "1. Make a slip knot and place it on the needle (optional; some knitters start with just a loop).\n2. Hold the needle in your right hand and the working yarn in your left.\n3. Wrap the yarn around your left thumb from front to back, creating a loop.\n4. Insert the needle upward through the loop on your thumb.\n5. Slip the loop off your thumb and gently tighten it on the needle.\n6. Repeat steps 3-5 for each additional stitch.",
+    "tips": "Avoid using this for an entire cast on edge as the stitches are uneven and the first row is very difficult to knit. It shines when you need to add just 1-3 stitches at the end of a row for shaping (underarm stitches, thumb gussets). For yarn overs at the beginning of a row, this is essentially the same motion. If a pattern says simply 'cast on 2 stitches' mid-row, this is usually what is meant.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "e-loop cast on",
+        "region": null
+      },
+      {
+        "synonym": "thumb cast on",
+        "region": null
+      },
+      {
+        "synonym": "single cast on",
+        "region": null
+      },
+      {
+        "synonym": "simple cast on",
+        "region": null
+      },
+      {
+        "synonym": "backward loop",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Italian Cast On",
+    "slug": "italian-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "An elegant cast on method that produces a rounded, nearly invisible edge ideal for 1x1 ribbing. Very similar in result to the tubular cast on but worked without waste yarn, using a series of alternating yarn-over-style setup rows. It is considered one of the most refined edges in hand knitting.",
+    "how_to": "1. Hold the yarn with the tail over your thumb and working yarn over your index finger (slingshot position), with the needle pointed toward you.\n2. Start with a slip knot or initial setup stitch on the needle.\n3. Bring the needle under the thumb yarn, then over the index yarn, catching it — this creates a knit-type stitch.\n4. Bring the needle over the thumb yarn, then under the index yarn, catching it — this creates a purl-type stitch.\n5. Alternate steps 3 and 4 until you have the required number of stitches.\n6. Work 2-4 setup rows: knit the knit stitches, slip the purl stitches with yarn in front.\n7. Transition to standard 1x1 ribbing.",
+    "tips": "The result is virtually identical to tubular cast on but without needing waste yarn, making it more convenient. The setup is more complex to learn but faster once mastered. Best used on neckbands, sock cuffs, and any 1x1 rib edge where appearance matters. Count your stitches carefully after casting on, as it is easy to miss one. The setup rows are critical — do not skip them.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "Italian tubular cast on",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Channel Islands Cast On",
+    "slug": "channel-islands-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A decorative cast on from the Channel Islands (Guernsey) knitting tradition that creates a distinctive knotted, picot-like edge. It uses a doubled strand of yarn for the tail to create small bobbles or knots between stitches, producing a sturdy, ornamental foundation often seen on traditional Guernsey sweaters.",
+    "how_to": "1. Measure a tail three times longer than you would for long-tail cast on, then fold the tail in half so you are working with a doubled strand.\n2. Make a slip knot with the doubled tail and single working yarn, place it on the needle.\n3. Wrap the doubled tail yarn twice around your thumb (creating a yarn over on the needle).\n4. Work a long-tail cast on stitch using the doubled yarn on the thumb and single yarn on the index finger.\n5. You now have a yarn over and a regular stitch — this pair creates the knotted effect.\n6. Repeat steps 3-4 across, always alternating a double wrap (yarn over) with a cast on stitch.\n7. On the first row, knit the cast on stitches and purl (or knit together) the yarn overs as directed by your pattern.",
+    "tips": "A beautiful choice for the bottom edge of traditional fisherman's sweaters, or any project where you want a decorative hem. The doubled yarn makes it very durable — historically used on garments that needed to withstand hard wear. Because the tail is doubled and wrapped, you need much more tail yarn than normal. Practice on scrap yarn first, as the rhythm of alternating double wraps and stitches takes a few tries to master.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "Guernsey cast on",
+        "region": "Channel Islands"
+      },
+      {
+        "synonym": "knotted cast on",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Picot Cast On",
+    "slug": "picot-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A decorative cast on that creates a delicate scalloped or pointed edge resembling tiny picot points. It is worked by casting on a few stitches, binding off some, then casting on more, creating small loops along the edge. Popular for lace shawls, baby garments, and feminine accessories.",
+    "how_to": "1. Using the knitted cast on or cable cast on method, cast on 5 stitches.\n2. Bind off 2 stitches (knit 2, pass first over second, knit 1, pass first over second).\n3. Transfer the remaining stitch from the right needle back to the left needle.\n4. Cast on 4 more stitches (the stitch already on the needle counts as the first).\n5. Bind off 2 stitches again.\n6. Transfer the remaining stitch back to the left needle.\n7. Repeat steps 4-6 until you have the required number of stitches.\n8. On the last repeat, cast on the remaining stitches without binding off.",
+    "tips": "The size of the picot points depends on how many stitches you cast on and bind off in each repeat — more stitches create larger, more dramatic points. For a subtle edge, try casting on 3 and binding off 1. For a bolder scallop, cast on 6 and bind off 3. Works beautifully with laceweight and fingering yarn. Pair with a picot bind off for a matching top and bottom edge on scarves and shawls.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "picot point cast on",
+        "region": null
+      },
+      {
+        "synonym": "scalloped cast on",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "JMCO",
+    "name": "Judy's Magic Cast On",
+    "slug": "judys-magic-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A clever cast on invented by Judy Becker that creates stitches on two parallel needles simultaneously, forming a seamless, closed center. Designed specifically for toe-up socks and other projects knit from the center outward, it eliminates the need to pick up stitches or sew a seam at the toe.",
+    "how_to": "1. Hold two double-pointed needles (or two tips of a circular needle) parallel, one on top of the other.\n2. Make a slip knot and place it on the bottom needle (this does not count as a stitch and will be removed later).\n3. Drape the tail over the top needle from back to front, and the working yarn over the bottom needle from front to back.\n4. With the working yarn, wrap the top needle from back to front (one stitch on top needle).\n5. With the tail, wrap the bottom needle from front to back (one stitch on bottom needle).\n6. Continue alternating: working yarn wraps top needle, tail wraps bottom needle.\n7. When you have half the total stitches on each needle, knit across the top needle.\n8. Turn and knit across the bottom needle (you may need to knit through the back loop to untwist mounted stitches).\n9. Remove the slip knot. Join to work in the round.",
+    "tips": "The essential cast on for toe-up socks. Also works for the center of mittens knit from the fingertip down, or any project starting from a closed center. The first round after casting on can feel awkward with so few stitches — use DPNs or magic loop. If your first round stitches look twisted, knit through the back loop to correct the mount. Practice with chunky yarn and large needles first to understand the wrapping direction.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "magic cast on",
+        "region": null
+      },
+      {
+        "synonym": "Judy Becker cast on",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Turkish Cast On",
+    "slug": "turkish-cast-on",
+    "category": "cast_on",
+    "craft_type": "knitting",
+    "definition": "A cast on method for creating a seamless closed center, traditionally used for Turkish socks knit from the toe up. Like Judy's Magic Cast On, it places stitches on two parallel needles, but uses a simpler wrapping technique where the yarn wraps around both needles in a figure-eight pattern.",
+    "how_to": "1. Hold two double-pointed needles (or two tips of a circular needle) parallel.\n2. Leaving a 6-inch tail, wrap the working yarn around both needles together, going from front to back over the top needle and from back to front under the bottom needle.\n3. Wrap the number of times equal to half your total stitch count.\n4. Using a third DPN (or the other end of your circular), knit across the wraps on the top needle.\n5. Rotate the needles and knit across the wraps on the bottom needle.\n6. You now have live stitches on both needles with a closed center.\n7. Continue knitting in the round, increasing as directed for toe shaping.",
+    "tips": "Simpler to execute than Judy's Magic Cast On, making it a good alternative if you find JMCO confusing. The wraps can slide off the needles easily, so hold them firmly or use a needle stopper. Some knitters find the first round produces looser stitches — if so, go down a needle size for the cast on round only. Works equally well with DPNs, two circulars, or magic loop.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "Turkish CO",
+        "region": null
+      },
+      {
+        "synonym": "eastern cast on",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Chain Cast On",
+    "slug": "chain-cast-on",
+    "category": "cast_on",
+    "craft_type": "crochet",
+    "definition": "The most fundamental crochet cast on, consisting of a series of chain stitches made with a crochet hook that forms the foundation row of a crochet project. Nearly every traditional crochet pattern begins with a chain, and the number of chains determines the width of the piece.",
+    "how_to": "1. Make a slip knot and place it on your crochet hook.\n2. Hold the hook in your dominant hand and the yarn in your non-dominant hand, maintaining light tension on the yarn with your index finger.\n3. Yarn over: wrap the yarn over the hook from back to front.\n4. Pull the yarn through the loop on the hook — one chain stitch made.\n5. Repeat steps 3-4 for each chain stitch needed.\n6. Count your chains (the loop on the hook does not count as a chain).\n7. Work your first row of stitches into the chains as directed by your pattern.",
+    "tips": "Chain too tightly and your first row will pucker; too loosely and the edge will flare. Try using a hook one size larger for the chain, then switch to the pattern hook size for the first row. When counting chains, lay them flat and count from the hook backward, not including the loop on the hook. For easier first-row insertion, work into the back bump of each chain rather than under the top two loops.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "starting chain",
+        "region": null
+      },
+      {
+        "synonym": "foundation chain cast on",
+        "region": null
+      },
+      {
+        "synonym": "chain stitch cast on",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "fch",
+    "name": "Foundation Chain",
+    "slug": "foundation-chain",
+    "category": "cast_on",
+    "craft_type": "crochet",
+    "definition": "The basic chain of loops that serves as the starting point for most crochet projects. Technically synonymous with the chain cast on, the term 'foundation chain' is often used in patterns to distinguish the initial chain from chain stitches used within the body of the work (such as chain spaces in lace patterns).",
+    "how_to": "1. Make a slip knot and place it on your crochet hook.\n2. Yarn over (wrap yarn over hook from back to front).\n3. Pull through the loop on the hook to create one chain.\n4. Repeat steps 2-3 until the chain reaches the required length.\n5. The foundation chain is complete when you have the number of chains specified in your pattern, plus any turning chains needed.\n6. Do not twist the chain when beginning the first row — keep all the V shapes facing the same direction.",
+    "tips": "Always make a few extra chains beyond what the pattern calls for. It is easier to undo extras than to rip back and start over. If you lose count on a long chain, place a stitch marker every 20 chains. The foundation chain determines the entire width of your piece, so take your time getting the tension even. For projects worked in the round, be very careful not to twist the chain before joining.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "base chain",
+        "region": null
+      },
+      {
+        "synonym": "starting chain",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "fsc",
+    "name": "Foundation Single Crochet",
+    "slug": "foundation-single-crochet",
+    "category": "cast_on",
+    "craft_type": "crochet",
+    "definition": "A chainless foundation technique that creates the chain and the first row of single crochet stitches simultaneously. This eliminates the separate chain row, producing a more elastic, flexible edge that matches the stretch of the rest of the fabric. It is widely preferred over the traditional chain start for garments and accessories.",
+    "how_to": "1. Chain 2.\n2. Insert hook into the first chain (the one furthest from the hook).\n3. Yarn over and pull up a loop (2 loops on hook).\n4. Yarn over and pull through the first loop only — this creates the chain portion of the stitch.\n5. Yarn over and pull through both remaining loops — this completes the single crochet portion.\n6. For the next stitch, insert the hook into the chain created in step 4 (the single loop at the bottom of the previous stitch).\n7. Repeat steps 3-6 until you have the required number of foundation single crochet stitches.\n8. Continue with your pattern as if you had completed both the chain and the first row.",
+    "tips": "Once you master this, you may never go back to a traditional chain start. The edge has the same stretch as the rest of your single crochet fabric, preventing the tight bottom edge problem. Identifying where to insert the hook for the next stitch (step 6) is the trickiest part — look for the single chain loop at the very bottom of the stitch you just made. This technique can be adapted for other stitches: foundation half double crochet, foundation double crochet, and so on.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "FSC",
+        "region": null
+      },
+      {
+        "synonym": "chainless foundation single crochet",
+        "region": null
+      },
+      {
+        "synonym": "chainless foundation",
+        "region": null
+      },
+      {
+        "synonym": "foundation row single crochet",
+        "region": null
+      }
+    ]
+  }
+]

@@ -143,7 +143,8 @@ final class APIClient {
         _ path: String,
         imageData: Data,
         mimeType: String = "image/jpeg",
-        fileName: String = "avatar.jpg"
+        fileName: String = "avatar.jpg",
+        fields: [String: String] = [:]
     ) async throws -> T {
         guard let url = URL(string: AppConfig.apiBaseURL + path) else {
             throw APIError.invalidURL
@@ -159,6 +160,14 @@ final class APIClient {
         }
 
         var body = Data()
+
+        // Additional form fields
+        for (key, value) in fields {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
+            body.append("\(value)\r\n".data(using: .utf8)!)
+        }
+
         body.append("--\(boundary)\r\n".data(using: .utf8)!)
         body.append("Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
         body.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)

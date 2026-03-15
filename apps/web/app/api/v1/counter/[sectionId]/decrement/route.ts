@@ -68,8 +68,10 @@ export async function POST(_req: NextRequest, { params }: Params) {
         stitch_count: resolved.stitch_count,
         row_type: resolved.row_type,
         is_repeat: resolved.is_repeat,
+        is_open_ended: resolved.is_open_ended ?? false,
         position: getStepPosition(resolved, newTap),
         progress,
+        section_completed: false,
       } : null
     }
   }

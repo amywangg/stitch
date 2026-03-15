@@ -1,0 +1,197 @@
+[
+  {
+    "slug": "foundation-chain",
+    "title": "Foundation Chain",
+    "description": "Learn to create the starting chain that forms the base of most crochet projects",
+    "category": "crochet_basics",
+    "craft_type": "crochet",
+    "difficulty": "beginner",
+    "sort_order": 1,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Make a slip knot",
+        "content": "Create a loop with the yarn, crossing the working yarn (attached to the ball) over the tail. Reach through the loop from behind, grab the working yarn, and pull it through to form a new adjustable loop. Slide this loop onto your crochet hook and tighten it by pulling both the tail and the working yarn. The slip knot should be snug on the hook but slide freely. Position the knot just below the throat of the hook (the narrowing section below the head). This slip knot does not count as a chain stitch."
+      },
+      {
+        "step_number": 2,
+        "title": "Hold the hook and yarn",
+        "content": "Hold the crochet hook in your dominant hand like a pencil or a knife, whichever grip feels more comfortable and gives you control. With your non-dominant hand, drape the working yarn over your index finger and catch it between your middle finger and thumb, creating tension. The yarn should flow smoothly from the ball, over your index finger, and to the hook. Consistent tension is essential for even chain stitches. Pinch the slip knot between the thumb and middle finger of your non-dominant hand to stabilize the work."
+      },
+      {
+        "step_number": 3,
+        "title": "Yarn over and pull through",
+        "content": "This is the fundamental crochet motion you will use thousands of times. Rotate the hook slightly to face the notch toward you, pass it under the yarn on your index finger, and catch the yarn with the hook (this is called a yarn over). Now pull the hook with the caught yarn back through the loop already on the hook. You have made one chain stitch. The loop on the hook does not count as a stitch. Move your pinching fingers up to hold the chain stitch you just made, keeping it stable for the next one."
+      },
+      {
+        "step_number": 4,
+        "title": "Continue chaining to the required length",
+        "content": "Repeat the yarn over and pull through motion for each chain stitch your pattern requires. Count the V shapes on the front of the chain, not counting the loop on the hook or the slip knot. The chain should not twist or spiral, and each stitch should be the same size. If you find your chain too tight to work into later, try using a hook one size larger for the chain only, then switch to the correct size for the first row. Keep your tension relaxed and consistent."
+      },
+      {
+        "step_number": 5,
+        "title": "Identify the parts of the chain",
+        "content": "Understanding the anatomy of a chain helps you work the first row correctly. Looking at the front of the chain, each stitch forms a V shape. The back of the chain has a ridge of bumps running down the center, called the back bump or spine. When working the first row, you can insert your hook under the top loop of the V, under both loops of the V, or under the back bump only. Working into the back bump is preferred by many crocheters because it leaves an unworked loop along the bottom edge that looks like a clean row of stitches, giving the foundation a more polished appearance."
+      }
+    ]
+  },
+  {
+    "slug": "single-crochet",
+    "title": "Single Crochet",
+    "description": "Master the shortest and most fundamental crochet stitch for dense, sturdy fabric",
+    "category": "crochet_basics",
+    "craft_type": "crochet",
+    "difficulty": "beginner",
+    "sort_order": 2,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Chain your foundation and find the starting stitch",
+        "content": "Chain the number of stitches your pattern calls for, plus one extra. This extra chain is the turning chain and takes the place of the height needed to reach the first row. For single crochet, the turning chain is 1. Identify the second chain from the hook (skip the one closest to the hook, which is the turning chain). This second chain is where you will insert your hook for the first single crochet stitch. If you work into the first chain from the hook, you would create an extra stitch and your edges would flare."
+      },
+      {
+        "step_number": 2,
+        "title": "Insert the hook and pull up a loop",
+        "content": "Insert your hook into the second chain from the hook, going under one or both loops of the chain stitch (follow your pattern's instructions or use the method you prefer). Yarn over by catching the working yarn with your hook. Pull the yarn back through the chain stitch only. You should now have two loops on your hook: the original loop that was already on the hook, and the new loop you just pulled through. Pause and count to make sure you see exactly two loops before proceeding to the next step."
+      },
+      {
+        "step_number": 3,
+        "title": "Yarn over and pull through both loops",
+        "content": "Yarn over again by catching the working yarn with the hook. Pull this yarn through both loops on the hook at once. You now have one loop remaining on the hook, and you have completed one single crochet stitch. The stitch forms a compact V shape on the front of the fabric. This two-step sequence (insert and pull up a loop, then yarn over and pull through two) is the complete single crochet stitch. Every other crochet stitch builds on this basic motion with additional yarn overs and pull-throughs."
+      },
+      {
+        "step_number": 4,
+        "title": "Continue across the row",
+        "content": "Work one single crochet stitch into each remaining chain across the row. Insert your hook, pull up a loop (two loops on hook), yarn over and pull through both (one loop on hook). Count your stitches when you reach the end. You should have the same number of single crochet stitches as the number of chains in your foundation minus the turning chain. For example, if you chained 21, you should have 20 single crochet stitches plus the turning chain. Getting the count right on the first row sets up the entire project."
+      },
+      {
+        "step_number": 5,
+        "title": "Turn and work the next row",
+        "content": "At the end of the row, chain 1 for the turning chain. Turn your work so the other side faces you, rotating it like turning a page of a book. The first single crochet of the new row goes into the last stitch of the previous row, which is now the first stitch on your hook side. Insert your hook under both top loops of that stitch (the two loops that form the V on top of each stitch). Work single crochet across to the end, including a stitch in the last stitch of the row. Count again. Maintaining consistent stitch counts on every row keeps your edges straight."
+      },
+      {
+        "step_number": 6,
+        "title": "Recognize and troubleshoot single crochet fabric",
+        "content": "Single crochet creates the densest standard crochet fabric. It is compact, sturdy, and does not drape much, making it ideal for amigurumi (stuffed toys), dishcloths, bags, and structured garments. If your fabric is curling, your tension may be too tight. If you are gaining stitches on each row, you are probably accidentally working into the turning chain, which should not count as a stitch in single crochet. If you are losing stitches, you are likely missing the last stitch of the row, which can be hard to see. Placing a stitch marker in the first stitch of every row makes it easy to find the last stitch when you return."
+      }
+    ]
+  },
+  {
+    "slug": "double-crochet",
+    "title": "Double Crochet",
+    "description": "Learn the tall, versatile double crochet stitch that works up quickly and creates soft, drapey fabric",
+    "category": "crochet_basics",
+    "craft_type": "crochet",
+    "difficulty": "beginner",
+    "sort_order": 3,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Chain your foundation with the correct turning chain",
+        "content": "Chain the number of stitches your pattern requires plus 3 extra. For double crochet, the turning chain is 3, and it usually counts as the first double crochet stitch of the row. This is different from single crochet where the turning chain does not count. Identify the fourth chain from the hook, which is where you will work your first actual double crochet stitch. The 3 skipped chains (the turning chain) serve as your first stitch. This is a common source of confusion for beginners, so count carefully."
+      },
+      {
+        "step_number": 2,
+        "title": "Yarn over before inserting the hook",
+        "content": "Before you insert the hook into the chain, yarn over first by wrapping the yarn over the hook from back to front. This initial yarn over is what makes a double crochet taller than a single crochet. With the yarn over sitting on the hook, insert the hook into the fourth chain from the hook, going under the top loop or both loops of the chain. You should see the yarn over wrap, the loop already on the hook, and now you are about to pull up another loop."
+      },
+      {
+        "step_number": 3,
+        "title": "Pull up a loop and work off in pairs",
+        "content": "Yarn over and pull through the chain stitch. You now have three loops on the hook. The double crochet is completed by working these loops off two at a time. Yarn over and pull through the first two loops on the hook. You now have two loops remaining. Yarn over one more time and pull through the last two loops. One loop remains on the hook and your first double crochet stitch is complete. It stands noticeably taller than a single crochet, about twice the height."
+      },
+      {
+        "step_number": 4,
+        "title": "Continue across the row",
+        "content": "Work one double crochet into each remaining chain: yarn over, insert hook, pull up a loop (3 loops), yarn over and pull through 2 (2 loops), yarn over and pull through 2 (1 loop). At the end of the row, count your stitches. Remember that the turning chain at the beginning counts as one stitch, so include it in your count. For example, if you chained 23 (20 stitches plus 3 for turning chain), you should count 20 double crochets: the turning chain as stitch 1, plus 19 double crochets worked into chains."
+      },
+      {
+        "step_number": 5,
+        "title": "Turn and work subsequent rows",
+        "content": "Chain 3 to create the turning chain for the next row. Turn your work. Since the chain-3 counts as the first double crochet, skip the first stitch at the base of the turning chain and work your first double crochet into the second stitch. Continue across the row, working one double crochet into each stitch by inserting under both top loops. At the end of the row, work the last double crochet into the top of the previous row's turning chain (the third chain of the chain-3). This is critical for keeping straight edges. Missing this last stitch is the most common reason for shrinking rows."
+      },
+      {
+        "step_number": 6,
+        "title": "Understand double crochet fabric",
+        "content": "Double crochet creates a lighter, more open fabric than single crochet. It works up much faster because the taller stitches cover more ground per row and uses yarn efficiently. The fabric has good drape, making it suitable for scarves, shawls, blankets, garments, and anything where you want softness over structure. The small gaps between stitches are a natural feature of the stitch. For a denser double crochet fabric, use a hook one size smaller than recommended. Double crochet is also the foundation for many pattern stitches including granny squares, shells, fans, and V-stitches."
+      }
+    ]
+  },
+  {
+    "slug": "magic-ring",
+    "title": "Magic Ring",
+    "description": "Start crocheting in the round with an adjustable center ring that closes completely with no hole",
+    "category": "crochet_basics",
+    "craft_type": "crochet",
+    "difficulty": "beginner",
+    "sort_order": 4,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Form the ring",
+        "content": "The magic ring (also called magic circle or adjustable ring) lets you start crocheting in the round with a center that can be pulled completely closed, leaving no hole. Drape the yarn over your fingers with the tail hanging toward you and the ball end going away from you. Wrap the yarn around your index and middle fingers to form a loop, with the working yarn crossing over the tail. Hold the point where the yarns cross between your thumb and middle finger. You should see a ring of yarn around your fingers with two tails hanging down."
+      },
+      {
+        "step_number": 2,
+        "title": "Pull up the first loop",
+        "content": "Insert your crochet hook under the front strand of the ring (the strand closest to you on your fingers), grab the working yarn (the strand going to the ball, not the tail), and pull it under that front strand and up through the center of the ring. You now have a loop on your hook. This loop does not count as a stitch. Chain 1 (for single crochet rounds) or chain 3 (for double crochet rounds) depending on what stitch your first round uses. This chain serves the same purpose as a turning chain."
+      },
+      {
+        "step_number": 3,
+        "title": "Work stitches into the ring",
+        "content": "Crochet the required number of stitches into the center of the ring, working over both the ring strand and the yarn tail at the same time. For single crochet, insert the hook through the center of the ring, yarn over, pull up a loop, yarn over, pull through both loops. Each stitch wraps around the ring. Most patterns call for 6 single crochets or 12 double crochets in the first round. Working over the tail as you go means one less end to weave in later. Keep the ring loose enough to work into comfortably."
+      },
+      {
+        "step_number": 4,
+        "title": "Close the ring",
+        "content": "After all the stitches for the first round are worked into the ring, pull the yarn tail firmly to draw the center of the ring closed. The stitches will cinch together, eliminating the center hole completely. Pull until the hole is completely closed. Join the round by making a slip stitch into the first stitch of the round (not the starting chain). If the ring does not close all the way, gently tug each stitch individually while pulling the tail to distribute the closure evenly."
+      },
+      {
+        "step_number": 5,
+        "title": "Continue crocheting in the round",
+        "content": "With the magic ring closed and the first round joined, chain up for the next round and continue your pattern. Most patterns that start with a magic ring involve increasing on every round to create a flat circle (for coasters, mandalas, or hat crowns) or maintaining the same stitch count for a tube (amigurumi bodies, bag bases). Secure the yarn tail by weaving it in on the wrong side after a few rounds, making sure it does not loosen the center closure. The magic ring gives a much cleaner center than the alternative method of chaining and joining, which always leaves a small hole."
+      }
+    ]
+  },
+  {
+    "slug": "reading-a-crochet-pattern",
+    "title": "Reading a Crochet Pattern",
+    "description": "Decode crochet pattern language, abbreviations, and conventions to follow any pattern with confidence",
+    "category": "crochet_basics",
+    "craft_type": "crochet",
+    "difficulty": "beginner",
+    "sort_order": 5,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Read the pattern header",
+        "content": "Every crochet pattern begins with essential information. Look for the hook size, yarn weight and yardage, gauge (how many stitches and rows per inch or centimeter), finished dimensions, and any special notions needed. Gauge is crucial: if your stitches per inch do not match the pattern's gauge, your finished piece will be the wrong size. Always make a gauge swatch by chaining enough to get at least 4 inches of fabric, working in the specified stitch for at least 4 inches of height, and measuring the center section. Adjust your hook size up or down until your gauge matches."
+      },
+      {
+        "step_number": 2,
+        "title": "Learn standard crochet abbreviations",
+        "content": "Crochet patterns use abbreviations extensively. The most common are: ch (chain), sl st (slip stitch), sc (single crochet), hdc (half double crochet), dc (double crochet), tr (treble crochet), sk (skip), sp (space), st/sts (stitch/stitches), rep (repeat), inc (increase, usually 2 stitches in 1), dec (decrease), RS (right side), WS (wrong side), and FO (fasten off). Note that US and UK crochet terms differ: a US single crochet is a UK double crochet, and a US double crochet is a UK treble. Always check whether the pattern uses US or UK terminology."
+      },
+      {
+        "step_number": 3,
+        "title": "Understand repeat notation",
+        "content": "Patterns use several systems to indicate repeating sections. Asterisks mark repeat sections: *sc in next st, 2 sc in next st; rep from * around means you alternate one single crochet and one increase all the way around. Parentheses or brackets group stitches that go into the same stitch or space: (2 dc, ch 2, 2 dc) in corner sp means all of those stitches go into one corner space. Numbers in parentheses at the end of a row indicate the total stitch count: (36 sts). For garments with multiple sizes, numbers in parentheses separated by commas show the count for each size."
+      },
+      {
+        "step_number": 4,
+        "title": "Follow round and row instructions",
+        "content": "Patterns specify whether you are working in rows (turning back and forth) or rounds (working in a continuous spiral or joined circle). For rows, you turn at the end and the turning chain may or may not count as a stitch, so read the pattern notes carefully. For rounds, joined rounds end with a slip stitch to the first stitch and begin with a chain, while continuous spiral rounds do not join and use a stitch marker to track the round start. Pay attention to whether the pattern says join and chain or simply says continue. Mixing these up will change your stitch count."
+      },
+      {
+        "step_number": 5,
+        "title": "Read stitch diagrams and charts",
+        "content": "Many crochet patterns include visual stitch diagrams using standardized symbols. An oval represents a chain, a plus sign or X represents a single crochet, a T shape represents a half double crochet, and a tall T with one or more crossbars represents double and treble crochets. Diagrams show the spatial relationship between stitches and make it much easier to understand where each stitch is placed. They are especially valuable for motif patterns like granny squares, doilies, and lace. Even if you primarily follow written instructions, referring to the diagram can help you catch mistakes and understand the structure of the pattern."
+      },
+      {
+        "step_number": 6,
+        "title": "Handle pattern notes and special stitches",
+        "content": "Before starting any pattern, read the entire notes section and stitch glossary. Patterns often include critical information here, such as whether the turning chain counts as a stitch, which side is the right side, special stitch definitions that are unique to that pattern, and any modifications for different sizes. Designers sometimes invent custom stitches and will define them in the glossary, for example: bobble = 5 dc in same st leaving last loop of each on hook, yo, pull through all 6 loops. If you skip the notes, you may misinterpret the instructions. Read through the entire pattern once before you pick up your hook so there are no surprises."
+      }
+    ]
+  }
+]

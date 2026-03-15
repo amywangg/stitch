@@ -112,7 +112,11 @@ export async function searchRavelryPatterns(params: SearchParams, userId: string
   const basicPassword = process.env.RAVELRY_BASIC_PASSWORD
 
   if (basicUsername && basicPassword) {
-    return searchViaBasicAuth(params, basicUsername, basicPassword)
+    try {
+      return await searchViaBasicAuth(params, basicUsername, basicPassword)
+    } catch {
+      // Basic auth failed — fall through to OAuth
+    }
   }
 
   // Fallback: use user's OAuth token
@@ -177,7 +181,11 @@ export async function getRavelryPatternDetail(patternId: number, userId: string)
   const basicPassword = process.env.RAVELRY_BASIC_PASSWORD
 
   if (basicUsername && basicPassword) {
-    return getDetailViaBasicAuth(patternId, basicUsername, basicPassword)
+    try {
+      return await getDetailViaBasicAuth(patternId, basicUsername, basicPassword)
+    } catch {
+      // Basic auth failed (expired/revoked) — fall through to OAuth
+    }
   }
 
   return getDetailViaOAuth(patternId, userId)
@@ -244,6 +252,8 @@ function mapPatternDetail(data: Record<string, unknown>) {
     free: (p.free as boolean) ?? false,
     notes_html: (p.notes_html as string | null) ?? null,
     notes: (p.notes as string | null) ?? null,
+    price: (p.price as number | null) ?? null,
+    currency: (p.currency as string | null) ?? null,
     download_location: p.download_location as { url: string; type: string; free: boolean } | null,
     sizes_available: (p.sizes_available as string | null) ?? null,
     pattern_categories: ((p.pattern_categories as Array<{ name: string }> | null) ?? []).map(c => c.name),
@@ -258,5 +268,94 @@ function mapPatternDetail(data: Record<string, unknown>) {
       skeins: pack.skeins ?? null,
       total_yards: pack.total_yards ?? null,
     })),
+    parsed_notes: parseNotesSections((p.notes as string | null) ?? null),
+
+    // Structured gauge fields parsed from gauge_description
+    gauge_stitches: parseGaugeStitches((p.gauge_description as string | null) ?? null),
+    gauge_rows: parseGaugeRows((p.gauge_description as string | null) ?? null),
+    gauge_needle_mm: parseGaugeNeedleMm(
+      (p.gauge_description as string | null) ?? null,
+      ((p.pattern_needle_sizes ?? []) as Array<{ us: string | null; metric: string | null; name: string | null }>)
+    ),
+    gauge_stitch_pattern: parseGaugeStitchPattern((p.gauge_description as string | null) ?? null),
   }
+}
+
+/**
+ * Parse Ravelry notes text into structured sections.
+ * Notes use **Header:** markdown-style section headers.
+ */
+function parseNotesSections(notes: string | null): Array<{ title: string; content: string }> {
+  if (!notes) return []
+
+  // Split on **Header:** patterns (bold markdown headers)
+  const sectionRegex = /\*\*([^*]+?):\*\*\s*/g
+  const sections: Array<{ title: string; content: string }> = []
+  const matches = [...notes.matchAll(sectionRegex)]
+
+  if (matches.length === 0) {
+    // No structured sections — return the whole thing as description
+    const trimmed = notes.trim()
+    if (trimmed) {
+      sections.push({ title: 'Description', content: trimmed })
+    }
+    return sections
+  }
+
+  // Capture text before the first section header as description
+  const preface = notes.slice(0, matches[0].index).trim()
+  if (preface) {
+    sections.push({ title: 'Description', content: preface })
+  }
+
+  for (let i = 0; i < matches.length; i++) {
+    const title = matches[i][1].trim()
+    const start = matches[i].index! + matches[i][0].length
+    const end = i + 1 < matches.length ? matches[i + 1].index! : notes.length
+    const content = notes.slice(start, end).trim()
+      // Clean up escaped brackets from Ravelry
+      .replace(/\\\[/g, '[').replace(/\\\]/g, ']')
+
+    if (content) {
+      sections.push({ title, content })
+    }
+  }
+
+  return sections
+}
+
+function parseGaugeStitches(gauge: string | null): number | null {
+  if (!gauge) return null
+  const m = gauge.match(/(\d+(?:\.\d+)?)\s*(?:stitches|sts)/i)
+  return m ? parseFloat(m[1]) : null
+}
+
+function parseGaugeRows(gauge: string | null): number | null {
+  if (!gauge) return null
+  const m = gauge.match(/(\d+(?:\.\d+)?)\s*rows/i)
+  return m ? parseFloat(m[1]) : null
+}
+
+function parseGaugeNeedleMm(
+  gauge: string | null,
+  needleSizes: Array<{ us: string | null; metric: string | null; name: string | null }>
+): number | null {
+  // Try gauge description first
+  if (gauge) {
+    const m = gauge.match(/(\d+(?:\.\d+)?)\s*mm/i)
+    if (m) return parseFloat(m[1])
+  }
+  // Fall back to first needle size
+  if (needleSizes.length > 0 && needleSizes[0].metric) {
+    const val = parseFloat(needleSizes[0].metric)
+    if (!isNaN(val)) return val
+  }
+  return null
+}
+
+function parseGaugeStitchPattern(gauge: string | null): string | null {
+  if (!gauge) return null
+  // Match pattern like "in stockinette stitch" or "in 1 x 1 rib (k1, p1)"
+  const m = gauge.match(/\bin\s+(.+?)(?:\s+on\s+|\s*$)/i)
+  return m ? m[1].trim() : null
 }

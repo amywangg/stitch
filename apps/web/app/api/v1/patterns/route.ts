@@ -29,7 +29,10 @@ export async function GET(req: NextRequest) {
         orderBy: { created_at: 'desc' },
         skip: (page - 1) * limit,
         take: limit,
-        include: { folder: { select: { id: true, name: true, color: true } } },
+        include: {
+          folder: { select: { id: true, name: true, color: true } },
+          pdf_uploads: { orderBy: { created_at: 'desc' }, take: 1, select: { id: true } },
+        },
       }),
       prisma.patterns.count({ where }),
     ])

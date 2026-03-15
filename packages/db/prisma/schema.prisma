@@ -66,7 +66,7 @@ model subscriptions {
   id            String    @id @default(uuid())
   user_id       String    @unique
   revenuecat_id String?   @unique
-  plan          String    @default("free")   // "free" | "pro"
+  plan          String    @default("free")   // "free" | "plus" | "pro"
   status        String    @default("active") // "active" | "expired" | "cancelled"
   period_type   String?   // "monthly" | "yearly" | "lifetime"
   product_id    String?   // e.g. "com.stitchmarker.pro.monthly"
@@ -93,7 +93,7 @@ model ravelry_connections {
   import_status       String    @default("idle") // "idle" | "importing" | "done" | "error"
   import_error        String?
   import_stats        Json?     // { projects, patterns, queue, stash, needles } counts
-  sync_to_ravelry     Boolean   @default(false) // user-controlled write-back toggle
+  sync_to_ravelry     Boolean   @default(true) // user-controlled write-back toggle
   // Per-type sync timestamps — enables incremental sync per data type
   stash_synced_at     DateTime?
   projects_synced_at  DateTime?
@@ -322,6 +322,7 @@ model projects {
   is_public         Boolean   @default(false)
   size_made         String?   // e.g. "Small", "36\" bust"
   mods_notes        String?   // modifications to the pattern
+  category          String?   // e.g. "Feet / Legs → Socks → Mid-calf"
   ravelry_id        String?
   ravelry_permalink String?
   pdf_upload_id     String?   // attached PDF for reference while working
@@ -451,13 +452,19 @@ model patterns {
   brand_name      String?
   yarn_weight     String?
   needle_size_mm  Float?
+  needle_sizes    String[]          // all needle sizes as labels, e.g. ["US 4 - 3.5mm", "US 6 - 4mm"]
+  sizes_available String?           // raw sizes string from Ravelry, e.g. "XS / S / M / L / XL"
   yardage_min           Int?
   yardage_max           Int?
   gauge_stitches_per_10cm Float?  // for AI agent pattern matching
   gauge_rows_per_10cm   Float?   // for AI agent pattern matching
+  gauge_stitch_pattern  String?  // e.g. "stockinette stitch", "1 x 1 rib (k1, p1)"
+  rating          Float?
+  rating_count    Int?
   source_url      String?
   pdf_url         String?   // Supabase Storage URL
   cover_image_url String?
+  notes_html      String?   @db.Text  // HTML formatted notes from Ravelry
   is_public       Boolean   @default(false)
   // true = original/free content (can be shared publicly)
   // false = from paid PDF or paid Ravelry pattern (must stay private)
@@ -476,6 +483,7 @@ model patterns {
   folder          pattern_folders?  @relation(fields: [folder_id], references: [id], onDelete: SetNull)
   sections        pattern_sections[]
   sizes           pattern_sizes[]
+  photos          pattern_photos[]
   projects        projects[]
   queue           pattern_queue[]
   tags            pattern_tags[]
@@ -493,6 +501,7 @@ model patterns {
 model pattern_sections {
   id         String   @id @default(uuid())
   pattern_id String
+  size_id    String?  // null = size-agnostic shell from Stage 1; set = size-specific from Stage 2
   name       String
   content    String?
   sort_order Int      @default(0)
@@ -500,10 +509,12 @@ model pattern_sections {
   updated_at DateTime @updatedAt
 
   pat              patterns            @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
+  size             pattern_sizes?      @relation(fields: [size_id], references: [id], onDelete: Cascade)
   rows             pattern_rows[]
   project_sections project_sections[]
 
   @@index([pattern_id])
+  @@index([size_id])
 }
 
 // Each "row" is actually an instruction step — may represent 1 tap, N taps, or open-ended work.
@@ -528,9 +539,26 @@ model pattern_rows {
   target_measurement_cm Float?      // for work_to_measurement steps
   created_at      DateTime  @default(now())
 
+  size_id    String?
+  size       pattern_sizes?    @relation(fields: [size_id], references: [id], onDelete: Cascade)
+
   section pattern_sections @relation(fields: [section_id], references: [id], onDelete: Cascade)
 
   @@index([section_id])
+  @@index([size_id])
+}
+
+// Photos associated with a pattern (carousel images from Ravelry or user uploads)
+model pattern_photos {
+  id         String @id @default(uuid())
+  pattern_id String
+  url        String   // full image URL
+  sort_order Int      @default(0)
+  caption    String?
+
+  pattern patterns @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
+
+  @@index([pattern_id])
 }
 
 // Sizes included in a pattern (e.g. XS / S / M or 32" / 34" / 36")
@@ -550,7 +578,9 @@ model pattern_sizes {
   foot_length_cm       Float?
   yardage            Int?
 
-  pattern patterns @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
+  pattern  patterns           @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
+  sections pattern_sections[]
+  rows     pattern_rows[]
 
   @@index([pattern_id])
 }
@@ -800,6 +830,47 @@ model user_tutorial_progress {
 
   @@unique([user_id, tutorial_id])
   @@index([user_id])
+}
+
+// ─── Glossary ─────────────────────────────────────────────────────────────────
+
+model glossary_terms {
+  id            String   @id @default(uuid())
+  abbreviation  String?              // "SSK", "K2TOG" — null for full-word terms
+  name          String               // "Slip Slip Knit", "Knit Two Together"
+  slug          String   @unique     // "ssk", "knit-two-together"
+  category      String               // decrease, increase, cast_on, bind_off, stitch_pattern, texture, construction, shaping, finishing, tools, measurement, general
+  craft_type    String   @default("both") // knitting, crochet, both
+  definition    String               // Plain-language explanation
+  how_to        String?              // Step-by-step text instructions
+  tips          String?              // Common mistakes, pro tips
+  video_url        String?              // YouTube video URL (regular or Shorts)
+  video_start_s    Int?                 // Start timestamp in seconds
+  video_end_s      Int?                 // End timestamp in seconds
+  video_is_short   Boolean  @default(false) // true for YouTube Shorts (9:16 portrait)
+  video_alternates Json?                // Backup video URLs as JSON array ["url1", "url2"]
+  difficulty    String   @default("beginner") // beginner, intermediate, advanced
+  sort_order    Int      @default(0)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  synonyms      glossary_synonyms[]
+
+  @@index([category])
+  @@index([craft_type])
+  @@index([abbreviation])
+}
+
+model glossary_synonyms {
+  id         String @id @default(uuid())
+  term_id    String
+  synonym    String          // "sl1-k1-psso" for SSK, regional variants
+  region     String?         // "UK", "US", "Japanese" — null if universal
+
+  term       glossary_terms @relation(fields: [term_id], references: [id], onDelete: Cascade)
+
+  @@unique([term_id, synonym])
+  @@index([synonym])
 }
 
 // ─── PDF Uploads ───────────────────────────────────────────────────────────────

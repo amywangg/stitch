@@ -1,0 +1,833 @@
+[
+  {
+    "abbreviation": "FPdc",
+    "name": "Front Post Double Crochet",
+    "slug": "front-post-double-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A textured crochet stitch worked around the post (vertical shaft) of a stitch in the previous row from the front side. The hook is inserted from front to back to front around the post, creating a raised stitch that sits in front of the fabric. Commonly used for ribbing, cables, and basketweave textures.",
+    "how_to": "1. Yarn over\n2. Insert hook from front to back around the post of the indicated stitch in the previous row (going right to left behind the post)\n3. Bring hook back to the front on the other side of the post\n4. Yarn over and pull up a loop (3 loops on hook)\n5. Yarn over and pull through 2 loops (2 loops on hook)\n6. Yarn over and pull through remaining 2 loops",
+    "tips": "Skip the stitch directly above the post you are working around to maintain stitch count. FPdc stitches push the fabric toward you, creating a raised ridge on the front. Combine with BPdc for ribbed or basketweave effects.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "raised double crochet front",
+        "region": null
+      },
+      {
+        "synonym": "front post treble crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "FPtrc",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "BPdc",
+    "name": "Back Post Double Crochet",
+    "slug": "back-post-double-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A textured crochet stitch worked around the post of a stitch in the previous row from the back side. The hook is inserted from back to front to back around the post, creating a stitch that recedes behind the fabric surface. Often paired with FPdc for ribbing and textured patterns.",
+    "how_to": "1. Yarn over\n2. Insert hook from back to front around the post of the indicated stitch in the previous row (going right to left in front of the post)\n3. Bring hook back to the back on the other side of the post\n4. Yarn over and pull up a loop (3 loops on hook)\n5. Yarn over and pull through 2 loops (2 loops on hook)\n6. Yarn over and pull through remaining 2 loops",
+    "tips": "BPdc stitches push the fabric away from you, creating an indented ridge on the front. Alternating FPdc and BPdc across a row creates a knit-look ribbing effect. Maintain consistent tension when wrapping around posts.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "raised double crochet back",
+        "region": null
+      },
+      {
+        "synonym": "back post treble crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "BPtrc",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "FPsc",
+    "name": "Front Post Single Crochet",
+    "slug": "front-post-single-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A textured stitch worked around the post of a stitch from the front side using a single crochet technique. Shorter than FPdc, it creates a subtle raised texture. Less common than front post double crochet but useful for tighter, denser textured fabrics.",
+    "how_to": "1. Insert hook from front to back around the post of the indicated stitch in the previous row\n2. Bring hook back to the front on the other side of the post\n3. Yarn over and pull up a loop (2 loops on hook)\n4. Yarn over and pull through both loops",
+    "tips": "Because single crochet is a short stitch, FPsc can feel tight and pull the fabric. Use a slightly larger hook if your fabric puckers. Works well for subtle texture on dense projects like pot holders or bags.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "front post double crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "FPdc",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "BPsc",
+    "name": "Back Post Single Crochet",
+    "slug": "back-post-single-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A textured stitch worked around the post of a stitch from the back side using a single crochet technique. Creates a recessed texture on the front of the fabric. Paired with FPsc for subtle ribbing on dense crochet fabric.",
+    "how_to": "1. Insert hook from back to front around the post of the indicated stitch in the previous row\n2. Bring hook back to the back on the other side of the post\n3. Yarn over and pull up a loop (2 loops on hook)\n4. Yarn over and pull through both loops",
+    "tips": "BPsc creates a less dramatic texture than BPdc due to the shorter stitch height. Best suited for projects where you want a hint of texture without bulk. Keep tension relaxed to avoid puckering.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "back post double crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "BPdc",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "FPtr",
+    "name": "Front Post Treble Crochet",
+    "slug": "front-post-treble-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A tall textured stitch worked around the post of a stitch from the front side using a treble (triple) crochet technique. Creates a very prominent raised ridge on the front of the fabric. Used for dramatic cables and deeply textured patterns.",
+    "how_to": "1. Yarn over twice\n2. Insert hook from front to back around the post of the indicated stitch in the previous row\n3. Bring hook back to the front on the other side of the post\n4. Yarn over and pull up a loop (4 loops on hook)\n5. Yarn over and pull through 2 loops (3 loops on hook)\n6. Yarn over and pull through 2 loops (2 loops on hook)\n7. Yarn over and pull through remaining 2 loops",
+    "tips": "The extra height of the treble makes this stitch stand out dramatically. Excellent for crochet cables that need to span multiple rows. You may need to work around stitches two rows below to account for the extra height.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "front post triple crochet",
+        "region": null
+      },
+      {
+        "synonym": "front post double treble crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "FPdtr",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "BPtr",
+    "name": "Back Post Treble Crochet",
+    "slug": "back-post-treble-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A tall textured stitch worked around the post of a stitch from the back side using a treble (triple) crochet technique. Creates a deeply recessed texture on the front of the fabric. Used alongside FPtr for bold cable and texture patterns.",
+    "how_to": "1. Yarn over twice\n2. Insert hook from back to front around the post of the indicated stitch in the previous row\n3. Bring hook back to the back on the other side of the post\n4. Yarn over and pull up a loop (4 loops on hook)\n5. Yarn over and pull through 2 loops (3 loops on hook)\n6. Yarn over and pull through 2 loops (2 loops on hook)\n7. Yarn over and pull through remaining 2 loops",
+    "tips": "Pair with FPtr to create deeply sculpted cable patterns. The tall stitch height means careful tension management is important to keep the fabric even. Works best with smooth, plied yarn that shows stitch definition clearly.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "back post triple crochet",
+        "region": null
+      },
+      {
+        "synonym": "back post double treble crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "BPdtr",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Bobble Stitch (Crochet)",
+    "slug": "bobble-stitch-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A three-dimensional stitch that creates a rounded bump on the surface of the fabric. Made by working several incomplete double crochet stitches into the same stitch and then joining them all at the top. Unlike popcorn stitches, bobbles are closed from the wrong side and pop toward the back unless pushed through.",
+    "how_to": "1. Yarn over, insert hook into indicated stitch\n2. Yarn over, pull up a loop, yarn over, pull through 2 loops (2 loops on hook)\n3. Repeat steps 1-2 four more times in the same stitch (6 loops on hook for a 5-dc bobble)\n4. Yarn over and pull through all 6 loops on hook\n5. Chain 1 to secure the bobble (optional, pattern-dependent)",
+    "tips": "Bobbles naturally pop toward the back (wrong side) of the work. If you want them on the front, work them on wrong-side rows or push them through to the front as you close the stitch. The number of incomplete stitches determines the bobble size; 5 is standard.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "bob",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Popcorn Stitch (Crochet)",
+    "slug": "popcorn-stitch-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A bold three-dimensional stitch that creates a pronounced, round bump on the front of the fabric. Made by working several complete double crochet stitches into the same stitch, removing the hook, and then pulling the working loop through the first stitch to fold the group and create a defined popcorn shape. More prominent than bobbles.",
+    "how_to": "1. Work 5 double crochet stitches into the same stitch\n2. Remove hook from the working loop (place a stitch marker in the loop to prevent unraveling)\n3. Insert hook from front to back through the top of the first dc of the group\n4. Pick up the dropped loop\n5. Pull the loop through the first dc, closing the popcorn\n6. Chain 1 to secure (optional, pattern-dependent)",
+    "tips": "Popcorn stitches always pop toward the side you insert the hook from in step 3. For right-side popcorns, insert from front to back. Keep consistent tension on the closing pull to make all popcorns the same size. Uses more yarn than bobbles.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "pc",
+        "region": null
+      },
+      {
+        "synonym": "popcorn",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Puff Stitch",
+    "slug": "puff-stitch-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A soft, rounded dimensional stitch made by working multiple half double crochet loops into the same stitch and closing them all together. Puff stitches are softer and less structured than bobbles or popcorns, creating a pillowy texture. The height is between a single and double crochet.",
+    "how_to": "1. Yarn over, insert hook into indicated stitch, yarn over and pull up a loop to the height of a half double crochet (3 loops on hook)\n2. Repeat step 1 three to four more times in the same stitch (7 or 9 loops on hook)\n3. Yarn over and pull through all loops on hook\n4. Chain 1 to close and secure the puff",
+    "tips": "Pull each loop up to the same height for an even puff. The closing chain is usually necessary to keep the puff from loosening. Puffs work beautifully in lightweight yarns for baby blankets. Pulling through many loops at once can be tricky; keep your tension loose enough that the hook slides through easily.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "puff",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "CL",
+    "name": "Cluster Stitch",
+    "slug": "cluster-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A stitch grouping where multiple incomplete stitches are worked across one or more base stitches and then joined at the top by pulling through all remaining loops at once. Unlike bobbles (which go into one stitch), clusters can span adjacent stitches, drawing them together into a fan or gathered shape. They are a fundamental building block for many lace and textured patterns.",
+    "how_to": "1. Yarn over, insert hook into indicated stitch\n2. Yarn over, pull up a loop, yarn over, pull through 2 loops (leaving the last loop on hook)\n3. Repeat steps 1-2 in the next stitch(es) as specified by the pattern\n4. Yarn over and pull through all remaining loops on hook to close the cluster",
+    "tips": "Clusters that span multiple stitches create a decrease effect, drawing the fabric inward. The number and type of stitches in the cluster vary by pattern. Clusters form the basis of many granny square and lace motif designs. Keep track of how many stitches the cluster spans to maintain correct stitch count.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "cl",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Shell Stitch",
+    "slug": "shell-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A fan-shaped stitch grouping made by working multiple stitches (typically 5 double crochets) into the same stitch or space. The stitches spread out at the top to form a shell or scallop shape. One of the most common and versatile crochet stitch patterns, used for blankets, garments, and edgings.",
+    "how_to": "1. Work 5 double crochet stitches into the same stitch or chain space\n2. Skip the stitches on either side as directed by the pattern (usually 2 stitches skipped on each side)\n3. Work a single crochet or slip stitch in the next indicated stitch to anchor between shells\n4. Repeat across the row",
+    "tips": "The number of stitches in a shell varies by pattern (3, 5, or 7 dc are common). Shells naturally create a scalloped edge. Stitch count management is key: the skipped stitches offset the extra stitches in the shell. Shells look great in variegated yarn.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "sh",
+        "region": null
+      },
+      {
+        "synonym": "fan",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Fan Stitch",
+    "slug": "fan-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A decorative stitch pattern closely related to the shell stitch, where multiple stitches are worked into a single point and spread open to form a fan shape. Fan stitches often incorporate chain spaces between the stitches within the group, creating a more open, lacy appearance compared to solid shells.",
+    "how_to": "1. Work into the indicated stitch: (dc, ch 1) repeat for the number specified by the pattern, ending with a final dc\n2. For example, a 5-dc fan: dc, ch 1, dc, ch 1, dc, ch 1, dc, ch 1, dc all in the same stitch\n3. Skip stitches on either side as directed\n4. Anchor between fans with a sc or sl st as directed",
+    "tips": "The chain spaces between stitches give fans an airier look than shells. Fan stitches are excellent for shawls, summer garments, and lace patterns. Blocking opens up the fans and evens out the pattern. Count your chains carefully to keep fans consistent.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "V-st",
+    "name": "V-Stitch",
+    "slug": "v-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A simple stitch combination consisting of (dc, ch 1, dc) worked into the same stitch or space, forming a V shape. The chain space in the center provides a clear anchor point for subsequent rows. V-stitches create an open, slightly lacy fabric that works up quickly and is easy to memorize.",
+    "how_to": "1. Work 1 double crochet into the indicated stitch or space\n2. Chain 1\n3. Work 1 double crochet into the same stitch or space\n4. On subsequent rows, work V-stitches into the ch-1 space of the V-stitch below",
+    "tips": "V-stitches are excellent for lightweight blankets and scarves. The ch-1 space makes it easy to identify where to place the next V-stitch. You can modify V-stitches by using taller stitches (tr) or larger chain spaces (ch 2) for a more open fabric.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "V stitch",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Granny Square",
+    "slug": "granny-square",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "An iconic crochet motif worked in the round from the center outward, built from clusters of double crochet stitches separated by chain spaces, with increases at four corner points to create a square shape. Granny squares can be made in one color or multiple colors and are joined together to create blankets, bags, garments, and more. One of the most recognizable and versatile crochet techniques.",
+    "how_to": "1. Chain 4, slip stitch to first chain to form a ring (or use a magic ring)\n2. Round 1: Ch 3 (counts as dc), 2 dc in ring, *ch 2, 3 dc in ring* repeat 3 times, ch 2, sl st to top of ch-3 (4 clusters, 4 corner spaces)\n3. Round 2: Sl st to corner ch-2 space, ch 3, 2 dc in same space, ch 1, *(3 dc, ch 2, 3 dc) in next corner space, ch 1* repeat around, 3 dc in first corner, ch 2, sl st to top of ch-3\n4. Continue adding rounds, working (3 dc, ch 2, 3 dc) in each corner space and (3 dc) in each side ch-1 space with ch 1 between clusters",
+    "tips": "Use a magic ring for a tighter center with no hole. Change colors at the end of any round for multicolor designs. Consistent chain spaces are key to square granny squares; if corners curl, try going up a hook size. Block finished squares before joining for best results. Common joining methods include whip stitch, mattress stitch, and join-as-you-go.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "granny motif",
+        "region": null
+      },
+      {
+        "synonym": "classic granny",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Granny Stripe",
+    "slug": "granny-stripe",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A flat, worked-in-rows variation of the granny square concept. Rows of 3-dc clusters separated by chain spaces are worked back and forth, creating a striped fabric with the characteristic granny stitch texture. Popular for blankets, especially in multiple colors for a retro or rainbow effect.",
+    "how_to": "1. Chain a multiple of 3, plus 2 for the foundation\n2. Row 1: 2 dc in 3rd ch from hook, *skip 2 ch, 3 dc in next ch* repeat across\n3. Row 2: Ch 3, turn, 2 dc in space between first and second cluster, *3 dc in space between next two clusters* repeat across, ending with 3 dc in turning ch space\n4. Repeat Row 2 for pattern, changing colors as desired at the end of rows",
+    "tips": "Work into the spaces between clusters, not into the stitches themselves. Color changes at the end of rows create clean stripes. The fabric tends to slant; blocking corrects this. Granny stripes use more yarn than you expect due to the clusters, so buy extra.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "granny stitch blanket",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Tapestry Crochet",
+    "slug": "tapestry-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A colorwork technique where two or more yarn colors are carried along the row, with the unused color(s) crocheted over and hidden inside the stitches. This creates a dense, single-layer fabric with color patterns visible on the surface, similar to stranded knitting. Used for geometric designs, bags (mochilas), and pictorial patterns.",
+    "how_to": "1. Work single crochet stitches in the main color, carrying the unused color along the top of the previous row\n2. To change colors: insert hook, yarn over with new color and pull through, complete the stitch with the new color\n3. Continue crocheting over the unused color strand so it is hidden inside the stitches\n4. Follow a chart for color changes, reading right to left on right-side rows and left to right on wrong-side rows",
+    "tips": "Use single crochet for the clearest color definition. Maintain consistent tension on the carried yarn to avoid puckering. The carried color may show through with light-colored yarn over dark; choose colors with good contrast. Tapestry crochet fabric is very dense and sturdy, making it ideal for bags. Work in the round (spiral) for bags to avoid visible color jogs at row joins.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "jacquard crochet",
+        "region": null
+      },
+      {
+        "synonym": "intarsia crochet",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Overlay Crochet",
+    "slug": "overlay-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A technique where stitches are worked into rows below the current row (not the previous row) to create layered, three-dimensional colorwork designs. Unlike tapestry crochet, overlay crochet builds colors on top of a base fabric using front post stitches or stitches anchored several rows down, resulting in a thick, reversible fabric with intricate mandala-like patterns.",
+    "how_to": "1. Work a base round or row in the background color\n2. Join a new color and work stitches (typically front post stitches or long stitches) that reach down into previous rounds\n3. The overlay stitches sit on top of the base fabric, covering it\n4. Continue adding rounds with different colors, anchoring each into the appropriate previous round\n5. Follow the chart carefully as each round builds on specific previous rounds",
+    "tips": "Overlay crochet uses significantly more yarn than standard crochet due to the layered construction. Always work in the same direction (do not turn) when working in the round to keep the front post stitches consistent. This technique creates very thick, warm fabric. Patience with the chart is essential as mistakes are hard to fix.",
+    "difficulty": "advanced",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Spike Stitch",
+    "slug": "spike-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A stitch worked by inserting the hook into a stitch one or more rows below the current row instead of into the previous row, then pulling the yarn up to the height of the current row. This creates a long vertical stitch that spans multiple rows and can be used for colorwork effects, texture, or decorative lines without carrying yarn.",
+    "how_to": "1. Insert hook into the stitch in the row below (or 2-3 rows below, as specified)\n2. Yarn over and pull up a loop, drawing it up to the height of the current working row\n3. Yarn over and pull through both loops on hook (like completing a single crochet)\n4. The long stitch will span across the row(s) below, covering them",
+    "tips": "Pull the loop up gently but firmly to the correct height; too tight will pucker, too loose will look sloppy. Spike stitches work beautifully for colorwork when alternating colors every row, as the spike pulls the previous color through. The stitch below that the spike covers will be hidden behind the spike.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "long stitch",
+        "region": null
+      },
+      {
+        "synonym": "dropped stitch crochet",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Crocodile Stitch",
+    "slug": "crocodile-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A dramatic textured stitch that creates layered, scale-like flaps across the fabric, resembling crocodile skin, dragon scales, or petals. Worked by making pairs of double crochet stitches around the posts of a V-stitch foundation, the resulting scales fold down and overlap for a highly three-dimensional effect.",
+    "how_to": "1. Foundation row: Work V-stitches (dc, ch 2, dc) evenly spaced across\n2. Scale row: Work 5 dc around the post of the first dc of a V-stitch (working downward along the post), then 5 dc around the post of the second dc of the same V-stitch (working upward)\n3. The two sets of 5 dc fold together to form a scale\n4. Chain between scales and repeat across each V-stitch pair\n5. Alternate foundation rows and scale rows",
+    "tips": "Crocodile stitch uses a lot of yarn, roughly 3 times more than standard fabric. The scales are worked around posts, so be careful to go around the post and not through the stitch. This stitch does not drape well and is best for accessories, bags, and decorative items rather than garments. Leave the top of each scale unattached so scales overlap naturally.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "dragon scale stitch",
+        "region": null
+      },
+      {
+        "synonym": "scale stitch",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "TSS",
+    "name": "Tunisian Simple Stitch",
+    "slug": "tunisian-simple-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "The foundational stitch of Tunisian crochet (also called Afghan stitch), a technique that blends elements of knitting and crochet using an elongated hook. Each row has two passes: a forward pass where loops are picked up and retained on the hook, and a return pass where loops are worked off. Tunisian simple stitch creates a dense, woven-looking fabric with prominent vertical bars.",
+    "how_to": "1. Foundation row forward pass: Chain desired number, insert hook in 2nd ch from hook, yarn over and pull up a loop (keep on hook), repeat in each ch across (all loops on hook)\n2. Return pass: Yarn over, pull through 1 loop, *yarn over, pull through 2 loops* repeat across until 1 loop remains\n3. Row 2+ forward pass: Skip first vertical bar, *insert hook under next vertical bar from right to left, yarn over and pull up a loop* repeat across, inserting hook under both loops of the last stitch\n4. Return pass: Same as step 2\n5. Repeat steps 3-4 for pattern",
+    "tips": "Use a Tunisian/Afghan hook (longer than standard with a stopper on the end) or a hook with a cable extension. Tunisian fabric tends to curl; blocking is essential. Go up 1-2 hook sizes from what the yarn label suggests. The forward pass reads right to left; the return pass reads left to right. Count loops on the forward pass to catch mistakes early.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "Afghan stitch",
+        "region": null
+      },
+      {
+        "synonym": "Tunisian basic stitch",
+        "region": null
+      },
+      {
+        "synonym": "TBS",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "TKS",
+    "name": "Tunisian Knit Stitch",
+    "slug": "tunisian-knit-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A Tunisian crochet stitch variation where the hook is inserted through the center of the stitch (between the front and back vertical bars) rather than under the front bar only. This creates a fabric that closely resembles stockinette stitch in knitting, with a smooth V-pattern on the front.",
+    "how_to": "1. Work a foundation row as for Tunisian simple stitch\n2. Forward pass: Skip first vertical bar, *insert hook between the front and back vertical bars of the next stitch (through the middle of the stitch from front to back), yarn over and pull up a loop* repeat across\n3. Return pass: Yarn over, pull through 1 loop, *yarn over, pull through 2 loops* repeat across until 1 loop remains\n4. Repeat steps 2-3",
+    "tips": "TKS creates a fabric that looks very similar to knitted stockinette. It curls even more than TSS, so blocking or adding a border is essential. The hook goes through the middle of the stitch, not under a bar, which takes practice to identify consistently. Combine TKS and TPS (purl) to create ribbing and texture patterns similar to knitting.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "Tunisian knit",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "TPS",
+    "name": "Tunisian Purl Stitch",
+    "slug": "tunisian-purl-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A Tunisian crochet stitch variation that creates a bumpy, purl-like texture on the front of the fabric. The yarn is held in front of the work before inserting the hook, creating a horizontal bar across the front that mimics the look of purl stitches in knitting.",
+    "how_to": "1. Work a foundation row as for Tunisian simple stitch\n2. Forward pass: Skip first vertical bar, *bring yarn to the front of the work, insert hook under the front vertical bar of the next stitch from right to left, yarn over (behind the hook) and pull up a loop* repeat across\n3. Return pass: Yarn over, pull through 1 loop, *yarn over, pull through 2 loops* repeat across until 1 loop remains\n4. Repeat steps 2-3",
+    "tips": "Holding the yarn in front is the key distinction from TSS. TPS creates a bumpy reverse-stockinette look. Alternate rows of TKS and TPS for a garter-stitch effect. TPS can also be combined column-by-column with TKS for ribbing patterns (e.g., 2 TKS, 2 TPS).",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "Tunisian purl",
+        "region": null
+      },
+      {
+        "synonym": "Tunisian reverse stitch",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Broomstick Lace",
+    "slug": "broomstick-lace",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A lace crochet technique that uses a large knitting needle, dowel, or broomstick handle alongside a crochet hook. Loops are drawn up and placed onto the large needle, then groups of loops are slid off and crocheted together to form an openwork, scalloped fabric. The resulting pattern has an elegant, vintage appearance.",
+    "how_to": "1. Work a foundation chain or row of single crochet\n2. Loop row: *Insert crochet hook in next stitch, yarn over, pull up a loop and place it on the large needle/dowel* repeat across (all loops on the needle)\n3. Crochet-off row: Slide a group of loops off the needle (typically 3-5 loops), insert crochet hook through all loops in the group, work single crochet stitches into the group (same number as loops in the group)\n4. Repeat steps 2-3 for pattern",
+    "tips": "A size 35-50 (19-25mm) knitting needle works well as the dowel. Keep all loops the same size on the needle for an even pattern. The number of loops in each group must divide evenly into your total stitch count. Broomstick lace drapes beautifully and is excellent for shawls and scarves.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "broomstick loop stitch",
+        "region": null
+      },
+      {
+        "synonym": "jiffy lace",
+        "region": null
+      },
+      {
+        "synonym": "peacock stitch",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Hairpin Lace",
+    "slug": "hairpin-lace",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A lace-making technique that uses a hairpin lace loom (a U-shaped frame) and a crochet hook to create long strips of looped lace. Yarn is wrapped around the prongs of the loom while a crochet stitch secures the center spine. The resulting strips have loops along both edges that can be joined together in various ways to create fabric.",
+    "how_to": "1. Set up the hairpin loom to desired width\n2. Make a slip knot and place it on the center of the loom, with one prong behind the loop and the hook in front\n3. Wrap yarn around the right prong, from back to front\n4. Work a single crochet (or other stitch) through the center of the previous loop to form the spine\n5. Rotate the loom 180 degrees (always in the same direction)\n6. Insert hook under the front loop on the left prong, yarn over and pull through, complete a single crochet\n7. Repeat steps 5-6 to create a long strip\n8. Join strips by interlocking or crocheting edge loops together",
+    "tips": "Keep the loom rotation consistent (always clockwise or always counterclockwise) for even strips. The width of the loom determines the width of each strip. Count your loops periodically as it is easy to lose count. Strips can be joined many ways: simple crochet join, woven join, or decorative join. Hairpin lace creates extremely lightweight, airy fabric.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "hairpin crochet",
+        "region": null
+      },
+      {
+        "synonym": "maltese lace",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Solomon's Knot",
+    "slug": "solomons-knot",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "An openwork crochet stitch consisting of elongated chain loops each secured with a single crochet, creating a mesh-like lace fabric. The extended loops and securing stitches form an open net pattern that is lightweight, airy, and elegant. Used for shawls, wraps, scarves, and decorative items.",
+    "how_to": "1. Make a slip knot and chain 1\n2. Draw up the loop on the hook to the desired length (typically 1-2 inches / 2.5-5 cm)\n3. Yarn over and pull through the elongated loop (this locks the extended chain)\n4. Insert hook under the single back strand of the elongated loop (not the full loop)\n5. Yarn over and pull through (2 loops on hook), yarn over and pull through both loops (single crochet made)\n6. This completes one Solomon's knot. Repeat for a chain of knots\n7. To work rows: make 2 knots, then sc into the center of a knot in the previous row, repeat across",
+    "tips": "Consistent loop length is the biggest challenge. Use a ruler, your finger spacing, or a cardboard gauge to keep loops even. The fabric is very stretchy and open, so it is not suitable for structured items. Block aggressively for the best presentation. Also known as Lover's knot in many vintage pattern books.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "Lover's knot",
+        "region": null
+      },
+      {
+        "synonym": "lover's knot stitch",
+        "region": null
+      },
+      {
+        "synonym": "Solomon's stitch",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Bullion Stitch",
+    "slug": "bullion-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A decorative rolled stitch created by wrapping the yarn around the hook many times (typically 7-10 wraps) before pulling through all the wraps at once. The result is a tight, coiled, cylindrical stitch that stands out from the fabric. Often used for flower petals, rosettes, and decorative accents.",
+    "how_to": "1. Yarn over the hook 7-10 times (as specified by pattern)\n2. Insert hook into the indicated stitch\n3. Yarn over and pull up a loop through the stitch (all wraps plus 2 loops on hook)\n4. Yarn over and carefully pull through all loops on the hook at once\n5. Chain 1 to secure (optional, pattern-dependent)",
+    "tips": "This is one of the trickiest crochet stitches to master. Use a hook with a consistent shaft width (inline/Susan Bates style hooks work better than tapered hooks). Keep wraps loose and evenly spaced on the shaft. A slightly larger hook helps the yarn slide through the wraps more easily. Practice with smooth, plied yarn before attempting with fuzzy or splitty yarn.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "bullion roll stitch",
+        "region": null
+      },
+      {
+        "synonym": "coil stitch",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Linked Double Crochet",
+    "slug": "linked-double-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A modification of the standard double crochet that eliminates the gaps between stitches by inserting the hook through the horizontal bar of the previous stitch instead of doing a yarn-over. This creates a denser, more solid fabric without holes, while maintaining the same height as regular double crochet.",
+    "how_to": "1. Insert hook into the horizontal bar at the middle of the previous stitch (or into the second chain of the turning chain for the first stitch of a row)\n2. Yarn over and pull up a loop (2 loops on hook, replacing the usual yarn-over)\n3. Insert hook into the next stitch in the row below\n4. Yarn over and pull up a loop (3 loops on hook)\n5. Yarn over and pull through 2 loops (2 loops on hook)\n6. Yarn over and pull through remaining 2 loops",
+    "tips": "Linked stitches create a smoother, more opaque fabric than standard dc, making them excellent for garments and bags where you do not want gaps. The horizontal bar is the strand that runs between the two vertical bars of a dc. This technique can be applied to taller stitches too (linked treble, etc.).",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "linked dc",
+        "region": null
+      },
+      {
+        "synonym": "Ldc",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "esc",
+    "name": "Extended Single Crochet",
+    "slug": "extended-single-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A stitch that is slightly taller than a single crochet but shorter than a half double crochet, achieved by adding an extra pull-through step. It creates a fabric with more drape than single crochet while maintaining a tight, neat texture. Useful when single crochet is too short and half double crochet is too tall.",
+    "how_to": "1. Insert hook into the indicated stitch\n2. Yarn over and pull up a loop (2 loops on hook)\n3. Yarn over and pull through 1 loop only (this is the extending step; still 2 loops on hook)\n4. Yarn over and pull through both remaining loops",
+    "tips": "The extra step in the middle adds about 25% more height than standard single crochet. Extended stitches bridge the gap between stitch heights, giving you more control over gauge and fabric density. The extending chain in the middle also creates a horizontal bar that can be used for stitch variations.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "exsc",
+        "region": null
+      },
+      {
+        "synonym": "extended sc",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "edc",
+    "name": "Extended Double Crochet",
+    "slug": "extended-double-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A stitch taller than a standard double crochet but shorter than a treble crochet, achieved by adding an extra pull-through step early in the stitch. Creates a fabric with slightly more height and drape than regular double crochet while maintaining good stitch definition.",
+    "how_to": "1. Yarn over, insert hook into the indicated stitch\n2. Yarn over and pull up a loop (3 loops on hook)\n3. Yarn over and pull through 1 loop only (this is the extending step; still 3 loops on hook)\n4. Yarn over and pull through 2 loops (2 loops on hook)\n5. Yarn over and pull through remaining 2 loops",
+    "tips": "The extending step is always worked immediately after pulling up the initial loop, before the standard closing sequence. Extended stitches create a slightly different texture than standard stitches. They are useful for matching gauge in patterns that call for a between-size stitch height.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "exdc",
+        "region": null
+      },
+      {
+        "synonym": "extended dc",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Standing Stitch",
+    "slug": "standing-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A technique for starting a new yarn color or joining at a new position without using a slip stitch and chain sequence. Instead of the traditional slip stitch join followed by turning chains, the first stitch of a round or row is worked as a complete stitch from the start. This eliminates the bulky join and creates a cleaner, more uniform appearance.",
+    "how_to": "1. Standing double crochet: Begin with a slip knot on the hook (or hold the yarn tail with your finger)\n2. Yarn over (as you would for a dc)\n3. Insert hook into the indicated stitch or space\n4. Yarn over and pull up a loop (3 loops on hook)\n5. Yarn over and pull through 2 loops (2 loops on hook)\n6. Yarn over and pull through remaining 2 loops\n7. Tug the starting tail to tighten the base of the stitch",
+    "tips": "Standing stitches replace both the slip stitch join and the turning chain. The initial slip knot counts as the top of the stitch. Tighten the tail firmly at the base to eliminate any gap. Standing sc, hdc, and tr variations follow the same principle. This technique is especially valuable for color-change projects and granny squares.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "standing dc",
+        "region": null
+      },
+      {
+        "synonym": "standing sc",
+        "region": null
+      },
+      {
+        "synonym": "standing start",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Chainless Starting Double Crochet",
+    "slug": "chainless-starting-double-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A technique for starting a row or round of double crochet without using a ch-3 turning chain. Instead, the first double crochet is constructed as a true stitch that matches the height and appearance of the other stitches in the row. This eliminates the common problem of the turning chain being visually different from actual stitches.",
+    "how_to": "1. With one loop on hook at the beginning of the row, pull the loop up to the height of a double crochet\n2. Yarn over, pinch the base of the elongated loop to hold it\n3. Insert hook into the first stitch of the row (the same stitch at the base of the elongated loop)\n4. Yarn over and pull up a loop (3 loops on hook)\n5. Yarn over and pull through 2 loops (2 loops on hook)\n6. Yarn over and pull through remaining 2 loops\n7. The elongated loop forms the chain at the top of the stitch",
+    "tips": "This technique takes practice to get the initial loop height consistent. The result is worth it: edges are straighter and the first stitch is indistinguishable from the rest of the row. Works for hdc and tr too with appropriate height adjustment. Some crocheters prefer this over standing stitches for rows (not rounds).",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "chainless foundation dc",
+        "region": null
+      },
+      {
+        "synonym": "chainless turning dc",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Moss Stitch (Crochet)",
+    "slug": "moss-stitch-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A simple, textured stitch pattern created by alternating single crochet and chain stitches, with the single crochets placed in the chain spaces of the previous row. This creates a woven, linen-like fabric with a nubby texture and excellent drape. Also known as the linen stitch or granite stitch in crochet.",
+    "how_to": "1. Foundation: Chain an even number\n2. Row 1: Sc in 2nd ch from hook, *ch 1, skip 1 ch, sc in next ch* repeat across\n3. Row 2: Ch 1, turn, sc in first sc, *ch 1, skip ch-1 space, sc in next sc* -- OR -- sc in each ch-1 space with ch 1 between (pattern-dependent)\n4. Standard version: Ch 1, turn, *sc in ch-1 space, ch 1, skip sc* repeat across, sc in turning ch\n5. Repeat for pattern",
+    "tips": "This stitch has many names across different pattern sources (moss, linen, granite, woven, seed), so always check the pattern instructions. The staggered placement of sc and ch-1 spaces is what creates the woven look. Moss stitch creates a reversible fabric. It is slightly wider than solid sc fabric, so adjust your starting chain accordingly.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "linen stitch (crochet)",
+        "region": null
+      },
+      {
+        "synonym": "granite stitch (crochet)",
+        "region": null
+      },
+      {
+        "synonym": "woven stitch",
+        "region": null
+      },
+      {
+        "synonym": "seed stitch (crochet)",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Lemon Peel Stitch",
+    "slug": "lemon-peel-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A textured crochet stitch pattern created by alternating single crochet and double crochet stitches across a row, then offsetting them on the next row so that single crochets sit above double crochets and vice versa. The height difference between the alternating stitches creates a bumpy, citrus-peel-like texture.",
+    "how_to": "1. Chain an even number, plus 1\n2. Row 1: Sc in 2nd ch from hook, *dc in next ch, sc in next ch* repeat across\n3. Row 2: Ch 1, turn, *dc in sc, sc in dc* repeat across\n4. Repeat Row 2 for pattern",
+    "tips": "The key is placing each sc into a dc below and each dc into a sc below, which offsets the bumps. If the bumps line up vertically instead of staggering, check that you have an even stitch count. This stitch creates a thick, squishy fabric perfect for dishcloths, blankets, and scarves. The texture is subtle on the wrong side.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Waistcoat Stitch",
+    "slug": "waistcoat-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A single crochet variation where the hook is inserted between the two vertical legs (the V) of the single crochet stitch below, rather than under the top two loops. This creates a fabric that closely mimics the appearance of knitted stockinette stitch, with neat V-shaped stitches on the front. Also called the knit stitch in crochet or center single crochet.",
+    "how_to": "1. Work a foundation row of regular single crochet\n2. Ch 1, turn (or work in continuous rounds for best results)\n3. Insert hook between the front and back vertical legs of the V of each sc in the previous row (through the center of the stitch, not under the top loops)\n4. Yarn over, pull up a loop (2 loops on hook)\n5. Yarn over, pull through both loops\n6. Repeat across/around",
+    "tips": "Waistcoat stitch works best in the round (continuous spiral without joining) for the most knit-like appearance. When worked flat, the wrong side looks different from the right side. This stitch produces a very tight gauge, so go up 1-2 hook sizes. Identifying the center V opening takes practice. Use stitch markers frequently until the stitch placement becomes natural.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "knit stitch (crochet)",
+        "region": null
+      },
+      {
+        "synonym": "center single crochet",
+        "region": null
+      },
+      {
+        "synonym": "csc",
+        "region": null
+      },
+      {
+        "synonym": "split single crochet",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Thermal Stitch",
+    "slug": "thermal-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A double-layered crochet technique that creates a thick, insulating fabric by working two layers simultaneously and connecting them with single crochet stitches through both layers. The resulting fabric has an air pocket between the layers, similar to a thermal waffle weave, providing excellent warmth. Commonly used for potholders, trivets, and winter accessories.",
+    "how_to": "1. Work a foundation row of single crochet\n2. Row 1 (front layer): Ch 1, turn, sc in back loops only across\n3. Row 2 (back layer): Ch 1, turn, sc in the unused front loops from Row 1 (working into the unworked loops of the previous row)\n4. Row 3 (connecting): Ch 1, turn, sc through both layers simultaneously by inserting hook through the front loop of the front layer and the back loop of the back layer\n5. Repeat rows 1-3 for pattern",
+    "tips": "The two layers create genuine insulation via trapped air. This stitch uses roughly twice as much yarn as single-layer sc. It creates very sturdy, thick fabric ideal for hot pads and oven mitts. Keep tension consistent between layers to prevent one layer from puckering. The technique has several variations; some work both layers in the same direction, others alternate.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "double-thick crochet",
+        "region": null
+      },
+      {
+        "synonym": "double-layered crochet",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Magic Ring",
+    "slug": "magic-ring",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A technique for starting crochet worked in the round that creates an adjustable center ring. Instead of chaining and joining to form a ring (which leaves a hole in the center), the magic ring wraps yarn into a loop that can be pulled tight after the first round is complete, closing the center hole entirely.",
+    "how_to": "1. Wrap the yarn around your index and middle fingers, with the tail end crossing over the working yarn\n2. Insert hook under the first strand and over the second strand of the ring\n3. Yarn over with the working yarn and pull through the ring (loop on hook)\n4. Chain 1 (for sc rounds) or chain 3 (for dc rounds)\n5. Work the first round of stitches into the ring, crocheting over both the ring and the yarn tail\n6. After completing the first round, pull the yarn tail to close the center hole\n7. Slip stitch to the first stitch (or chain) to join the round",
+    "tips": "The magic ring can feel fiddly at first but becomes second nature with practice. Pull the tail firmly before joining to ensure the center closes completely. Some crocheters wrap twice for extra security (double magic ring). Weave in the tail thoroughly to prevent it from loosening over time. Also called magic circle or adjustable ring.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "magic circle",
+        "region": null
+      },
+      {
+        "synonym": "magic loop (crochet)",
+        "region": null
+      },
+      {
+        "synonym": "adjustable ring",
+        "region": null
+      },
+      {
+        "synonym": "MR",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=9WNlrBR9S0o",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Foundation Double Crochet",
+    "slug": "foundation-double-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A technique that combines the foundation chain and the first row of double crochet into one step, creating a stretchy, flexible starting edge. Particularly useful for items like blankets, garments, and cowls where a rigid chain foundation would restrict the edge.",
+    "how_to": "1. Chain 3\n2. Yarn over, insert hook in 3rd ch from hook, yarn over and pull up a loop (3 loops on hook)\n3. Yarn over and pull through 1 loop (this creates the chain portion; still 3 loops on hook)\n4. Yarn over and pull through 2 loops (2 loops on hook)\n5. Yarn over and pull through remaining 2 loops (dc completed)\n6. For subsequent stitches: yarn over, insert hook into the chain created at the bottom of the previous stitch, yarn over and pull up a loop (3 loops)\n7. Yarn over and pull through 1 loop (chain made), then complete as a normal dc\n8. Repeat steps 6-7 for desired length",
+    "tips": "The chain portion is always worked first (pull through 1 loop) before finishing the stitch normally. This creates a bottom edge of chain loops that mirrors the top edge in stretch and appearance. Foundation stitches eliminate the need to count a long starting chain. Pair with foundation sc (fsc) and foundation hdc (fhdc) for mixed-stitch patterns.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "fdc",
+        "region": null
+      },
+      {
+        "synonym": "chainless foundation double crochet",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Surface Slip Stitch",
+    "slug": "surface-slip-stitch",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A decorative technique where slip stitches are worked on the surface of a completed crochet fabric by inserting the hook from front to back through the fabric, pulling up a loop, and drawing it through the loop on the hook. This creates a raised chain-like line on the surface that can form outlines, designs, lettering, or decorative accents without altering the base fabric structure.",
+    "how_to": "1. Hold the yarn behind (underneath) the completed fabric\n2. Insert hook from the front through a stitch or space in the fabric\n3. Yarn over from behind and pull up a loop through the fabric and through the loop on the hook (slip stitch made on the surface)\n4. Insert hook through the next stitch or space along your desired path\n5. Repeat steps 3-4 along the design line\n6. Fasten off and weave in ends on the wrong side",
+    "tips": "Plan your design path before starting. Surface slip stitches work best on open or loosely worked fabrics where the hook can easily pass through. Keep tension even to avoid puckering the base fabric. Use a contrasting color for maximum visual impact. This technique is excellent for adding details to granny squares, amigurumi, and blankets after they are complete.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "surface crochet",
+        "region": null
+      },
+      {
+        "synonym": "surface chain",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Corner-to-Corner Crochet",
+    "slug": "corner-to-corner-crochet",
+    "category": "crochet",
+    "craft_type": "crochet",
+    "definition": "A construction technique where a square or rectangular fabric is built diagonally, starting from one corner and increasing to the widest diagonal point, then decreasing to the opposite corner. The fabric is made of small tiles (typically ch 3, 3 dc blocks) worked in diagonal rows. Popular for graphghans (picture blankets) because each tile can represent one pixel of a chart.",
+    "how_to": "1. Ch 6, dc in 4th ch from hook, dc in next 2 ch (first tile made)\n2. Increase row: Ch 6, dc in 4th ch from hook, dc in next 2 ch (new tile), sl st to ch-3 space of previous tile, ch 3, 3 dc in same space\n3. Continue adding tiles at the beginning and across diagonal rows, connecting each tile to the ch-3 space of the tile below\n4. At the widest point (half the blanket), begin decrease rows by not adding a new starting tile\n5. Decrease row: Sl st across the last tile to the ch-3 space, ch 3, 3 dc in same space, continue across without adding at the end\n6. Continue decreasing until one tile remains",
+    "tips": "C2C is addictive because it starts small and grows quickly at first. The diagonal construction means the piece turns 45 degrees when finished (corners become edges). For graphghans, use a pixel chart and change colors at each tile. Color changes happen at the sl st join between tiles. Weaving in ends on color-heavy graphghans is the most time-consuming part.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "C2C",
+        "region": null
+      },
+      {
+        "synonym": "C2C crochet",
+        "region": null
+      },
+      {
+        "synonym": "diagonal box stitch",
+        "region": null
+      }
+    ]
+  }
+]

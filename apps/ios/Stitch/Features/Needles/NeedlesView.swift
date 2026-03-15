@@ -71,9 +71,6 @@ struct NeedlesView: View {
                 }
             }
         }
-        .navigationDestination(isPresented: $navigateToCatalog) {
-            AddFromCatalogView()
-        }
         .task {
             await viewModel.load()
         }
@@ -114,12 +111,13 @@ extension NeedlesView {
                     Section(group.title) {
                         ForEach(group.items) { needle in
                             NeedleRowView(needle: needle)
-                        }
-                        .onDelete { indexSet in
-                            for index in indexSet {
-                                let needle = group.items[index]
-                                Task { await viewModel.delete(needle) }
-                            }
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        Task { await viewModel.delete(needle) }
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
                         }
                     }
                 }
@@ -222,17 +220,32 @@ extension NeedlesView {
             }
             .buttonStyle(.plain)
             .listRowBackground(theme.primary.opacity(0.04))
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                Button(role: .destructive) {
+                    Task { await viewModel.deleteSet(group.id) }
+                } label: {
+                    Label("Delete set", systemImage: "trash")
+                }
+            }
+            .contextMenu {
+                Button(role: .destructive) {
+                    Task { await viewModel.deleteSet(group.id) }
+                } label: {
+                    Label("Delete set", systemImage: "trash")
+                }
+            }
 
             // Expanded: items only (thumbnail already in header)
             if isExpanded {
                 ForEach(group.items) { needle in
                     NeedleRowView(needle: needle)
-                }
-                .onDelete { indexSet in
-                    for index in indexSet {
-                        let needle = group.items[index]
-                        Task { await viewModel.delete(needle) }
-                    }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                Task { await viewModel.delete(needle) }
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                 }
             }
         }
@@ -244,9 +257,23 @@ extension NeedlesView {
                 ForEach(viewModel.grouped) { group in
                     if group.isSet {
                         NeedleSetGridCell(group: group)
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    Task { await viewModel.deleteSet(group.id) }
+                                } label: {
+                                    Label("Delete set", systemImage: "trash")
+                                }
+                            }
                     } else {
                         ForEach(group.items) { needle in
                             NeedleGridCell(needle: needle)
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        Task { await viewModel.delete(needle) }
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
                         }
                     }
                 }

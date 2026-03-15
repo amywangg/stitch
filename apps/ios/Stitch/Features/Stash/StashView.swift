@@ -53,13 +53,29 @@ struct StashView: View {
                     }
                 }
             } else {
-                switch viewMode {
-                case .list:
-                    listLayout
-                case .grid:
-                    gridLayout
-                case .large:
-                    largeLayout
+                ZStack(alignment: .bottom) {
+                    switch viewMode {
+                    case .list:
+                        listLayout
+                    case .grid:
+                        gridLayout
+                    case .large:
+                        largeLayout
+                    }
+
+                    Button {
+                        showYarnSearch = true
+                    } label: {
+                        Label("Add yarn", systemImage: "plus")
+                            .font(.subheadline.weight(.semibold))
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 12)
+                            .background(theme.primary)
+                            .foregroundStyle(.white)
+                            .clipShape(Capsule())
+                            .shadow(color: theme.primary.opacity(0.3), radius: 8, y: 4)
+                    }
+                    .padding(.bottom, 16)
                 }
             }
         }
@@ -70,6 +86,12 @@ struct StashView: View {
         }
         .task {
             await viewModel.load()
+        }
+        .onAppear {
+            // Refresh when returning from detail view where edits/deletes may have occurred
+            if !viewModel.items.isEmpty {
+                Task { await viewModel.load() }
+            }
         }
         .alert("Error", isPresented: .init(
             get: { viewModel.error != nil },
@@ -107,22 +129,6 @@ extension StashView {
                 }
             }
 
-            Section {
-                Button {
-                    showYarnSearch = true
-                } label: {
-                    HStack {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title3)
-                        Text("Add yarn")
-                            .font(.subheadline.weight(.medium))
-                    }
-                    .foregroundStyle(theme.primary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 4)
-                }
-                .listRowBackground(theme.primary.opacity(0.06))
-            }
         }
         .listStyle(.plain)
         .refreshable { await viewModel.load() }
@@ -136,6 +142,13 @@ extension StashView {
                         StashGridCell(item: item)
                     }
                     .buttonStyle(.plain)
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            Task { await viewModel.delete(item) }
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
             }
             .padding(.horizontal, 16)
@@ -152,6 +165,13 @@ extension StashView {
                         StashLargeCard(item: item)
                     }
                     .buttonStyle(.plain)
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            Task { await viewModel.delete(item) }
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
             }
             .padding(.horizontal, 16)
@@ -167,9 +187,15 @@ struct StashGridCell: View {
     @Environment(ThemeManager.self) private var theme
     let item: StashItem
 
+    private var displayPhotoUrl: String? {
+        if let photo = item.photoUrl, !photo.isEmpty { return photo }
+        if let photo = item.yarn?.imageUrl, !photo.isEmpty { return photo }
+        return nil
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if let imageUrl = item.yarn?.imageUrl, !imageUrl.isEmpty,
+            if let imageUrl = displayPhotoUrl,
                let url = URL(string: imageUrl) {
                 AsyncImage(url: url) { image in
                     image.resizable().aspectRatio(contentMode: .fill)
@@ -220,9 +246,15 @@ struct StashLargeCard: View {
     @Environment(ThemeManager.self) private var theme
     let item: StashItem
 
+    private var displayPhotoUrl: String? {
+        if let photo = item.photoUrl, !photo.isEmpty { return photo }
+        if let photo = item.yarn?.imageUrl, !photo.isEmpty { return photo }
+        return nil
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if let imageUrl = item.yarn?.imageUrl, !imageUrl.isEmpty,
+            if let imageUrl = displayPhotoUrl,
                let url = URL(string: imageUrl) {
                 AsyncImage(url: url) { image in
                     image.resizable().aspectRatio(contentMode: .fill)
@@ -281,9 +313,15 @@ struct StashRowView: View {
     @Environment(ThemeManager.self) private var theme
     let item: StashItem
 
+    private var displayPhotoUrl: String? {
+        if let photo = item.photoUrl, !photo.isEmpty { return photo }
+        if let photo = item.yarn?.imageUrl, !photo.isEmpty { return photo }
+        return nil
+    }
+
     var body: some View {
         HStack(spacing: 12) {
-            if let imageUrl = item.yarn?.imageUrl, !imageUrl.isEmpty,
+            if let imageUrl = displayPhotoUrl,
                let url = URL(string: imageUrl) {
                 AsyncImage(url: url) { image in
                     image.resizable().aspectRatio(contentMode: .fill)

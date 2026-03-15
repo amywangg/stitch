@@ -1,13 +1,29 @@
 import Foundation
 import RevenueCat
 
+enum AppTier: String, Comparable {
+    case free
+    case plus
+    case pro
+
+    static func < (lhs: AppTier, rhs: AppTier) -> Bool {
+        let order: [AppTier] = [.free, .plus, .pro]
+        return (order.firstIndex(of: lhs) ?? 0) < (order.firstIndex(of: rhs) ?? 0)
+    }
+}
+
 @Observable
 final class SubscriptionManager {
     static let shared = SubscriptionManager()
     private init() {}
 
-    var isPro: Bool = false
+    var tier: AppTier = .free
     var customerInfo: CustomerInfo?
+
+    /// Convenience — true if user is Plus or Pro
+    var isPlusOrAbove: Bool { tier >= .plus }
+    /// Convenience — true only for Pro tier
+    var isPro: Bool { tier == .pro }
 
     // MARK: - Setup
 
@@ -66,7 +82,7 @@ final class SubscriptionManager {
 
     // MARK: - Listen for Updates
 
-    /// Call from a long-lived task (e.g. .task on RootView) to keep isPro in sync.
+    /// Call from a long-lived task (e.g. .task on RootView) to keep tier in sync.
     func listenForUpdates() async {
         for await info in Purchases.shared.customerInfoStream {
             updateState(from: info)
@@ -77,7 +93,14 @@ final class SubscriptionManager {
 
     private func updateState(from info: CustomerInfo) {
         customerInfo = info
-        isPro = info.entitlements["Stitch Pro"]?.isActive == true
+        // Check entitlements in order: Pro first, then Plus
+        if info.entitlements["Stitch Pro"]?.isActive == true {
+            tier = .pro
+        } else if info.entitlements["Stitch Plus"]?.isActive == true {
+            tier = .plus
+        } else {
+            tier = .free
+        }
     }
 }
 

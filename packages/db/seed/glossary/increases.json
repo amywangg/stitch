@@ -1,0 +1,535 @@
+[
+  {
+    "abbreviation": "KFB",
+    "name": "Knit Front and Back",
+    "slug": "kfb",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "An increase that creates one additional stitch by knitting into the front loop and then the back loop of the same stitch before slipping it off the needle. Produces a small visible bar (purl bump) at the base of the new stitch.",
+    "how_to": "1. Insert the right needle into the front of the next stitch on the left needle as if to knit.\n2. Wrap the yarn and pull through, but do not slip the old stitch off the left needle.\n3. Swing the right needle around and insert it into the back loop of the same stitch.\n4. Wrap the yarn and pull through again.\n5. Now slip the old stitch off the left needle. You have created two stitches from one.",
+    "tips": "The small purl bump left by KFB can be used decoratively along raglan lines. If you need a truly invisible increase, consider M1L or M1R instead. KFB does not leave a hole, making it a good choice for beginners who struggle with yarn overs.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "knit front back",
+        "region": null
+      },
+      {
+        "synonym": "bar increase",
+        "region": null
+      },
+      {
+        "synonym": "kf&b",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=tmOymzswPZA",
+    "video_is_short": false,
+    "video_alternates": [
+      "3karyg9VzPI"
+    ]
+  },
+  {
+    "abbreviation": "PFB",
+    "name": "Purl Front and Back",
+    "slug": "pfb",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "The purl-side equivalent of KFB. Creates one additional stitch by purling into the front loop and then the back loop of the same stitch. Produces the same small bar on the knit side as KFB.",
+    "how_to": "1. Insert the right needle into the front of the next stitch as if to purl.\n2. Wrap the yarn and pull through, but do not slip the old stitch off the left needle.\n3. Rotate the right needle and insert it into the back loop of the same stitch from left to right (this can feel awkward).\n4. Wrap the yarn and pull through.\n5. Slip the old stitch off the left needle. You now have two stitches from one.",
+    "tips": "PFB is trickier than KFB because inserting into the back loop while purling feels unnatural. Practice slowly and make sure you are genuinely going through the back loop, not twisting the stitch. Use PFB when working increases on wrong-side rows to match KFB on the right side.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "purl front back",
+        "region": null
+      },
+      {
+        "synonym": "pf&b",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "M1L",
+    "name": "Make One Left",
+    "slug": "m1l",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A nearly invisible increase that leans to the left. Created by lifting the horizontal strand (running thread) between two stitches from front to back, then knitting through the back loop to twist the stitch and close any hole.",
+    "how_to": "1. Identify the horizontal strand (running thread) between the stitch just worked on the right needle and the next stitch on the left needle.\n2. Insert the left needle under this strand from front to back.\n3. Knit through the back loop of the lifted strand (inserting the right needle from right to left behind the left needle).\n4. Slip the new stitch onto the right needle. The increase leans to the left.",
+    "tips": "M1L is typically paired with M1R for symmetrical shaping, such as along the sides of a raglan yoke or centered on a sleeve cap. The left lean of M1L makes it best suited for the left side of center when increases are paired. Knitting through the back loop is essential; knitting through the front loop will leave a visible hole.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "make 1 left",
+        "region": null
+      },
+      {
+        "synonym": "M1",
+        "region": null
+      },
+      {
+        "synonym": "make one",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=6DzdlT-a8K8",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "M1R",
+    "name": "Make One Right",
+    "slug": "m1r",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A nearly invisible increase that leans to the right. Created by lifting the horizontal strand between two stitches from back to front, then knitting through the front loop to twist the stitch and close any hole.",
+    "how_to": "1. Identify the horizontal strand (running thread) between the stitch just worked on the right needle and the next stitch on the left needle.\n2. Insert the left needle under this strand from back to front.\n3. Knit through the front loop of the lifted strand as normal.\n4. Slip the new stitch onto the right needle. The increase leans to the right.",
+    "tips": "M1R is the mirror image of M1L. When patterns call for paired increases, M1R goes on the right side of center and M1L on the left. If a pattern just says M1 without specifying direction, it usually means M1L, but check the pattern notes. The key difference from M1L is the pickup direction: back to front for M1R, front to back for M1L.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "make 1 right",
+        "region": null
+      },
+      {
+        "synonym": "M1 right",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=6DzdlT-a8K8",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "M1PL",
+    "name": "Make One Purl Left",
+    "slug": "m1pl",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "The purl-side equivalent of M1L. A nearly invisible increase worked on a purl row that creates a left-leaning increase on the knit side. The running thread is lifted from front to back, then purled through the back loop.",
+    "how_to": "1. Identify the horizontal strand between the stitch on the right needle and the next stitch on the left needle.\n2. Insert the left needle under the strand from front to back.\n3. Purl through the back loop of the lifted strand by inserting the right needle from left to right through the back of the loop.\n4. Complete the purl stitch and slip it onto the right needle.",
+    "tips": "M1PL is used when you need to maintain a M1L lean on the right side of the fabric but you are working a wrong-side (purl) row. It can feel awkward at first because purling through the back loop requires an unusual needle entry angle. Take it slowly and make sure the stitch is properly twisted to avoid a hole.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "make one purl left",
+        "region": null
+      },
+      {
+        "synonym": "M1Lp",
+        "region": null
+      },
+      {
+        "synonym": "M1LP",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "M1PR",
+    "name": "Make One Purl Right",
+    "slug": "m1pr",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "The purl-side equivalent of M1R. A nearly invisible increase worked on a purl row that creates a right-leaning increase on the knit side. The running thread is lifted from back to front, then purled through the front loop.",
+    "how_to": "1. Identify the horizontal strand between the stitch on the right needle and the next stitch on the left needle.\n2. Insert the left needle under the strand from back to front.\n3. Purl through the front loop of the lifted strand as you would a normal purl stitch.\n4. Complete the purl stitch and slip it onto the right needle.",
+    "tips": "M1PR pairs with M1PL on wrong-side rows just as M1R pairs with M1L on right-side rows. It is the easier of the two purl make-one variants because purling through the front loop feels more natural. Use this when a pattern requires symmetrical shaping and you are on a purl row.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "make one purl right",
+        "region": null
+      },
+      {
+        "synonym": "M1Rp",
+        "region": null
+      },
+      {
+        "synonym": "M1RP",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "YO",
+    "name": "Yarn Over",
+    "slug": "yo",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "An increase created by wrapping the working yarn over the right needle before working the next stitch. Unlike most increases, a yarn over intentionally creates a decorative eyelet hole. It adds one stitch to the row and is the foundation of most lace knitting.",
+    "how_to": "1. Bring the working yarn to the front of the work (between the needles) if it is not already there.\n2. Wrap the yarn over the right needle from front to back.\n3. Work the next stitch as indicated in the pattern (usually knit or purl).\n4. On the following row, work the yarn over as a regular stitch (knit or purl as the pattern directs). The wrap creates both a new stitch and a decorative hole.",
+    "tips": "The direction of the wrap changes depending on what comes before and after the YO. Between two knit stitches, the yarn simply goes over the needle. Between a purl and a knit, bring the yarn to the back over the needle. Yarn overs are almost always paired with a decrease (k2tog, ssk, etc.) in lace patterns to maintain stitch count. If your YO is closing up, make sure you are not accidentally twisting it on the return row.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "yarn over",
+        "region": null
+      },
+      {
+        "synonym": "wool over",
+        "region": "UK"
+      },
+      {
+        "synonym": "over",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=04v3ab7WWp8",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "KLL",
+    "name": "Knit Left Loop",
+    "slug": "kll",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A lifted increase that leans to the left. Created by inserting the left needle into the left leg of the stitch two rows below the stitch on the right needle, then knitting it. This produces a very clean, nearly invisible increase.",
+    "how_to": "1. Identify the stitch on the right needle that you just worked.\n2. Look at the stitch two rows below it. Find the left leg (the side of the V that faces left) of that stitch.\n3. Insert the left needle into this left leg from front to back.\n4. Knit this loop as a normal stitch.\n5. Continue working the next stitch on the left needle as normal.",
+    "tips": "Lifted increases (KLL and KRL) are sometimes preferred over make-one increases because they are worked from existing stitches rather than the running thread, which can make them easier to execute consistently. They produce a very subtle line and are excellent for sleeve shaping. Avoid working lifted increases in the same column row after row, as it can tighten the fabric; alternate the position slightly.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "left lifted increase",
+        "region": null
+      },
+      {
+        "synonym": "LLI",
+        "region": null
+      },
+      {
+        "synonym": "knit left loop increase",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=6DzdlT-a8K8",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "KRL",
+    "name": "Knit Right Loop",
+    "slug": "krl",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A lifted increase that leans to the right. Created by inserting the right needle into the right leg of the stitch directly below the next stitch on the left needle, then knitting it. Produces a very clean, nearly invisible increase that mirrors KLL.",
+    "how_to": "1. Identify the next stitch on the left needle (the one you have not yet worked).\n2. Look at the stitch directly below it on the right side of the fabric. Find the right leg (the side of the V that faces right).\n3. Insert the right needle into this right leg from back to front.\n4. Knit this loop as a normal stitch.\n5. Then knit the stitch on the left needle as usual.",
+    "tips": "KRL is the right-leaning mirror of KLL. When patterns call for paired lifted increases, work KRL on the right side of center and KLL on the left. Some knitters find lifted increases easier than M1L/M1R because there is no ambiguity about where to pick up the strand. Be careful not to pull too tightly on the lifted loop or you will distort the stitch below.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "right lifted increase",
+        "region": null
+      },
+      {
+        "synonym": "RLI",
+        "region": null
+      },
+      {
+        "synonym": "knit right loop increase",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=6DzdlT-a8K8",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "PLL",
+    "name": "Purl Left Loop",
+    "slug": "pll",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "The purl-side equivalent of KLL. A lifted increase worked on a purl row that creates a left-leaning increase when viewed from the knit side. Made by lifting and purling the left leg of the stitch below the stitch on the right needle.",
+    "how_to": "1. Identify the stitch on the right needle that you just worked.\n2. Look at the stitch two rows below it on the purl side. Find the left leg of that stitch.\n3. Insert the left needle into this left leg from back to front.\n4. Purl this loop.\n5. Continue working the next stitch on the left needle as normal.",
+    "tips": "PLL is used on wrong-side rows when a pattern calls for left-leaning lifted increases. It maintains the same visual lean as KLL when the fabric is turned to the right side. Like all purl-side increase variants, it takes some practice to identify the correct loop to lift. Work it loosely to avoid tightening the stitch below.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "purl left lifted increase",
+        "region": null
+      },
+      {
+        "synonym": "PLLI",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "PRL",
+    "name": "Purl Right Loop",
+    "slug": "prl",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "The purl-side equivalent of KRL. A lifted increase worked on a purl row that creates a right-leaning increase when viewed from the knit side. Made by lifting and purling the right leg of the stitch below the next stitch on the left needle.",
+    "how_to": "1. Identify the next stitch on the left needle.\n2. Look at the stitch directly below it on the purl side. Find the right leg of that stitch.\n3. Insert the right needle into this right leg.\n4. Place it onto the left needle and purl it.\n5. Then purl the original stitch on the left needle as usual.",
+    "tips": "PRL mirrors PLL on purl rows and corresponds to KRL on knit rows. When working flat stockinette with paired lifted increases, use KRL and KLL on right-side rows and PRL and PLL on wrong-side rows to maintain consistent lean direction. These purl-side lifted increases are less commonly called for, but understanding them gives you full flexibility in shaping on any row.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "purl right lifted increase",
+        "region": null
+      },
+      {
+        "synonym": "PRLI",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "inc",
+    "name": "Increase",
+    "slug": "inc",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A general instruction to add one stitch at the indicated point. The specific method is usually left to the knitter's discretion unless the pattern specifies a particular technique. Common default methods include KFB, M1L, or M1R.",
+    "how_to": "1. When a pattern says 'inc' without specifying a method, choose an appropriate increase for your project.\n2. For stockinette, M1L or M1R are common defaults as they are nearly invisible.\n3. For garter stitch, KFB blends in well.\n4. For a decorative effect, use a yarn over.\n5. Work the chosen increase at the position indicated.",
+    "tips": "If a pattern just says 'inc' at the beginning, check whether it specifies a preferred method in the abbreviations or notes section. When in doubt, M1L is a safe default for most patterns. Consistency matters more than the specific method; pick one increase and use it throughout unless the pattern says otherwise. In vintage patterns, 'inc' often means KFB.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "increase",
+        "region": null
+      },
+      {
+        "synonym": "inc 1",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Lifted Increase",
+    "slug": "lifted-increase",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A family of nearly invisible increases made by knitting or purling into a loop from a stitch in the row below. Lifted increases include KLL (left-leaning), KRL (right-leaning), and their purl equivalents PLL and PRL. They are prized for producing very clean increase lines with minimal disruption to the fabric.",
+    "how_to": "1. Lifted increases work by picking up a leg of a stitch from the row (or two rows) below and knitting or purling into it.\n2. For a right-leaning lifted increase (KRL): pick up the right leg of the stitch below the next stitch on the left needle and knit it, then knit the stitch above.\n3. For a left-leaning lifted increase (KLL): knit the stitch first, then pick up the left leg of the stitch two rows below the stitch you just worked and knit it.\n4. See the individual entries for KLL, KRL, PLL, and PRL for detailed steps.",
+    "tips": "Lifted increases are especially popular for top-down raglan sweaters because they create very neat increase lines. They are slightly less stretchy than make-one increases, which can be an advantage in structured garments. Some knitters find them easier to learn than M1 increases because you are working into an existing stitch rather than picking up the running thread. Avoid stacking lifted increases directly on top of each other every row, as this will tighten the column.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "LI",
+        "region": null
+      },
+      {
+        "synonym": "raised increase",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Bar Increase",
+    "slug": "bar-increase",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A family of increases that leave a small horizontal bar (purl bump) at the base of the new stitch. KFB (knit front and back) is the most common bar increase. The visible bar can be used decoratively or may be considered a drawback when a seamless look is desired.",
+    "how_to": "1. The standard bar increase (KFB) is worked by knitting into the front loop and then the back loop of the same stitch before slipping it off.\n2. See the KFB entry for detailed step-by-step instructions.\n3. Variations include PFB (purl front and back) for wrong-side rows.\n4. Some patterns use the term 'bar increase' interchangeably with KFB.",
+    "tips": "Bar increases are the easiest increases for beginners because the technique is straightforward and hard to mess up. The visible bar makes it easy to count your increases when checking your work. In garter stitch, the bar blends in almost invisibly. In stockinette, it is more visible and creates a dotted line along the increase column, which some designers use intentionally for a decorative effect.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "KFB increase",
+        "region": null
+      },
+      {
+        "synonym": "knit front and back increase",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Backward Loop Cast On Increase",
+    "slug": "backward-loop-cast-on-increase",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "An increase made by creating a simple backward loop with the working yarn and placing it on the right needle. This is the simplest possible increase and is often used when multiple stitches need to be added at the edge of a row, such as for sleeve extensions or buttonhole reinforcement.",
+    "how_to": "1. Hold the working yarn in your left hand.\n2. Make a loop by wrapping the yarn around your left thumb (or index finger) from front to back.\n3. Insert the right needle upward through the loop on your thumb.\n4. Slip your thumb out and gently tighten the loop on the needle.\n5. One new stitch has been added. Repeat as needed.",
+    "tips": "Backward loop increases are loose and can create a visible gap on the following row if not managed carefully. When working into them on the next row, knit or purl through the back loop to tighten them up and prevent holes. This increase is best for edges and casting on mid-row; for shaping within the body of the fabric, M1 or KFB usually gives a cleaner result. Despite its simplicity, it is a useful technique to have in your toolkit.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "backward loop increase",
+        "region": null
+      },
+      {
+        "synonym": "single cast on increase",
+        "region": null
+      },
+      {
+        "synonym": "e-wrap increase",
+        "region": null
+      },
+      {
+        "synonym": "loop cast on",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "2 sc in next st",
+    "name": "Single Crochet Increase",
+    "slug": "2-sc-in-next-st",
+    "category": "increase",
+    "craft_type": "crochet",
+    "definition": "A crochet increase made by working two single crochet stitches into the same stitch. This is the most fundamental crochet increase and is used to shape flat circles (like amigurumi bases), widen fabric, and create curved edges.",
+    "how_to": "1. Insert your hook into the next stitch as indicated in the pattern.\n2. Yarn over and pull up a loop. Yarn over and pull through both loops to complete the first single crochet.\n3. Insert your hook into the same stitch again.\n4. Yarn over and pull up a loop. Yarn over and pull through both loops to complete the second single crochet.\n5. You have now worked two single crochet stitches in one stitch, adding one stitch to the round or row.",
+    "tips": "When working in the round for amigurumi or circular motifs, increases are typically spaced evenly (for example, 'sc in next st, 2 sc in next st' repeated around). If your circle is cupping or ruffling, adjust the spacing of your increases. Use a stitch marker in the first stitch of each round to keep track. In US crochet patterns, 'inc' often means '2 sc in next st' unless otherwise noted.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "sc inc",
+        "region": null
+      },
+      {
+        "synonym": "inc",
+        "region": null
+      },
+      {
+        "synonym": "2 sc in st",
+        "region": null
+      },
+      {
+        "synonym": "2 dc in next st",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "2 dc in next st",
+    "name": "Double Crochet Increase",
+    "slug": "2-dc-in-next-st",
+    "category": "increase",
+    "craft_type": "crochet",
+    "definition": "A crochet increase made by working two double crochet stitches into the same stitch. Used to shape fabric, create fan stitch patterns, and widen rows in projects that use double crochet as the primary stitch.",
+    "how_to": "1. Yarn over, insert your hook into the next stitch.\n2. Yarn over and pull up a loop (3 loops on hook). Yarn over and pull through 2 loops (2 loops on hook). Yarn over and pull through remaining 2 loops to complete the first double crochet.\n3. Yarn over and insert your hook into the same stitch again.\n4. Repeat step 2 to complete the second double crochet.\n5. You have worked two double crochet stitches in one stitch, adding one stitch to the row.",
+    "tips": "Double crochet increases create a taller and more visible bump in the fabric compared to single crochet increases. They are commonly used in granny squares, fan stitch patterns, and blanket borders. When increasing at the edges of a flat piece, work the increase in the first or last stitch of the row. In UK patterns, this would be written as '2 tr in next st' since UK treble equals US double crochet.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "dc inc",
+        "region": null
+      },
+      {
+        "synonym": "2 dc in st",
+        "region": null
+      },
+      {
+        "synonym": "2 tr in next st",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "inc in next st",
+    "name": "Crochet Increase in Next Stitch",
+    "slug": "inc-in-next-st",
+    "category": "increase",
+    "craft_type": "crochet",
+    "definition": "A general crochet instruction to work two stitches into the next stitch, creating an increase. The specific stitch type (single crochet, half double crochet, or double crochet) depends on the stitch pattern being used. In amigurumi patterns, this almost always means two single crochet in the next stitch.",
+    "how_to": "1. Identify the stitch type being used in the current section (usually single crochet for amigurumi, or the dominant stitch of the row).\n2. Work one complete stitch of that type into the indicated stitch.\n3. Work a second complete stitch of the same type into the same stitch.\n4. Move on to the next stitch. You have added one stitch to the round or row.",
+    "tips": "In amigurumi and toy patterns, 'inc' is almost universally shorthand for '2 sc in next st.' In other crochet contexts, check the pattern glossary to confirm which stitch to use. When counting stitches, remember that the increase stitch creates two stitches in the count, not one. This is a common source of miscounting for beginners.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "inc",
+        "region": null
+      },
+      {
+        "synonym": "increase in next stitch",
+        "region": null
+      },
+      {
+        "synonym": "2 sts in next st",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "YON",
+    "name": "Yarn Over Needle",
+    "slug": "yon",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A UK/Australian knitting term for a yarn over worked between a purl stitch and a knit stitch. The yarn is brought over the top of the right needle from front to back before knitting the next stitch. Functionally identical to a yarn over (YO) in US terminology, but UK patterns distinguish between YON, YFWD, and YRN based on the surrounding stitches.",
+    "how_to": "1. After completing a purl stitch, the yarn is already at the front of the work.\n2. Bring the yarn over the top of the right needle to the back.\n3. Knit the next stitch as normal.\n4. The wrap over the needle creates a new stitch and an eyelet hole on the following row.",
+    "tips": "In US patterns, YO covers all yarn-over situations regardless of surrounding stitches. UK patterns split the same action into three terms: YFWD (between two knit stitches), YON (between a purl and a knit), and YRN (between a knit and a purl, or between two purls). If you are converting between US and UK patterns, all three UK terms translate to YO in US notation.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "yarn over needle",
+        "region": "UK"
+      },
+      {
+        "synonym": "YO",
+        "region": "US"
+      },
+      {
+        "synonym": "wool over needle",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "YFWD",
+    "name": "Yarn Forward",
+    "slug": "yfwd",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A UK/Australian knitting term for a yarn over worked between two knit stitches. The yarn is brought from the back to the front under the right needle, then over the top to the back again before knitting the next stitch. This is the most common type of yarn over in lace knitting and is equivalent to YO in US terminology.",
+    "how_to": "1. After knitting a stitch, the yarn is at the back of the work.\n2. Bring the yarn forward between the two needles (under the right needle) to the front.\n3. Bring the yarn over the top of the right needle to the back.\n4. Knit the next stitch as normal.\n5. The wrap creates a new stitch and a decorative eyelet hole.",
+    "tips": "YFWD is specifically used between two knit stitches in UK terminology. Some older UK patterns use 'yfwd' even when they mean a general yarn over, so always check context. In US patterns this is simply written as YO. Be careful not to confuse YFWD (which creates a new stitch) with 'bring yarn to front' or 'yf' (which is just repositioning the yarn for a purl stitch without wrapping it over the needle).",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "yarn forward",
+        "region": "UK"
+      },
+      {
+        "synonym": "wool forward",
+        "region": "UK"
+      },
+      {
+        "synonym": "YO",
+        "region": "US"
+      },
+      {
+        "synonym": "yf",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "YRN",
+    "name": "Yarn Round Needle",
+    "slug": "yrn",
+    "category": "increase",
+    "craft_type": "knitting",
+    "definition": "A UK/Australian knitting term for a yarn over worked before a purl stitch. Specifically used between a knit and a purl stitch, or between two purl stitches. The yarn wraps completely around the right needle to end up at the front again, ready to purl. Equivalent to YO in US terminology.",
+    "how_to": "1. If coming from a knit stitch: bring the yarn forward under the right needle, then over the top and around to the front again. Purl the next stitch.\n2. If coming from a purl stitch: take the yarn over the top of the right needle to the back, then under the needle to the front again. Purl the next stitch.\n3. In both cases, the yarn makes a complete wrap around the needle, creating a new stitch and an eyelet.",
+    "tips": "YRN is the least intuitive of the UK yarn-over terms because the yarn needs to end up at the front for the following purl stitch, requiring a full wrap. Make sure the wrap goes over the top of the needle, not under it, or the stitch will be mounted incorrectly on the next row. When converting UK lace patterns to US notation, replace all YFWD, YON, and YRN with YO.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "yarn round needle",
+        "region": "UK"
+      },
+      {
+        "synonym": "wool round needle",
+        "region": "UK"
+      },
+      {
+        "synonym": "YO",
+        "region": "US"
+      },
+      {
+        "synonym": "YFRN",
+        "region": "UK"
+      }
+    ]
+  }
+]

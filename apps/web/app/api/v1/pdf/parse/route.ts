@@ -7,6 +7,7 @@ import { parsePatternMetadata } from '@/lib/openai'
 import { prisma } from '@/lib/prisma'
 import { slugify } from '@/lib/utils'
 import { autoFetchCoverImage } from '@/lib/pattern-cover'
+import { searchRavelryPatterns } from '@/lib/ravelry-search'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseAdmin = createClient(
@@ -215,8 +216,47 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // Best-effort: auto-fetch a cover image from Ravelry in the background
-  autoFetchCoverImage(pattern.id, title, parsed.designer).catch(() => {})
+  // Search Ravelry for matching patterns (best-effort, never blocks)
+  let ravelryMatches: Array<{
+    ravelry_id: number
+    name: string
+    permalink: string
+    craft: string
+    weight: string | null
+    designer: string | null
+    photo_url: string | null
+    free: boolean
+    difficulty: number | null
+    rating: number | null
+  }> = []
+
+  try {
+    const searchQuery = parsed.designer ? `${title} ${parsed.designer}` : title
+    const result = await searchRavelryPatterns(
+      { query: searchQuery, photo: 'yes', page_size: 5, sort: 'best' },
+      user.id,
+    )
+    ravelryMatches = result.patterns
+
+    // Auto-set cover image from the best match
+    if (ravelryMatches.length > 0) {
+      const titleLower = title.toLowerCase().trim()
+      const exactMatch = ravelryMatches.find(
+        m => m.name.toLowerCase().trim() === titleLower,
+      )
+      const best = exactMatch ?? ravelryMatches[0]
+      if (best.photo_url) {
+        await prisma.patterns.update({
+          where: { id: pattern.id },
+          data: { cover_image_url: best.photo_url },
+        })
+      }
+    }
+  } catch {
+    // Ravelry search failed — not critical, continue without matches
+    // Fall back to existing auto-fetch as backup
+    autoFetchCoverImage(pattern.id, title, parsed.designer).catch(() => {})
+  }
 
   // Get the PDF storage URL for the response
   const { data: pdfUrlData } = supabaseAdmin.storage
@@ -233,7 +273,8 @@ export async function POST(req: NextRequest) {
         parsed_designer: parsed.designer,
         gauge: parsed.gauge,
       },
-      next_step: 'select_size',
+      ravelry_matches: ravelryMatches,
+      next_step: ravelryMatches.length > 0 ? 'link_ravelry' : 'select_size',
     },
   })
 }

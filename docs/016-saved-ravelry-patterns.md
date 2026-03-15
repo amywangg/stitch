@@ -59,7 +59,7 @@ Unique on `[user_id, ravelry_id]`. Indexed on `[user_id]` and `[user_id, weight]
 - [ ] API route: list saved patterns with filters
 - [ ] API route: save pattern (extract and store metadata snapshot)
 - [ ] API route: delete saved pattern
-- [ ] Free tier limit check (10 saved patterns for free users)
+- [ ] Free tier limit check (15 saved patterns for free users)
 - [ ] iOS SavedPatternsViewModel
 - [ ] iOS SavedPatternsView (grid layout with cover photos)
 - [ ] iOS SavedPatternCard component
@@ -82,13 +82,13 @@ Unique on `[user_id, ravelry_id]`. Indexed on `[user_id]` and `[user_id, weight]
 
 ## Tier Gating
 
-| Feature | Free | Pro |
-|---|---|---|
-| Save Ravelry patterns | 10 max | Unlimited |
-| Search Ravelry | Yes | Yes |
-| View saved pattern details | Yes | Yes |
+| Feature | Free | Plus | Pro |
+|---|---|---|---|
+| Save Ravelry patterns | 15 max | Unlimited | Unlimited |
+| Search Ravelry | Yes | Yes | Yes |
+| View saved pattern details | Yes | Yes | Yes |
 
-The save endpoint must check `FREE_LIMITS` before allowing new saves for free users.
+The save endpoint must check `FREE_LIMITS` (free tier) before allowing new saves. Plus and Pro have unlimited saves.
 
 ## Technical Notes
 

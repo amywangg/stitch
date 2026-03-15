@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
   }
 
   const formData = await req.formData()
+  const patternId = formData.get('pattern_id') as string | null
   const file = formData.get('file') as File | null
 
   if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 })
@@ -73,9 +74,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
   }
 
+  // If pattern_id provided, verify ownership
+  if (patternId) {
+    const pattern = await prisma.patterns.findFirst({
+      where: { id: patternId, user_id: user.id, deleted_at: null },
+    })
+    if (!pattern) {
+      return NextResponse.json({ error: 'Pattern not found' }, { status: 404 })
+    }
+  }
+
   const pdfUpload = await prisma.pdf_uploads.create({
     data: {
       user_id: user.id,
+      pattern_id: patternId ?? undefined,
       file_name: file.name,
       file_size: file.size,
       status: 'stored',

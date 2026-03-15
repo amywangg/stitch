@@ -47,10 +47,11 @@ export async function POST(_req: NextRequest) {
         let yarnId: string
 
         if (item.yarn) {
+          const companyName = item.yarn.company_name || 'Unknown'
           const company = await prisma.yarn_companies.upsert({
-            where: { name: item.yarn.company_name },
+            where: { name: companyName },
             update: {},
-            create: { name: item.yarn.company_name },
+            create: { name: companyName },
           })
           let yarn = await prisma.yarns.findFirst({ where: { ravelry_id: String(item.yarn.id) } })
           if (!yarn) {

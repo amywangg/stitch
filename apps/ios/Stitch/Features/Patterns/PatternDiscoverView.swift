@@ -24,8 +24,25 @@ final class PatternDiscoverViewModel {
     var difficulty: String?  // "1-2", "3", "4-5"
     var designer: String?    // pattern author
     var photosOnly: Bool = false
+    var hideOwned: Bool = false
 
     private var searchTask: Task<Void, Never>?
+    private var didLoadSavedIds = false
+
+    func loadSavedIds() async {
+        guard !didLoadSavedIds else { return }
+        didLoadSavedIds = true
+        struct SavedItem: Decodable { let ravelryId: Int }
+        struct SavedResponse: Decodable { let items: [SavedItem] }
+        do {
+            let response: APIResponse<SavedResponse> = try await APIClient.shared.get(
+                "/ravelry/patterns/saved?page_size=50"
+            )
+            savedIds = Set(response.data.items.map(\.ravelryId))
+        } catch {
+            // Non-critical
+        }
+    }
 
     var activeFilterCount: Int {
         var count = 0
@@ -36,6 +53,7 @@ final class PatternDiscoverViewModel {
         if difficulty != nil { count += 1 }
         if designer != nil { count += 1 }
         if photosOnly { count += 1 }
+        if hideOwned { count += 1 }
         return count
     }
 
@@ -165,6 +183,7 @@ final class PatternDiscoverViewModel {
         difficulty = nil
         designer = nil
         photosOnly = false
+        hideOwned = false
         search()
     }
 
@@ -255,6 +274,7 @@ struct PatternDiscoverView: View {
             }
             .padding(.bottom, 32)
         }
+        .task { await viewModel.loadSavedIds() }
         .onChange(of: viewModel.query) { _, newValue in
             if newValue.isEmpty && viewModel.category == nil {
                 viewModel.results = []
@@ -403,6 +423,9 @@ struct PatternDiscoverView: View {
                     viewModel.availability = viewModel.availability == "free" ? nil : "free"
                     viewModel.search()
                 }
+                filterChip("Not in library", isActive: viewModel.hideOwned) {
+                    viewModel.hideOwned.toggle()
+                }
 
                 // Active filter pills
                 if let weight = viewModel.weight {
@@ -521,7 +544,11 @@ struct PatternDiscoverView: View {
                     .padding(.bottom, 8)
             }
 
-            ForEach(viewModel.results) { pattern in
+            let filtered = viewModel.hideOwned
+                ? viewModel.results.filter { !viewModel.savedIds.contains($0.ravelryId) }
+                : viewModel.results
+
+            ForEach(filtered) { pattern in
                 NavigationLink(value: Route.ravelryPatternDetail(
                     ravelryId: pattern.ravelryId,
                     name: pattern.name,
@@ -635,6 +662,7 @@ private struct PatternFilterSheet: View {
                 // Other options
                 Section {
                     Toggle("With photos only", isOn: $viewModel.photosOnly)
+                    Toggle("Hide patterns in library", isOn: $viewModel.hideOwned)
                 }
 
                 // Clear all
@@ -778,7 +806,7 @@ private struct DiscoverPatternRow: View {
     @ViewBuilder
     private var saveButton: some View {
         if isSaved {
-            Image(systemName: "checkmark.circle.fill")
+            Image(systemName: "bookmark.fill")
                 .foregroundStyle(theme.primary)
                 .font(.title3)
         } else {

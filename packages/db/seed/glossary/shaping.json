@@ -1,0 +1,583 @@
+[
+  {
+    "abbreviation": null,
+    "name": "Waist Shaping",
+    "slug": "waist-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Strategic decreases and increases worked at the sides of a garment body to create a fitted silhouette that follows the natural curve of the waist. Decreases narrow the fabric from bust to waist, then increases widen it from waist to hip.",
+    "how_to": "1. Knit the body straight from the hem or cast-on to the hip\n2. Place markers at each side seam\n3. Begin paired decreases (e.g., K2tog and SSK) a few stitches in from each marker every specified number of rows\n4. Work straight for a few rows at the narrowest point (natural waist)\n5. Begin paired increases (e.g., M1L and M1R) at the same positions every specified number of rows\n6. Continue until the original stitch count is restored or the bust measurement is reached",
+    "tips": "Space decreases and increases evenly over the shaping zone. Typically 1-2 inches of ease at the waist gives a flattering fit without being too tight. Working decreases and increases 2-3 stitches in from the edge (full-fashioned style) creates a visible design detail.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "fitted shaping",
+        "region": null
+      },
+      {
+        "synonym": "hourglass shaping",
+        "region": null
+      },
+      {
+        "synonym": "body shaping",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Horizontal Bust Darts",
+    "slug": "horizontal-bust-darts",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Short rows worked horizontally across the front of a garment to add extra fabric length over the bust. They create additional row height in the chest area without adding length at the side seams, ensuring the hemline stays level on larger cup sizes.",
+    "how_to": "1. Work the garment front to the point where bust shaping begins (usually a few inches below the underarm)\n2. Work a short row across the front, turning before reaching the side seam\n3. Work the wrap and turn (or your preferred short row method)\n4. Work back across, then work the next short row slightly further than the previous one\n5. Repeat for the required number of short row pairs (typically 2-4 pairs depending on cup size)\n6. On the next full row, pick up and work all wraps\n7. Continue the garment as written",
+    "tips": "The number of short row pairs depends on the cup size difference. A general guideline is 2 rows per cup size above a B cup. German short rows or Japanese short rows leave the least visible holes in stockinette. Always work a test swatch to check that the short rows blend smoothly.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "short row bust darts",
+        "region": null
+      },
+      {
+        "synonym": "bust short rows",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Vertical Bust Darts",
+    "slug": "vertical-bust-darts",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Increases and decreases worked vertically on the front of a garment to add width across the bust and then remove it below, creating a contoured fit. Unlike horizontal darts, vertical darts shape the fabric by changing stitch count in a vertical line from waist to bust.",
+    "how_to": "1. Identify the dart placement line on the front piece, usually aligned with the bust point\n2. Beginning at the waist, work paired increases on either side of the dart line every few rows\n3. Continue increasing until the required extra width for the bust is achieved\n4. Work even for a short section at the fullest point\n5. Work paired decreases at the same rate to return to the original stitch count\n6. Continue the garment as written",
+    "tips": "Vertical darts work best in fitted garments with set-in sleeves. They are more visible than horizontal darts but provide excellent shaping. Place the dart line so it points toward the bust apex. Blocking helps smooth out the transition points.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "vertical darts",
+        "region": null
+      },
+      {
+        "synonym": "princess line darts",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "A-line Shaping",
+    "slug": "a-line-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A gradual, continuous decrease from a wide hem to a narrower waist or bust, creating a trapezoidal garment shape that flares at the bottom. Named after the A-line silhouette popularized in fashion, this shaping is common in skirts, tunics, and swing-style sweaters.",
+    "how_to": "1. Cast on the full number of stitches for the widest point (hem)\n2. Work the hem or border as specified\n3. Begin paired decreases at each side seam (or evenly spaced across the row for circular knitting)\n4. Space decreases consistently, typically every 8-12 rows depending on the desired rate of taper\n5. Continue decreasing until the target waist or bust stitch count is reached\n6. Work the remainder of the body straight or with additional shaping as needed",
+    "tips": "For a subtle A-line, decrease every 10-12 rows. For a more dramatic flare, use a wider cast-on and decrease more frequently. A-line shaping is flattering on most body types because it skims over the hips. Consider using a stretchy cast-on for the wide hem to maintain drape.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "trapeze shaping",
+        "region": null
+      },
+      {
+        "synonym": "swing shaping",
+        "region": null
+      },
+      {
+        "synonym": "flared shaping",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Shoulder Shaping",
+    "slug": "shoulder-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Bind-offs or short rows worked at the top of the front and back pieces to create a sloped shoulder line that matches the natural angle of the shoulders. Without shoulder shaping, the top of the garment would be a straight horizontal line, causing the fabric to bunch or hang poorly.",
+    "how_to": "1. Work to the point where shoulder shaping begins (after armhole shaping is complete)\n2. Method A (stepped bind-off): at the beginning of the next several rows, bind off a portion of the shoulder stitches in 2-4 steps, alternating sides\n3. Method B (short rows): work short rows across the shoulder, turning earlier on each pass to create a slope, then bind off all stitches at once or use a three-needle bind-off\n4. The center stitches between the two shoulders are bound off or placed on hold for the neckline",
+    "tips": "Short row shoulders give a smoother line than stepped bind-offs and are easier to seam or graft. If using stepped bind-offs, more steps with fewer stitches each create a smoother slope. The shoulder slope typically spans 1-2 inches in height. Match front and back shoulder shaping exactly for clean seaming.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "shoulder slope",
+        "region": null
+      },
+      {
+        "synonym": "shoulder decreases",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Round Neck Shaping",
+    "slug": "round-neck-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A curved neckline created by binding off center front stitches and then working graduated decreases on each side to form a smooth, scooped shape. The most common neckline in pullover sweaters, it sits at or just below the base of the neck.",
+    "how_to": "1. Work the front to the point where neck shaping begins (typically 2-3 inches below the shoulder)\n2. Work across to the center, bind off the center group of stitches (usually 1-2 inches worth)\n3. Working each side separately, decrease 1 stitch at the neck edge on right-side rows\n4. Begin with more frequent decreases (every row for the first few), then space them out (every other row)\n5. Continue until the remaining stitches match the shoulder width\n6. Complete shoulder shaping\n7. Repeat for the other side\n8. Pick up stitches around the neckline for a band or collar",
+    "tips": "The depth of the neck opening determines how many rows of shaping you need. A crew neck typically starts 2.5-3 inches below the shoulder; a scoop neck starts lower. When picking up stitches for the neckband, pick up approximately 3 stitches for every 4 rows along the curved edges to prevent gapping or puckering.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "crew neck shaping",
+        "region": null
+      },
+      {
+        "synonym": "scoop neck shaping",
+        "region": null
+      },
+      {
+        "synonym": "curved neckline",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "V-neck Shaping",
+    "slug": "v-neck-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A neckline formed by splitting the front at center and working single decreases on each side at a steady rate, creating a V-shaped opening. V-necks can be shallow (starting near the shoulder) or deep (starting at or below the bust line).",
+    "how_to": "1. Work the front to the point where the V-neck begins\n2. Work to the center of the row and place the remaining stitches on a holder\n3. Working one side at a time, decrease 1 stitch at the neck edge every specified number of rows (typically every other row or every 4th row depending on depth)\n4. Continue decreasing until the remaining stitches match the shoulder width\n5. Complete shoulder shaping\n6. Return to the held stitches and work the other side as a mirror image\n7. Pick up stitches along each edge and across the center for a V-neck band",
+    "tips": "The rate of decrease determines the angle of the V. Decreasing every other row gives a steep V; every 4th row gives a gentler slope. For a clean center point, use a centered double decrease (sl2-k1-psso) at the base if working in the round. A mitered band at the center V prevents bunching. Place a locking marker at the center point to keep track when picking up stitches.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "V-neckline",
+        "region": null
+      },
+      {
+        "synonym": "vee neck",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Square Neck Shaping",
+    "slug": "square-neck-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A neckline with sharp right-angle corners, created by binding off center stitches and then working each side straight to the shoulder with no further decreases. The angular shape contrasts with the more common round neckline and gives a modern, structured look.",
+    "how_to": "1. Work the front to the point where the square neck begins\n2. Work across to the neck opening, bind off the center stitches (the full width of the neck opening)\n3. Working each side separately, work straight up to the shoulder with no neck decreases\n4. Complete shoulder shaping\n5. Repeat for the other side\n6. Pick up stitches around the neckline, working mitered corners at each of the four corners",
+    "tips": "The key to a clean square neckline is working neat mitered corners on the neckband. At each corner, work a centered double decrease (or slip-k2tog-psso) on every round to create a sharp 90-degree turn. Reinforce the corners of the bind-off with an extra stitch picked up at each junction to prevent holes. The neck opening should be wide enough to fit over the head comfortably.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "squared neckline",
+        "region": null
+      },
+      {
+        "synonym": "angular neckline",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Boat Neck Shaping",
+    "slug": "boat-neck-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A wide, shallow neckline that runs horizontally from shoulder point to shoulder point, following the line of the collarbone. Also called a bateau neck, it requires minimal or no shaping since the front and back are worked identically with a straight bind-off across the top.",
+    "how_to": "1. Work the front and back pieces identically, with the same shoulder shaping on both\n2. The neck opening is simply the gap between the two shoulder sections\n3. Join the shoulders, leaving the center stitches unjoined to form the neck opening\n4. If desired, pick up stitches around the wide opening and work a narrow border (1-4 rows)\n5. For a finished edge, apply an i-cord bind-off or a folded hem around the neckline",
+    "tips": "Boat necks require no front neck shaping, making them one of the simplest necklines to knit. The width of the opening determines whether the neckline stays on the shoulders or slips off. For a neckline that stays put, keep the opening to about 8-9 inches. For an intentional off-the-shoulder look, widen to 10-12 inches. Consider adding a few rows of ribbing or garter stitch at the neckline to prevent curling.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "bateau neck",
+        "region": null
+      },
+      {
+        "synonym": "slash neck",
+        "region": null
+      },
+      {
+        "synonym": "sabrina neckline",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Armhole Shaping",
+    "slug": "armhole-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Decreases worked at each side of the body to create the curved opening where the sleeve is attached (set-in sleeve) or to narrow the body above the underarm (modified drop shoulder). Proper armhole shaping ensures the sleeve sits correctly and allows comfortable arm movement.",
+    "how_to": "1. Work the body to the desired armhole depth start point (typically at or just above the natural underarm)\n2. Bind off a group of stitches at each side (usually 3-6 stitches) to establish the base of the armhole curve\n3. Decrease 1 stitch at each end every right-side row for several rows (the steep part of the curve)\n4. Then decrease 1 stitch at each end every 4th row for the gentler upper curve\n5. Work straight until the armhole reaches the desired depth\n6. Begin shoulder and neck shaping",
+    "tips": "The total armhole depth (from first bind-off to shoulder) should be 7-10 inches for adults depending on size. The initial bind-off at the base should match the sleeve's underarm bind-off for clean seaming. For a closer fit, shape more aggressively; for an oversized look, work fewer decreases. Always measure armhole depth from the first bind-off row, not from the underarm.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "armscye shaping",
+        "region": null
+      },
+      {
+        "synonym": "arm opening shaping",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Sleeve Cap Shaping",
+    "slug": "sleeve-cap-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "The curved top of a set-in sleeve, shaped by a series of bind-offs and decreases to create a rounded cap that fits into the armhole opening. The sleeve cap height and width must correspond to the armhole circumference for the sleeve to set in smoothly.",
+    "how_to": "1. Work the sleeve to the desired length up to the underarm\n2. Bind off the same number of stitches at each side as the body armhole initial bind-off\n3. Decrease 1 stitch at each end every right-side row for the lower portion of the cap\n4. Work a section of more gradual decreases (every 4th row) through the middle of the cap\n5. Increase the rate of decreases again (every row) near the top of the cap\n6. Bind off the remaining stitches across the top",
+    "tips": "The sleeve cap should be about 1 inch shorter than the armhole depth for ease of setting in. The cap width at the top (final bind-off) is typically 2-3 inches. Ease the sleeve cap into the armhole by distributing the extra fabric evenly, with slightly more ease at the top of the cap. Pin the sleeve into the armhole before seaming, matching the center of the cap to the shoulder seam and the underarm bind-offs to each other.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "set-in sleeve cap",
+        "region": null
+      },
+      {
+        "synonym": "sleeve head",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Crown Shaping",
+    "slug": "crown-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Decreases worked at the top of a hat to close the crown, transitioning from a tube of fabric into a rounded or pointed top. The placement and frequency of decreases determine the shape of the finished crown, from a smooth rounded dome to a more angular star shape.",
+    "how_to": "1. Work the hat body to the desired length before crown shaping (typically when the hat covers the ears)\n2. Set up decrease rounds by placing markers dividing the stitches into equal sections (commonly 4, 6, or 8 sections)\n3. On each decrease round, work a decrease (K2tog or SSK) before or after each marker\n4. Work a plain knit round between decrease rounds\n5. As the hat narrows, you may eliminate the plain rounds and decrease every round\n6. When 8-12 stitches remain, cut the yarn, thread through the remaining stitches, and pull tight\n7. Weave in the end on the wrong side",
+    "tips": "Fewer sections (4) create a more angular, square-topped crown; more sections (8) create a smoother, rounder dome. Starting decreases earlier creates a more gradual, slouchy crown shape. For a beanie, start decreases about 6-7 inches from the cast-on for an adult. The standard decrease round removes one stitch per section, but you can double-decrease for a faster, more dramatic crown.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "hat crown",
+        "region": null
+      },
+      {
+        "synonym": "crown decreases",
+        "region": null
+      },
+      {
+        "synonym": "top shaping",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Toe Shaping",
+    "slug": "toe-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Decreases worked at the end of a sock to shape the fabric around the toes. The most common method is a wedge toe with paired decreases on each side, but rounded and star-shaped toes are also used. Toe shaping determines the overall fit and comfort at the front of the sock.",
+    "how_to": "1. Work the foot of the sock to approximately 2 inches less than the total desired foot length\n2. Set up for decreases: place markers at the sides of the sock dividing instep from sole stitches\n3. Decrease round: K1, SSK, knit to 3 before marker, K2tog, K1, slip marker, K1, SSK, knit to 3 before end, K2tog, K1 (4 stitches decreased)\n4. Alternate a decrease round with a plain knit round\n5. Continue until approximately half the original stitches remain\n6. Graft the remaining instep and sole stitches together using Kitchener stitch",
+    "tips": "The wedge toe is the most common and works for most foot shapes. For wider toes, try a rounded toe with decreases spaced around the circumference. Start toe decreases earlier for a more gradual taper. The Kitchener stitch graft should be at the same tension as the knitting for an invisible join. Try on the sock before starting decreases if possible to check the length.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "sock toe",
+        "region": null
+      },
+      {
+        "synonym": "wedge toe",
+        "region": null
+      },
+      {
+        "synonym": "toe decreases",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Heel Turn",
+    "slug": "heel-turn",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "The process of shaping the bottom of a sock heel using short rows worked back and forth across the heel stitches, creating a cup-like shape that wraps around the base of the heel. The heel turn follows the heel flap and precedes the gusset pickup in traditional top-down sock construction.",
+    "how_to": "1. After completing the heel flap, work across the heel stitches to the center\n2. Work a short row: slip 1, work to 1 stitch past center, work a decrease (SSK or sl1-k1-psso), K1, turn\n3. Slip 1, purl to 1 stitch past center, P2tog, P1, turn\n4. Continue working short rows, each time working to the gap created by the previous turn, closing the gap with a decrease, working 1 more stitch, and turning\n5. Repeat until all heel stitches have been worked and the gaps are closed\n6. The heel turn is complete; proceed to pick up gusset stitches along the heel flap edges",
+    "tips": "The heel turn can feel confusing the first time, but the key is to always work the decrease that closes the gap between the worked and unworked stitches. Count your stitches after the turn is complete to make sure you have the expected number. If the pattern says 'work to 1 stitch before the gap,' the gap is where you turned on the previous row. A well-turned heel sits snugly under the foot with no holes at the junctions.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "turning the heel",
+        "region": null
+      },
+      {
+        "synonym": "Dutch heel turn",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Heel Flap",
+    "slug": "heel-flap",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A reinforced rectangular panel worked back and forth over half the sock stitches, forming the back of the heel. The slipped stitches along the edges create a chain selvedge used for picking up gusset stitches. Heel flaps are a component of the traditional heel flap and gusset sock construction.",
+    "how_to": "1. Divide the sock stitches in half, placing the instep stitches on hold\n2. Work the heel flap back and forth over the heel stitches only\n3. Row 1 (RS): *Slip 1 purlwise, K1* across (or slip 1, knit to end)\n4. Row 2 (WS): Slip 1 purlwise, purl to end\n5. Repeat these 2 rows until the heel flap is approximately square (as tall as it is wide)\n6. The number of rows is typically equal to the number of heel stitches\n7. Proceed to the heel turn",
+    "tips": "The slip-stitch pattern on the right side (sl1, K1) creates a denser, more durable fabric that resists wear at the heel. Count the chain selvedge stitches along the edge, as you will pick up one gusset stitch in each chain. For extra durability, work the heel flap with a reinforcing thread held together with the main yarn. The heel flap should be deep enough that the gusset pickup begins at the base of the instep.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "heel panel",
+        "region": null
+      },
+      {
+        "synonym": "French heel flap",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Gusset",
+    "slug": "gusset",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A triangular section of fabric created by picking up stitches along the heel flap edges and then decreasing them over several rounds to return to the original sock circumference. The gusset provides extra room for the heel and instep arch, transitioning smoothly from the heel to the foot of the sock.",
+    "how_to": "1. After completing the heel turn, pick up and knit stitches along one side of the heel flap (one stitch per chain selvedge stitch, plus 1-2 extra at the junction to prevent holes)\n2. Work across the held instep stitches\n3. Pick up and knit the same number of stitches along the other side of the heel flap\n4. You now have more stitches than the original sock circumference\n5. Decrease round: on the sole side, work SSK after the first sole marker and K2tog before the second (1 decrease on each side of the sole)\n6. Alternate a decrease round with a plain round\n7. Continue until the original stitch count is restored\n8. Proceed to work the foot",
+    "tips": "Pick up an extra stitch or two at the junction between the heel flap and the instep to close any gaps, then decrease these extra stitches away on the next round. The gusset decreases should be worked on the sole side only, leaving the instep pattern undisturbed. A well-fitted gusset accommodates a high instep; if you have a high arch, pick up a few extra stitches and work more decrease rounds.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "gusset decreases",
+        "region": null
+      },
+      {
+        "synonym": "heel gusset",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Short Row Heel",
+    "slug": "short-row-heel",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A sock heel constructed entirely from short rows without a heel flap or gusset. Short rows are worked back and forth, first decreasing (working fewer stitches each row) to form the heel cup, then increasing (working more stitches each row) to return to the full stitch count. This creates a smooth, rounded heel with no seam lines.",
+    "how_to": "1. Work to the heel stitches (half the total sock stitches)\n2. First half (decreasing): knit across the heel, stopping 1 stitch before the end, wrap and turn. Purl back, stopping 1 stitch before the end, wrap and turn. Continue, leaving 1 more unworked stitch on each side per row\n3. Stop when approximately one-third of the heel stitches remain in the center\n4. Second half (increasing): knit to the first wrapped stitch, pick up and knit the wrap together with its stitch, wrap the next stitch, turn. Purl to the first wrapped stitch on that side, pick up and purl the wrap, wrap the next stitch, turn\n5. Continue until all heel stitches have been worked\n6. Resume knitting in the round",
+    "tips": "German short rows (using double stitches instead of wraps) work particularly well for heels and leave virtually no holes. This heel is great for self-striping yarns since it maintains the stripe pattern without the interruption of a heel flap. The heel may fit slightly differently than a flap-and-gusset heel; it works well for average to low insteps but may feel tight on high arches.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "boomerang heel",
+        "region": null
+      },
+      {
+        "synonym": "German short row heel",
+        "region": null
+      },
+      {
+        "synonym": "W&T heel",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Afterthought Heel",
+    "slug": "afterthought-heel",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A heel added after the sock is otherwise complete, by removing a strand of waste yarn that was knit into the heel position, then picking up the live stitches above and below and working decreases in the round. Also used as a method to replace worn-out heels without reknitting the entire sock.",
+    "how_to": "1. When knitting the sock, work the heel stitches with waste yarn instead of the main yarn at the heel position\n2. Slip those stitches back to the left needle and continue knitting the sock tube with the main yarn as if no heel exists\n3. Complete the sock including the toe\n4. Return to the heel: carefully remove the waste yarn, placing the live stitches above and below onto needles\n5. You will have one set of stitches on top and one on the bottom, plus a stitch at each corner\n6. Join yarn and knit in the round, decreasing at each side (similar to toe shaping) until approximately 12-16 stitches remain\n7. Graft the remaining stitches with Kitchener stitch",
+    "tips": "Use a smooth, contrasting waste yarn so it is easy to identify and remove. Pick up an extra stitch at each corner to prevent holes, then decrease them on the next round. This heel is shaped like the toe, making it easy to remember. It is the easiest heel to replace when worn out since you just cut out the old heel, pick up stitches, and reknit. Works especially well with hand-painted yarns where you want uninterrupted color flow.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "peasant heel",
+        "region": null
+      },
+      {
+        "synonym": "forethought heel",
+        "region": null
+      },
+      {
+        "synonym": "replacement heel",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Thumb Gusset",
+    "slug": "thumb-gusset",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A triangular section of increases worked on the palm side of a mitten or glove to create extra fabric for the thumb. The gusset gradually widens from the wrist to the base of the thumb, where the thumb stitches are placed on waste yarn or a holder and the hand continues upward.",
+    "how_to": "1. Work the cuff and begin the hand\n2. Place a marker where the thumb gusset will be (palm side, near the wrist)\n3. Increase round: work to marker, M1R, knit the gusset stitches, M1L, slip marker\n4. Work 2-3 plain rounds between increase rounds\n5. Continue increasing until the gusset contains enough stitches for the thumb circumference (typically 12-18 stitches for adults)\n6. On the next round, place the gusset stitches on waste yarn or a stitch holder\n7. Cast on 1-2 stitches over the gap to bridge the thumb opening\n8. Continue working the hand\n9. Later, return to the held stitches, pick up 1-2 stitches from the cast-on bridge, and work the thumb in the round to the desired length\n10. Decrease to close the top of the thumb",
+    "tips": "The gusset typically starts about 1 inch above the cuff for an adult mitten. For gloves, the gusset placement may need to be adjusted for the longer hand portion. Left and right mittens have the gusset on opposite sides. Using M1R and M1L (or lifted increases) on either side creates a symmetrical, neat-looking gusset. Try the mitten on as you go to check thumb placement before putting stitches on hold.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "mitten gusset",
+        "region": null
+      },
+      {
+        "synonym": "glove thumb gusset",
+        "region": null
+      },
+      {
+        "synonym": "thumb gore",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Tapered Decrease",
+    "slug": "tapered-decrease",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A gradual, evenly spaced series of decreases that narrows fabric slowly over many rows, creating a smooth diagonal line rather than a sudden step. Used in sleeve tapering, body shaping, and anywhere a gentle narrowing is needed.",
+    "how_to": "1. Calculate the total number of stitches to decrease and the number of rows available for shaping\n2. Divide the rows by the number of decrease events to determine the spacing (e.g., decrease every 6th row)\n3. Work a decrease at each end of the specified rows (2 stitches decreased per decrease row)\n4. Use matching decreases: SSK at the beginning and K2tog at the end (or vice versa) for symmetry\n5. Continue at the calculated rate until the target stitch count is reached\n6. Work any remaining rows even",
+    "tips": "If the math does not divide evenly, alternate between two intervals (e.g., decrease every 6th row 4 times, then every 8th row 3 times). Work decreases 1-2 stitches in from the edge for a neater finish, especially if the edges will be seamed. For sleeves, a tapered decrease from cuff to underarm creates a natural shape. Maintain consistent tension on decrease rows to prevent the edges from pulling in.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "gradual decrease",
+        "region": null
+      },
+      {
+        "synonym": "even decrease",
+        "region": null
+      },
+      {
+        "synonym": "sleeve taper",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "FFD",
+    "name": "Full-Fashioned Decreases",
+    "slug": "full-fashioned-decreases",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Decreases worked several stitches in from the edge of the fabric rather than at the very edge, creating a visible decorative line of shaping that becomes a design feature. Borrowed from machine-knitting terminology, full-fashioned shaping is a hallmark of quality knitwear.",
+    "how_to": "1. Decide how many stitches in from the edge to place the decreases (typically 2-3 stitches)\n2. At the beginning of the shaping row: work the border stitches, then work a left-leaning decrease (SSK or sl1-k1-psso)\n3. Work across to the last group of stitches\n4. Work a right-leaning decrease (K2tog), then work the border stitches\n5. The border stitches remain constant, creating a smooth edge for seaming\n6. The decreases form a visible diagonal line that runs parallel to but inset from the edge",
+    "tips": "The visible decrease line is intentional and decorative; it signals quality construction. Use matching decrease pairs (SSK on the right, K2tog on the left, or vice versa depending on the desired lean direction). Working 2 stitches in from the edge is standard; 3 stitches creates a more pronounced decorative effect. Full-fashioned shaping is especially effective on raglan lines, armholes, and necklines where the shaping lines become a design element.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "fashioned decreases",
+        "region": null
+      },
+      {
+        "synonym": "decorative decreases",
+        "region": null
+      },
+      {
+        "synonym": "inset decreases",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Dart Shaping (Crochet)",
+    "slug": "dart-shaping-crochet",
+    "category": "shaping",
+    "craft_type": "crochet",
+    "definition": "Shaping techniques used in crochet garments to create three-dimensional form by adding or removing stitches at specific points. Because crochet fabric is thicker and less elastic than knitting, dart shaping in crochet requires different strategies, including internal increases/decreases, short rows, and stitch height manipulation.",
+    "how_to": "1. Identify where the dart will be placed (bust, waist, or hip)\n2. Method A (internal increases/decreases): work 2 stitches into 1 stitch to increase, or skip a stitch / work 2 together to decrease, at marked positions within the row\n3. Method B (short rows): chain and turn before the end of a row, working partial rows to add length in specific areas\n4. Method C (stitch height changes): transition between shorter stitches (sc) and taller stitches (dc) within the same row to create subtle shaping without changing stitch count\n5. Work the dart shaping over the specified number of rows\n6. Return to working even rows once the shaping is complete",
+    "tips": "Crochet fabric does not stretch like knitting, so ease and dart placement are critical for a good fit. The stitch height method is unique to crochet and very effective for subtle bust shaping: work single crochet at the side seams and half double or double crochet at the bust point to add height without extra stitches. Always work a gauge swatch that includes the shaping method to check fit. Foundation chain tension affects how darts sit in the finished garment.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "crochet bust darts",
+        "region": null
+      },
+      {
+        "synonym": "crochet waist darts",
+        "region": null
+      },
+      {
+        "synonym": "stitch height shaping",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Shaping in the Round",
+    "slug": "shaping-in-the-round",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Working increases or decreases while knitting circularly on circular needles or double-pointed needles, without turning the work. Shaping in the round requires adjustments compared to flat knitting because every round is a right-side round, and decreases must be placed and oriented differently to achieve the same visual effect.",
+    "how_to": "1. Place markers at the positions where shaping will occur (e.g., side seams, raglan lines, or evenly spaced sections)\n2. On decrease rounds, work the appropriate decrease type at each marker position:\n   - For right-leaning: K2tog before the marker\n   - For left-leaning: SSK after the marker\n3. On increase rounds, work M1R before the marker and M1L after the marker (or vice versa)\n4. Work plain rounds between shaping rounds as specified\n5. Keep track of rounds using a beginning-of-round marker and a row counter",
+    "tips": "When converting a flat pattern to in-the-round, remember that all wrong-side rows become right-side rounds, so decrease orientations reverse (SSK on a WS row becomes K2tog in the round). Join for working in the round carefully to avoid twisting. For body shaping, place markers at both side seams and work paired decreases/increases at each. The beginning of round marker can create a visible jog in the shaping line; if this bothers you, reposition it away from the shaping points.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "circular shaping",
+        "region": null
+      },
+      {
+        "synonym": "seamless shaping",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Shaping on Flat Pieces",
+    "slug": "shaping-on-flat-pieces",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "Working increases or decreases on fabric knit back and forth in rows, where you alternate between right-side and wrong-side rows. Flat shaping requires careful attention to decrease direction and placement on both RS and WS rows to ensure the finished shaping lines look correct from the right side.",
+    "how_to": "1. On right-side (RS) decrease rows:\n   - Beginning: work edge stitches, then SSK (left-leaning, leans toward center)\n   - End: work to last edge stitches, K2tog (right-leaning, leans toward center)\n2. On wrong-side (WS) decrease rows:\n   - Beginning: work edge stitch, P2tog (mirrors K2tog on RS)\n   - End: work to last edge stitches, SSP or P2tog-tbl (mirrors SSK on RS)\n3. Work increases similarly, using M1L/M1R or KFB at the appropriate positions\n4. Alternate shaping rows with plain rows as the pattern directs\n5. Seam the shaped pieces together, matching the shaping lines",
+    "tips": "When shaping is worked on every row (both RS and WS), the shaping progresses twice as fast as when worked on RS rows only. This is common at the top of armholes and sleeve caps. WS decreases (P2tog, SSP) are trickier than RS decreases; practice on a swatch first. Keep a record of which rows are decrease rows to maintain symmetry between left and right sides. Leave a clean selvedge edge (1-2 stitches) for easier seaming.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "flat shaping",
+        "region": null
+      },
+      {
+        "synonym": "back-and-forth shaping",
+        "region": null
+      },
+      {
+        "synonym": "seamed shaping",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Raglan Shaping",
+    "slug": "raglan-shaping",
+    "category": "shaping",
+    "craft_type": "knitting",
+    "definition": "A garment construction method where the sleeves extend from the neckline to the underarm in a continuous diagonal line, with decreases (or increases, if worked top-down) along four lines radiating from the neckline. Named after Lord Raglan, this construction eliminates the need for a traditional armhole and sleeve cap.",
+    "how_to": "1. For top-down: cast on stitches for the neckline and divide into four sections (front, back, two sleeves) with markers at each raglan line\n2. Increase round: work an increase on each side of each marker (8 increases per round)\n3. Work a plain round between increase rounds\n4. Continue until the yoke depth is sufficient (front and back match the chest width)\n5. Separate sleeves: place sleeve stitches on holders, cast on underarm stitches, and continue the body\n6. Work each sleeve separately from the held stitches\n7. For bottom-up: work body and sleeves separately to the underarm, join, and decrease along the four raglan lines up to the neckline",
+    "tips": "The four raglan lines should be evenly spaced for a symmetric garment. Raglan sweaters are excellent for knitting in the round because they require no seaming. Try the yoke on frequently to check fit. The rate of increase/decrease (every round vs every other round) affects the angle of the raglan line and the overall fit. Consider working one extra stitch between the marker and the increase for a full-fashioned look.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "raglan yoke",
+        "region": null
+      },
+      {
+        "synonym": "raglan sleeve",
+        "region": null
+      },
+      {
+        "synonym": "raglan construction",
+        "region": null
+      }
+    ]
+  }
+]

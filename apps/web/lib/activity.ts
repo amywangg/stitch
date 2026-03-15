@@ -41,6 +41,7 @@ export async function emitActivity(params: {
   projectId?: string
   patternId?: string
   metadata?: Record<string, string | number | boolean>
+  createdAt?: Date
 }): Promise<void> {
   try {
     // Check user's sharing preferences
@@ -74,6 +75,7 @@ export async function emitActivity(params: {
         project_id: params.projectId ?? null,
         pattern_id: params.patternId ?? null,
         metadata: (params.metadata as Prisma.InputJsonValue) ?? Prisma.JsonNull,
+        ...(params.createdAt ? { created_at: params.createdAt } : {}),
       },
     })
   } catch {

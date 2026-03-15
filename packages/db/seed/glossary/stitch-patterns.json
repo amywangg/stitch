@@ -1,0 +1,706 @@
+[
+  {
+    "abbreviation": "K",
+    "name": "Knit Stitch",
+    "slug": "knit-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "The most fundamental knitting stitch. The needle enters the loop from left to right (front to back), wraps the yarn, and pulls a new loop through. Produces a smooth, V-shaped fabric on the side facing you.",
+    "how_to": "1. Insert the right needle into the first stitch on the left needle from left to right (front to back)\n2. Wrap the working yarn counterclockwise around the right needle\n3. Pull the wrapped yarn through the stitch toward you, creating a new loop on the right needle\n4. Slide the old stitch off the left needle",
+    "tips": "Keep even tension by not pulling the yarn too tight after each stitch. The yarn should be held in back of the work when knitting. If your stitches are too tight, try going up a needle size.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "plain stitch",
+        "region": "UK"
+      },
+      {
+        "synonym": "Knit",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=EFwSZTpv9-o",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "P",
+    "name": "Purl Stitch",
+    "slug": "purl-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "The reverse of the knit stitch. The needle enters the loop from right to left (back to front), wraps the yarn, and pulls a new loop through. Produces a bumpy texture on the side facing you, identical to the back of a knit stitch.",
+    "how_to": "1. Bring the working yarn to the front of the work\n2. Insert the right needle into the first stitch on the left needle from right to left (back to front)\n3. Wrap the working yarn counterclockwise around the right needle\n4. Push the right needle back through the stitch, pulling the new loop through to the back\n5. Slide the old stitch off the left needle",
+    "tips": "Remember to bring the yarn to the front before purling. Purl stitches tend to be slightly looser than knit stitches; if your tension is uneven, try purling with a needle one size smaller.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "Purl",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=4e6J19sI9vo",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "St st",
+    "name": "Stockinette Stitch",
+    "slug": "stockinette-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "The most common knitting fabric. Created by alternating rows of knit and purl stitches. The right side shows smooth V-shaped columns, while the wrong side shows bumpy horizontal ridges. The fabric naturally curls at the edges.",
+    "how_to": "1. Row 1 (RS): Knit all stitches\n2. Row 2 (WS): Purl all stitches\n3. Repeat rows 1-2",
+    "tips": "Stockinette curls at the edges, which is normal. To prevent curling, add a border of garter stitch or seed stitch. In the round, stockinette is achieved by knitting every round (no purling needed).",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "stocking stitch",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=3tW_Ck9PemM",
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": "Rev St st",
+    "name": "Reverse Stockinette Stitch",
+    "slug": "reverse-stockinette-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "The purl side of stockinette stitch used as the right side. Creates a bumpy, textured surface of interlocking purl bumps. Often used as a background for cables or other raised stitch patterns to make them stand out.",
+    "how_to": "1. Row 1 (RS): Purl all stitches\n2. Row 2 (WS): Knit all stitches\n3. Repeat rows 1-2",
+    "tips": "Like stockinette, reverse stockinette curls at the edges but in the opposite direction. It makes an excellent background for cables because the bumpy texture contrasts with the smooth cable surface.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "reverse stocking stitch",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Garter Stitch",
+    "slug": "garter-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "The simplest knitting fabric, created by knitting every row. Produces a squishy, reversible fabric with horizontal ridges on both sides. Each ridge represents two rows of knitting. The fabric lies flat and does not curl.",
+    "how_to": "1. Cast on the desired number of stitches\n2. Knit every stitch on every row\n3. Repeat row 2 for the desired length",
+    "tips": "Garter stitch is wider and shorter than stockinette for the same number of stitches and rows. It takes roughly twice as many rows to cover the same length as stockinette. It is completely reversible and lies flat, making it ideal for scarves, blankets, and borders.",
+    "difficulty": "beginner",
+    "synonyms": [],
+    "video_url": "https://www.youtube.com/watch?v=2Gth9LGDvo8",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Seed Stitch",
+    "slug": "seed-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A textured, reversible stitch pattern that alternates knit and purl stitches in a checkerboard arrangement. Each stitch sits on top of its opposite from the previous row, creating a fabric covered in small bumps that resembles scattered seeds. Lies flat and does not curl.",
+    "how_to": "1. Cast on an odd number of stitches\n2. Row 1: *K1, P1* across, ending K1\n3. Row 2: *K1, P1* across, ending K1\n4. Repeat row 2 (every row is the same)",
+    "tips": "The key rule is to knit the purls and purl the knits as they face you. With an odd number of stitches, every row starts and ends with a knit. Seed stitch uses more yarn than stockinette and knits up slower, so plan accordingly.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "moss stitch",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=o9tiWv_YfG4",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Moss Stitch",
+    "slug": "moss-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A textured stitch pattern similar to seed stitch but with a two-row repeat that creates slightly elongated bumps. Stitches are offset every two rows instead of every row, producing a more defined texture than seed stitch. Note: in UK terminology, this is called double moss stitch, while UK moss stitch equals US seed stitch.",
+    "how_to": "1. Cast on a multiple of 2 stitches\n2. Row 1: *K1, P1* across\n3. Row 2: *K1, P1* across (same as row 1)\n4. Row 3: *P1, K1* across\n5. Row 4: *P1, K1* across (same as row 3)\n6. Repeat rows 1-4",
+    "tips": "Moss stitch (US) creates a more subtle texture than seed stitch because each bump spans two rows. It lies flat, is reversible, and makes a great border or allover pattern. Be careful with UK vs US terminology as the names are swapped between regions.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "Irish moss stitch",
+        "region": "US"
+      },
+      {
+        "synonym": "double moss stitch",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=o9tiWv_YfG4",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Double Moss Stitch",
+    "slug": "double-moss-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A variation of moss stitch using blocks of two stitches instead of single stitches, creating a larger, more pronounced checkerboard pattern. The texture is bolder than seed or moss stitch, with more visible blocks of knit and purl. Lies flat and is reversible.",
+    "how_to": "1. Cast on a multiple of 4 stitches\n2. Row 1: *K2, P2* across\n3. Row 2: *K2, P2* across\n4. Row 3: *P2, K2* across\n5. Row 4: *P2, K2* across\n6. Repeat rows 1-4",
+    "tips": "The larger blocks make this stitch easier to keep track of than seed stitch. It works well for scarves, blankets, and as a border pattern. The fabric has great drape and body.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "1x1 Rib",
+    "slug": "1x1-rib",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A stretchy, elastic fabric created by alternating single knit and purl stitches within each row, with the knits stacked above knits and purls above purls on subsequent rows. The resulting columns of knit Vs are separated by recessed purl columns, creating a fabric that springs back when stretched horizontally. Commonly used for cuffs, neckbands, and hems.",
+    "how_to": "1. Cast on an even number of stitches\n2. Row 1: *K1, P1* across\n3. Row 2: *K1, P1* across (knit the knits and purl the purls as they appear)\n4. Repeat row 2",
+    "tips": "For a clean edge, start and end with a knit stitch (cast on an odd number). Use needles one or two sizes smaller than your main fabric needles for a snug ribbing. In the round, every round is the same: K1, P1.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "single rib",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=dCJj3pW2nRY",
+    "video_is_short": false,
+    "video_alternates": [
+      "ykoeMeeIIuc"
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "2x2 Rib",
+    "slug": "2x2-rib",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "An elastic ribbed fabric created by alternating pairs of knit and purl stitches. Wider rib columns than 1x1 rib, with a bolder visual texture. Slightly less elastic than 1x1 rib but still very stretchy. Popular for hat brims, sweater cuffs, and waistbands.",
+    "how_to": "1. Cast on a multiple of 4 stitches\n2. Row 1: *K2, P2* across\n3. Row 2: *K2, P2* across (knit the knits and purl the purls as they appear)\n4. Repeat row 2",
+    "tips": "2x2 rib does not pull in as much as 1x1 rib, so it works better where you want a gentler elastic effect. Add 2 extra stitches if you want to begin and end with K2 for a symmetrical edge.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "double rib",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=dCJj3pW2nRY",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Broken Rib",
+    "slug": "broken-rib",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A variation of ribbing where one row follows a rib pattern and the alternate row is all knit or all purl, breaking the vertical rib columns with a horizontal ridge. Creates a textured, slightly less elastic fabric than true ribbing. Lies flatter than standard rib and has a more relaxed look.",
+    "how_to": "1. Cast on an even number of stitches\n2. Row 1 (RS): *K1, P1* across\n3. Row 2 (WS): Knit all stitches\n4. Repeat rows 1-2",
+    "tips": "Broken rib is less elastic than true rib, so it is not ideal for cuffs that need to grip. It makes a great allover texture for scarves, cowls, and blankets because it lies relatively flat.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "half rib",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Twisted Rib",
+    "slug": "twisted-rib",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A variation of ribbing where the knit stitches are worked through the back loop, twisting them to create sharper, more defined rib columns. The twisted stitches tighten the fabric slightly and make the knit columns pop more than standard ribbing. Creates a very neat, professional-looking edge.",
+    "how_to": "1. Cast on an even number of stitches\n2. Row 1: *K1 tbl (knit through back loop), P1* across\n3. Row 2: *K1 tbl, P1* across\n4. Repeat row 2",
+    "tips": "Twisted rib is tighter and less elastic than regular rib. It works beautifully for sock cuffs and neckbands where you want a crisp edge. Knitting through the back loop can feel awkward at first but becomes natural with practice.",
+    "difficulty": "intermediate",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "Sl st",
+    "name": "Slip Stitch (Knitting)",
+    "slug": "slip-stitch-knitting",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A technique where a stitch is passed from the left needle to the right needle without being worked. The stitch can be slipped knitwise or purlwise, affecting its orientation. Slipped stitches create elongated loops and are used in decreases, selvedge edges, colorwork, and textured stitch patterns.",
+    "how_to": "1. Slip purlwise (default unless stated otherwise): Insert the right needle into the next stitch as if to purl (right to left), and slide it onto the right needle without working it\n2. Slip knitwise: Insert the right needle into the next stitch as if to knit (left to right), and slide it onto the right needle without working it (this twists the stitch)\n3. Unless the pattern specifies otherwise, carry the yarn on the wrong side of the work",
+    "tips": "Always slip purlwise unless the pattern says otherwise, as slipping knitwise twists the stitch mount. When slipping at the beginning of a row for a chain selvedge, slip the first stitch purlwise with yarn in front, then move yarn to back.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Bobble",
+    "slug": "bobble",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A raised, three-dimensional cluster of stitches that pops out from the fabric surface. Created by increasing multiple stitches into a single stitch, working several short rows on those stitches alone, then decreasing back to one stitch. Bobbles add bold texture and are often arranged in patterns across a fabric.",
+    "how_to": "1. Knit into the front, back, front, back, front of the next stitch (5 stitches made from 1)\n2. Turn the work. Purl across the 5 bobble stitches\n3. Turn the work. Knit across the 5 bobble stitches\n4. Turn the work. Purl across the 5 bobble stitches\n5. Turn the work. Slip 4 stitches knitwise one at a time, then knit them together through the back loops (or slip 2, K3tog, pass slipped stitches over)\n6. Continue with the rest of the row",
+    "tips": "Pull the yarn tight when you return to the main fabric after completing a bobble to prevent holes. Bobble size depends on how many stitches you increase to and how many short rows you work. A 3-stitch bobble is smaller and subtler than a 5-stitch one.",
+    "difficulty": "intermediate",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Nupps",
+    "slug": "nupps",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A delicate Estonian bobble technique that creates tiny, rounded bumps on the fabric surface. Unlike standard bobbles, nupps are completed over two rows: multiple loops are pulled through a single stitch on one row, then all loops are purled together on the return row. They are a hallmark of Estonian lace knitting.",
+    "how_to": "1. Row 1 (RS): Into the next stitch, work (K1, YO, K1, YO, K1) to create 5 loops from 1 stitch (do not turn)\n2. Continue across the row as the pattern directs\n3. Row 2 (WS): When you reach the 5 nupp loops, purl all 5 together as one stitch (P5tog)\n4. Continue across the row",
+    "tips": "The key to clean nupps is keeping the loops loose on the RS row so the P5tog on the WS row is manageable. Use a needle one size smaller for the WS row if needed. Some knitters use a crochet hook to pull the yarn through all 5 loops. Nupps require very loose tension on the increase row.",
+    "difficulty": "advanced",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Popcorn Stitch (Knitting)",
+    "slug": "popcorn-stitch-knitting",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A raised stitch that creates a round, puffy bump on the fabric surface. Similar to a bobble but typically formed by knitting several stitches into one, then folding the group over and securing it, rather than working short rows. The resulting bump is rounder and more compact than a standard bobble.",
+    "how_to": "1. Knit into the front, back, front, back, front of the next stitch (5 stitches made from 1)\n2. Pass the 2nd, 3rd, 4th, and 5th stitches on the right needle over the first stitch one at a time (like binding off)\n3. One stitch remains; the popcorn is complete\n4. Continue with the rest of the row",
+    "tips": "Popcorn stitches are faster to work than bobbles because they do not require turning the work. They sit on the right side of the fabric. For a larger popcorn, increase into more stitches (7 instead of 5).",
+    "difficulty": "intermediate",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Basketweave Stitch",
+    "slug": "basketweave-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A textured stitch pattern that mimics a woven basket by alternating blocks of knit and purl stitches. The blocks are typically arranged in a grid, with stockinette and reverse stockinette squares placed in a checkerboard arrangement. Creates a thick, structured fabric with excellent visual and tactile interest.",
+    "how_to": "1. Cast on a multiple of 8 stitches, plus 5\n2. Rows 1-5: *K5, P5* across, ending K5\n3. Rows 6-10: *P5, K5* across, ending P5\n4. Repeat rows 1-10",
+    "tips": "Block size can be adjusted (3x3, 4x4, 5x5, etc.) to change the scale of the pattern. Larger blocks make the weave pattern more visible. The fabric is thick and does not curl, making it excellent for blankets, washcloths, and bag panels.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Waffle Stitch",
+    "slug": "waffle-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A deeply textured stitch pattern that creates a grid of raised squares separated by recessed channels, resembling the surface of a waffle. The fabric is thick, absorbent, and squishy. Commonly used for dishcloths, blankets, and spa accessories.",
+    "how_to": "1. Cast on a multiple of 3 stitches, plus 1\n2. Row 1 (RS): K1, *P2, K1* across\n3. Row 2 (WS): P1, *K2, P1* across\n4. Row 3: Knit all stitches\n5. Row 4: P1, *K2, P1* across\n6. Repeat rows 1-4",
+    "tips": "Waffle stitch uses significantly more yarn than stockinette. The texture becomes more pronounced after washing and blocking. Use a slightly larger needle than you would for stockinette to keep the fabric from being too stiff.",
+    "difficulty": "beginner",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Linen Stitch",
+    "slug": "linen-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A dense, woven-looking stitch pattern created by alternating knit stitches with slipped stitches while bringing the yarn forward and back. The resulting fabric closely resembles woven linen cloth with a tight, firm hand. Excellent for bags, placemats, and structured garments.",
+    "how_to": "1. Cast on an even number of stitches\n2. Row 1 (RS): *K1, bring yarn to front, slip 1 purlwise, bring yarn to back* across\n3. Row 2 (WS): *P1, bring yarn to back, slip 1 purlwise, bring yarn to front* across\n4. Repeat rows 1-2",
+    "tips": "Linen stitch is very slow to knit and uses more yarn than stockinette, but the resulting fabric is incredibly stable and does not curl. It looks beautiful in two-color variations where you alternate colors every two rows, creating a tweed-like effect.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "woven stitch",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Brioche Stitch",
+    "slug": "brioche-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A distinctive ribbed fabric where each knit stitch is worked together with its paired yarn over from the previous row, creating deep, plush ribs on both sides. The fabric is double-thick, squishy, and reversible. Two-color brioche creates a striking effect where each side shows a different dominant color.",
+    "how_to": "1. Cast on an even number of stitches\n2. Set-up row: *Sl1yo (slip 1 purlwise with yarn over), BRK (knit the stitch together with its yarn over)* across\n3. Row 1: *Sl1yo, BRK* across\n4. Repeat row 1",
+    "tips": "Brioche uses roughly twice as much yarn as stockinette. Count stitches carefully as mistakes are hard to spot and difficult to fix. Each slipped stitch with its yarn over counts as one stitch. When measuring gauge, gently stretch the fabric vertically to see the true stitch definition.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "patent rib",
+        "region": null
+      }
+    ],
+    "video_url": null,
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": null,
+    "name": "Honeycomb Stitch",
+    "slug": "honeycomb-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A cable-based textured stitch pattern that creates a repeating pattern of interlocking cells resembling a honeycomb. Small cables cross alternately to the left and right on successive cable rows, forming hexagonal pockets. The fabric is thick, stretchy, and very warm.",
+    "how_to": "1. Cast on a multiple of 4 stitches\n2. Row 1 (RS): *Slip 2 to cable needle and hold in back, K2, K2 from cable needle (C4B)* across\n3. Row 2 (WS): Purl all stitches\n4. Row 3: K2, *Slip 2 to cable needle and hold in front, K2, K2 from cable needle (C4F)* across, ending K2\n5. Row 4: Purl all stitches\n6. Repeat rows 1-4",
+    "tips": "Honeycomb is one of the simplest allover cable patterns and a great introduction to cable knitting. The crossing rows alternate between C4B and C4F, offset by 2 stitches. The fabric pulls in significantly, so cast on more stitches than you would for stockinette.",
+    "difficulty": "intermediate",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Herringbone Stitch",
+    "slug": "herringbone-stitch",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A dense, woven-looking stitch pattern that creates a distinctive V-shaped zigzag pattern resembling herringbone tweed fabric. Worked by knitting two stitches together but only dropping the first stitch off the needle, creating overlapping diagonal lines. The resulting fabric is firm, thick, and has very little stretch.",
+    "how_to": "1. Cast on an even number of stitches\n2. Row 1 (RS): K2tog but only drop the first stitch off the left needle; *K2tog (using the remaining stitch and the next stitch), drop only the first stitch off* across, knit the last stitch\n3. Row 2 (WS): P2tog but only drop the first stitch off the left needle; *P2tog (using the remaining stitch and the next stitch), drop only the first stitch off* across, purl the last stitch\n4. Repeat rows 1-2",
+    "tips": "Herringbone stitch creates a very dense fabric that works well for bags, clutches, and outerwear. It uses less yarn than you might expect because each row essentially works across once despite the overlapping stitches. Use needles one or two sizes larger than normal to keep the fabric from being too stiff.",
+    "difficulty": "intermediate",
+    "synonyms": []
+  },
+  {
+    "abbreviation": "C4F",
+    "name": "Cable 4 Front",
+    "slug": "cable-4-front",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A four-stitch left-leaning cable cross. Two stitches are held on a cable needle in front of the work while the next two stitches are knitted, then the held stitches are knitted. This creates a cable that twists to the left. The number indicates total stitches involved in the cross.",
+    "how_to": "1. Slip the next 2 stitches onto a cable needle and hold in front of the work\n2. Knit the next 2 stitches from the left needle\n3. Knit the 2 stitches from the cable needle\n4. The cable crosses to the left",
+    "tips": "When holding stitches in front, the cable leans left. Keep the cable needle close to the left needle to avoid stretching the stitches. Some knitters prefer to work cables without a cable needle by carefully pinching the stitches.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "C2/2L",
+        "region": null
+      },
+      {
+        "synonym": "cable 4 left",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=9Wp0A-SR38E",
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": "C4B",
+    "name": "Cable 4 Back",
+    "slug": "cable-4-back",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A four-stitch right-leaning cable cross. Two stitches are held on a cable needle in back of the work while the next two stitches are knitted, then the held stitches are knitted. This creates a cable that twists to the right. The number indicates total stitches involved in the cross.",
+    "how_to": "1. Slip the next 2 stitches onto a cable needle and hold in back of the work\n2. Knit the next 2 stitches from the left needle\n3. Knit the 2 stitches from the cable needle\n4. The cable crosses to the right",
+    "tips": "When holding stitches in back, the cable leans right. Use a cable needle similar in size to your working needles. If you find the cable too tight, work the stitches slightly loosely on the row before the cable crossing.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "C2/2R",
+        "region": null
+      },
+      {
+        "synonym": "cable 4 right",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=3fz4nWqcRWE",
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": "C6F",
+    "name": "Cable 6 Front",
+    "slug": "cable-6-front",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A six-stitch left-leaning cable cross. Three stitches are held on a cable needle in front of the work while the next three stitches are knitted, then the held stitches are knitted. Creates a wider, more dramatic cable rope that twists to the left. Commonly used in Aran and fisherman-style patterns.",
+    "how_to": "1. Slip the next 3 stitches onto a cable needle and hold in front of the work\n2. Knit the next 3 stitches from the left needle\n3. Knit the 3 stitches from the cable needle\n4. The cable crosses to the left",
+    "tips": "Larger cables (6 or more stitches) typically need more rows between crossings than smaller cables (usually 6-8 rows between crosses). If the cable looks too loose, try using a needle one size smaller for the cable stitches.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "C3/3L",
+        "region": null
+      },
+      {
+        "synonym": "cable 6 left",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "C6B",
+    "name": "Cable 6 Back",
+    "slug": "cable-6-back",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A six-stitch right-leaning cable cross. Three stitches are held on a cable needle in back of the work while the next three stitches are knitted, then the held stitches are knitted. Creates a wider, more dramatic cable rope that twists to the right. A staple of traditional Aran knitting.",
+    "how_to": "1. Slip the next 3 stitches onto a cable needle and hold in back of the work\n2. Knit the next 3 stitches from the left needle\n3. Knit the 3 stitches from the cable needle\n4. The cable crosses to the right",
+    "tips": "Pair C6B with C6F to create classic cable ropes and braids. A standard cable rope alternates C6B and C6F on either side of a central panel. Cables pull the fabric in, so add extra stitches to compensate for the width reduction.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "C3/3R",
+        "region": null
+      },
+      {
+        "synonym": "cable 6 right",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "T2F",
+    "name": "Twist 2 Front",
+    "slug": "twist-2-front",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A mini cable that crosses one knit stitch over one purl stitch, leaning to the left. Unlike full cables, twists typically involve only two stitches and often cross a knit stitch with a purl stitch rather than knit over knit. Used to create traveling stitch patterns, diagonal lines, and small cable details.",
+    "how_to": "1. Slip the next stitch onto a cable needle and hold in front of the work\n2. Purl the next stitch from the left needle\n3. Knit the stitch from the cable needle",
+    "tips": "Twists can often be worked without a cable needle. For T2F without a cable needle: skip the first stitch, purl the second stitch, then knit the skipped stitch, and slide both off together. Twists are the building blocks of traveling stitch patterns found in Bavarian and Austrian knitting.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "twist 2 left",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "T2B",
+    "name": "Twist 2 Back",
+    "slug": "twist-2-back",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A mini cable that crosses one knit stitch over one purl stitch, leaning to the right. The knit stitch travels over the purl stitch to the right. Used alongside T2F to create traveling stitch patterns, zigzag lines, and decorative motifs on a reverse stockinette background.",
+    "how_to": "1. Slip the next stitch onto a cable needle and hold in back of the work\n2. Knit the next stitch from the left needle\n3. Purl the stitch from the cable needle",
+    "tips": "Pair T2F and T2B to make a knit stitch travel diagonally across a purl background, creating zigzags, diamonds, and other geometric shapes. These small twists add elegant detail without the bulk of full cables.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "twist 2 right",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Fair Isle",
+    "slug": "fair-isle",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A traditional stranded colorwork technique originating from Fair Isle, a small island in Scotland. Characterized by small, repeating geometric motifs worked in two colors per row, with the unused color carried (stranded) across the back of the work. Traditional Fair Isle uses a limited palette of natural and dyed colors with no more than two colors in any single row.",
+    "how_to": "1. Cast on with the main color\n2. Follow a colorwork chart, reading RS rows right to left and WS rows left to right\n3. When switching colors, pick up the new color and drop the old, carrying the unused yarn loosely across the back\n4. Keep floats (the strands on the back) relaxed; they should lie flat without pulling the fabric\n5. If a float spans more than 5 stitches, catch it by twisting it with the working yarn at the midpoint",
+    "tips": "Maintain consistent tension in both yarns; the background color is typically held in the left hand and the pattern color in the right (or vice versa), keeping the dominant color always in the same position. Fair Isle is almost always worked in the round to avoid purling with two colors. Swatch in the round to get accurate gauge.",
+    "difficulty": "advanced",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Intarsia",
+    "slug": "intarsia",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A colorwork technique used to create large blocks or motifs of color within a knitted fabric. Unlike stranded knitting, each color section uses a separate ball or bobbin of yarn, and the yarns are twisted together at each color change to prevent holes. The back of the fabric is clean with no long floats.",
+    "how_to": "1. Wind separate bobbins for each color section\n2. Knit with the first color to the color change point\n3. Drop the first color. Pick up the second color from under the first color (twisting them together)\n4. Continue knitting with the second color\n5. On the return row, twist the yarns at each color change in the same manner\n6. Always twist in the same direction to avoid tangling",
+    "tips": "Use bobbins or small butterflies of yarn rather than full balls to reduce tangling. Always twist the yarns at color changes to avoid holes. Intarsia is typically worked flat (back and forth); working intarsia in the round requires special techniques. Weave in ends as you go to reduce finishing work.",
+    "difficulty": "advanced",
+    "synonyms": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Stranded Colorwork",
+    "slug": "stranded-colorwork",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A general term for any colorwork technique where two or more colors are carried across a row, with the unused colors stranded (floated) behind the working stitches. This encompasses Fair Isle, Nordic, and other regional traditions. The stranded floats create a double-thick, warm fabric.",
+    "how_to": "1. Hold one color in each hand (Continental and English style simultaneously) or both in one hand\n2. Follow a colorwork chart, knitting each stitch in the indicated color\n3. Carry the unused color loosely across the back of the work\n4. Catch long floats (longer than 5 stitches) by twisting them with the working yarn\n5. Maintain even tension to prevent puckering",
+    "tips": "The fabric will be less elastic than single-color knitting. Use a needle one or two sizes larger than you would for plain stockinette. Spread stitches on the right needle when switching colors to keep floats loose enough. Blocking is essential to even out the tension in finished colorwork.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "stranded knitting",
+        "region": null
+      },
+      {
+        "synonym": "jacquard knitting",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Mosaic Knitting",
+    "slug": "mosaic-knitting",
+    "category": "stitch_pattern",
+    "craft_type": "knitting",
+    "definition": "A colorwork technique that creates geometric, two-color patterns using only one color per row. The second color appears through slipped stitches that show the color from the previous row. Much simpler than stranded colorwork because you never handle two yarns at once. Colors alternate every two rows.",
+    "how_to": "1. Work 2 rows with Color A: on the RS row, knit the Color A stitches and slip the Color B stitches purlwise with yarn in back; on the WS row, purl the Color A stitches and slip the Color B stitches with yarn in front\n2. Work 2 rows with Color B: on the RS row, knit the Color B stitches and slip the Color A stitches purlwise with yarn in back; on the WS row, purl the Color B stitches and slip the Color A stitches with yarn in front\n3. Repeat, alternating colors every 2 rows",
+    "tips": "Mosaic knitting can only create certain geometric patterns (no curves or diagonal lines steeper than 45 degrees) because each stitch can only be slipped for one row pair. It is an excellent introduction to colorwork because you only use one strand at a time. Charts are read differently than stranded colorwork charts.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "slip stitch colorwork",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "Ch",
+    "name": "Chain",
+    "slug": "chain-crochet",
+    "category": "stitch_pattern",
+    "craft_type": "crochet",
+    "definition": "The most basic crochet stitch and the foundation for most crochet projects. A chain is created by pulling a loop of yarn through the loop on the hook, forming a series of interlocking loops that resemble a braid. The chain serves as the foundation row (like casting on in knitting) and also creates turning chains at the start of rows.",
+    "how_to": "1. Make a slip knot and place it on the crochet hook\n2. Yarn over (wrap the yarn over the hook from back to front)\n3. Pull the yarn through the loop on the hook\n4. One chain stitch is complete\n5. Repeat steps 2-3 for the required number of chains",
+    "tips": "Keep your chains loose and even; tight chains make it very difficult to work into them on the first row. Count chains from the front, each V counts as one chain. The loop on the hook is never counted as a chain. Use a hook one size larger for the foundation chain if your chains tend to be tight.",
+    "difficulty": "beginner",
+    "synonyms": [],
+    "video_url": "https://www.youtube.com/watch?v=yqrutkQAsVE",
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": "Sl st",
+    "name": "Slip Stitch (Crochet)",
+    "slug": "slip-stitch-crochet",
+    "category": "stitch_pattern",
+    "craft_type": "crochet",
+    "definition": "The shortest crochet stitch, with almost no height. Created by inserting the hook into a stitch, yarning over, and pulling the yarn through both the stitch and the loop on the hook in one motion. Primarily used to join rounds, create seams, move the yarn position without adding height, and for surface crochet decoration.",
+    "how_to": "1. Insert the hook into the specified stitch\n2. Yarn over\n3. Pull the yarn through the stitch and through the loop on the hook in one motion\n4. One slip stitch is complete",
+    "tips": "Slip stitches should be worked loosely to prevent the fabric from puckering. When joining rounds, insert the hook into the top of the first stitch of the round (not into the chain). Slip stitch is also used to crochet pieces together for a flat, nearly invisible seam.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "single crochet",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=sH3hhfRzOuI",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "Sc",
+    "name": "Single Crochet",
+    "slug": "single-crochet",
+    "category": "stitch_pattern",
+    "craft_type": "crochet",
+    "definition": "A short, dense crochet stitch that creates a tight, sturdy fabric. After inserting the hook and pulling up a loop, you yarn over once more and pull through both loops on the hook. Single crochet creates a fabric with visible horizontal rows and is the foundation for amigurumi, bags, and any project requiring a firm fabric.",
+    "how_to": "1. Insert the hook into the specified stitch\n2. Yarn over and pull up a loop (2 loops on hook)\n3. Yarn over and pull through both loops on the hook\n4. One single crochet is complete",
+    "tips": "Single crochet typically uses 1 turning chain, which does not count as a stitch. Work your first single crochet into the same stitch as the turning chain. For amigurumi, use a hook one or two sizes smaller than recommended to create a tight fabric that will not show stuffing.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "double crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "dc",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=IMc8eV1X6is",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "Hdc",
+    "name": "Half Double Crochet",
+    "slug": "half-double-crochet",
+    "category": "stitch_pattern",
+    "craft_type": "crochet",
+    "definition": "A medium-height crochet stitch that falls between single crochet and double crochet in height. Created by yarning over before inserting the hook, pulling up a loop, then pulling through all three loops on the hook at once. Produces a slightly softer, more flexible fabric than single crochet with a distinctive third loop on the back.",
+    "how_to": "1. Yarn over\n2. Insert the hook into the specified stitch\n3. Yarn over and pull up a loop (3 loops on hook)\n4. Yarn over and pull through all 3 loops on the hook\n5. One half double crochet is complete",
+    "tips": "Half double crochet uses 2 turning chains, which may or may not count as a stitch depending on the pattern. The third loop visible on the back of hdc stitches can be worked into for decorative effects. Hdc creates a beautiful, slightly textured fabric that works up faster than single crochet.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "half treble crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "htr",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=knPcBEXSTU0",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "Dc",
+    "name": "Double Crochet",
+    "slug": "double-crochet",
+    "category": "stitch_pattern",
+    "craft_type": "crochet",
+    "definition": "One of the most commonly used crochet stitches, twice the height of a single crochet. Created by yarning over, inserting the hook, pulling up a loop, then working off two loops at a time twice. Produces an open, drapey fabric that works up quickly. The workhorse stitch for blankets, garments, and decorative items.",
+    "how_to": "1. Yarn over\n2. Insert the hook into the specified stitch\n3. Yarn over and pull up a loop (3 loops on hook)\n4. Yarn over and pull through the first 2 loops (2 loops remain)\n5. Yarn over and pull through the remaining 2 loops\n6. One double crochet is complete",
+    "tips": "Double crochet uses 3 turning chains, which typically count as the first dc of the row. Skip the first stitch and work your first dc into the second stitch. At the end of the row, work the last dc into the top of the turning chain from the previous row to maintain stitch count.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "treble crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "tr",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=drHjHCR9HBw",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "Tr",
+    "name": "Treble Crochet",
+    "slug": "treble-crochet",
+    "category": "stitch_pattern",
+    "craft_type": "crochet",
+    "definition": "A tall crochet stitch, roughly three times the height of a single crochet. Created by yarning over twice before inserting the hook, then working off two loops at a time three times. Produces a very open, lacy fabric with significant drape. Used in lace patterns, openwork designs, and when height or openness is desired.",
+    "how_to": "1. Yarn over twice\n2. Insert the hook into the specified stitch\n3. Yarn over and pull up a loop (4 loops on hook)\n4. Yarn over and pull through the first 2 loops (3 loops remain)\n5. Yarn over and pull through the next 2 loops (2 loops remain)\n6. Yarn over and pull through the remaining 2 loops\n7. One treble crochet is complete",
+    "tips": "Treble crochet uses 4 turning chains, which count as the first treble of the row. The tall stitches can be uneven when you are learning; focus on keeping consistent tension. Treble crochet is excellent for Afghan stitch patterns and openwork shawls.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "double treble crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "dtr",
+        "region": "UK"
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=G8uU4d3yNSc",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "Dtr",
+    "name": "Double Treble Crochet",
+    "slug": "double-treble-crochet",
+    "category": "stitch_pattern",
+    "craft_type": "crochet",
+    "definition": "A very tall crochet stitch, roughly four times the height of a single crochet. Created by yarning over three times before inserting the hook, then working off two loops at a time four times. Produces an extremely open, lacy fabric. Used sparingly in lace patterns, decorative clusters, and when significant height is needed in a single stitch.",
+    "how_to": "1. Yarn over three times\n2. Insert the hook into the specified stitch\n3. Yarn over and pull up a loop (5 loops on hook)\n4. Yarn over and pull through the first 2 loops (4 loops remain)\n5. Yarn over and pull through the next 2 loops (3 loops remain)\n6. Yarn over and pull through the next 2 loops (2 loops remain)\n7. Yarn over and pull through the remaining 2 loops\n8. One double treble crochet is complete",
+    "tips": "Double treble crochet uses 5 turning chains. This stitch is rarely used for allover fabric because it creates very large gaps. It appears most often in special stitch combinations like shells, fans, and decorative edgings where height variation creates visual interest.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "triple treble crochet",
+        "region": "UK"
+      },
+      {
+        "synonym": "ttr",
+        "region": "UK"
+      }
+    ]
+  }
+]

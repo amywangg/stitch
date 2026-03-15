@@ -130,11 +130,13 @@ export async function GET(req: NextRequest) {
       ravelry_username: ravelryUsername,
       access_token: encrypt(accessToken),
       token_secret: encrypt(tokenSecret),
+      sync_to_ravelry: true,
     },
     update: {
       ravelry_username: ravelryUsername,
       access_token: encrypt(accessToken),
       token_secret: encrypt(tokenSecret),
+      sync_to_ravelry: true,
     },
   })
 

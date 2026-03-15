@@ -1,0 +1,187 @@
+[
+  {
+    "slug": "basic-increases-kfb-m1",
+    "title": "Basic Increases (KFB & M1)",
+    "description": "Learn the two most common ways to add stitches and shape your knitting",
+    "category": "techniques",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 1,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Understand when to increase",
+        "content": "Increases add stitches to your work, making the fabric wider. They are used for shaping sleeves, creating raglan lines, flaring skirt hems, and many other design elements. The two most common increases are KFB (knit front and back) and M1 (make one). KFB is easier for beginners but leaves a visible bump at the increase point. M1 is nearly invisible and is preferred when you want a clean line. Most patterns will specify which increase to use, but understanding both gives you flexibility."
+      },
+      {
+        "step_number": 2,
+        "title": "Knit front and back (KFB)",
+        "content": "To work a KFB, insert your right needle into the next stitch on the left needle as if to knit. Wrap the yarn and pull through a new loop, but do not slide the old stitch off the left needle yet. Instead, swing your right needle around to the back and insert it into the back leg of the same stitch. Wrap the yarn and pull through a second loop. Now slide the old stitch off the left needle. You have created two stitches from one. The first stitch looks normal and the second creates a small horizontal bump, sometimes called a purl bar."
+      },
+      {
+        "step_number": 3,
+        "title": "Make one left (M1L)",
+        "content": "The M1L increase uses the horizontal strand of yarn that runs between two stitches. Knit up to the point where you need the increase. Using the left needle tip, pick up the horizontal strand between the stitch just worked and the next stitch by inserting the needle from front to back. The strand is now sitting on the left needle. Knit this strand through the back loop by inserting your right needle into the back leg of the lifted strand and knitting it. Twisting the strand by knitting through the back loop closes the hole and prevents a visible gap."
+      },
+      {
+        "step_number": 4,
+        "title": "Make one right (M1R)",
+        "content": "M1R is the mirror image of M1L and leans the opposite direction. Pick up the horizontal strand between stitches, but this time insert the left needle from back to front. The strand sits on the left needle with the opposite orientation from M1L. Now knit this strand through the front loop normally. The twist closes the gap, and the resulting stitch leans to the right. When patterns call for paired increases, you typically work M1R on one side and M1L on the other to create symmetrical shaping lines, such as along a raglan or on either side of a center stitch."
+      },
+      {
+        "step_number": 5,
+        "title": "Practice and compare",
+        "content": "Cast on about 20 stitches and knit a few rows in stockinette. Then practice a row with a KFB near the beginning and end, and on another section try M1L and M1R increases. Knit several rows between increase rows so you can see the results clearly. Notice how the KFB leaves a distinct bump while the M1 increases are almost invisible in the fabric. Try to keep your tension consistent on the increase stitches, as they tend to be either too tight or too loose until you get used to the motions."
+      }
+    ]
+  },
+  {
+    "slug": "basic-decreases-k2tog-ssk",
+    "title": "Basic Decreases (K2TOG & SSK)",
+    "description": "Master the two essential decrease methods for clean, directional shaping",
+    "category": "techniques",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 2,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Understand decrease direction",
+        "content": "Decreases remove stitches and make the fabric narrower. The two most common decreases lean in opposite directions: K2TOG (knit two together) leans to the right and SSK (slip, slip, knit) leans to the left. Patterns use them in pairs to create symmetrical shaping. For example, when decreasing for a neckline, you would typically SSK on the right side of the neck (left-leaning) and K2TOG on the left side (right-leaning), so the decreases mirror each other and angle toward the center."
+      },
+      {
+        "step_number": 2,
+        "title": "Knit two together (K2TOG)",
+        "content": "K2TOG is the simplest decrease. Insert your right needle through the next two stitches on the left needle at the same time, entering both from left to right just as you would for a regular knit stitch. Wrap the yarn around the right needle and pull through both stitches at once, then slide both old stitches off the left needle together. You have turned two stitches into one, and the resulting stitch slants to the right on the front of your work. This is the most intuitive decrease because the motion is exactly like a normal knit stitch, just through two loops instead of one."
+      },
+      {
+        "step_number": 3,
+        "title": "Slip, slip, knit (SSK)",
+        "content": "SSK creates a left-leaning decrease that mirrors K2TOG. Slip the first stitch from the left needle to the right needle knitwise (insert right needle as if to knit and transfer without actually knitting). Slip the next stitch the same way. Now insert the left needle tip into the front legs of both slipped stitches from left to right, so the left needle passes in front of the right. Wrap the yarn around the right needle and knit these two stitches together. The slipping step reorients the stitches so the decrease leans to the left."
+      },
+      {
+        "step_number": 4,
+        "title": "Purl-side decreases",
+        "content": "When you need to decrease on a purl row (the wrong side of stockinette), P2TOG is the purl equivalent of K2TOG. Insert the right needle through two stitches purlwise and purl them together. For a left-leaning purl decrease, use SSP (slip, slip, purl): slip two stitches knitwise one at a time to the right needle, transfer them back to the left needle without twisting, then purl them together through the back loops. These wrong-side decreases produce the same directional lean on the right side of the fabric as their knit-side counterparts."
+      },
+      {
+        "step_number": 5,
+        "title": "Practice paired decreases",
+        "content": "Cast on 30 stitches and knit a few rows of stockinette. On the next right-side row, knit 2, SSK, knit to the last 4 stitches, K2TOG, knit 2. Purl the wrong-side row. Repeat these two rows several times. You will see the edges angle inward symmetrically, with the SSK decreases leaning left on the right edge and the K2TOG decreases leaning right on the left edge. This paired decrease technique is used constantly in sleeve shaping, hat crowns, necklines, and anywhere you need symmetrical narrowing."
+      }
+    ]
+  },
+  {
+    "slug": "yarn-overs-and-eyelets",
+    "title": "Yarn Overs and Eyelets",
+    "description": "Create decorative holes in your knitting for lace patterns, buttonholes, and more",
+    "category": "techniques",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 3,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Understand what a yarn over does",
+        "content": "A yarn over (abbreviated YO) creates a new stitch by wrapping the yarn around the needle without knitting into an existing stitch. This produces both an increase (one extra stitch) and a small decorative hole in the fabric. Yarn overs are the foundation of all lace knitting. When a pattern wants the hole but not the extra stitch, it pairs the yarn over with a decrease like K2TOG or SSK on the same row so the total stitch count stays the same. The result is an eyelet: a deliberate, attractive hole framed by the angled decrease."
+      },
+      {
+        "step_number": 2,
+        "title": "Work a yarn over between two knit stitches",
+        "content": "This is the most common yarn over. After knitting a stitch, bring the working yarn from the back of the work to the front, passing it between the two needle tips. Then knit the next stitch as normal. As you insert the right needle to knit, the yarn naturally travels over the top of the right needle, creating an extra wrap. That wrap is your yarn over. It sits on the right needle as a loop and will be worked as a regular stitch on the next row. On the following row, simply knit or purl the yarn over as the pattern directs."
+      },
+      {
+        "step_number": 3,
+        "title": "Work a yarn over between a purl and a knit",
+        "content": "If you have just purled a stitch and need to make a yarn over before a knit stitch, the yarn is already in front of your work. Simply carry it over the top of the right needle to the back and knit the next stitch. The strand that travels over the needle becomes the yarn over. If you are going from a knit to a purl, bring the yarn to the front between the needles, wrap it over the right needle to the back, then bring it forward again between the needles before purling. These extra movements are needed so the yarn makes a full wrap around the needle."
+      },
+      {
+        "step_number": 4,
+        "title": "Create a basic eyelet pattern",
+        "content": "Try this simple eyelet row on a stockinette swatch. On a right-side row, knit 3, then work *YO, K2TOG, K4* and repeat between the asterisks across, adjusting the last few stitches as needed. Purl the wrong-side row. The yarn over adds a stitch and the K2TOG removes one, so your stitch count remains the same. After a few rows of plain stockinette, repeat the eyelet row. You will see a neat horizontal line of small holes. This simple technique is used for drawstring casings, ventilation in summer garments, and decorative borders."
+      },
+      {
+        "step_number": 5,
+        "title": "Tips for neat yarn overs",
+        "content": "Yarn overs tend to be loose and sloppy when you first learn them. To keep them tidy, make sure you only wrap the yarn once around the needle unless the pattern specifically calls for a double yarn over. When you work the yarn over on the following row, be careful not to drop it or accidentally twist it. If a yarn over looks too large, you can tighten it slightly by tugging the neighboring stitches. In lace knitting, blocking the finished piece will open up the yarn overs evenly and transform messy-looking lace into a crisp, beautiful fabric."
+      }
+    ]
+  },
+  {
+    "slug": "simple-cables",
+    "title": "Simple Cables",
+    "description": "Learn to twist stitches into rope-like cables using a cable needle",
+    "category": "techniques",
+    "craft_type": "knitting",
+    "difficulty": "intermediate",
+    "sort_order": 4,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Understand how cables work",
+        "content": "Cables are created by rearranging the order in which you knit a group of stitches. Instead of knitting them in sequence from left to right, you hold some stitches aside on a cable needle, knit the next stitches, then go back and knit the held stitches. This crosses one set of stitches over the other, creating the twisted rope effect. Cables do not add or remove stitches. The direction of the twist depends on whether you hold the stitches to the front (left-leaning cable) or the back (right-leaning cable) of your work."
+      },
+      {
+        "step_number": 2,
+        "title": "Gather your tools",
+        "content": "You will need a cable needle, which is a short, often U-shaped or hooked needle designed to hold stitches temporarily. If you do not have one, a spare double-pointed needle in a similar size works fine. Choose a cable needle that is the same size as or slightly smaller than your working needles so the held stitches do not stretch out. For practice, cast on 20 stitches and set up a simple panel: purl 6, knit 8, purl 6. The center 8 knit stitches will become your cable and the purl stitches on either side make the cable pop visually."
+      },
+      {
+        "step_number": 3,
+        "title": "Work a left-crossing cable (C4F)",
+        "content": "A C4F (cable 4 front) crosses 4 stitches with the cable twisting to the left. When you reach the 8 cable stitches, slip the first 4 stitches purlwise onto your cable needle and hold them in front of your work, letting the cable needle dangle. Knit the next 4 stitches from the left needle as normal, keeping the cable needle out of the way. Then knit the 4 stitches from the cable needle. The stitches that were held in front now sit on top, and the cable twists to the left. It may feel awkward at first, but the stitches will not fall off the cable needle."
+      },
+      {
+        "step_number": 4,
+        "title": "Work a right-crossing cable (C4B)",
+        "content": "A C4B (cable 4 back) is identical except you hold the stitches behind your work instead of in front. Slip 4 stitches to the cable needle and let it dangle behind your work. Knit the next 4 stitches from the left needle, then knit the 4 from the cable needle. The held stitches sit behind and the cable twists to the right. Try alternating C4F and C4B on your practice swatch every 6 or 8 rows to see how the two directions create different visual effects. Together they can form braids, diamonds, and other classic Aran patterns."
+      },
+      {
+        "step_number": 5,
+        "title": "Read cable notation and practice",
+        "content": "Cable abbreviations follow a pattern: the letter C means cable, the number indicates how many total stitches are involved, and F or B tells you which direction to hold the cable needle. C6F means cross 6 stitches with 3 held to front. Some patterns use different notation like 3/3 LC (3 over 3 left cross). Always check the pattern's stitch glossary. Cables typically cross every 6 to 12 rows, with plain knit rows in between. The rows between crossings are called rest rows. Practice until you can hold the cable needle confidently and maintain even tension on the stitches as they cross."
+      },
+      {
+        "step_number": 6,
+        "title": "Tips for clean cables",
+        "content": "Cables tend to pull the fabric in widthwise, so cable-heavy projects like Aran sweaters require significantly more stitches for the same width compared to plain stockinette. When you transfer stitches to and from the cable needle, tug the yarn gently on the first stitch after the cable to close any gap that forms at the crossing point. Keep the cable needle close to the working needles so the held stitches do not stretch out on a long cable needle. With practice, some knitters learn to cable without a cable needle by pinching the stitches with their fingers during the cross."
+      }
+    ]
+  },
+  {
+    "slug": "joining-in-the-round",
+    "title": "Joining in the Round",
+    "description": "Learn to knit seamless tubes on circular and double-pointed needles",
+    "category": "techniques",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 5,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Choose your needles",
+        "content": "Knitting in the round creates a seamless tube and is used for hats, socks, sleeves, and many garments. You can use circular needles (two needle tips connected by a flexible cable) or double-pointed needles (DPNs, a set of four or five short needles). Circular needles are easier for most beginners and are preferred for larger circumferences like sweater bodies. DPNs are typically used for small circumferences like sock toes and mitten fingers. The cable length of your circular needle should be shorter than the circumference of your knitting."
+      },
+      {
+        "step_number": 2,
+        "title": "Cast on and arrange stitches",
+        "content": "Cast on the required number of stitches using your preferred method. For circular needles, all stitches stay on the one needle and spread along the cable. Make sure the stitches are not twisted around the cable. Lay the needle flat on a table and check that all the cast-on loops hang down from the same side of the cable. For DPNs, divide the stitches evenly across three or four needles. For example, with 60 stitches and four DPNs, place 20 on each of three needles and use the fourth as your working needle."
+      },
+      {
+        "step_number": 3,
+        "title": "Check for twists",
+        "content": "This is the most critical step. Before joining, examine your stitches carefully and make sure the cast-on edge runs along the inside of the circle without spiraling around the needle or cable. Every cast-on bump should face the same direction, either all inward or all downward. If the stitches are twisted when you join, the twist is permanent and there is no way to fix it without ripping out and starting over. Take an extra moment to verify. Some knitters find it helpful to knit one or two flat rows first and then join, seaming the small gap later."
+      },
+      {
+        "step_number": 4,
+        "title": "Join for working in the round",
+        "content": "To join on circular needles, make sure the working yarn is attached to the stitch at the right needle tip. Place a stitch marker on the right needle to mark the beginning of the round. Simply knit the first stitch on the left needle tip, pulling the yarn snugly to close the gap between the first and last cast-on stitches. You are now knitting in the round. For DPNs, arrange the needles in a triangle (or square with four), place a marker, and knit across the first needle using the empty needle. When you finish a needle, it becomes the new working needle."
+      },
+      {
+        "step_number": 5,
+        "title": "Understand the difference from flat knitting",
+        "content": "When knitting in the round, you are always working on the right side of the fabric. This changes how stitch patterns work. Stockinette stitch is produced by knitting every round, since you never turn and purl. Garter stitch in the round requires alternating one knit round with one purl round. Ribbing and other patterns also change: you work them as they appear without reversing on wrong-side rows. Keep track of your beginning-of-round marker and count your rounds. A common mistake is accidentally knitting past the marker or dropping stitches at the transitions between DPNs."
+      }
+    ]
+  }
+]

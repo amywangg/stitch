@@ -87,6 +87,34 @@ Clerk handles authentication on both platforms: iOS SDK with custom SwiftUI view
 
 Authentication and onboarding are available to all users. No Pro gating.
 
+## Onboarding Strategy (Monetization-Aligned)
+
+The onboarding flow must achieve **activation in the first session**: user creates a project + increments the counter at least once. 63% of users consider onboarding a key factor in their subscription decision.
+
+### Recommended First-Session Flow
+
+1. **Welcome** — "What do you love to make?" (knitting/crochet/both) + experience level (beginner/intermediate/advanced)
+2. **Quick win** — "Let's set up your first project." Guide them to create a project with a title and yarn
+3. **Core loop** — show the row counter, have them tap it once. They've now used the #1 daily feature
+4. **Data investment** — "Want to import your Ravelry stash?" (if they use Ravelry) or "Add your first yarn to your stash" (if not)
+5. **Pro taste** — show one AI feature in action (e.g., auto-suggest patterns for their stash yarn) with a "Pro trial" badge
+6. **Done** — they have a project, a row count, and stash data. They're invested.
+
+### Rules
+
+- Never show a paywall before the activation moment
+- No tutorial screens — learn by doing
+- 2-3 personalization questions max
+- First session ends with something the user made (a project card, a row count, a saved pattern)
+
+### Reverse Trial Integration
+
+On signup, the user automatically receives 14 days of full Pro access. The onboarding flow should surface Pro features naturally during this window. See `002-subscriptions-and-pro-tier.md` for reverse trial implementation and `017-monetization-and-growth.md` §4-5 for strategy.
+
+### Activation Tracking
+
+Track the activation metric: "created project + incremented counter at least once." This metric is the primary indicator of retention and should feed into analytics (see analytics requirements in `FEATURE-GAPS.md`).
+
 ## Technical Notes
 
 - Clerk iOS SDK uses `ClerkManager.shared.sessionToken()` to get JWTs, which `APIClient` attaches as Bearer tokens automatically.
@@ -94,3 +122,4 @@ Authentication and onboarding are available to all users. No Pro gating.
 - `getDbUser()` has an upsert fallback so the app does not break if a webhook is delayed or missed. This means the first API call from a new user may be slightly slower.
 - Onboarding steps are tracked individually so a user who kills the app mid-flow can resume where they left off.
 - iOS tokens must never be stored in UserDefaults. KeychainManager is the only approved storage.
+- On user creation (Clerk webhook or `getDbUser` upsert): set `users.trial_ends_at = now + 14 days`, `users.is_pro = true` to activate the reverse trial.

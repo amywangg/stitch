@@ -147,6 +147,13 @@ extension SuppliesView {
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                 ForEach(viewModel.items) { item in
                     SupplyGridCell(item: item)
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                Task { await viewModel.delete(item) }
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                 }
             }
             .padding(.horizontal, 16)

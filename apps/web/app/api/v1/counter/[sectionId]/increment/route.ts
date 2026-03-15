@@ -21,6 +21,10 @@ export async function POST(_req: NextRequest, { params }: Params) {
   })
   if (!section) return NextResponse.json({ error: 'Section not found' }, { status: 404 })
 
+  if (section.completed) {
+    return NextResponse.json({ error: 'Section is already completed' }, { status: 422 })
+  }
+
   const previous = section.current_row
   const newTap = previous + 1
 
@@ -28,6 +32,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
   let newStep = section.current_step
   let newTapInStep = newTap
   let autoAdvanced = false
+  let sectionCompleted = false
 
   if (section.pattern_section_id) {
     const patternSteps = await prisma.pattern_rows.findMany({
@@ -38,27 +43,23 @@ export async function POST(_req: NextRequest, { params }: Params) {
     if (patternSteps.length > 0) {
       const currentStepData = resolveStep(patternSteps, section.current_step)
       if (currentStepData && shouldAutoAdvance(currentStepData, newTap)) {
-        // Move to next step, reset tap counter
         const nextStepData = resolveStep(patternSteps, section.current_step + 1)
         if (nextStepData) {
+          // Move to next step, reset tap counter
           newStep = section.current_step + 1
           newTapInStep = 0
           autoAdvanced = true
+        } else {
+          // No next step — last step finished, section is complete
+          sectionCompleted = true
         }
-        // If no next step, section is complete — handled below
       }
     }
   }
 
-  // Check if section is now complete
-  let sectionCompleted = false
-  if (section.pattern_section_id && autoAdvanced) {
-    const totalSteps = await prisma.pattern_rows.count({
-      where: { section_id: section.pattern_section_id },
-    })
-    if (newStep > totalSteps) {
-      sectionCompleted = true
-    }
+  // Also complete section when target_rows reached (basic counter without pattern steps)
+  if (!sectionCompleted && section.target_rows && newTap >= section.target_rows) {
+    sectionCompleted = true
   }
 
   await prisma.$transaction([
@@ -86,25 +87,40 @@ export async function POST(_req: NextRequest, { params }: Params) {
     })
   }
 
-  // Auto-finish: when target_rows is set and counter reaches it
-  if (section.target_rows && newTap >= section.target_rows) {
-    const today = new Date()
-    await prisma.projects.update({
-      where: { id: section.project_id },
-      data: { status: 'completed', finished_at: today },
+  // Auto-finish: only when ALL sections in the project are completed
+  if (sectionCompleted || (section.target_rows && newTap >= section.target_rows)) {
+    // Check if every other section is also completed
+    const allSections = await prisma.project_sections.findMany({
+      where: { project_id: section.project_id },
+      select: { id: true, completed: true, current_row: true, target_rows: true },
     })
 
-    emitActivity({ userId: user.id, type: 'project_completed', projectId: section.project_id })
+    const allDone = allSections.every((s) => {
+      if (s.id === sectionId) return true // this section just finished
+      if (s.completed) return true
+      if (s.target_rows && s.current_row >= s.target_rows) return true
+      return false
+    })
 
-    if (section.project.ravelry_permalink) {
-      const push = await getRavelryPushClient(user.id)
-      if (push) {
-        pushToRavelry(() =>
-          push.client.updateProject(section.project.ravelry_permalink!, {
-            status_name: 'Finished',
-            completed: today.toISOString().slice(0, 10),
-          }),
-        )
+    if (allDone) {
+      const today = new Date()
+      await prisma.projects.update({
+        where: { id: section.project_id },
+        data: { status: 'completed', finished_at: today },
+      })
+
+      emitActivity({ userId: user.id, type: 'project_completed', projectId: section.project_id })
+
+      if (section.project.ravelry_permalink) {
+        const push = await getRavelryPushClient(user.id)
+        if (push) {
+          pushToRavelry(() =>
+            push.client.updateProject(section.project.ravelry_permalink!, {
+              status_name: 'Finished',
+              completed: today.toISOString().slice(0, 10),
+            }),
+          )
+        }
       }
     }
   }
@@ -132,6 +148,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
         stitch_count: resolved.stitch_count,
         row_type: resolved.row_type,
         is_repeat: resolved.is_repeat,
+        is_open_ended: resolved.is_open_ended ?? false,
         position: resolved ? getStepPosition(resolved, effectiveTap) : null,
         progress,
         auto_advanced: autoAdvanced,

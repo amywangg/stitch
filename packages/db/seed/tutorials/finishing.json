@@ -1,0 +1,151 @@
+[
+  {
+    "slug": "wet-blocking",
+    "title": "Wet Blocking",
+    "description": "Transform your finished knitting with wet blocking to even out stitches, open up lace, and achieve the correct dimensions",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "difficulty": "beginner",
+    "sort_order": 1,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Soak your finished piece",
+        "content": "Fill a basin or clean sink with cool to lukewarm water. Add a small amount of wool wash or a gentle no-rinse detergent. Submerge your knitted piece and gently press it down so the water penetrates all the fibers. Do not agitate, wring, or rub the fabric, as this can cause felting with animal fibers. Let the piece soak for at least 20 minutes. This gives the fibers time to fully relax and absorb water. Very dense fabrics or tightly spun yarns may benefit from soaking up to an hour."
+      },
+      {
+        "step_number": 2,
+        "title": "Remove excess water",
+        "content": "Lift the piece out of the water, supporting it with both hands so the weight does not stretch it. Gently squeeze out excess water without wringing or twisting. Lay the piece flat on a clean, dry towel and roll the towel up with the knitting inside, pressing firmly to transfer water from the knitting into the towel. Unroll and repeat with a second dry towel if needed. The knitting should feel damp but not dripping. This towel-rolling step significantly reduces drying time and prevents the piece from sitting in a puddle on the blocking surface."
+      },
+      {
+        "step_number": 3,
+        "title": "Pin to measurements",
+        "content": "Lay the damp piece on a blocking mat, foam puzzle tiles, or a clean carpeted surface covered with a towel. Gently stretch and shape the piece to match the finished measurements listed in your pattern. Use rust-proof T-pins or blocking pins to hold the piece in place, pinning along edges and at key measurement points. For a sweater, pin the width at the bust, waist, and hem, then pin the length from shoulder to hem. Use a measuring tape or ruler to verify dimensions as you pin. Do not overstretch; just ease the fabric to the target measurements."
+      },
+      {
+        "step_number": 4,
+        "title": "Shape specific elements",
+        "content": "Lace shawls and doilies need their points pinned out individually with blocking wires or a pin at each point to open up the lace pattern. Run blocking wires through the straight edges to create crisp, even lines. For ribbing, do not pin it stretched out unless the pattern says to, as ribbing is designed to pull in. Gently pat cables to puff them up rather than flattening them. Seed stitch and textured patterns should be patted into shape rather than stretched. The goal is to enhance the natural characteristics of each stitch pattern."
+      },
+      {
+        "step_number": 5,
+        "title": "Dry completely before unpinning",
+        "content": "Leave the piece pinned until it is completely dry, which usually takes 24 to 48 hours depending on the yarn weight, humidity, and air circulation. Do not rush this step. If you unpin while the piece is still damp, it will shrink back and you will lose the blocking effect. Speed up drying by placing the blocking setup near a fan or in a well-ventilated room. Avoid direct sunlight or heat sources, which can damage the yarn. Once fully dry, remove the pins and admire the transformation. Blocking evens out your tension, opens up lace, and gives your project a professional, polished finish."
+      }
+    ]
+  },
+  {
+    "slug": "mattress-stitch-seaming",
+    "title": "Mattress Stitch Seaming",
+    "description": "Create an invisible seam to join two knitted pieces with a professional finish",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "difficulty": "intermediate",
+    "sort_order": 2,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Lay pieces side by side",
+        "content": "Mattress stitch creates an invisible vertical seam by weaving yarn between the edge stitches of two pieces on the right side of the fabric. Lay both pieces flat on a table with their right sides facing up and the edges to be joined running parallel, close together. Line up the rows so they match. If one piece has slightly more rows than the other, you will need to occasionally pick up two bars on the longer piece to keep them aligned. Thread a tapestry needle with a length of matching yarn about 1.5 times the length of the seam."
+      },
+      {
+        "step_number": 2,
+        "title": "Find the seaming bars",
+        "content": "Look at the edge stitches on each piece. Between the edge stitch and the second stitch in from the edge, you will see small horizontal bars running between the V shapes of the knit stitches. These bars are the rungs of a ladder that runs up the fabric between the first and second columns of stitches. You will be sewing under these bars, alternating between the left piece and the right piece. Working one full stitch in from the edge gives you a neater seam than working right at the very edge."
+      },
+      {
+        "step_number": 3,
+        "title": "Begin seaming",
+        "content": "Anchor your yarn at the bottom of the seam by passing the tapestry needle through the cast-on edge of one piece from back to front, then through the corresponding spot on the other piece. Now begin the mattress stitch: insert the tapestry needle under one or two bars on the right piece, pulling the yarn through. Then insert the needle under the same number of bars on the left piece directly across. Go back to the right piece and pick up the next bar or two. The yarn zigzags between the two pieces in a figure-eight path."
+      },
+      {
+        "step_number": 4,
+        "title": "Maintain tension and alignment",
+        "content": "After every few stitches, gently pull the seaming yarn to draw the two pieces together. The edges will roll inward and the seam becomes invisible as the columns of stitches from each piece line up next to each other with no gap. Do not pull too tightly or the seam will pucker. Do not leave it too loose or you will see a visible line between the pieces. The key is matching the tension of the seam to the tension of the knitted fabric. Check your alignment frequently by counting rows on each side to make sure you have not drifted."
+      },
+      {
+        "step_number": 5,
+        "title": "Finish the seam",
+        "content": "When you reach the top of the seam, secure the yarn by weaving it through several stitches on the wrong side, changing direction once or twice to lock it. Clip the tail close to the fabric. Turn the piece over to check the wrong side: you should see a neat line of horizontal dashes. Turn back to the right side and verify the seam is invisible. Mattress stitch is the standard seaming technique for side seams and sleeve seams on sweaters. It works on stockinette, and with slight adaptations can also join garter stitch, ribbing, and seed stitch edges."
+      }
+    ]
+  },
+  {
+    "slug": "kitchener-stitch-grafting",
+    "title": "Kitchener Stitch (Grafting)",
+    "description": "Graft two sets of live stitches together to create a seamless, invisible join",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "difficulty": "intermediate",
+    "sort_order": 3,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Set up the two needles",
+        "content": "Kitchener stitch grafts two sets of live stitches together so the join looks like a continuous row of knitting with no seam line. You need an equal number of stitches on two needles. Hold the needles parallel in your left hand with the wrong sides of the fabric facing each other and the right sides facing out. Both needle tips should point to the right. Cut the working yarn, leaving a tail about three times the width of the stitches to be grafted, and thread it onto a tapestry needle. The yarn should be coming from the back needle."
+      },
+      {
+        "step_number": 2,
+        "title": "Work the setup stitches",
+        "content": "Before you begin the main grafting sequence, you need to set up the first stitch on each needle. Insert the tapestry needle through the first stitch on the front knitting needle as if to purl (from right to left). Pull the yarn through but leave the stitch on the needle. Now insert the tapestry needle through the first stitch on the back needle as if to knit (from left to right). Pull the yarn through and leave the stitch on the needle. These setup moves position the yarn correctly for the repeating sequence that follows."
+      },
+      {
+        "step_number": 3,
+        "title": "Repeat the four-step grafting sequence",
+        "content": "The main sequence has four steps that you repeat until all stitches are grafted. Step 1: go through the first stitch on the front needle knitwise and slip it off the needle. Step 2: go through the next stitch on the front needle purlwise and leave it on. Step 3: go through the first stitch on the back needle purlwise and slip it off. Step 4: go through the next stitch on the back needle knitwise and leave it on. Repeat these four steps. A helpful mnemonic for the front needle is knit off, purl on, and for the back needle purl off, knit on."
+      },
+      {
+        "step_number": 4,
+        "title": "Manage your tension",
+        "content": "The trickiest part of Kitchener stitch is keeping the tension of the grafted row consistent with the knitted fabric on either side. Do not pull the yarn tight after each stitch. Instead, leave the loops fairly loose as you work, matching the size of the knitted stitches above and below. After grafting all the stitches, go back to the beginning and adjust the tension stitch by stitch, working from one end to the other. Use the tapestry needle tip to gently tug each loop until it matches its neighbors. This tuning pass transforms messy grafting into an invisible join."
+      },
+      {
+        "step_number": 5,
+        "title": "Common uses and troubleshooting",
+        "content": "Kitchener stitch is most commonly used to close the toes of top-down socks, join the underarms of seamless sweaters, and graft the ends of cowls and headbands for a seamless loop. If your grafted row looks twisted or like purl bumps instead of knit Vs, you likely mixed up the knitwise and purlwise insertions. Rip out and try again, following the mnemonic carefully. If you lose track of where you are in the sequence, look at the last stitch you worked: if the yarn exits toward you (purlwise), the next step is a knitwise move on the same needle, and vice versa."
+      }
+    ]
+  },
+  {
+    "slug": "picking-up-stitches",
+    "title": "Picking Up Stitches",
+    "description": "Learn to pick up stitches along edges to add collars, button bands, borders, and more",
+    "category": "finishing",
+    "craft_type": "knitting",
+    "difficulty": "intermediate",
+    "sort_order": 4,
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "Understand pick-up ratios",
+        "content": "Picking up stitches means creating new live stitches along a finished edge so you can knit a border, collar, button band, or other element directly onto the piece without seaming. The number of stitches you pick up depends on the direction you are working. Along a horizontal edge (like a cast-on or bind-off edge), pick up one stitch for each existing stitch, which is a 1:1 ratio. Along a vertical edge (like a selvedge), the ratio is typically 3 stitches picked up for every 4 rows, because knit stitches are wider than they are tall. Your pattern will usually specify the exact number."
+      },
+      {
+        "step_number": 2,
+        "title": "Pick up along a horizontal edge",
+        "content": "Working with the right side facing you, insert your knitting needle from front to back through the center of the first stitch below the bind-off chain or above the cast-on edge. Wrap the working yarn around the needle and pull a loop through to the front, just as if you were knitting. This loop is your first picked-up stitch. Continue across, inserting the needle through each stitch along the edge. Keep the picked-up stitches even and avoid splitting the yarn of the existing stitches. A crochet hook can make it easier to pull loops through tight edges."
+      },
+      {
+        "step_number": 3,
+        "title": "Pick up along a vertical edge",
+        "content": "Along a side edge, the technique is the same but you need to skip stitches to achieve the correct ratio. Working with the right side facing you, insert the needle through the space between the edge stitch and the second stitch, one full stitch in from the edge. Pick up 3 stitches, then skip 1 row, and repeat. This 3-out-of-4 ratio prevents the picked-up band from being too full and rippling, or too sparse and pulling in. Some patterns specify a different ratio; always follow the pattern count if one is given and adjust your spacing to distribute the pick-ups evenly."
+      },
+      {
+        "step_number": 4,
+        "title": "Pick up along curved edges",
+        "content": "Necklines, armholes, and other curved edges combine horizontal sections (across bound-off stitches), diagonal sections (along decreases), and vertical sections (along straight selvedge). Divide the edge into these sections and apply the appropriate ratio to each one. Mark the sections with removable stitch markers and divide the total pick-up count proportionally. For example, if a neckline calls for 80 stitches and the back is about half the circumference, aim for about 40 stitches across the back and split the remaining 40 between the two front sides."
+      },
+      {
+        "step_number": 5,
+        "title": "Tips for clean pick-up edges",
+        "content": "Always pick up stitches with a needle one or two sizes smaller than your working needle, then switch to the correct size on the first row. This prevents the picked-up loops from being too large and creating a sloppy-looking join. If you see holes at the transition between sections (especially where horizontal meets vertical), pick up an extra stitch in the gap and decrease it away on the first row. After picking up all stitches, count them before you begin knitting. It is much easier to add or remove a stitch at this stage than to discover the count is wrong several rows into the border."
+      },
+      {
+        "step_number": 6,
+        "title": "Common applications",
+        "content": "Picking up stitches is used for neckbands on pullover sweaters, button bands on cardigans, armhole edgings on vests, thumb gussets on mittens, heel flap stitches on socks, and borders on blankets and scarves. In each case, the picked-up stitches create a seamless, integrated edge that looks far more polished than a separately knitted piece that is sewn on. With practice, picking up stitches becomes one of the most satisfying finishing techniques because it transforms flat pieces into a complete, cohesive garment."
+      }
+    ]
+  }
+]

@@ -1,0 +1,744 @@
+[
+  {
+    "abbreviation": null,
+    "name": "Knitting in the Round",
+    "slug": "knitting-in-the-round",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A technique where stitches are worked continuously in a spiral on circular needles or double-pointed needles, producing a seamless tube of fabric. The right side of the work always faces the knitter, so stockinette stitch is achieved by knitting every round.",
+    "how_to": "1. Cast on the required number of stitches onto a circular needle or divide them across double-pointed needles.\n2. Spread the stitches evenly without twisting them around the needle(s).\n3. Place a stitch marker to indicate the beginning of the round.\n4. Join the round by knitting the first cast-on stitch with the working yarn coming from the last cast-on stitch.\n5. Continue knitting every stitch around. When you reach the marker, slip it and begin the next round.\n6. Repeat until the piece reaches the desired length.",
+    "tips": "Before joining, lay the needle flat and make sure all cast-on stitches face inward with no twists. A twisted join cannot be fixed later without ripping back. For a neater join, cast on one extra stitch and knit it together with the first stitch when joining.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "circular knitting",
+        "region": null
+      },
+      {
+        "synonym": "knitting in rounds",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=_BNZx2Nt8Ng",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Knitting Flat",
+    "slug": "knitting-flat",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "Working back and forth in rows on straight or circular needles, turning the work at the end of each row. The knitter alternates between right-side and wrong-side rows. Stockinette stitch requires alternating knit rows and purl rows.",
+    "how_to": "1. Cast on the required number of stitches onto a straight needle or circular needle.\n2. Work across all stitches following the pattern instructions for the right-side row.\n3. Turn the work so the opposite side faces you.\n4. Work the wrong-side row according to the pattern.\n5. Turn again and repeat, alternating right-side and wrong-side rows.\n6. When the piece is complete, bind off all stitches.",
+    "tips": "Circular needles can be used for flat knitting when you have a large number of stitches that won't comfortably fit on straight needles. The cable distributes the weight and is easier on your wrists. Edge stitches tend to be looser when knitting flat, so consider a selvedge technique for neater seams.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "back and forth knitting",
+        "region": null
+      },
+      {
+        "synonym": "flat knitting",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Magic Loop",
+    "slug": "magic-loop",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A technique for knitting small circumferences in the round using a single long circular needle (typically 32 inches or longer). The stitches are divided into two halves on the needle, with loops of cable pulled out between them, allowing the knitter to work tubes too small for standard circular needles.",
+    "how_to": "1. Cast on the required number of stitches onto a long circular needle (32–40 inches).\n2. Slide stitches to the center of the cable. Find the midpoint and pull a loop of cable between the two halves of stitches.\n3. Slide each half of stitches onto a needle tip so the working yarn is at the right end of the back needle.\n4. Pull the back needle tip to the right so those stitches rest on the cable.\n5. Knit across the front needle stitches using the back needle tip.\n6. Turn the work, pull the new back needle to create the cable loop, and knit across the new front stitches.\n7. Repeat, always knitting the front half and then rotating.",
+    "tips": "Use a needle with a flexible, smooth cable to avoid kinking. A cable that is too stiff will fight you at the loop points. Mark the beginning of the round with a stitch marker placed before the first stitch, not at the cable loop, since the loop position can shift. Magic loop eliminates the need for DPNs entirely.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "magic loop method",
+        "region": null
+      },
+      {
+        "synonym": "magic loop technique",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=RIpqMKq20n4",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Two Circulars Method",
+    "slug": "two-circulars-method",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A technique for knitting small-circumference tubes using two circular needles instead of double-pointed needles or magic loop. Half the stitches sit on each circular needle, and each half is worked using only its own needle pair, with the other needle hanging idle.",
+    "how_to": "1. Cast all stitches onto one circular needle, then slip half onto a second circular needle.\n2. Arrange so the working yarn is at the right tip of the back needle.\n3. Let the front needle tips hang while you slide the back-needle stitches to the right tip.\n4. Using the other tip of the same needle, knit across those stitches.\n5. Turn the work. Now the second needle is in front. Let the first needle hang.\n6. Slide stitches to the right tip of the active needle and knit across with its own other tip.\n7. Continue alternating between the two needles.",
+    "tips": "Use two needles of the same size but different materials or cable colors so you can instantly tell which tips belong together. Always make sure you pick up the correct needle pair. Pull the yarn snug at each transition to avoid laddering where the needles meet.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "two circular needles",
+        "region": null
+      },
+      {
+        "synonym": "2-circ method",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Top-Down Construction",
+    "slug": "top-down-construction",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A garment construction method where the knitting begins at the neckline and works downward toward the hem. Stitches are increased at strategic points to shape the shoulders and body. The piece is typically worked in the round and can often be completed with minimal or no seaming.",
+    "how_to": "1. Cast on stitches for the neckline onto a circular needle.\n2. Place markers to divide stitches into front, back, and two sleeve sections.\n3. Work increase rounds (typically every other round) at each marker to shape the yoke.\n4. Continue until the yoke depth is reached and the stitch counts for body and sleeves are correct.\n5. Place sleeve stitches on waste yarn or stitch holders.\n6. Cast on underarm stitches and join the body into a single round.\n7. Knit the body down to the desired length and bind off.\n8. Return to held sleeve stitches, pick up underarm stitches, and knit sleeves downward.\n9. Bind off sleeve cuffs.",
+    "tips": "Top-down construction allows you to try on the garment as you go, making fit adjustments easy. You can also adjust length by simply knitting more or fewer rounds before binding off. This method uses more stitch markers than bottom-up, so use distinctive markers for the raglan lines.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "top down",
+        "region": null
+      },
+      {
+        "synonym": "TDD (top-down design)",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Bottom-Up Construction",
+    "slug": "bottom-up-construction",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A garment construction method where individual pieces (front, back, sleeves) are knit separately starting from the hem or cuff and working upward. The finished pieces are then seamed together. This is the traditional construction method found in most commercial knitting patterns.",
+    "how_to": "1. Cast on stitches for the back piece at the hem edge.\n2. Work upward, following the pattern for any shaping (waist, armhole, shoulders, neckline).\n3. Bind off and set aside. Repeat for the front piece(s).\n4. Cast on sleeve stitches at the cuff and work upward, increasing for the sleeve shaping.\n5. Shape the sleeve cap with decreases and bind off.\n6. Block all pieces to the schematic measurements.\n7. Seam the pieces together: shoulder seams first, then set in sleeves, then side and sleeve seams.\n8. Pick up stitches around the neckline for a collar or neckband.",
+    "tips": "Blocking before seaming makes assembly much easier and produces a more professional result. Use mattress stitch for invisible side seams. Bottom-up construction is ideal when you want to match existing garments since you can compare flat pieces to a schematic before assembly.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "bottom up",
+        "region": null
+      },
+      {
+        "synonym": "piece-and-seam",
+        "region": null
+      },
+      {
+        "synonym": "seamed construction",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Raglan",
+    "slug": "raglan",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A sleeve and yoke construction where diagonal shaping lines run from the neckline to the underarm, creating a seamless yoke without a traditional shoulder seam. Named after Lord Raglan. Increases (top-down) or decreases (bottom-up) are worked at four points to shape the yoke into front, back, and two sleeves simultaneously.",
+    "how_to": "1. For top-down: cast on neckline stitches and place four markers to define the raglan lines.\n2. Work an increase round: increase one stitch before and one stitch after each raglan marker (8 stitches increased per round).\n3. Work a plain round between increase rounds.\n4. Repeat until the yoke measures the correct depth and stitch counts match the pattern.\n5. Separate sleeves and body at the underarm.\n6. For bottom-up: knit body and sleeves separately, then join at the yoke and decrease at the four raglan lines every other round up to the neckline.",
+    "tips": "Raglan increases create a decorative diagonal line that can be emphasized with a textured or lace increase. Try using a lifted increase for a nearly invisible line, or a yarn-over for a decorative eyelet line. Check your yoke depth against the pattern schematic, as body proportions vary and the standard increase rate may need adjustment for different sizes.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "raglan yoke",
+        "region": null
+      },
+      {
+        "synonym": "raglan sleeve",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Set-In Sleeve",
+    "slug": "set-in-sleeve",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A tailored sleeve construction where the sleeve cap is shaped with a curve that matches a corresponding armhole curve on the body. This produces a fitted, structured look with a seam at the natural shoulder point. It is the most tailored sleeve construction and closely mimics woven garment construction.",
+    "how_to": "1. Knit the body pieces (front and back) with armhole shaping: bind off several stitches at the underarm, then decrease gradually to the shoulder.\n2. Knit the sleeve from cuff to underarm, increasing to full width.\n3. Shape the sleeve cap: bind off stitches at the underarm to match the body, then decrease on both edges every other row.\n4. Continue decreasing until only a small number of stitches remain at the cap top. Bind off.\n5. Block all pieces.\n6. Pin the sleeve cap into the armhole, matching the center of the cap to the shoulder seam and the underarm points.\n7. Sew the sleeve into the armhole using backstitch or mattress stitch, easing any fullness.",
+    "tips": "The sleeve cap should be slightly larger than the armhole to allow for ease. Pin generously before sewing, distributing any extra fabric evenly. If you find set-in sleeve seaming intimidating, practice the pinning step first without sewing. Wetting the cap slightly can help ease the fabric into the armhole curve.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "set in sleeve",
+        "region": null
+      },
+      {
+        "synonym": "fitted sleeve",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Drop Shoulder",
+    "slug": "drop-shoulder",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "The simplest sleeve construction where the body is knit as a straight rectangle with no armhole shaping, and the sleeves are attached at the sides. The shoulder seam falls below the natural shoulder line onto the upper arm, creating a relaxed, boxy silhouette.",
+    "how_to": "1. Knit the front and back body pieces as simple rectangles to the desired length. No armhole shaping is needed.\n2. Join the shoulder seams, leaving a centered opening for the neckline.\n3. Measure the armhole depth from the shoulder seam downward on both sides.\n4. Knit sleeves to match that measurement in width at the top.\n5. Center the bound-off sleeve top at the shoulder seam and sew the sleeve to the body along the armhole depth.\n6. Sew the side seams and sleeve seams in one continuous line.",
+    "tips": "Drop shoulder construction is beginner-friendly because there is no armhole or sleeve cap shaping. The trade-off is a boxier fit with extra fabric under the arm. Choose a yarn with good drape for a more flattering result, or embrace the oversized look with a stiffer yarn.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "dropped shoulder",
+        "region": null
+      },
+      {
+        "synonym": "straight shoulder",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Saddle Shoulder",
+    "slug": "saddle-shoulder",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A sleeve construction where a narrow extension of the sleeve top continues across the shoulder to the neckline, forming a strap-like panel. This creates a distinctive design line across the shoulder and provides a structured fit between a raglan and a set-in sleeve.",
+    "how_to": "1. Knit the sleeve from cuff upward, shaping as for a set-in sleeve.\n2. Instead of binding off the full sleeve cap, decrease to a narrow strap (typically 2–3 inches wide).\n3. Continue knitting this strap straight until it matches the shoulder width from armhole to neckline.\n4. Bind off or leave stitches live for grafting.\n5. Knit front and back body pieces with armhole shaping but leave the shoulder straight (no shoulder shaping).\n6. Sew or graft the saddle strap along the top of the shoulder, connecting the body front to the body back.\n7. Pick up stitches along the saddle straps and neckline edges for the collar.",
+    "tips": "The saddle strap is an excellent place to feature a cable or textured panel that draws the eye across the shoulder. Make sure the strap width is consistent by counting rows carefully. This construction works especially well for Aran and cabled sweaters.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "saddle sleeve",
+        "region": null
+      },
+      {
+        "synonym": "epaulet shoulder",
+        "region": null
+      },
+      {
+        "synonym": "strap shoulder",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "SR",
+    "name": "Short Rows",
+    "slug": "short-rows",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A shaping technique where you turn the work partway through a row, leaving some stitches unworked, and then work back. By adding extra rows to only part of the fabric, you create curves, wedges, and three-dimensional shaping without increasing or decreasing stitch count. Used for bust darts, sock heels, shoulder shaping, and curved hems.",
+    "how_to": "1. Work to the turning point specified in the pattern.\n2. Use a short row method (wrap and turn, German, or Japanese) to secure the stitch at the turning point and prevent a hole.\n3. Turn the work and knit back in the opposite direction to the other turning point or the end of the row.\n4. On subsequent full rows, resolve the wraps or twin stitches to close any gaps.\n5. Repeat as many short row pairs as the pattern specifies to build the desired shaping.",
+    "tips": "Short rows always come in pairs (one on the right side, one on the wrong side) to maintain an even fabric. When working short rows for shoulder shaping, they produce a smoother bind-off line than stair-step bind-offs. Practice your preferred method on a swatch before committing to a project.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "partial rows",
+        "region": null
+      },
+      {
+        "synonym": "turning rows",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=eXwuFHgk_yc",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "GSR",
+    "name": "German Short Rows",
+    "slug": "german-short-rows",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A short row method where you create a double stitch at the turning point by slipping the first stitch after turning and pulling the yarn over the needle so the stitch legs are pulled up, creating a distinctive double-legged stitch. The double stitch is worked as one on the return pass, closing any gap. No wrapping is required.",
+    "how_to": "1. Work to the turning point. Turn the work.\n2. With yarn in front, slip the first stitch purlwise.\n3. Pull the working yarn over the needle toward the back, firmly enough that both legs of the slipped stitch are pulled up onto the needle, creating a visible double stitch.\n4. Continue working the row as directed.\n5. When you encounter the double stitch on a subsequent row, work both legs together as a single stitch (knit or purl through both legs).",
+    "tips": "Pull the yarn firmly when creating the double stitch so both legs are clearly visible on the needle. If the double stitch looks like a single stitch, you have not pulled tightly enough. German short rows are the easiest method to learn and work well in both knit and purl fabrics. They are slightly visible in garter stitch, so consider Japanese short rows for garter projects.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "double stitch short rows",
+        "region": null
+      },
+      {
+        "synonym": "DS short rows",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "W&T",
+    "name": "Wrap and Turn",
+    "slug": "wrap-and-turn",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "The traditional short row method where you wrap the working yarn around the next stitch before turning, creating a small wrap at the base of the stitch. When you work back across, you pick up the wrap and work it together with the wrapped stitch to close the gap.",
+    "how_to": "1. On a knit row: work to the turning point. Slip the next stitch purlwise. Bring yarn to front. Slip the stitch back to the left needle. Turn the work. The first stitch now has a wrap.\n2. On a purl row: work to the turning point. Slip the next stitch purlwise. Bring yarn to back. Slip the stitch back. Turn.\n3. To pick up wraps on a knit row: insert the right needle under the wrap from below, then into the wrapped stitch. Knit them together.\n4. To pick up wraps on a purl row: use the right needle tip to lift the wrap up onto the left needle from behind, then purl the wrap and stitch together.",
+    "tips": "Picking up wraps on the purl side is trickier than the knit side. Use a crochet hook or tapestry needle to help lift the wrap if needed. Wraps can still show slightly on the right side, especially in lighter colors. For truly invisible short rows, consider German or Japanese methods instead.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "wrap & turn",
+        "region": null
+      },
+      {
+        "synonym": "wrap and turn short rows",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=eXwuFHgk_yc",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": null,
+    "name": "Japanese Short Rows",
+    "slug": "japanese-short-rows",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A short row method using removable stitch markers or safety pins placed on the working yarn at each turning point. The marker sits on the yarn strand between the turning stitch and the next stitch. When you encounter the marker on a later row, you work the marked strand together with the next stitch to close the gap.",
+    "how_to": "1. Work to the turning point. Turn the work.\n2. Slip the first stitch purlwise with yarn in front (for a purl row) or in back (for a knit row).\n3. Place a removable stitch marker or locking marker on the strand of yarn that runs between the slipped stitch and the next stitch.\n4. Continue working the row.\n5. When you encounter the marker on a return row: remove the marker, place the marked strand onto the left needle, and work it together with the next stitch (k2tog on knit side, p2tog on purl side).",
+    "tips": "Japanese short rows produce the most invisible results of all short row methods, especially in garter stitch, seed stitch, and textured patterns. Use small locking stitch markers or coilless safety pins. The strand can be hard to see in dark yarns, so use a brightly colored marker for contrast.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "JSR",
+        "region": null
+      },
+      {
+        "synonym": "marker short rows",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Shadow Wrap Short Rows",
+    "slug": "shadow-wrap-short-rows",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A short row technique where a shadow wrap is created by lifting the stitch from the row below and placing it on the needle alongside the existing stitch. This creates a paired stitch at the turning point that is resolved by working both loops together on the return pass. The method creates a very clean result with minimal fuss.",
+    "how_to": "1. Work to the turning point. Turn the work.\n2. On the knit side: insert the left needle from back to front into the left leg of the stitch below the first stitch on the right needle. Lift it onto the left needle. This is the shadow wrap.\n3. On the purl side: insert the left needle from front to back into the left leg of the stitch below the first stitch on the right needle. Lift it onto the left needle.\n4. Continue working the row normally.\n5. When you encounter the shadow wrap pair on a later row, knit or purl both loops together as one stitch.",
+    "tips": "Shadow wraps work very similarly to German short rows in result but use a different mechanical approach. They are particularly good in ribbing patterns where German short rows can be harder to read. Practice picking up the correct leg of the stitch below; it should not twist the stitch.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "shadow short rows",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Steeks",
+    "slug": "steeks",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A technique where extra stitches are added to a piece knit in the round, which are later cut with scissors to create an opening. Steeks are used in stranded colorwork (Fair Isle) and other in-the-round constructions to create armholes, cardigan fronts, and necklines without having to purl on the wrong side. The stitch columns are secured before cutting to prevent unraveling.",
+    "how_to": "1. When knitting the body in the round, cast on extra steek stitches (typically 5–7) at the positions where openings are needed.\n2. Work the steek stitches in alternating colors on every round (checkerboard pattern) to lock the floats.\n3. When knitting is complete, secure the steek: machine stitch two lines of reinforcement stitching on either side of the center steek stitch, or crochet a reinforcement chain along each edge.\n4. Cut between the reinforcement lines with sharp scissors.\n5. Pick up stitches along the cut edge for button bands, sleeve joins, or neckline finishing.\n6. Fold the steek facing to the inside and tack it down.",
+    "tips": "Steeks work best with traditional wool yarns that felt slightly and grip together (Shetland, Icelandic). Superwash and slippery yarns do not self-felt, so they require more robust reinforcement. Cutting your knitting for the first time is nerve-wracking, but properly reinforced steeks will not unravel. Practice on a swatch first to build confidence.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "steeking",
+        "region": null
+      },
+      {
+        "synonym": "cutting knitting",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Jogless Stripes",
+    "slug": "jogless-stripes",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A technique used when knitting stripes in the round to minimize or eliminate the visible jog (step) that occurs at the color change point where each round begins. Because knitting in the round is actually a spiral, color changes create a one-row offset that appears as a stair-step at the beginning of round marker.",
+    "how_to": "1. Knit the first round with the new color as normal.\n2. At the start of the second round in the new color, slip the first stitch purlwise instead of knitting it.\n3. Knit the rest of the round normally.\n4. Continue knitting all subsequent rounds of this color normally (only slip on the second round).\n5. When changing to the next color, repeat: knit the first round fully, slip the first stitch of the second round.\n6. At the end, the beginning-of-round will shift down by one row at each color change. This is normal.",
+    "tips": "This method works best for stripes of two or more rounds. Single-round stripes require a different approach (such as helical stripes). Keep your beginning-of-round marker in place but understand that the visual start of each stripe will be slightly offset. Weave in color-change tails on the inside along the same-color row to keep things tidy.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "jogless jog",
+        "region": null
+      },
+      {
+        "synonym": "jogless color change",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Helical Stripes",
+    "slug": "helical-stripes",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A technique for knitting perfectly jogless single-round stripes in the round by working with multiple yarns simultaneously in a spiral. Each color is worked for exactly one round, then dropped and the next color is picked up, with all colors spiraling up the tube without any beginning-of-round break.",
+    "how_to": "1. Cast on and join in the round. Knit one round with color A.\n2. Drop color A (do not cut). Slide stitches back to the right needle tip without turning.\n3. Attach color B at the same starting point. Knit one round with color B.\n4. Drop color B. For a two-color stripe, pick up color A from below and knit the next round.\n5. Always pick up the next color from underneath the other yarns to prevent tangling.\n6. Continue spiraling, alternating colors every round.\n7. There is no beginning of round in the traditional sense; the stripes spiral continuously.",
+    "tips": "Helical knitting requires a flexible needle (magic loop or short circulars) because you need to slide stitches back. The yarns will twist around each other, so periodically let the work dangle to untwist. Works best with 2–3 colors. More colors increase tangling. This technique only works in the round.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "spiral stripes",
+        "region": null
+      },
+      {
+        "synonym": "helix knitting",
+        "region": null
+      },
+      {
+        "synonym": "barberpole stripes",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Seamless Construction",
+    "slug": "seamless-construction",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A garment construction approach where the entire piece is knit in one or very few pieces, eliminating the need for seaming. Body and sleeves are typically worked in the round and joined at the yoke. The finished garment has no sewn seams, resulting in a comfortable and flexible fabric.",
+    "how_to": "1. Cast on for the body and work in the round to the underarm.\n2. Cast on separately for each sleeve and work in the round to the underarm.\n3. Join all pieces onto one long circular needle, placing markers at the join points.\n4. Work the yoke (raglan, circular, or contiguous), decreasing to shape the neckline.\n5. Bind off at the neck.\n6. Finish any small openings at the underarm with a few stitches of grafting or a short seam.",
+    "tips": "Seamless sweaters are great for knitters who dislike seaming, but the absence of seams means less structural support. For heavier garments, consider adding a crocheted or sewn stabilization along the shoulder line. Use stitch markers generously at all join points to keep track of the construction.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "seam-free construction",
+        "region": null
+      },
+      {
+        "synonym": "no-sew construction",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Modular Knitting",
+    "slug": "modular-knitting",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A construction method where a project is built from small, individual geometric units (squares, triangles, hexagons, etc.) that are knit one at a time and joined as you go or assembled afterward. Each module is typically self-contained and can use different colors, stitch patterns, or yarn weights.",
+    "how_to": "1. Knit the first module according to the pattern (commonly a mitered square: cast on, decrease at center every other row until one stitch remains).\n2. For the next module, pick up stitches along one edge of the completed module.\n3. Knit the new module, which is now attached to the first.\n4. Continue building outward, picking up stitches from adjacent modules to join as you go.\n5. Alternatively, knit all modules separately and sew or crochet them together.\n6. Fill any corner gaps with partial modules or triangles.",
+    "tips": "Modular knitting is excellent for using up scrap yarn since each module can be a different color. The most common module is the mitered square, which creates a striking diagonal pattern. Keep module tension consistent for a flat, even fabric. Count your pick-up stitches carefully; an incorrect count will distort the next module.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "modular construction",
+        "region": null
+      },
+      {
+        "synonym": "patchwork knitting",
+        "region": null
+      },
+      {
+        "synonym": "domino knitting",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "DPN",
+    "name": "Double-Pointed Needles",
+    "slug": "double-pointed-needles",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "Short knitting needles with points at both ends, typically used in sets of four or five to knit small-circumference tubes in the round. Stitches are distributed across three or four needles forming a polygon, and the remaining needle is used to knit. Common for socks, glove fingers, hat crowns, and other small tubular pieces.",
+    "how_to": "1. Cast on the total number of stitches onto one DPN.\n2. Distribute stitches evenly across three (or four) needles by slipping them purlwise.\n3. Arrange the needles into a triangle (or square) with the working yarn at the right end of the last needle.\n4. Being careful not to twist, use the empty needle to knit across the first needle.\n5. The now-empty needle becomes the working needle. Knit across the next needle.\n6. Continue around. Place a stitch marker at the beginning of the round for reference.\n7. Work in a continuous spiral, moving to each needle in turn.",
+    "tips": "The junctions between needles are prone to laddering (loose stitches). To prevent this, knit the first two stitches on each needle tightly, or periodically shift stitches by one or two between needles so the junction point moves. Bamboo or wood DPNs grip yarn better than metal ones, which is helpful for beginners since stitches are less likely to slide off.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "DPNs",
+        "region": null
+      },
+      {
+        "synonym": "dpns",
+        "region": null
+      },
+      {
+        "synonym": "double points",
+        "region": null
+      }
+    ],
+    "video_url": null,
+    "video_is_short": false,
+    "video_alternates": [],
+    "video_start_s": null,
+    "video_end_s": null
+  },
+  {
+    "abbreviation": null,
+    "name": "I-Cord",
+    "slug": "i-cord",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A narrow knitted tube made on double-pointed needles or a circular needle, typically using 3–5 stitches. Instead of turning the work, the stitches are slid to the other end of the needle and knit again with the yarn pulled tightly across the back, creating a self-rolling tube. Named by Elizabeth Zimmermann (idiot cord) for its simplicity.",
+    "how_to": "1. Cast on 3–5 stitches onto a double-pointed needle.\n2. Knit all stitches. Do not turn the work.\n3. Slide the stitches to the other end of the needle so the first stitch you knit is at the right tip again.\n4. Pull the working yarn snugly across the back from the last stitch to the first stitch.\n5. Knit all stitches again.\n6. Repeat steps 3–5 until the cord is the desired length.\n7. Cut yarn, thread through all stitches, and pull tight to close.",
+    "tips": "Pull the yarn firmly after sliding the stitches to close the back of the tube. The first stitch of each row will be slightly looser; tugging the yarn snug after knitting the first stitch helps. I-cord can be used for ties, drawstrings, button loops, bag handles, and edging. For a thicker cord, use more stitches or thicker yarn.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "idiot cord",
+        "region": null
+      },
+      {
+        "synonym": "knitted cord",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Applied I-Cord",
+    "slug": "applied-i-cord",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "An i-cord that is attached directly to the edge of a knitted piece as it is worked, creating a neat, rounded, cord-like border. Stitches are picked up from the edge and incorporated into the i-cord by knitting the last i-cord stitch together with the edge stitch on each row.",
+    "how_to": "1. With a double-pointed needle, cast on 3 stitches (or pick up 3 stitches at the starting corner).\n2. Pick up and knit 1 stitch from the edge of the piece (4 stitches on needle).\n3. Slide all stitches to the other end of the needle without turning.\n4. Knit 2 stitches.\n5. Slip 1 stitch knitwise, knit the picked-up edge stitch, pass the slipped stitch over (or SSK the last two stitches). This attaches the cord to the edge.\n6. Pick up and knit 1 new stitch from the edge.\n7. Repeat steps 3–6 around the entire edge.\n8. Graft the beginning and end of the cord together for a seamless join.",
+    "tips": "Applied i-cord creates a polished, professional-looking edge that covers uneven selvedge stitches. Pick up stitches at a consistent rate (typically 1 per row along the side edge, 1 per stitch along cast-on/bind-off edges). If the edge ripples, you are picking up too many stitches; if it puckers, too few. Block the piece before applying the i-cord for the most even result.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "attached i-cord",
+        "region": null
+      },
+      {
+        "synonym": "i-cord edging",
+        "region": null
+      },
+      {
+        "synonym": "i-cord bind off",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Entrelac",
+    "slug": "entrelac",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A modular knitting technique that creates a fabric resembling woven or interlocking strips. Small blocks (rectangles or squares) are knit individually in alternating directions, with each new block picking up stitches from the edge of the previous block. The result looks like a basket weave and is often worked in multiple colors.",
+    "how_to": "1. Cast on a multiple of your block width (e.g., for 8-stitch blocks on a 32-stitch base, cast on 32).\n2. Work base triangles: for each triangle, start with 1 stitch, increase by 1 each right-side row until you have the full block width.\n3. First row of blocks (right-leaning): pick up stitches along the left edge of a base triangle. Work the block flat, attaching it to the adjacent triangle by SSK-ing the last block stitch with a picked-up edge stitch on every wrong-side row.\n4. Second row of blocks (left-leaning): pick up stitches along the right edge. Attach by knitting together the last block stitch with a picked-up edge stitch on every right-side row.\n5. Alternate right-leaning and left-leaning block rows.\n6. End with top triangles to create a straight edge.",
+    "tips": "Entrelac looks complex but is really just short rows and picked-up stitches repeated in a pattern. Each block is small and manageable. The fabric is thicker than standard stockinette because of the overlapping structure, so choose a lighter-weight yarn than you might normally use. Blocking opens up the texture beautifully. The wrong side is surprisingly attractive and can be used as a design feature.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "entrelac knitting",
+        "region": null
+      },
+      {
+        "synonym": "basket weave knitting",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Working in Rows",
+    "slug": "working-in-rows-crochet",
+    "category": "construction",
+    "craft_type": "crochet",
+    "definition": "The most common crochet construction method where the work is turned at the end of each row, working back and forth in flat rows. A turning chain is made at the beginning of each row to bring the hook up to the correct height for the stitch being used. This creates a flat, rectangular fabric.",
+    "how_to": "1. Make a foundation chain of the required length plus the turning chain.\n2. Work the first row of stitches into the chain according to the pattern.\n3. At the end of the row, make a turning chain (1 chain for single crochet, 2 for half double, 3 for double crochet).\n4. Turn the work so the opposite side faces you.\n5. Work the next row into the top of each stitch from the previous row.\n6. Repeat, turning and chaining at the end of each row.",
+    "tips": "Consistent turning chain height is critical for even edges. If your edges are wavy, experiment with whether you count the turning chain as a stitch or not. Many crocheters find that not counting the turning chain as a stitch and instead working into the first stitch produces neater edges. For double crochet, try a chainless turning technique (standing double crochet) for the neatest edge.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "flat crochet",
+        "region": null
+      },
+      {
+        "synonym": "back and forth crochet",
+        "region": null
+      },
+      {
+        "synonym": "row crochet",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Working in the Round (Crochet)",
+    "slug": "working-in-the-round-crochet",
+    "category": "construction",
+    "craft_type": "crochet",
+    "definition": "A crochet technique where stitches are worked in a continuous circle or joined rounds, building outward from a central point or working a seamless tube. Unlike knitting in the round, crochet rounds can be worked either in joined rounds (slip stitch to close each round) or in a continuous spiral without joining.",
+    "how_to": "1. Begin with a magic ring, chain ring, or foundation chain joined into a circle.\n2. For joined rounds: chain up to the required height, work stitches into the ring or previous round, and end with a slip stitch into the top of the starting chain to close.\n3. For spiral rounds: place a stitch marker in the first stitch and work continuously without joining. Move the marker up each round.\n4. Increase evenly around to keep the work flat (for circles) or maintain the same stitch count for tubes.\n5. Continue for the required number of rounds.",
+    "tips": "Joined rounds create a slight seam line at the join point but give a clear round count. Spiral rounds are seamless but can make stripe color changes tricky. For flat circles, follow the increase rule for your stitch type (single crochet: start with 6, increase 6 per round). If the circle cups, add more increases; if it ruffles, add fewer.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "crochet in the round",
+        "region": null
+      },
+      {
+        "synonym": "circular crochet",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Magic Ring",
+    "slug": "magic-ring-crochet",
+    "category": "construction",
+    "craft_type": "crochet",
+    "definition": "An adjustable starting ring used to begin crocheting in the round. Instead of chaining and joining into a ring (which leaves a hole in the center), the magic ring allows you to pull the center hole completely closed by tightening the tail. This creates a tight, seamless center for hats, amigurumi, doilies, and granny squares.",
+    "how_to": "1. Wrap the yarn around your fingers to form a loop, with the tail end crossing over the working yarn.\n2. Insert the hook through the loop from front to back.\n3. Yarn over with the working yarn and pull up a loop through the ring.\n4. Chain 1 (or the appropriate turning chain for your stitch) to secure.\n5. Work the required number of first-round stitches into the ring, crocheting over both the ring and the tail.\n6. Pull the tail end firmly to cinch the ring closed.\n7. Slip stitch to the first stitch to join, or continue in a spiral.",
+    "tips": "The magic ring can feel fiddly at first but becomes second nature with practice. After completing the first round, pull the tail to close the ring before continuing, or it becomes harder to tighten later. For extra security (especially with slippery yarn), after pulling the ring tight, work a few stitches, then pull the tail once more and weave in the end through the back of the first-round stitches.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "magic circle",
+        "region": null
+      },
+      {
+        "synonym": "adjustable ring",
+        "region": null
+      },
+      {
+        "synonym": "magic loop (crochet)",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "tch",
+    "name": "Turning Chain",
+    "slug": "turning-chain-crochet",
+    "category": "construction",
+    "craft_type": "crochet",
+    "definition": "A chain made at the beginning of a row or round to bring the hook up to the height of the stitches being worked. The number of chains corresponds to the stitch height: 1 chain for single crochet, 2 for half double crochet, 3 for double crochet, and 4 for treble crochet. The turning chain may or may not count as the first stitch of the row depending on the pattern.",
+    "how_to": "1. Complete the last stitch of the current row.\n2. Chain the required number for the next row's stitch height (1 for sc, 2 for hdc, 3 for dc, 4 for tr).\n3. Turn the work.\n4. If the turning chain counts as a stitch: skip the first stitch and work into the second stitch. At the end of the row, work the last stitch into the top of the previous row's turning chain.\n5. If the turning chain does not count as a stitch: work into the first stitch directly. Do not work into the turning chain at the end.",
+    "tips": "Whether the turning chain counts as a stitch is a major source of confusion. Many modern patterns specify explicitly. If not specified, test both approaches on a swatch. Generally, for single crochet the chain-1 does not count as a stitch. For double crochet, the chain-3 traditionally counts as a stitch, but many crocheters prefer not counting it for neater edges. A chainless starting stitch (standing stitch) can replace the turning chain entirely for a cleaner look.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "t-ch",
+        "region": null
+      },
+      {
+        "synonym": "starting chain",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Amigurumi",
+    "slug": "amigurumi",
+    "category": "construction",
+    "craft_type": "crochet",
+    "definition": "A Japanese art of crocheting (or knitting) small stuffed three-dimensional figures, typically animals, food, or characters. Amigurumi is worked in continuous spiral rounds using single crochet stitches at a tight gauge to prevent stuffing from showing through. Pieces are shaped with strategic increases and decreases, stuffed with polyester fiberfill, and assembled.",
+    "how_to": "1. Start with a magic ring and work 6 single crochet stitches into it. Pull the ring tight.\n2. Work in continuous spiral rounds (do not join). Use a stitch marker to track the first stitch.\n3. Increase by working 2 stitches into one stitch. Follow the pattern's increase schedule to shape each piece (head, body, limbs).\n4. Decrease using invisible decrease (insert hook into front loops of 2 stitches, yarn over, pull through both, yarn over, pull through 2 loops).\n5. Stuff each piece firmly with fiberfill before closing. Add safety eyes before closing the head.\n6. Close openings by decreasing to 6 stitches, cutting yarn, and threading through remaining stitches.\n7. Sew pieces together using yarn tails and a tapestry needle.",
+    "tips": "Use a hook one or two sizes smaller than recommended for your yarn to create a tight fabric that does not show stuffing. Cotton yarn creates crisper shapes while acrylic is softer and more forgiving. Insert safety eyes before closing the head since they cannot be added later. Stuff firmly for a smooth, professional shape. The invisible decrease is essential for clean amigurumi; the standard decrease leaves visible holes.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "amigurumi crochet",
+        "region": null
+      },
+      {
+        "synonym": "crochet stuffed animals",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Joined Rounds",
+    "slug": "joined-rounds-crochet",
+    "category": "construction",
+    "craft_type": "crochet",
+    "definition": "A method of working in the round where each round is closed with a slip stitch into the first stitch, then a new turning chain starts the next round. This creates clearly defined rounds with a visible (but minimal) seam line at the join point. Joined rounds are standard for granny squares, doilies, and any pattern where stitch alignment matters between rounds.",
+    "how_to": "1. Begin with a magic ring or chain ring.\n2. Chain up to the correct height for your stitch (e.g., chain 3 for double crochet).\n3. Work the required stitches into the ring or previous round.\n4. At the end of the round, slip stitch into the top of the starting chain (or the first true stitch, depending on the pattern).\n5. Chain up for the next round and continue.\n6. Repeat for each round, always closing with a slip stitch.",
+    "tips": "The slip stitch join can create a visible seam line on one side. To minimize this, try a standing stitch at the start of each round instead of a turning chain, and use an invisible join (faux slip stitch with a yarn needle) to close the round. Keep your slip stitch tension consistent; a too-tight join will pucker, and a too-loose join will gap.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "closed rounds",
+        "region": null
+      },
+      {
+        "synonym": "slip stitch join rounds",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Spiral Rounds",
+    "slug": "spiral-rounds-crochet",
+    "category": "construction",
+    "craft_type": "crochet",
+    "definition": "A method of working in the round where stitches are worked continuously in a spiral without joining at the end of each round. There is no slip stitch or turning chain; the hook simply passes from the last stitch of one round into the first stitch of the next. This creates a seamless fabric but with a slight upward drift at the round transition.",
+    "how_to": "1. Begin with a magic ring. Work the first round of stitches (typically 6 single crochet).\n2. Do not slip stitch to join. Place a removable stitch marker in the first stitch of the round.\n3. Continue working stitches into each stitch continuously.\n4. When you reach the marker, remove it, work into that stitch, and place the marker in the new first stitch.\n5. Continue spiraling upward, moving the marker each round.\n6. To end, slip stitch into the next stitch, fasten off, and weave in the tail.",
+    "tips": "Spiral rounds are the default for amigurumi and most single crochet in-the-round projects. The lack of a join makes the fabric seamless, but color changes will show a jog. For clean color changes in spiral rounds, use the invisible color change technique (change color in the last yarn-over of the stitch before the new color). Always use a stitch marker; it is extremely easy to lose your place in spiral rounds.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "continuous rounds",
+        "region": null
+      },
+      {
+        "synonym": "unjoined rounds",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Contiguous Construction",
+    "slug": "contiguous-construction",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A seamless top-down construction method where the sleeves and body are shaped using short rows rather than separating at the underarm. The sleeve stitches are never placed on hold; instead, short rows sculpt the shoulder and upper sleeve while the yoke transitions into the body, creating a fitted shoulder without any gaps or underarm cast-on stitches.",
+    "how_to": "1. Cast on for the neckline and work a few rows of neckband.\n2. Begin short row shaping across the shoulder area, working progressively longer rows that extend into the sleeve and body stitches.\n3. Each set of short rows adds depth to the shoulder and upper sleeve area.\n4. Continue until the full yoke width is being worked.\n5. Transition to working the body in the round by continuing past the sleeve stitches and joining.\n6. The sleeves are picked up and worked downward later, with stitches already shaped by the short rows.",
+    "tips": "Contiguous construction eliminates the underarm gap that plagues many seamless sweaters. It produces a very natural shoulder shape similar to set-in sleeves but without seaming. The short row shaping can be complex to follow, so use a row counter and read through the entire yoke section before starting. This method was popularized by SusieM on Ravelry.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "contiguous set-in sleeve",
+        "region": null
+      },
+      {
+        "synonym": "seamless set-in sleeve",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": null,
+    "name": "Circular Yoke",
+    "slug": "circular-yoke",
+    "category": "construction",
+    "craft_type": "knitting",
+    "definition": "A top-down or bottom-up seamless yoke construction where decreases (top-down) or increases (bottom-up) are spaced evenly around the entire round rather than concentrated at four raglan points. This creates a round, evenly distributed shaping that is ideal for stranded colorwork, as the pattern flows continuously around the yoke.",
+    "how_to": "1. For top-down: cast on neckline stitches and join in the round.\n2. Work several plain rounds, then work a decrease round where stitches are decreased at evenly spaced intervals.\n3. Alternate between plain rounds and decrease rounds, following the pattern's ratio (commonly every 4th–6th round).\n4. Continue until the yoke reaches the correct depth and stitch count for the body and sleeves.\n5. Separate sleeve and body stitches.\n6. Work the body down to the hem. Return to work each sleeve top-down.\n7. For bottom-up: work body and sleeves, join at the yoke, and increase evenly to the neckline.",
+    "tips": "Circular yoke construction is the natural home for Icelandic (lopapeysa) and Fair Isle colorwork patterns. The even distribution of shaping means colorwork motifs are not interrupted by raglan lines. To check fit, try the yoke on (or measure it flat) at the separation point; the total circumference should equal the body plus both sleeves minus underarm overlap.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "round yoke",
+        "region": null
+      },
+      {
+        "synonym": "Icelandic yoke",
+        "region": null
+      },
+      {
+        "synonym": "lopapeysa yoke",
+        "region": null
+      }
+    ]
+  }
+]

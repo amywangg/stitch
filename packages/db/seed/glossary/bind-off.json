@@ -1,0 +1,298 @@
+[
+  {
+    "abbreviation": "BO",
+    "name": "Standard Bind Off",
+    "slug": "standard-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "The most common method of securing live stitches so they do not unravel when removed from the needle. Produces a firm, clean edge suitable for most projects.",
+    "how_to": "1. Knit the first two stitches.\n2. Insert the left needle into the first stitch on the right needle (the one furthest from the tip).\n3. Lift the first stitch over the second stitch and off the right needle.\n4. Knit the next stitch from the left needle.\n5. Repeat steps 2-4 until one stitch remains.\n6. Cut the yarn, leaving a 6-inch tail, and pull the tail through the last stitch to secure.",
+    "tips": "This bind off tends to be tight. To keep it from puckering, try using a needle one or two sizes larger than the project needle. Work at an even, relaxed tension throughout. Best suited for edges that do not need significant stretch, such as the tops of scarves, blankets, and dishcloths.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "basic bind off",
+        "region": null
+      },
+      {
+        "synonym": "chain bind off",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=KldVvrGx6lQ",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "SBO",
+    "name": "Stretchy Bind Off",
+    "slug": "stretchy-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A bind off method that adds a yarn over before each stitch to create extra slack in the bound-off edge. Produces a flexible edge that is ideal for ribbing, necklines, and any edge that needs to stretch over the body.",
+    "how_to": "1. Knit the first stitch.\n2. Make a yarn over.\n3. Knit the next stitch.\n4. Lift the yarn over and the first knit stitch over the second knit stitch and off the needle (pass two stitches over at once).\n5. Repeat steps 2-4 until one stitch remains.\n6. Cut the yarn and pull the tail through the last stitch.",
+    "tips": "Works well with both knit and purl stitches in pattern. When binding off in ribbing, work the yarn over before each stitch and maintain the knit/purl pattern as you go. The extra yarn over creates loops that give the edge its stretch. If the edge is still too tight, go up a needle size.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "stretchy cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "yarn over bind off",
+        "region": null
+      },
+      {
+        "synonym": "EZ sewn bind off",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=SV-BIASt0W4",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "TBO",
+    "name": "Tubular Bind Off",
+    "slug": "tubular-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A finishing technique that mirrors a tubular (Italian) cast on, creating a rounded, nearly invisible edge on 1x1 ribbing. The result looks like a continuous loop of knitting with no visible bound-off edge, making it the gold standard for polished neckbands, cuffs, and hat brims.",
+    "how_to": "1. Work 2-4 rows of tubular preparation: on the first row, knit the knit stitches and slip the purl stitches with yarn in front.\n2. Cut the yarn, leaving a tail at least three times the width of the piece.\n3. Thread the tail onto a tapestry needle.\n4. Insert the tapestry needle knitwise through the first knit stitch and slip it off.\n5. Insert the tapestry needle purlwise through the next purl stitch, leaving it on the needle.\n6. Insert the tapestry needle purlwise through the next knit stitch, leaving it on the needle.\n7. Insert the tapestry needle knitwise through the previous purl stitch and slip it off.\n8. Repeat steps 4-7 until all stitches are grafted off.\n9. Weave in the tail on the wrong side.",
+    "tips": "This bind off only works on 1x1 ribbing and requires a few setup rows to separate knit and purl stitches. Practice on a swatch first, as the grafting path can be confusing. Keep the tension of the grafting yarn consistent with the knitted fabric. The result is worth the effort for visible edges like hat brims and sock cuffs.",
+    "difficulty": "advanced",
+    "synonyms": [
+      {
+        "synonym": "tubular cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "Italian bind off",
+        "region": null
+      },
+      {
+        "synonym": "invisible bind off",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "3NBO",
+    "name": "Three-Needle Bind Off",
+    "slug": "three-needle-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A technique that simultaneously joins two sets of live stitches while binding off, creating a seam and finishing the edge in one step. Commonly used for shoulder seams, where it produces a sturdy, neat join without the bulk of mattress stitch seaming.",
+    "how_to": "1. Place the two sets of live stitches on separate needles, with the same number of stitches on each.\n2. Hold the two needles parallel in your left hand with right sides facing together (for an interior seam) or wrong sides together (for a decorative ridge).\n3. Insert a third needle knitwise through the first stitch on the front needle and the first stitch on the back needle simultaneously.\n4. Knit these two stitches together as one.\n5. Repeat step 3-4 for the next pair of stitches.\n6. Pass the first stitch on the right needle over the second stitch (standard bind off motion).\n7. Repeat steps 3-6 until one stitch remains.\n8. Cut yarn and pull through the last stitch.",
+    "tips": "Make sure both needles have exactly the same stitch count before starting. Holding the needles with right sides together creates an invisible interior seam; holding with wrong sides together creates a decorative ridge on the outside. This is the standard method for joining shoulder seams on sweaters and is much faster than seaming with a tapestry needle.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "three-needle cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "3-needle bind off",
+        "region": null
+      },
+      {
+        "synonym": "3-needle join",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=ZWs4UPf3L-s",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "PBO",
+    "name": "Picot Bind Off",
+    "slug": "picot-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A decorative bind off that creates small pointed loops (picots) along the edge. Adds a feminine, lace-like finish to garments, shawls, baby items, and any project where an ornamental edge is desired.",
+    "how_to": "1. Bind off 2 stitches using the standard bind off method.\n2. Slip the stitch from the right needle back to the left needle.\n3. Using the cable cast on or knitted cast on, cast on 3 stitches onto the left needle.\n4. Bind off 5 stitches (the 3 new cast-on stitches plus 2 original stitches).\n5. Repeat steps 2-4 across the row until all stitches are bound off.\n6. Cut yarn and pull through the last stitch.",
+    "tips": "Adjust the number of cast-on stitches to change the picot size: fewer stitches create smaller, subtler points; more stitches create larger, more dramatic loops. You can also vary the number of bind-off stitches between picots to change their spacing. Works beautifully on shawl edges, baby blankets, and lace projects. The cable cast on produces the neatest picots.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "picot cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "picot edge bind off",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "ICBO",
+    "name": "I-Cord Bind Off",
+    "slug": "i-cord-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A bind off that creates an applied I-cord edging as it secures live stitches. Produces a smooth, rounded, cord-like border that looks polished and professional. Frequently used on cardigans, blanket edges, and necklines where a clean, structured finish is desired.",
+    "how_to": "1. Cast on 3 stitches onto the left needle using the knitted cast on (these form the I-cord).\n2. Knit 2 stitches.\n3. Knit the third I-cord stitch together with the first project stitch through the back loops (k2tog tbl or ssk).\n4. Slide the 3 I-cord stitches from the right needle back to the left needle without turning.\n5. Pull the working yarn snugly across the back of the I-cord stitches.\n6. Repeat steps 2-5 until all project stitches have been consumed.\n7. Bind off the remaining 3 I-cord stitches or graft them to the beginning of the cord for a seamless join.",
+    "tips": "The number of I-cord stitches can be adjusted: 3 stitches is standard, but 2 creates a thinner cord and 4 creates a chunkier one. Always pull the yarn firmly behind the cord stitches so the back closes neatly. For corners (on blankets or button bands), work 2-3 rows of I-cord without joining to the project stitches to allow the cord to turn the corner smoothly.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "i-cord cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "applied i-cord bind off",
+        "region": null
+      },
+      {
+        "synonym": "attached i-cord edge",
+        "region": null
+      }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=Ij8aSPnAcjs",
+    "video_is_short": false,
+    "video_alternates": []
+  },
+  {
+    "abbreviation": "SNBO",
+    "name": "Sewn Bind Off",
+    "slug": "sewn-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A bind off worked with a tapestry needle and yarn rather than knitting needles. Produces a flexible edge with even tension that closely mimics the look of a long-tail cast on. Excellent for toe-up socks, top-down hat brims, and any edge where stretch and a clean finish are both important.",
+    "how_to": "1. Cut the yarn, leaving a tail at least three times the width of the knitting.\n2. Thread the tail onto a tapestry needle.\n3. Insert the tapestry needle purlwise through the first two stitches on the knitting needle (from right to left). Pull the yarn through but leave the stitches on the needle.\n4. Insert the tapestry needle knitwise through the first stitch only (from left to right). Pull the yarn through and slip this stitch off the knitting needle.\n5. Repeat steps 3-4 until one stitch remains.\n6. Insert the tapestry needle knitwise through the last stitch and pull through to fasten off.\n7. Weave in the end.",
+    "tips": "Also known as Elizabeth Zimmermann's sewn bind off. The key to success is maintaining even tension with the tapestry needle that matches the tension of the knitted fabric. Do not pull too tightly or the edge will pucker. Practice the two-step rhythm: purlwise through two, knitwise through one. This bind off is especially popular for toe-up sock cuffs.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "sewn cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "EZ sewn bind off",
+        "region": null
+      },
+      {
+        "synonym": "Zimmermann sewn bind off",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "JSSBO",
+    "name": "Jeny's Surprisingly Stretchy Bind Off",
+    "slug": "jenys-surprisingly-stretchy-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A very stretchy bind off developed by Jeny Staiman that uses a reverse yarn over before each stitch to add maximum elasticity. The reverse yarn over twists in the opposite direction from a normal yarn over, creating extra stretch without visible holes. Ideal for sock cuffs, hat brims, and any ribbed edge that must stretch significantly.",
+    "how_to": "1. Before a knit stitch: make a reverse yarn over (wrap yarn from back to front over the needle, the opposite direction of a normal yarn over). Knit the stitch.\n2. Lift the yarn over and the previous stitch over the knit stitch and off the needle.\n3. Before a purl stitch: make a reverse yarn over (wrap yarn from front to back under the needle). Purl the stitch.\n4. Lift the yarn over and the previous stitch over the purl stitch and off the needle.\n5. Continue across the row, matching knit and purl to the ribbing pattern.\n6. Cut yarn and pull through the last stitch.",
+    "tips": "The reverse yarn over is the key element. A normal yarn over will leave visible holes; the reverse yarn over twists closed. Follow the ribbing pattern (knit the knits, purl the purls) for the best result. This bind off is stretchier than almost any other method and is the go-to choice for sock cuffs that need to fit over the heel. The edge is slightly less tidy than a tubular bind off but far easier to execute.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "JSSBO",
+        "region": null
+      },
+      {
+        "synonym": "Jeny's surprisingly stretchy cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "super stretchy bind off",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "SUBO",
+    "name": "Suspended Bind Off",
+    "slug": "suspended-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A variation of the standard bind off where the passed-over stitch is held on the left needle rather than dropped immediately, creating a slightly stretchier and more even edge. The suspended stitch ensures consistent tension across the bind off row.",
+    "how_to": "1. Knit the first two stitches.\n2. Insert the left needle into the first stitch on the right needle and lift it over the second stitch, but do not drop it off the left needle yet.\n3. Knit the next stitch on the left needle through the back of the suspended stitch.\n4. Now drop both the suspended stitch and the old stitch off the left needle.\n5. Repeat steps 2-4 until one stitch remains.\n6. Cut yarn and pull through the last stitch.",
+    "tips": "This method naturally produces more even tension than the standard bind off because the suspended stitch prevents you from pulling too tightly. It is only slightly stretchier than a standard bind off, so for edges that need significant stretch, consider Jeny's Surprisingly Stretchy or a tubular bind off instead. Good all-purpose choice when you want a tidier result than the standard bind off without learning a complex technique.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "suspended cast off",
+        "region": "UK"
+      }
+    ]
+  },
+  {
+    "abbreviation": "RBO",
+    "name": "Russian Bind Off",
+    "slug": "russian-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A stretchy bind off that works by knitting two stitches together through the back loop, then returning the resulting stitch to the left needle. Produces a neat, elastic edge that is especially popular for shawls and lace projects where a flexible border is essential.",
+    "how_to": "1. Knit the first two stitches.\n2. Insert the left needle into the front of both stitches on the right needle (from left to right).\n3. Knit these two stitches together through the back loops (k2tog tbl).\n4. One stitch remains on the right needle. Slip it back to the left needle purlwise.\n5. Knit the next stitch from the left needle (you now have two stitches on the right needle again).\n6. Repeat steps 2-5 until one stitch remains.\n7. Cut yarn and pull through the last stitch.",
+    "tips": "The k2tog tbl in step 3 is what gives this bind off its stretch and prevents it from curling. Works beautifully on garter stitch and stockinette shawl edges. The finished edge has a slight braid-like appearance. If you find the k2tog tbl awkward, you can slip both stitches knitwise individually and then knit them together (essentially an ssk) for the same result.",
+    "difficulty": "intermediate",
+    "synonyms": [
+      {
+        "synonym": "Russian cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "Russian lace bind off",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "DBO",
+    "name": "Decrease Bind Off",
+    "slug": "decrease-bind-off",
+    "category": "bind_off",
+    "craft_type": "knitting",
+    "definition": "A simple bind off method that uses knit-two-together decreases to secure stitches. Each stitch is consumed by knitting it together with the previous stitch, producing a firm, tight edge. Often used for quick shaping bind offs on shoulders and other structural areas.",
+    "how_to": "1. Knit the first stitch.\n2. Slip the stitch from the right needle back to the left needle purlwise.\n3. Knit two together (the slipped stitch and the next stitch on the left needle).\n4. Repeat steps 2-3 until one stitch remains.\n5. Cut yarn and pull through the last stitch.",
+    "tips": "This produces a tighter edge than the standard bind off, so it is best suited for seams that will be sewn or areas where firmness is desired. Not recommended for edges that need stretch. The method is very fast once you get the rhythm of slip-back-and-k2tog. Some knitters prefer this for shoulder seams that will be mattress-stitched because the firm edge holds its shape well.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "decrease cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "k2tog bind off",
+        "region": null
+      }
+    ]
+  },
+  {
+    "abbreviation": "FO",
+    "name": "Fasten Off",
+    "slug": "fasten-off",
+    "category": "bind_off",
+    "craft_type": "crochet",
+    "definition": "The standard method of securing the final loop in crochet so the work does not unravel. After the last stitch of the project, the yarn is cut and pulled through the remaining loop on the hook to lock it in place.",
+    "how_to": "1. Complete the last stitch of your project.\n2. Cut the yarn, leaving a 6-inch tail for weaving in.\n3. Yarn over and pull the cut tail all the way through the loop on the hook.\n4. Pull the tail to snug the final loop closed.\n5. Thread the tail onto a tapestry needle and weave it into the wrong side of the fabric for at least 2 inches, going back and forth through stitch loops to secure.",
+    "tips": "Always leave a generous tail (at least 6 inches) for weaving in securely. If the final loop loosens over time, try weaving the tail through several stitch backs in a zigzag pattern rather than a straight line. For amigurumi and stuffed items, you may want to leave an even longer tail to sew pieces together. Some patterns specify an invisible fasten off, where you cut the yarn, pull through, then use a tapestry needle to duplicate the look of the next stitch for a seamless finish.",
+    "difficulty": "beginner",
+    "synonyms": [
+      {
+        "synonym": "finish off",
+        "region": null
+      },
+      {
+        "synonym": "bind off",
+        "region": null
+      },
+      {
+        "synonym": "cast off",
+        "region": "UK"
+      },
+      {
+        "synonym": "end off",
+        "region": null
+      }
+    ]
+  }
+]

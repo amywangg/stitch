@@ -6,120 +6,381 @@
         "name": "Red Lace Fixed Circulars",
         "type": "circular",
         "material": "stainless_steel",
-        "image_url": "https://www.paradisefibers.com/cdn/shop/products/chiaogoo-red-lace-circular-needles.jpg",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/Chiagoo_Lace_Needles.jpg?v=1771992221",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"},
-          {"mm": 12.75, "label": "US 17"},
-          {"mm": 15.0, "label": "US 19"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.75,
+            "label": "US 17"
+          },
+          {
+            "mm": 15.0,
+            "label": "US 19"
+          }
         ],
-        "lengths_cm": [23, 30, 41, 51, 61, 74, 81, 102, 120, 152]
+        "lengths_cm": [
+          23,
+          30,
+          41,
+          51,
+          61,
+          74,
+          81,
+          102,
+          120,
+          152
+        ]
       },
       {
         "name": "Bamboo Fixed Circulars",
         "type": "circular",
         "material": "bamboo",
-        "image_url": "https://www.paradisefibers.com/cdn/shop/products/chiaogoo-bamboo-circular-needles.jpg",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/chiaogoo-bamboo-circular-knitting-needles-16-40cm-chiaogoo-947189.webp?v=1750186139",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [23, 30, 41, 61, 81, 102]
+        "lengths_cm": [
+          23,
+          30,
+          41,
+          61,
+          81,
+          102
+        ]
       },
       {
         "name": "Red Lace DPNs",
         "type": "dpn",
         "material": "stainless_steel",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/stainless-steel-double-point-sock-needle-set-by-chiaogoo-chiaogoo-679932.png?v=1742425533",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          }
         ],
-        "lengths_cm": [15, 20]
+        "lengths_cm": [
+          15,
+          20
+        ]
       },
       {
         "name": "Bamboo DPNs",
         "type": "dpn",
         "material": "bamboo",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/chiaogoo-natural-bamboo-6-inch-double-pointed-needles-chiaogoo-353414.jpg?v=1764218961",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          }
         ],
-        "lengths_cm": [15, 20]
+        "lengths_cm": [
+          15,
+          20
+        ]
       },
       {
         "name": "Bamboo Straight Needles",
         "type": "straight",
         "material": "bamboo",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/chiaogoo-natural-bamboo-6-inch-double-pointed-needles-chiaogoo-353414.jpg?v=1764218961",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [23, 33]
+        "lengths_cm": [
+          23,
+          33
+        ]
       }
     ]
   },
@@ -130,211 +391,1177 @@
         "name": "Turbo Rocket Circulars",
         "type": "circular",
         "material": "brass",
+        "image_url": "https://jimmybeanswool.com/cdn/shop/files/17868Large_91a8_grande.jpg?v=1733168266",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"},
-          {"mm": 12.75, "label": "US 17"},
-          {"mm": 15.0, "label": "US 19"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.75,
+            "label": "US 17"
+          },
+          {
+            "mm": 15.0,
+            "label": "US 19"
+          }
         ],
-        "lengths_cm": [41, 51, 61, 81, 102, 120, 152]
+        "lengths_cm": [
+          41,
+          51,
+          61,
+          81,
+          102,
+          120,
+          152
+        ]
       },
       {
         "name": "Turbo Bamboo Circulars",
         "type": "circular",
         "material": "bamboo",
+        "image_url": "https://skeinshop.com/cdn/shop/products/media_d527dd5d-e762-4414-8d3d-8a9a4ba29be0.jpeg?v=1444843379",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"},
-          {"mm": 12.75, "label": "US 17"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.75,
+            "label": "US 17"
+          }
         ],
-        "lengths_cm": [41, 51, 61, 81, 102]
+        "lengths_cm": [
+          41,
+          51,
+          61,
+          81,
+          102
+        ]
       },
       {
         "name": "FlexiFlips",
         "type": "dpn",
         "material": "aluminum",
+        "image_url": "https://jimmybeanswool.com/cdn/shop/files/83477Large_3f23_grande.jpg?v=1733168812",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          }
         ],
-        "lengths_cm": [18, 21]
+        "lengths_cm": [
+          18,
+          21
+        ]
       },
       {
         "name": "Turbo DPNs",
         "type": "dpn",
         "material": "aluminum",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/addi-rocket2-squared-v2-double-point-knitting-needles-addi-473998.jpg?v=1764224112",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          }
         ],
-        "lengths_cm": [15, 20]
+        "lengths_cm": [
+          15,
+          20
+        ]
       },
       {
         "name": "Turbo Straights",
         "type": "straight",
         "material": "aluminum",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/addi-straight-aluminum-knitting-needles-addi-677148.jpg?v=1764221615",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [25, 36]
+        "lengths_cm": [
+          25,
+          36
+        ]
       }
     ]
   },
   {
-    "brand": "Knitter's Pride",
+    "brand": "Knitter's Pride / KnitPro",
     "product_lines": [
       {
         "name": "Dreamz Fixed Circulars",
         "type": "circular",
         "material": "wood",
+        "image_url": "https://jimmybeanswool.com/cdn/shop/files/30773Large_fb16_grande.jpg?v=1733168383",
         "sizes": [
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [41, 61, 81, 102]
+        "lengths_cm": [
+          41,
+          61,
+          81,
+          102
+        ]
       },
       {
         "name": "Nova Platina Fixed Circulars",
         "type": "circular",
         "material": "brass",
+        "image_url": "https://www.yarn.com/cdn/shop/files/71bbc285-58e6-43bc-a086-5df57e13ffd4.jpg?v=1772618516",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"},
-          {"mm": 12.75, "label": "US 17"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.75,
+            "label": "US 17"
+          }
         ],
-        "lengths_cm": [41, 61, 81, 102]
+        "lengths_cm": [
+          41,
+          61,
+          81,
+          102
+        ]
       },
       {
         "name": "Dreamz DPNs",
         "type": "dpn",
         "material": "wood",
+        "image_url": "https://jimmybeanswool.com/cdn/shop/files/30773Large_fb16_grande.jpg?v=1733168383",
         "sizes": [
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"}
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          }
         ],
-        "lengths_cm": [13, 15, 20]
+        "lengths_cm": [
+          13,
+          15,
+          20
+        ]
       },
       {
         "name": "Dreamz Straight Needles",
         "type": "straight",
         "material": "wood",
+        "image_url": "https://jimmybeanswool.com/cdn/shop/files/30773Large_fb16_grande.jpg?v=1733168383",
         "sizes": [
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [25, 36]
+        "lengths_cm": [
+          25,
+          36
+        ]
+      },
+      {
+        "name": "Waves Crochet Hooks",
+        "type": "crochet_hook",
+        "material": "aluminum",
+        "image_url": "https://jimmybeanswool.com/cdn/shop/files/87587Large_c512_grande.jpg?v=1733168969",
+        "sizes": [
+          {
+            "mm": 2.0,
+            "label": "B/1"
+          },
+          {
+            "mm": 2.25,
+            "label": "B/1"
+          },
+          {
+            "mm": 2.75,
+            "label": "C/2"
+          },
+          {
+            "mm": 3.25,
+            "label": "D/3"
+          },
+          {
+            "mm": 3.5,
+            "label": "E/4"
+          },
+          {
+            "mm": 3.75,
+            "label": "F/5"
+          },
+          {
+            "mm": 4.0,
+            "label": "G/6"
+          },
+          {
+            "mm": 4.5,
+            "label": "7"
+          },
+          {
+            "mm": 5.0,
+            "label": "H/8"
+          },
+          {
+            "mm": 5.5,
+            "label": "I/9"
+          },
+          {
+            "mm": 6.0,
+            "label": "J/10"
+          },
+          {
+            "mm": 6.5,
+            "label": "K/10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "L/11"
+          },
+          {
+            "mm": 9.0,
+            "label": "M/13"
+          },
+          {
+            "mm": 10.0,
+            "label": "N/15"
+          },
+          {
+            "mm": 12.0,
+            "label": "P/16"
+          }
+        ],
+        "lengths_cm": null
+      },
+      {
+        "name": "Zing Fixed Circulars",
+        "type": "circular",
+        "material": "aluminum",
+        "image_url": "https://isv.prod.lovecrafts.co/v1/images/18274e5f4f0509163fbf957d105f41d8/d44d170a-df69-4fe2-a822-fa89e55434b4.jpeg/0/-/1000x1000",
+        "sizes": [
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.0,
+            "label": "US 17"
+          }
+        ],
+        "lengths_cm": [
+          25,
+          40,
+          60,
+          80,
+          100,
+          120
+        ]
+      },
+      {
+        "name": "Zing DPNs",
+        "type": "dpn",
+        "material": "aluminum",
+        "image_url": "https://www.woolwarehouse.co.uk/media/catalog/product/cache/1/image/600x400/9df78eab33525d08d6e5fb8d27136e95/k/p/kp_47001_0.jpg",
+        "sizes": [
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          }
+        ],
+        "lengths_cm": [
+          15,
+          20
+        ]
+      },
+      {
+        "name": "Basix Birch Circulars",
+        "type": "circular",
+        "material": "wood",
+        "image_url": "https://www.woolwarehouse.co.uk/media/catalog/product/cache/1/image/600x400/9df78eab33525d08d6e5fb8d27136e95/k/p/kp_35345_0.jpg",
+        "sizes": [
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.0,
+            "label": "US 17"
+          }
+        ],
+        "lengths_cm": [
+          40,
+          60,
+          80,
+          100
+        ]
+      },
+      {
+        "name": "Zing Straight Needles",
+        "type": "straight",
+        "material": "aluminum",
+        "image_url": "https://www.woolwarehouse.co.uk/media/catalog/product/cache/1/image/600x400/9df78eab33525d08d6e5fb8d27136e95/k/p/kp_47001_0.jpg",
+        "sizes": [
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.0,
+            "label": "US 17"
+          }
+        ],
+        "lengths_cm": [
+          25,
+          30,
+          35,
+          40
+        ]
+      },
+      {
+        "name": "Basix Birch Straight Needles",
+        "type": "straight",
+        "material": "wood",
+        "image_url": "https://www.woolwarehouse.co.uk/media/catalog/product/cache/1/image/600x400/9df78eab33525d08d6e5fb8d27136e95/k/p/kp_35345_0.jpg",
+        "sizes": [
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.0,
+            "label": "US 17"
+          }
+        ],
+        "lengths_cm": [
+          25,
+          30,
+          35
+        ]
+      },
+      {
+        "name": "Basix Birch DPNs",
+        "type": "dpn",
+        "material": "wood",
+        "image_url": "https://www.woolwarehouse.co.uk/media/catalog/product/cache/1/image/600x400/9df78eab33525d08d6e5fb8d27136e95/k/p/kp_47001_0.jpg",
+        "sizes": [
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
+        ],
+        "lengths_cm": [
+          15,
+          20
+        ]
       }
     ]
   },
@@ -345,87 +1572,452 @@
         "name": "Nickel Plated Fixed Circulars",
         "type": "circular",
         "material": "nickel",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/knit_picks_fixed_circular_needles_c073eae2-a8a6-4d73-889f-991858c7d384.jpg?v=1575572016",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"},
-          {"mm": 12.75, "label": "US 17"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.75,
+            "label": "US 17"
+          }
         ],
-        "lengths_cm": [41, 61, 81, 102, 120]
+        "lengths_cm": [
+          41,
+          61,
+          81,
+          102,
+          120
+        ]
       },
       {
         "name": "Sunstruck Fixed Circulars",
         "type": "circular",
         "material": "wood",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/sunstruck-interchangeable-knitting-needles-golden-wood-knit-picks.jpg?v=1575572016",
         "sizes": [
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [41, 61, 81, 102]
+        "lengths_cm": [
+          41,
+          61,
+          81,
+          102
+        ]
       },
       {
         "name": "Caspian DPNs",
         "type": "dpn",
         "material": "wood",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/knit_picks_fixed_circular_needles_c073eae2-a8a6-4d73-889f-991858c7d384.jpg?v=1575572016",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          }
         ],
-        "lengths_cm": [13, 15, 20]
+        "lengths_cm": [
+          13,
+          15,
+          20
+        ]
       },
       {
         "name": "Nickel Plated DPNs",
         "type": "dpn",
         "material": "nickel",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/knit_picks_fixed_circular_needles_c073eae2-a8a6-4d73-889f-991858c7d384.jpg?v=1575572016",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          }
         ],
-        "lengths_cm": [15, 20]
+        "lengths_cm": [
+          15,
+          20
+        ]
+      },
+      {
+        "name": "Nickel Plated Straight Needles",
+        "type": "straight",
+        "material": "nickel",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/knit_picks_fixed_circular_needles_c073eae2-a8a6-4d73-889f-991858c7d384.jpg?v=1575572016",
+        "sizes": [
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
+        ],
+        "lengths_cm": [
+          25,
+          36
+        ]
+      },
+      {
+        "name": "Sunstruck Straight Needles",
+        "type": "straight",
+        "material": "wood",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/sunstruck-interchangeable-knitting-needles-golden-wood-knit-picks.jpg?v=1575572016",
+        "sizes": [
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
+        ],
+        "lengths_cm": [
+          25,
+          36
+        ]
+      },
+      {
+        "name": "Caspian Crochet Hooks",
+        "type": "crochet_hook",
+        "material": "wood",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/knit_picks_fixed_circular_needles_c073eae2-a8a6-4d73-889f-991858c7d384.jpg?v=1575572016",
+        "sizes": [
+          {
+            "mm": 3.5,
+            "label": "E/4"
+          },
+          {
+            "mm": 3.75,
+            "label": "F/5"
+          },
+          {
+            "mm": 4.0,
+            "label": "G/6"
+          },
+          {
+            "mm": 4.5,
+            "label": "7"
+          },
+          {
+            "mm": 5.0,
+            "label": "H/8"
+          },
+          {
+            "mm": 5.5,
+            "label": "I/9"
+          },
+          {
+            "mm": 6.0,
+            "label": "J/10"
+          },
+          {
+            "mm": 6.5,
+            "label": "K/10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "L/11"
+          },
+          {
+            "mm": 9.0,
+            "label": "M/13"
+          },
+          {
+            "mm": 10.0,
+            "label": "N/15"
+          }
+        ],
+        "lengths_cm": null
       }
     ]
   },
@@ -436,87 +2028,270 @@
         "name": "Takumi Bamboo Circulars",
         "type": "circular",
         "material": "bamboo",
+        "image_url": "https://www.yarn.com/cdn/shop/files/ed3f23ed-b8d7-4b9d-8a3c-14bb23e5eba9.png?v=1771798862",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [41, 61, 74, 91]
+        "lengths_cm": [
+          41,
+          61,
+          74,
+          91
+        ]
       },
       {
         "name": "Takumi Bamboo Straights",
         "type": "straight",
         "material": "bamboo",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/single-point-clover-takumi.jpg?v=1654850481",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [23, 33]
+        "lengths_cm": [
+          23,
+          33
+        ]
       },
       {
         "name": "Takumi Bamboo DPNs",
         "type": "dpn",
         "material": "bamboo",
+        "image_url": "https://clover-usa.com/cdn/shop/products/TakumiBambooKN3015-0.jpg?v=1631027805",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          }
         ],
-        "lengths_cm": [13, 18]
+        "lengths_cm": [
+          13,
+          18
+        ]
       },
       {
         "name": "Amour Crochet Hooks",
         "type": "crochet_hook",
         "material": "aluminum",
+        "image_url": "https://jimmybeanswool.com/cdn/shop/files/93782Large_0643_grande.jpg?v=1733169250",
         "sizes": [
-          {"mm": 2.25, "label": "B/1"},
-          {"mm": 2.75, "label": "C/2"},
-          {"mm": 3.25, "label": "D/3"},
-          {"mm": 3.5, "label": "E/4"},
-          {"mm": 3.75, "label": "F/5"},
-          {"mm": 4.0, "label": "G/6"},
-          {"mm": 4.5, "label": "7"},
-          {"mm": 5.0, "label": "H/8"},
-          {"mm": 5.5, "label": "I/9"},
-          {"mm": 6.0, "label": "J/10"},
-          {"mm": 6.5, "label": "K/10.5"},
-          {"mm": 8.0, "label": "L/11"},
-          {"mm": 9.0, "label": "M/13"},
-          {"mm": 10.0, "label": "N/15"}
+          {
+            "mm": 2.25,
+            "label": "B/1"
+          },
+          {
+            "mm": 2.75,
+            "label": "C/2"
+          },
+          {
+            "mm": 3.25,
+            "label": "D/3"
+          },
+          {
+            "mm": 3.5,
+            "label": "E/4"
+          },
+          {
+            "mm": 3.75,
+            "label": "F/5"
+          },
+          {
+            "mm": 4.0,
+            "label": "G/6"
+          },
+          {
+            "mm": 4.5,
+            "label": "7"
+          },
+          {
+            "mm": 5.0,
+            "label": "H/8"
+          },
+          {
+            "mm": 5.5,
+            "label": "I/9"
+          },
+          {
+            "mm": 6.0,
+            "label": "J/10"
+          },
+          {
+            "mm": 6.5,
+            "label": "K/10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "L/11"
+          },
+          {
+            "mm": 9.0,
+            "label": "M/13"
+          },
+          {
+            "mm": 10.0,
+            "label": "N/15"
+          }
         ],
         "lengths_cm": null
       }
@@ -529,71 +2304,283 @@
         "name": "Driftwood Fixed Circulars",
         "type": "circular",
         "material": "wood",
+        "image_url": "https://michiganfineyarns.com/cdn/shop/files/knitting-needles-lykke-lykke-driftwood-fixed-9-circular-needles-us-0-20mm-841275161603-984862.jpg?v=1737216539",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"},
-          {"mm": 12.75, "label": "US 17"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.75,
+            "label": "US 17"
+          }
         ],
-        "lengths_cm": [41, 61, 81, 102]
+        "lengths_cm": [
+          41,
+          61,
+          81,
+          102
+        ]
       },
       {
         "name": "Driftwood DPNs",
         "type": "dpn",
         "material": "wood",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/6.jpg?v=1771978302",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          }
         ],
-        "lengths_cm": [15]
+        "lengths_cm": [
+          15
+        ]
       },
       {
         "name": "Driftwood Straight Needles",
         "type": "straight",
         "material": "wood",
+        "image_url": "https://www.woolwarehouse.co.uk/media/catalog/product/cache/1/image/600x400/9df78eab33525d08d6e5fb8d27136e95/l/k/lk_straight_10_dw_3.jpg",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [25, 36]
+        "lengths_cm": [
+          25,
+          36
+        ]
+      },
+      {
+        "name": "Driftwood Crochet Hooks",
+        "type": "crochet_hook",
+        "material": "wood",
+        "image_url": "https://michiganfineyarns.com/cdn/shop/files/knitting-needles-lykke-lykke-driftwood-fixed-9-circular-needles-us-0-20mm-841275161603-984862.jpg?v=1737216539",
+        "sizes": [
+          {
+            "mm": 3.5,
+            "label": "E/4"
+          },
+          {
+            "mm": 3.75,
+            "label": "F/5"
+          },
+          {
+            "mm": 4.0,
+            "label": "G/6"
+          },
+          {
+            "mm": 4.5,
+            "label": "7"
+          },
+          {
+            "mm": 5.0,
+            "label": "H/8"
+          },
+          {
+            "mm": 5.5,
+            "label": "I/9"
+          },
+          {
+            "mm": 6.0,
+            "label": "J/10"
+          },
+          {
+            "mm": 6.5,
+            "label": "K/10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "L/11"
+          },
+          {
+            "mm": 9.0,
+            "label": "M/13"
+          },
+          {
+            "mm": 10.0,
+            "label": "N/15"
+          },
+          {
+            "mm": 12.0,
+            "label": "P/16"
+          },
+          {
+            "mm": 15.0,
+            "label": "Q/19"
+          }
+        ],
+        "lengths_cm": null
       }
     ]
   },
@@ -604,68 +2591,343 @@
         "name": "Sharp Fixed Circulars",
         "type": "circular",
         "material": "stainless_steel",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/hiyahiya-16inch-sharp-steel-circular-needle-hiyahiya-455318.jpg?v=1764221304",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"},
-          {"mm": 12.75, "label": "US 17"},
-          {"mm": 15.0, "label": "US 19"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.75,
+            "label": "US 17"
+          },
+          {
+            "mm": 15.0,
+            "label": "US 19"
+          }
         ],
-        "lengths_cm": [23, 30, 41, 61, 81, 102]
+        "lengths_cm": [
+          23,
+          30,
+          41,
+          61,
+          81,
+          102
+        ]
       },
       {
         "name": "Bamboo Fixed Circulars",
         "type": "circular",
         "material": "bamboo",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/hiyahiya-16inch-bamboo-circular-needle-hiyahiya-521122.png?v=1742484424",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [41, 61, 81, 102]
+        "lengths_cm": [
+          41,
+          61,
+          81,
+          102
+        ]
       },
       {
         "name": "Sharp DPNs",
         "type": "dpn",
         "material": "stainless_steel",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/hiyahiya-6inch-sharp-steel-double-pointed-needles-hiyahiya-167085.jpg?v=1764198235",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          }
         ],
-        "lengths_cm": [15]
+        "lengths_cm": [
+          15
+        ]
+      },
+      {
+        "name": "Bamboo DPNs",
+        "type": "dpn",
+        "material": "bamboo",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/hiyahiya-16inch-bamboo-circular-needle-hiyahiya-521122.png?v=1742484424",
+        "sizes": [
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          }
+        ],
+        "lengths_cm": [
+          15,
+          20
+        ]
+      },
+      {
+        "name": "Steel Straight Needles",
+        "type": "straight",
+        "material": "stainless_steel",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/hiyahiya-6inch-sharp-steel-double-pointed-needles-hiyahiya-167085.jpg?v=1764198235",
+        "sizes": [
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
+        ],
+        "lengths_cm": [
+          25,
+          30,
+          36
+        ]
       }
     ]
   },
@@ -676,22 +2938,68 @@
         "name": "Etimo Crochet Hooks",
         "type": "crochet_hook",
         "material": "aluminum",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/tulip-etimo-grey-crochet-hook-with-cushion-grip-set-tulip-981207.jpg?v=1761633055",
         "sizes": [
-          {"mm": 2.0, "label": "0"},
-          {"mm": 2.2, "label": "1"},
-          {"mm": 2.3, "label": "2"},
-          {"mm": 2.5, "label": "3"},
-          {"mm": 2.75, "label": "C/2"},
-          {"mm": 3.0, "label": "4"},
-          {"mm": 3.25, "label": "D/3"},
-          {"mm": 3.5, "label": "E/4"},
-          {"mm": 3.75, "label": "F/5"},
-          {"mm": 4.0, "label": "G/6"},
-          {"mm": 4.5, "label": "7"},
-          {"mm": 5.0, "label": "H/8"},
-          {"mm": 5.5, "label": "I/9"},
-          {"mm": 6.0, "label": "J/10"},
-          {"mm": 6.5, "label": "K/10.5"}
+          {
+            "mm": 2.0,
+            "label": "0"
+          },
+          {
+            "mm": 2.2,
+            "label": "1"
+          },
+          {
+            "mm": 2.3,
+            "label": "2"
+          },
+          {
+            "mm": 2.5,
+            "label": "3"
+          },
+          {
+            "mm": 2.75,
+            "label": "C/2"
+          },
+          {
+            "mm": 3.0,
+            "label": "4"
+          },
+          {
+            "mm": 3.25,
+            "label": "D/3"
+          },
+          {
+            "mm": 3.5,
+            "label": "E/4"
+          },
+          {
+            "mm": 3.75,
+            "label": "F/5"
+          },
+          {
+            "mm": 4.0,
+            "label": "G/6"
+          },
+          {
+            "mm": 4.5,
+            "label": "7"
+          },
+          {
+            "mm": 5.0,
+            "label": "H/8"
+          },
+          {
+            "mm": 5.5,
+            "label": "I/9"
+          },
+          {
+            "mm": 6.0,
+            "label": "J/10"
+          },
+          {
+            "mm": 6.5,
+            "label": "K/10.5"
+          }
         ],
         "lengths_cm": null
       },
@@ -699,24 +3007,297 @@
         "name": "Etimo Red Crochet Hooks",
         "type": "crochet_hook",
         "material": "aluminum",
+        "image_url": "https://paradisefibers.com/cdn/shop/products/tulip-etimo-red-crochet-hook-with-cushion-grip-set-tulip-341178.jpg?v=1761616095",
         "sizes": [
-          {"mm": 1.8, "label": "6"},
-          {"mm": 2.0, "label": "4"},
-          {"mm": 2.2, "label": "2"},
-          {"mm": 2.5, "label": "1/0"},
-          {"mm": 2.75, "label": "C/2"},
-          {"mm": 3.0, "label": "3/0"},
-          {"mm": 3.25, "label": "D/3"},
-          {"mm": 3.5, "label": "E/4"},
-          {"mm": 3.75, "label": "F/5"},
-          {"mm": 4.0, "label": "G/6"},
-          {"mm": 4.5, "label": "7"},
-          {"mm": 5.0, "label": "H/8"},
-          {"mm": 5.5, "label": "I/9"},
-          {"mm": 6.0, "label": "J/10"},
-          {"mm": 6.5, "label": "K/10.5"}
+          {
+            "mm": 1.8,
+            "label": "6"
+          },
+          {
+            "mm": 2.0,
+            "label": "4"
+          },
+          {
+            "mm": 2.2,
+            "label": "2"
+          },
+          {
+            "mm": 2.5,
+            "label": "1/0"
+          },
+          {
+            "mm": 2.75,
+            "label": "C/2"
+          },
+          {
+            "mm": 3.0,
+            "label": "3/0"
+          },
+          {
+            "mm": 3.25,
+            "label": "D/3"
+          },
+          {
+            "mm": 3.5,
+            "label": "E/4"
+          },
+          {
+            "mm": 3.75,
+            "label": "F/5"
+          },
+          {
+            "mm": 4.0,
+            "label": "G/6"
+          },
+          {
+            "mm": 4.5,
+            "label": "7"
+          },
+          {
+            "mm": 5.0,
+            "label": "H/8"
+          },
+          {
+            "mm": 5.5,
+            "label": "I/9"
+          },
+          {
+            "mm": 6.0,
+            "label": "J/10"
+          },
+          {
+            "mm": 6.5,
+            "label": "K/10.5"
+          }
         ],
         "lengths_cm": null
+      },
+      {
+        "name": "Knina Bamboo Fixed Circulars",
+        "type": "circular",
+        "material": "bamboo",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/tulip-etimo-grey-crochet-hook-with-cushion-grip-set-tulip-981207.jpg?v=1761633055",
+        "sizes": [
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 7.0,
+            "label": "US 10.75"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          },
+          {
+            "mm": 12.0,
+            "label": "US 17"
+          },
+          {
+            "mm": 15.0,
+            "label": "US 19"
+          }
+        ],
+        "lengths_cm": [
+          40,
+          60,
+          80,
+          100,
+          120
+        ]
+      },
+      {
+        "name": "Knina Bamboo DPNs",
+        "type": "dpn",
+        "material": "bamboo",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/tulip-etimo-grey-crochet-hook-with-cushion-grip-set-tulip-981207.jpg?v=1761633055",
+        "sizes": [
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
+        ],
+        "lengths_cm": [
+          15,
+          20
+        ]
+      },
+      {
+        "name": "Knina Bamboo Straight Needles",
+        "type": "straight",
+        "material": "bamboo",
+        "image_url": "https://paradisefibers.com/cdn/shop/files/tulip-etimo-grey-crochet-hook-with-cushion-grip-set-tulip-981207.jpg?v=1761633055",
+        "sizes": [
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
+        ],
+        "lengths_cm": [
+          25,
+          33
+        ]
       }
     ]
   },
@@ -727,22 +3308,68 @@
         "name": "Silvalume Crochet Hooks",
         "type": "crochet_hook",
         "material": "aluminum",
+        "image_url": "https://www.yarn.com/cdn/shop/files/1afed67e-726d-42b7-abb7-5ab2255ad5c5.jpg?v=1771963184",
         "sizes": [
-          {"mm": 2.25, "label": "B/1"},
-          {"mm": 2.75, "label": "C/2"},
-          {"mm": 3.25, "label": "D/3"},
-          {"mm": 3.5, "label": "E/4"},
-          {"mm": 3.75, "label": "F/5"},
-          {"mm": 4.0, "label": "G/6"},
-          {"mm": 4.5, "label": "7"},
-          {"mm": 5.0, "label": "H/8"},
-          {"mm": 5.5, "label": "I/9"},
-          {"mm": 6.0, "label": "J/10"},
-          {"mm": 6.5, "label": "K/10.5"},
-          {"mm": 8.0, "label": "L/11"},
-          {"mm": 9.0, "label": "M/13"},
-          {"mm": 10.0, "label": "N/15"},
-          {"mm": 11.5, "label": "P/16"}
+          {
+            "mm": 2.25,
+            "label": "B/1"
+          },
+          {
+            "mm": 2.75,
+            "label": "C/2"
+          },
+          {
+            "mm": 3.25,
+            "label": "D/3"
+          },
+          {
+            "mm": 3.5,
+            "label": "E/4"
+          },
+          {
+            "mm": 3.75,
+            "label": "F/5"
+          },
+          {
+            "mm": 4.0,
+            "label": "G/6"
+          },
+          {
+            "mm": 4.5,
+            "label": "7"
+          },
+          {
+            "mm": 5.0,
+            "label": "H/8"
+          },
+          {
+            "mm": 5.5,
+            "label": "I/9"
+          },
+          {
+            "mm": 6.0,
+            "label": "J/10"
+          },
+          {
+            "mm": 6.5,
+            "label": "K/10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "L/11"
+          },
+          {
+            "mm": 9.0,
+            "label": "M/13"
+          },
+          {
+            "mm": 10.0,
+            "label": "N/15"
+          },
+          {
+            "mm": 11.5,
+            "label": "P/16"
+          }
         ],
         "lengths_cm": null
       },
@@ -750,19 +3377,234 @@
         "name": "Bamboo Handle Crochet Hooks",
         "type": "crochet_hook",
         "material": "bamboo",
+        "image_url": "https://yarndesignersboutique.com/cdn/shop/products/ergonomic-crochet-hook-bamboo-handle-silvalume-head-susan-bates-blue.jpg?v=1598422962",
         "sizes": [
-          {"mm": 3.75, "label": "F/5"},
-          {"mm": 4.0, "label": "G/6"},
-          {"mm": 4.5, "label": "7"},
-          {"mm": 5.0, "label": "H/8"},
-          {"mm": 5.5, "label": "I/9"},
-          {"mm": 6.0, "label": "J/10"},
-          {"mm": 6.5, "label": "K/10.5"},
-          {"mm": 8.0, "label": "L/11"},
-          {"mm": 9.0, "label": "M/13"},
-          {"mm": 10.0, "label": "N/15"}
+          {
+            "mm": 3.75,
+            "label": "F/5"
+          },
+          {
+            "mm": 4.0,
+            "label": "G/6"
+          },
+          {
+            "mm": 4.5,
+            "label": "7"
+          },
+          {
+            "mm": 5.0,
+            "label": "H/8"
+          },
+          {
+            "mm": 5.5,
+            "label": "I/9"
+          },
+          {
+            "mm": 6.0,
+            "label": "J/10"
+          },
+          {
+            "mm": 6.5,
+            "label": "K/10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "L/11"
+          },
+          {
+            "mm": 9.0,
+            "label": "M/13"
+          },
+          {
+            "mm": 10.0,
+            "label": "N/15"
+          }
         ],
         "lengths_cm": null
+      },
+      {
+        "name": "Silvalume Aluminum Circulars",
+        "type": "circular",
+        "material": "aluminum",
+        "image_url": "https://www.yarn.com/cdn/shop/files/1afed67e-726d-42b7-abb7-5ab2255ad5c5.jpg?v=1771963184",
+        "sizes": [
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
+        ],
+        "lengths_cm": [
+          41,
+          61,
+          74
+        ]
+      },
+      {
+        "name": "Silvalume Aluminum Straights",
+        "type": "straight",
+        "material": "aluminum",
+        "image_url": "https://www.yarn.com/cdn/shop/files/1afed67e-726d-42b7-abb7-5ab2255ad5c5.jpg?v=1771963184",
+        "sizes": [
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 6.5,
+            "label": "US 10.5"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
+        ],
+        "lengths_cm": [
+          25,
+          36
+        ]
+      },
+      {
+        "name": "Silvalume Aluminum DPNs",
+        "type": "dpn",
+        "material": "aluminum",
+        "image_url": "https://www.yarn.com/cdn/shop/files/1afed67e-726d-42b7-abb7-5ab2255ad5c5.jpg?v=1771963184",
+        "sizes": [
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.25,
+            "label": "US 1"
+          },
+          {
+            "mm": 2.75,
+            "label": "US 2"
+          },
+          {
+            "mm": 3.25,
+            "label": "US 3"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 3.75,
+            "label": "US 5"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          }
+        ],
+        "lengths_cm": [
+          18
+        ]
       }
     ]
   },
@@ -773,18 +3615,52 @@
         "name": "Ergonomics Crochet Hooks",
         "type": "crochet_hook",
         "material": "plastic",
+        "image_url": "https://www.woolwarehouse.co.uk/media/catalog/product/cache/1/image/600x400/9df78eab33525d08d6e5fb8d27136e95/p/r/prymwoolcrochethook_218489_0_2.jpg",
         "sizes": [
-          {"mm": 3.0, "label": "D/3"},
-          {"mm": 3.5, "label": "E/4"},
-          {"mm": 4.0, "label": "G/6"},
-          {"mm": 4.5, "label": "7"},
-          {"mm": 5.0, "label": "H/8"},
-          {"mm": 6.0, "label": "J/10"},
-          {"mm": 7.0, "label": "K/10.75"},
-          {"mm": 8.0, "label": "L/11"},
-          {"mm": 9.0, "label": "M/13"},
-          {"mm": 10.0, "label": "N/15"},
-          {"mm": 12.0, "label": "P/16"}
+          {
+            "mm": 3.0,
+            "label": "D/3"
+          },
+          {
+            "mm": 3.5,
+            "label": "E/4"
+          },
+          {
+            "mm": 4.0,
+            "label": "G/6"
+          },
+          {
+            "mm": 4.5,
+            "label": "7"
+          },
+          {
+            "mm": 5.0,
+            "label": "H/8"
+          },
+          {
+            "mm": 6.0,
+            "label": "J/10"
+          },
+          {
+            "mm": 7.0,
+            "label": "K/10.75"
+          },
+          {
+            "mm": 8.0,
+            "label": "L/11"
+          },
+          {
+            "mm": 9.0,
+            "label": "M/13"
+          },
+          {
+            "mm": 10.0,
+            "label": "N/15"
+          },
+          {
+            "mm": 12.0,
+            "label": "P/16"
+          }
         ],
         "lengths_cm": null
       },
@@ -792,96 +3668,186 @@
         "name": "Natural Bamboo Circulars",
         "type": "circular",
         "material": "bamboo",
+        "image_url": "https://isv.prod.lovecrafts.co/v1/images/a64c3b4af0a5161f8e244c3810ce6692/9f8b11e7-2816-4d8e-af14-cece1ff81578.jpg/0/-/1000x1000",
         "sizes": [
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 7.0, "label": "US 10.75"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"}
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 7.0,
+            "label": "US 10.75"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [41, 61, 81]
-      }
-    ]
-  },
-  {
-    "brand": "Knit Pro",
-    "product_lines": [
-      {
-        "name": "Zing Fixed Circulars",
-        "type": "circular",
-        "material": "aluminum",
-        "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.25, "label": "US 1"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"},
-          {"mm": 12.0, "label": "US 17"}
-        ],
-        "lengths_cm": [25, 40, 60, 80, 100, 120]
+        "lengths_cm": [
+          41,
+          61,
+          81
+        ]
       },
       {
-        "name": "Zing DPNs",
+        "name": "Natural Bamboo DPNs",
         "type": "dpn",
-        "material": "aluminum",
+        "material": "bamboo",
+        "image_url": "https://isv.prod.lovecrafts.co/v1/images/a64c3b4af0a5161f8e244c3810ce6692/9f8b11e7-2816-4d8e-af14-cece1ff81578.jpg/0/-/1000x1000",
         "sizes": [
-          {"mm": 2.0, "label": "US 0"},
-          {"mm": 2.5, "label": "US 1.5"},
-          {"mm": 2.75, "label": "US 2"},
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 7.0,
+            "label": "US 10.75"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [15, 20]
+        "lengths_cm": [
+          15,
+          20
+        ]
       },
       {
-        "name": "Basix Birch Circulars",
-        "type": "circular",
-        "material": "wood",
+        "name": "Natural Bamboo Straight Needles",
+        "type": "straight",
+        "material": "bamboo",
+        "image_url": "https://isv.prod.lovecrafts.co/v1/images/a64c3b4af0a5161f8e244c3810ce6692/9f8b11e7-2816-4d8e-af14-cece1ff81578.jpg/0/-/1000x1000",
         "sizes": [
-          {"mm": 3.0, "label": "US 2.5"},
-          {"mm": 3.25, "label": "US 3"},
-          {"mm": 3.5, "label": "US 4"},
-          {"mm": 3.75, "label": "US 5"},
-          {"mm": 4.0, "label": "US 6"},
-          {"mm": 4.5, "label": "US 7"},
-          {"mm": 5.0, "label": "US 8"},
-          {"mm": 5.5, "label": "US 9"},
-          {"mm": 6.0, "label": "US 10"},
-          {"mm": 6.5, "label": "US 10.5"},
-          {"mm": 8.0, "label": "US 11"},
-          {"mm": 9.0, "label": "US 13"},
-          {"mm": 10.0, "label": "US 15"},
-          {"mm": 12.0, "label": "US 17"}
+          {
+            "mm": 2.0,
+            "label": "US 0"
+          },
+          {
+            "mm": 2.5,
+            "label": "US 1.5"
+          },
+          {
+            "mm": 3.0,
+            "label": "US 2.5"
+          },
+          {
+            "mm": 3.5,
+            "label": "US 4"
+          },
+          {
+            "mm": 4.0,
+            "label": "US 6"
+          },
+          {
+            "mm": 4.5,
+            "label": "US 7"
+          },
+          {
+            "mm": 5.0,
+            "label": "US 8"
+          },
+          {
+            "mm": 5.5,
+            "label": "US 9"
+          },
+          {
+            "mm": 6.0,
+            "label": "US 10"
+          },
+          {
+            "mm": 7.0,
+            "label": "US 10.75"
+          },
+          {
+            "mm": 8.0,
+            "label": "US 11"
+          },
+          {
+            "mm": 9.0,
+            "label": "US 13"
+          },
+          {
+            "mm": 10.0,
+            "label": "US 15"
+          }
         ],
-        "lengths_cm": [40, 60, 80, 100]
+        "lengths_cm": [
+          25,
+          33
+        ]
       }
     ]
   }

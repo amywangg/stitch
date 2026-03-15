@@ -93,9 +93,15 @@ struct RavelerySyncView: View {
 
                 if let err = error ?? status?.importError {
                     Section {
+                        #if DEBUG
                         Text(err)
                             .font(.caption)
                             .foregroundStyle(.red)
+                        #else
+                        Text("Sync encountered an error. Try again later.")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                        #endif
                     }
                 }
             }
@@ -259,6 +265,14 @@ struct RavelerySyncView: View {
                 let _: APIResponse<Empty> = try await APIClient.shared.post(
                     "/integrations/ravelry/sync"
                 )
+            } catch let apiError as APIError {
+                await MainActor.run {
+                    if apiError.errorCode == "RAVELRY_AUTH_EXPIRED" {
+                        self.error = "Your Ravelry connection has expired. Please disconnect and reconnect your account in Settings."
+                    } else {
+                        self.error = "Failed to start sync: \(apiError.localizedDescription)"
+                    }
+                }
             } catch {
                 await MainActor.run {
                     self.error = "Failed to start sync: \(error.localizedDescription)"

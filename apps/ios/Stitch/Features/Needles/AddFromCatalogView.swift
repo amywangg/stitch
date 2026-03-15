@@ -4,12 +4,17 @@ import SwiftUI
 
 @Observable
 final class AddFromCatalogViewModel {
-    var brands: [ToolBrand] = []
-    var sets: [ToolSet] = []
     var isLoading = false
     var error: String?
     var searchText = ""
-    var selectedBrandId: String?
+
+    private var allBrands: [ToolBrand] = []
+
+    var brands: [ToolBrand] {
+        guard !searchText.isEmpty else { return allBrands }
+        let query = searchText.lowercased()
+        return allBrands.filter { $0.name.lowercased().contains(query) }
+    }
 
     func loadBrands() async {
         isLoading = true
@@ -17,40 +22,7 @@ final class AddFromCatalogViewModel {
         do {
             struct BrandsResponse: Decodable { let items: [ToolBrand] }
             let response: APIResponse<BrandsResponse> = try await APIClient.shared.get("/tool-catalog")
-            brands = response.data.items
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    func loadSets(brandId: String) async {
-        isLoading = true
-        defer { isLoading = false }
-        selectedBrandId = brandId
-        do {
-            struct SetsResponse: Decodable { let items: [ToolSet] }
-            let response: APIResponse<SetsResponse> = try await APIClient.shared.get(
-                "/tool-catalog/sets?brand_id=\(brandId)"
-            )
-            sets = response.data.items
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    func searchBrands() async {
-        guard !searchText.isEmpty else {
-            await loadBrands()
-            return
-        }
-        isLoading = true
-        defer { isLoading = false }
-        do {
-            struct BrandsResponse: Decodable { let items: [ToolBrand] }
-            let response: APIResponse<BrandsResponse> = try await APIClient.shared.get(
-                "/tool-catalog?search=\(searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? searchText)"
-            )
-            brands = response.data.items
+            allBrands = response.data.items
         } catch {
             self.error = error.localizedDescription
         }
@@ -72,7 +44,9 @@ struct AddFromCatalogView: View {
             } else {
                 List {
                     ForEach(viewModel.brands) { brand in
-                        NavigationLink(value: Route.toolSetDetail(id: brand.id)) {
+                        NavigationLink {
+                            ToolSetDetailView(setId: brand.id)
+                        } label: {
                             HStack(spacing: 12) {
                                 BrandLogoView(brand: brand)
 
@@ -102,9 +76,6 @@ struct AddFromCatalogView: View {
         }
         .navigationTitle("Add a set")
         .searchable(text: $viewModel.searchText, prompt: "Search brands")
-        .onChange(of: viewModel.searchText) { _, _ in
-            Task { await viewModel.searchBrands() }
-        }
         .task {
             await viewModel.loadBrands()
         }
@@ -128,33 +99,54 @@ struct AddFromCatalogView: View {
 final class ToolSetDetailViewModel {
     var sets: [ToolSet] = []
     var isLoading = false
-    var isAdding = false
+    var addingSetId: String?
     var addResult: String?
     var error: String?
+    var searchText = ""
+    var ownedSetIds: Set<String> = []
+
+    private var allSets: [ToolSet] = []
+
+    var filteredSets: [ToolSet] {
+        guard !searchText.isEmpty else { return allSets }
+        let query = searchText.lowercased()
+        return allSets.filter {
+            $0.name.lowercased().contains(query) ||
+            $0.setType.replacingOccurrences(of: "_", with: " ").lowercased().contains(query)
+        }
+    }
 
     func loadSetsForBrand(_ brandId: String) async {
         isLoading = true
         defer { isLoading = false }
         do {
             struct SetsResponse: Decodable { let items: [ToolSet] }
-            let response: APIResponse<SetsResponse> = try await APIClient.shared.get(
-                "/tool-catalog/sets?brand_id=\(brandId)&include_items=true"
-            )
-            sets = response.data.items
+            let path = "/tool-catalog/sets?brand_id=\(brandId)&include_items=true"
+            let response: APIResponse<SetsResponse> = try await APIClient.shared.get(path)
+            allSets = response.data.items
         } catch {
             self.error = error.localizedDescription
         }
     }
 
+    func loadOwnedSets() async {
+        do {
+            struct NeedlesData: Decodable { let items: [Needle] }
+            let response: APIResponse<NeedlesData> = try await APIClient.shared.get("/needles")
+            ownedSetIds = Set(response.data.items.compactMap { $0.toolSetId })
+        } catch {}
+    }
+
     func addToStash(setId: String) async {
-        isAdding = true
-        defer { isAdding = false }
+        addingSetId = setId
+        defer { addingSetId = nil }
         struct Body: Encodable { let set_id: String }
         do {
             let response: APIResponse<AddSetResult> = try await APIClient.shared.post(
                 "/tool-catalog/add-set",
                 body: Body(set_id: setId)
             )
+            ownedSetIds.insert(setId)
             addResult = "Added \(response.data.added) items from \(response.data.setName)"
         } catch {
             self.error = error.localizedDescription
@@ -166,6 +158,7 @@ struct ToolSetDetailView: View {
     let setId: String
     @Environment(ThemeManager.self) private var theme
     @State private var viewModel = ToolSetDetailViewModel()
+    @State private var expandedSets: Set<String> = []
 
     var body: some View {
         Group {
@@ -174,91 +167,158 @@ struct ToolSetDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List {
-                    ForEach(viewModel.sets) { set in
+                    ForEach(viewModel.filteredSets) { set in
                         Section {
-                            // Product image
-                            if let imageUrl = set.imageUrl, !imageUrl.isEmpty,
-                               let url = URL(string: imageUrl) {
-                                AsyncImage(url: url) { image in
-                                    image.resizable().aspectRatio(contentMode: .fit)
-                                } placeholder: {
-                                    Color(.systemGray5)
-                                        .frame(height: 160)
+                        // Header row: thumbnail, info, quick-add, expand chevron
+                        HStack(spacing: 10) {
+                                // Thumbnail
+                                if let imageUrl = set.imageUrl, !imageUrl.isEmpty,
+                                   let url = URL(string: imageUrl) {
+                                    AsyncImage(url: url) { image in
+                                        image.resizable().aspectRatio(contentMode: .fill)
+                                    } placeholder: {
+                                        Color(.systemGray5)
+                                    }
+                                    .frame(width: 52, height: 52)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
                                 }
-                                .frame(maxWidth: .infinity)
-                                .frame(maxHeight: 200)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+
+                                // Name + meta (tap to expand)
+                                Button {
+                                    withAnimation(.snappy(duration: 0.3)) {
+                                        if expandedSets.contains(set.id) {
+                                            expandedSets.remove(set.id)
+                                        } else {
+                                            expandedSets.insert(set.id)
+                                        }
+                                    }
+                                } label: {
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text(set.name)
+                                            .font(.subheadline.weight(.semibold))
+                                            .foregroundStyle(.primary)
+                                            .lineLimit(2)
+                                        Text(formatSetType(set.setType))
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                        if let items = set.items {
+                                            Text("\(items.count) items")
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .buttonStyle(.plain)
+
+                                // Quick add / owned indicator
+                                if viewModel.ownedSetIds.contains(set.id) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 36, height: 36)
+                                } else {
+                                    Button {
+                                        Task { await viewModel.addToStash(setId: set.id) }
+                                    } label: {
+                                        if viewModel.addingSetId == set.id {
+                                            ProgressView()
+                                                .controlSize(.small)
+                                                .frame(width: 36, height: 36)
+                                        } else {
+                                            Image(systemName: "plus.circle.fill")
+                                                .font(.title2)
+                                                .foregroundStyle(theme.primary)
+                                                .frame(width: 36, height: 36)
+                                        }
+                                    }
+                                    .buttonStyle(.plain)
+                                    .disabled(viewModel.addingSetId != nil)
+                                }
+
+                                // Expand chevron
+                                Button {
+                                    withAnimation(.snappy(duration: 0.3)) {
+                                        if expandedSets.contains(set.id) {
+                                            expandedSets.remove(set.id)
+                                        } else {
+                                            expandedSets.insert(set.id)
+                                        }
+                                    }
+                                } label: {
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(.secondary)
+                                        .rotationEffect(.degrees(expandedSets.contains(set.id) ? 90 : 0))
+                                        .frame(width: 20)
+                                }
+                                .buttonStyle(.plain)
                             }
 
-                            // Set header
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(set.name)
-                                    .font(.headline)
+                            // Expanded content
+                            if expandedSets.contains(set.id) {
+                                // Description
                                 if let description = set.description {
                                     Text(description)
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
+                                        .padding(.vertical, 2)
                                 }
-                                Text(formatSetType(set.setType))
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding(.vertical, 4)
 
-                            // Items in the set
-                            if let items = set.items {
-                                ForEach(items) { item in
-                                    HStack {
-                                        Image(systemName: itemIcon(item.type))
-                                            .foregroundStyle(theme.primary)
-                                            .frame(width: 24)
-                                        VStack(alignment: .leading, spacing: 2) {
-                                            Text(itemLabel(item))
-                                                .font(.subheadline)
-                                            if let material = item.material {
-                                                Text(material.replacingOccurrences(of: "_", with: " ").capitalized)
+                                // Product image (larger when expanded)
+                                if let imageUrl = set.imageUrl, !imageUrl.isEmpty,
+                                   let url = URL(string: imageUrl) {
+                                    AsyncImage(url: url) { image in
+                                        image.resizable().aspectRatio(contentMode: .fit)
+                                    } placeholder: {
+                                        Color(.systemGray5)
+                                            .frame(height: 160)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(maxHeight: 200)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                                }
+
+                                // Items in the set
+                                if let items = set.items {
+                                    ForEach(items) { item in
+                                        HStack {
+                                            Image(systemName: itemIcon(item.type))
+                                                .foregroundStyle(theme.primary)
+                                                .frame(width: 24)
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(itemLabel(item))
+                                                    .font(.subheadline)
+                                                if let material = item.material {
+                                                    Text(material.replacingOccurrences(of: "_", with: " ").capitalized)
+                                                        .font(.caption)
+                                                        .foregroundStyle(.secondary)
+                                                }
+                                            }
+                                            Spacer()
+                                            if item.quantity > 1 {
+                                                Text("\u{00D7}\(item.quantity)")
                                                     .font(.caption)
                                                     .foregroundStyle(.secondary)
                                             }
                                         }
-                                        Spacer()
-                                        if item.quantity > 1 {
-                                            Text("\u{00D7}\(item.quantity)")
-                                                .font(.caption)
-                                                .foregroundStyle(.secondary)
-                                        }
                                     }
                                 }
                             }
-
-                            // Add button
-                            Button {
-                                Task { await viewModel.addToStash(setId: set.id) }
-                            } label: {
-                                HStack {
-                                    Spacer()
-                                    if viewModel.isAdding {
-                                        ProgressView()
-                                            .controlSize(.small)
-                                    } else {
-                                        Label("Add all to my stash", systemImage: "plus.circle.fill")
-                                    }
-                                    Spacer()
-                                }
-                                .padding(.vertical, 4)
-                            }
-                            .disabled(viewModel.isAdding)
                         }
                     }
                 }
-                .listStyle(.insetGrouped)
+                .listStyle(.plain)
             }
         }
         .navigationTitle("Sets")
         .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $viewModel.searchText, prompt: "Search sets")
         .task {
-            await viewModel.loadSetsForBrand(setId)
+            async let sets: () = viewModel.loadSetsForBrand(setId)
+            async let owned: () = viewModel.loadOwnedSets()
+            _ = await (sets, owned)
         }
         .alert("Added", isPresented: .init(
             get: { viewModel.addResult != nil },

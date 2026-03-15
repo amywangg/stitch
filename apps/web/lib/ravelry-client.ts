@@ -2,6 +2,14 @@ import crypto from 'crypto'
 
 const BASE_URL = 'https://api.ravelry.com'
 
+/** Thrown when Ravelry OAuth tokens are expired, revoked, or invalid. */
+export class RavelryAuthError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'RavelryAuthError'
+  }
+}
+
 /** RFC 3986 percent-encoding */
 function percentEncode(str: string): string {
   return encodeURIComponent(str).replace(/[!'()*]/g, c =>
@@ -45,6 +53,8 @@ export interface RavelryProjectDetail {
   gauge: number | null
   gauge_divisor: number | null
   row_gauge: number | null
+  tag_names: string[]
+  pattern_categories: Array<{ name: string; permalink: string; parent?: { name: string; parent?: { name: string } } }> | null
   photos: Array<{
     medium_url: string
     sort_order: number
@@ -203,14 +213,35 @@ export class RavelryClient {
         Authorization: this.buildAuthHeader('GET', fullUrl),
         Accept: 'application/json',
       },
+      redirect: 'manual',
     })
+
+    // Ravelry returns 302 to login page when OAuth tokens are expired/revoked
+    if (res.status >= 300 && res.status < 400) {
+      throw new RavelryAuthError('Ravelry session expired. Please reconnect your Ravelry account.')
+    }
+
+    if (res.status === 401 || res.status === 403) {
+      throw new RavelryAuthError('Ravelry authorization failed. Please reconnect your Ravelry account.')
+    }
+
     if (!res.ok) {
       throw new Error(`Ravelry API ${res.status}: ${path}`)
     }
+
+    const contentType = res.headers.get('content-type') ?? ''
+    if (contentType.includes('text/html')) {
+      throw new RavelryAuthError('Ravelry returned a login page instead of data. Please reconnect your Ravelry account.')
+    }
+
     const text = await res.text()
     try {
       return JSON.parse(text) as T
     } catch {
+      // Check if response is HTML (auth redirect that slipped through)
+      if (text.trimStart().startsWith('<!DOCTYPE') || text.trimStart().startsWith('<html')) {
+        throw new RavelryAuthError('Ravelry session expired. Please reconnect your Ravelry account.')
+      }
       throw new Error(`Ravelry API invalid JSON from ${path}: ${text.slice(0, 100)}`)
     }
   }
@@ -250,6 +281,23 @@ export class RavelryClient {
     if (!res.ok) {
       throw new Error(`Ravelry API ${res.status}: DELETE ${path}`)
     }
+  }
+
+  // ─── Binary fetch (for file downloads) ──────────────────────────────────────
+
+  async fetchBinary(url: string): Promise<Buffer | null> {
+    const res = await fetch(url, {
+      redirect: 'follow',
+      headers: {
+        Authorization: this.buildAuthHeader('GET', url),
+        'User-Agent': 'Stitch/1.0',
+      },
+    })
+
+    if (!res.ok) return null
+
+    const arrayBuf = await res.arrayBuffer()
+    return Buffer.from(arrayBuf)
   }
 
   // ─── Search (public endpoints, but needs auth) ─────────────────────────────

@@ -30,6 +30,16 @@ final class NeedlesViewModel {
         }
     }
 
+    func deleteSet(_ setId: String) async {
+        do {
+            struct Empty: Decodable {}
+            let _: APIResponse<Empty> = try await APIClient.shared.delete("/needles/sets/\(setId)")
+            needles.removeAll { $0.toolSetId == setId }
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
     func syncRavelry() async {
         isSyncing = true
         syncMessage = nil
