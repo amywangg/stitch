@@ -55,3 +55,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .vercel
+.env.staging
+.env.prod
+packages/db/.env.prod
