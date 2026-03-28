@@ -1,20 +1,15 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, findOwned } from '@/lib/route-helpers'
 import { requireCapacity } from '@/lib/pro-gate'
 import { parsePatternForSize } from '@/lib/openai'
 
+
+export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
-type Params = { params: Promise<{ id: string }> }
-
-export async function POST(req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user, params) => {
+  const id = params!.id
 
   const body = await req.json()
   const sizeName = body.size_name as string | undefined
@@ -22,10 +17,9 @@ export async function POST(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: 'size_name is required' }, { status: 400 })
   }
 
-  const pattern = await prisma.patterns.findFirst({
-    where: { id, user_id: user.id, deleted_at: null },
-    include: { sizes: true },
-  })
+  const pattern = await findOwned<{
+    id: string; raw_text: string | null; sizes: { id: string; name: string; sort_order: number }[]
+  }>(prisma.patterns, id, user.id, { include: { sizes: true } })
   if (!pattern) return NextResponse.json({ error: 'Pattern not found' }, { status: 404 })
 
   if (!pattern.raw_text) {
@@ -149,4 +143,4 @@ export async function POST(req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true, data: updated })
-}
+})

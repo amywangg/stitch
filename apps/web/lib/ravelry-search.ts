@@ -7,6 +7,7 @@
 import { RavelryClient } from '@/lib/ravelry-client'
 import { prisma } from '@/lib/prisma'
 import { decrypt } from '@/lib/encrypt'
+import { round } from '@/lib/utils'
 
 const BASE_URL = 'https://api.ravelry.com'
 
@@ -98,8 +99,8 @@ function mapPatternResults(patterns: RavelrySearchResult[]) {
     yardage_min: p.yardage ?? null,
     yardage_max: p.yardage_max ?? null,
     gauge: p.gauge_description ?? null,
-    difficulty: p.difficulty_average ? Math.round(p.difficulty_average * 10) / 10 : null,
-    rating: p.rating_average ? Math.round(p.rating_average * 10) / 10 : null,
+    difficulty: p.difficulty_average ? round(p.difficulty_average, 1) : null,
+    rating: p.rating_average ? round(p.rating_average, 1) : null,
     photo_url: p.first_photo?.medium_url ?? null,
     designer: p.designer?.name ?? null,
     free: p.free ?? false,
@@ -243,8 +244,8 @@ function mapPatternDetail(data: Record<string, unknown>) {
     needle_sizes: ((p.pattern_needle_sizes ?? []) as Array<{ us: string | null; metric: string | null; name: string | null }>).map(
       n => n.name ?? (n.us ? `US ${n.us}` : `${n.metric}mm`)
     ),
-    difficulty: (p.difficulty_average as number | null) ? Math.round((p.difficulty_average as number) * 10) / 10 : null,
-    rating: (p.rating_average as number | null) ? Math.round((p.rating_average as number) * 10) / 10 : null,
+    difficulty: (p.difficulty_average as number | null) ? round(p.difficulty_average as number, 1) : null,
+    rating: (p.rating_average as number | null) ? round(p.rating_average as number, 1) : null,
     rating_count: (p.rating_count as number | null) ?? 0,
     photo_url: photos[0]?.medium2_url ?? photos[0]?.medium_url ?? null,
     photos: photos.map(ph => ph.medium2_url ?? ph.medium_url ?? ph.small_url ?? '').filter(Boolean),

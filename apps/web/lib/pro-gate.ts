@@ -17,6 +17,7 @@ export type Tier = 'free' | 'plus' | 'pro'
  * | Social posting           | ✓           | ✓               | ✓              |
  * | Active projects          | 3           | Unlimited       | Unlimited      |
  * | Saved patterns           | 15          | Unlimited       | Unlimited      |
+ * | PDF storage              | Unlimited   | Unlimited       | Unlimited      |
  * | PDF parsing (AI)         | 2/month     | 5/month         | Unlimited      |
  * | Cross-device realtime    | —           | ✓               | ✓              |
  * | AI tools (8 routes)      | —           | —               | ✓              |
@@ -28,7 +29,7 @@ export const TIER_LIMITS = {
     activeProjects: 3,
     savedPatterns: 15,
     pdfUploadsPerMonth: 2,
-    storedPdfs: 10,
+    storedPdfs: null,       // unlimited — PDFs are free to store
     stashPhotos: 5,
     crossDeviceRealtime: false,
     aiTools: false,

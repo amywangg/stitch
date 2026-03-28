@@ -1,9 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, findOwned } from '@/lib/route-helpers'
 import { createClient } from '@supabase/supabase-js'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -13,15 +14,12 @@ const BUCKET = 'supply-photos'
 const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic']
 
-type Params = { params: Promise<{ id: string }> }
+export const POST = withAuth(async (req, user, params) => {
+  const id = params!.id
 
-export async function POST(req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-  const item = await prisma.user_supplies.findFirst({ where: { id, user_id: user.id } })
+  const item = await findOwned<{ id: string; photo_path: string | null }>(
+    prisma.user_supplies, id, user.id, { softDelete: false }
+  )
   if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const formData = await req.formData()
@@ -66,15 +64,14 @@ export async function POST(req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true, data: updated })
-}
+})
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const DELETE = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-  const item = await prisma.user_supplies.findFirst({ where: { id, user_id: user.id } })
+  const item = await findOwned<{ id: string; photo_path: string | null }>(
+    prisma.user_supplies, id, user.id, { softDelete: false }
+  )
   if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   if (item.photo_path) {
@@ -87,4 +84,4 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true, data: {} })
-}
+})

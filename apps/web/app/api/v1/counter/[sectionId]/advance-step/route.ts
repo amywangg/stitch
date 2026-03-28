@@ -1,10 +1,9 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-type Params = { params: Promise<{ sectionId: string }> }
 
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/v1/counter/[sectionId]/advance-step
  * Manually advance to the next step. Used for open-ended steps (work_to_measurement)
@@ -12,12 +11,8 @@ type Params = { params: Promise<{ sectionId: string }> }
  *
  * Also supports going back: { "direction": "back" }
  */
-export async function POST(req: NextRequest, { params }: Params) {
-  const { sectionId } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user, params) => {
+  const sectionId = params!.sectionId
 
   const section = await prisma.project_sections.findFirst({
     where: { id: sectionId, project: { user_id: user.id, deleted_at: null } },
@@ -75,4 +70,4 @@ export async function POST(req: NextRequest, { params }: Params) {
       section_completed: completed,
     },
   })
-}
+})

@@ -136,26 +136,13 @@ struct CommentsView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .task { await viewModel.load() }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
-        } message: {
-            Text(viewModel.error ?? "")
-        }
+        .errorAlert(error: $viewModel.error)
         .onAppear { isInputFocused = false }
     }
 
     private func commentRow(_ comment: Comment) -> some View {
         HStack(alignment: .top, spacing: 10) {
-            AsyncImage(url: URL(string: comment.user.avatarUrl ?? "")) { image in
-                image.resizable().scaledToFill()
-            } placeholder: {
-                Color.gray.opacity(0.3)
-            }
-            .frame(width: 32, height: 32)
-            .clipShape(Circle())
+            AvatarImage(url: comment.user.avatarUrl, size: 32)
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {

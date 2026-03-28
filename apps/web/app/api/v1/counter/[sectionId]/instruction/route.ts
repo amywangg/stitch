@@ -1,23 +1,18 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { resolveStep, getStepPosition, getSectionProgress } from '@/lib/instruction-resolver'
 
-type Params = { params: Promise<{ sectionId: string }> }
 
+export const dynamic = 'force-dynamic'
 /**
  * GET /api/v1/counter/[sectionId]/instruction?step=4&tap=8
  * Returns the current instruction step, position within it, and progress.
  * Defaults to the section's current_step and current_row (tap count).
  * Also includes any step overrides and notes for context.
  */
-export async function GET(req: NextRequest, { params }: Params) {
-  const { sectionId } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const GET = withAuth(async (req, user, params) => {
+  const sectionId = params!.sectionId
 
   const section = await prisma.project_sections.findFirst({
     where: { id: sectionId, project: { user_id: user.id, deleted_at: null } },
@@ -126,4 +121,4 @@ export async function GET(req: NextRequest, { params }: Params) {
       },
     },
   })
-}
+})

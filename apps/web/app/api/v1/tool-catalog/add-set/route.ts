@@ -1,14 +1,11 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
+
+export const dynamic = 'force-dynamic'
 // POST /api/v1/tool-catalog/add-set — add all items from a catalog set to user's needles
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const body = await req.json()
   const { set_id } = body
 
@@ -51,4 +48,4 @@ export async function POST(req: NextRequest) {
     success: true,
     data: { added: createdItems.length, setName: `${set.brand.name} ${set.name}` },
   }, { status: 201 })
-}
+})

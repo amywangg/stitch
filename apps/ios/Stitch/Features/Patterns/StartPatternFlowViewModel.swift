@@ -62,23 +62,19 @@ final class StartPatternFlowViewModel {
         hasPdf && !isAiParsed
     }
 
-    // MARK: - Setup Actions
+    // MARK: - Quick Start
 
-    func handleSetupContinue() {
-        if isAiParsed && hasMultipleSizes {
-            step = .selectSize
-        } else if isAiParsed && hasSingleSize {
+    /// Create the project immediately without intermediate steps.
+    /// For parsed patterns with a single/no size, applies the size automatically.
+    func quickStart() async {
+        if isAiParsed && hasSingleSize {
             selectedSizeName = pattern?.sizes?.first?.name
-            step = .review
-        } else if isAiParsed {
-            step = .review
-        } else {
-            step = .manualSetup
         }
+        await createProject()
     }
 
     func parseWithAI(uploadId: String) async {
-        guard let patternId = pattern?.id else { return }
+        guard (pattern?.id) != nil else { return }
         step = .applyingSize
 
         struct Body: Encodable { let pdf_upload_id: String }

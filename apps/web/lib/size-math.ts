@@ -4,6 +4,8 @@
  * accounting for ease preferences by garment type.
  */
 
+import { round } from '@/lib/utils'
+
 // ─── Ease constants ──────────────────────────────────────────────────────────
 
 /**
@@ -124,11 +126,11 @@ export function scoreSizes(
         measurement: 'bust',
         body_cm: body.bust_cm,
         finished_cm: size.finished_bust_cm,
-        difference_cm: round1(bustEase),
+        difference_cm: round(bustEase, 1),
       })
 
       if (bustEase < -5) {
-        warnings.push(`Very tight in the bust (${round1(bustEase)}cm ease)`)
+        warnings.push(`Very tight in the bust (${round(bustEase, 1)}cm ease)`)
       }
     } else {
       // No bust data — can't score this axis, give neutral score
@@ -157,11 +159,11 @@ export function scoreSizes(
           measurement: check.label,
           body_cm: check.bodyVal,
           finished_cm: check.finishedVal,
-          difference_cm: round1(diff),
+          difference_cm: round(diff, 1),
         })
 
         if (diff < -SECONDARY_TOLERANCE_CM) {
-          warnings.push(`Tight in ${check.label} (${round1(diff)}cm)`)
+          warnings.push(`Tight in ${check.label} (${round(diff, 1)}cm)`)
           sortScore += 5
         } else if (diff < 0) {
           sortScore += 2
@@ -181,7 +183,7 @@ export function scoreSizes(
 
     scored.push({
       size_name: size.name,
-      bust_ease_cm: bustEase != null ? round1(bustEase) : null,
+      bust_ease_cm: bustEase != null ? round(bustEase, 1) : null,
       fit_quality: fitQuality,
       warnings,
       measurement_deltas: deltas,
@@ -246,6 +248,3 @@ export function checkMeasurementCoverage(
   }
 }
 
-function round1(n: number): number {
-  return Math.round(n * 10) / 10
-}

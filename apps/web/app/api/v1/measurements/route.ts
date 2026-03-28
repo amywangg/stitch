@@ -1,33 +1,26 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
+
+export const dynamic = 'force-dynamic'
 /**
  * GET /api/v1/measurements
  * Returns the current user's measurements (or null if not set).
  */
-export async function GET() {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-
+export const GET = withAuth(async (_req, user) => {
   const measurements = await prisma.user_measurements.findUnique({
     where: { user_id: user.id },
   })
 
   return NextResponse.json({ success: true, data: measurements })
-}
+})
 
 /**
  * PUT /api/v1/measurements
  * Upsert measurements. All fields optional — only provided fields are updated.
  */
-export async function PUT(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-
+export const PUT = withAuth(async (req, user) => {
   const body = await req.json()
 
   const allowed = [
@@ -53,4 +46,4 @@ export async function PUT(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: measurements })
-}
+})

@@ -1,25 +1,21 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
 import { requirePro, FREE_LIMITS } from '@/lib/pro-gate'
-import { slugify } from '@/lib/utils'
-import { getRavelryPushClient } from '@/lib/ravelry-push'
 import { emitActivity } from '@/lib/activity'
+import { withAuth, parsePagination, paginatedResponse, generateUniqueSlug } from '@/lib/route-helpers'
+import { getRavelryClient } from '@/lib/ravelry-client'
+import { ravelryCreateProject } from '@/lib/ravelry-push'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
-  const page = parseInt(req.nextUrl.searchParams.get('page') ?? '1')
-  const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '20')
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, user) => {
+  const { page, limit, skip } = parsePagination(req)
 
   const [items, total] = await Promise.all([
     prisma.projects.findMany({
       where: { user_id: user.id, deleted_at: null },
       orderBy: { updated_at: 'desc' },
-      skip: (page - 1) * limit,
+      skip,
       take: limit,
       include: {
         sections: { orderBy: { sort_order: 'asc' } },
@@ -29,18 +25,10 @@ export async function GET(req: NextRequest) {
     prisma.projects.count({ where: { user_id: user.id, deleted_at: null } }),
   ])
 
-  return NextResponse.json({
-    success: true,
-    data: { items, total, page, pageSize: limit, hasMore: total > page * limit },
-  })
-}
+  return paginatedResponse(items, total, page, limit)
+})
 
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-
+export const POST = withAuth(async (req, user) => {
   // Free tier: max 3 active projects
   if (!user.is_pro) {
     const activeCount = await prisma.projects.count({
@@ -59,12 +47,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Title is required' }, { status: 400 })
   }
 
-  let slug = slugify(title)
-  let attempt = 0
-  while (await prisma.projects.findUnique({ where: { user_id_slug: { user_id: user.id, slug } } })) {
-    attempt++
-    slug = `${slugify(title)}-${attempt}`
-  }
+  const slug = await generateUniqueSlug(prisma.projects, user.id, title)
 
   const project = await prisma.projects.create({
     data: {
@@ -81,26 +64,26 @@ export async function POST(req: NextRequest) {
     include: { sections: true },
   })
 
-  // Ravelry write-back: create project on Ravelry and store returned IDs
-  const push = await getRavelryPushClient(user.id)
-  if (push) {
-    try {
-      const { project: rp } = await push.client.createProject({
-        name: project.title,
-        status_name: 'In Progress',
-        craft_name: project.craft_type === 'crochet' ? 'Crochet' : 'Knitting',
-        ...(project.started_at ? { started: project.started_at.toISOString().slice(0, 10) } : {}),
-      })
-      await prisma.projects.update({
-        where: { id: project.id },
-        data: { ravelry_id: String(rp.id), ravelry_permalink: rp.permalink },
-      })
-    } catch {
-      // Ravelry unavailable — project still created in Stitch
-    }
-  }
-
   emitActivity({ userId: user.id, type: 'project_started', projectId: project.id })
 
+  // Push to Ravelry (non-blocking) — create project and capture ravelry_id
+  getRavelryClient(user.id).then(async (client) => {
+    if (!client) return
+    const conn = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
+    if (!conn) return
+    const ravelryId = await ravelryCreateProject(client, conn.ravelry_username, {
+      name: project.title,
+      notes: project.description ?? undefined,
+      craft_type: project.craft_type,
+      started_at: project.started_at,
+    })
+    if (ravelryId) {
+      await prisma.projects.update({
+        where: { id: project.id },
+        data: { ravelry_id: String(ravelryId) },
+      })
+    }
+  }).catch(err => console.error('[ravelry-push] project create:', err))
+
   return NextResponse.json({ success: true, data: project }, { status: 201 })
-}
+})

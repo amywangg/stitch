@@ -1,18 +1,14 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, parsePagination, paginatedResponse } from '@/lib/route-helpers'
 
+
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/v1/sessions
  * Start a new crafting session. Snapshots current project progress.
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-
+export const POST = withAuth(async (req, user) => {
   const body = await req.json()
   const projectId = body.project_id as string | undefined
   const source = (body.source as string) || 'timer'
@@ -82,23 +78,17 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: session })
-}
+})
 
 /**
  * GET /api/v1/sessions?project_id=...&from=...&to=...
  * List crafting sessions with optional filters. Includes pauses and photos.
  */
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-
+export const GET = withAuth(async (req, user) => {
   const projectId = req.nextUrl.searchParams.get('project_id')
   const from = req.nextUrl.searchParams.get('from')
   const to = req.nextUrl.searchParams.get('to')
-  const page = Math.max(1, parseInt(req.nextUrl.searchParams.get('page') ?? '1', 10))
-  const pageSize = Math.min(50, Math.max(1, parseInt(req.nextUrl.searchParams.get('page_size') ?? '20', 10)))
+  const { page, limit: pageSize, skip } = parsePagination(req)
 
   const where: Record<string, unknown> = { user_id: user.id }
   if (projectId) where.project_id = projectId
@@ -113,7 +103,7 @@ export async function GET(req: NextRequest) {
     prisma.crafting_sessions.findMany({
       where,
       orderBy: { created_at: 'desc' },
-      skip: (page - 1) * pageSize,
+      skip,
       take: pageSize,
       include: {
         photos: { orderBy: { created_at: 'asc' } },
@@ -123,14 +113,5 @@ export async function GET(req: NextRequest) {
     prisma.crafting_sessions.count({ where }),
   ])
 
-  return NextResponse.json({
-    success: true,
-    data: {
-      items: sessions,
-      total,
-      page,
-      pageSize,
-      hasMore: page * pageSize < total,
-    },
-  })
-}
+  return paginatedResponse(sessions, total, page, pageSize)
+})

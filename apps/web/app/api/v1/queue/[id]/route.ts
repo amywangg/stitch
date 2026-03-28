@@ -1,29 +1,28 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
-import { getRavelryPushClient, pushToRavelry } from '@/lib/ravelry-push'
+import { withAuth, findOwned } from '@/lib/route-helpers'
+import { getRavelryClient } from '@/lib/ravelry-client'
+import { ravelryRemoveFromQueue } from '@/lib/ravelry-push'
 
-type Params = { params: Promise<{ id: string }> }
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const dynamic = 'force-dynamic'
+export const DELETE = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-  const item = await prisma.pattern_queue.findFirst({ where: { id, user_id: user.id } })
+  const item = await findOwned<any>(prisma.pattern_queue, id, user.id, { softDelete: false })
   if (!item) return NextResponse.json({ error: 'Queue item not found' }, { status: 404 })
 
   await prisma.pattern_queue.delete({ where: { id } })
 
-  // Ravelry write-back
+  // Remove from Ravelry queue (non-blocking)
   if (item.ravelry_queue_id) {
-    const push = await getRavelryPushClient(user.id)
-    if (push) {
-      pushToRavelry(() => push.client.removeFromQueue(item.ravelry_queue_id!))
-    }
+    getRavelryClient(user.id).then(async (client) => {
+      if (!client) return
+      const conn = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
+      if (!conn) return
+      await ravelryRemoveFromQueue(client, conn.ravelry_username, item.ravelry_queue_id)
+    }).catch(err => console.error('[ravelry-push] queue delete:', err))
   }
 
   return NextResponse.json({ success: true, data: {} })
-}
+})

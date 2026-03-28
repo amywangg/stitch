@@ -1,16 +1,12 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { ACTIVITY_TYPES } from '@/lib/activity'
 
+
+export const dynamic = 'force-dynamic'
 /** GET — returns current activity sharing preferences */
-export async function GET() {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-
+export const GET = withAuth(async (_req, user) => {
   // null = all on — expand to explicit object for the client
   const stored = user.activity_sharing as Record<string, boolean> | null
   const preferences: Record<string, boolean> = {}
@@ -22,14 +18,10 @@ export async function GET() {
     success: true,
     data: { preferences },
   })
-}
+})
 
 /** PATCH — update activity sharing preferences */
-export async function PATCH(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const PATCH = withAuth(async (req, user) => {
   const body = await req.json()
   const { preferences } = body as { preferences?: Record<string, boolean> }
 
@@ -63,4 +55,4 @@ export async function PATCH(req: NextRequest) {
     success: true,
     data: { preferences: result },
   })
-}
+})

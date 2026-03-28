@@ -4,6 +4,7 @@ enum StashSection: String, CaseIterable {
     case yarn = "Yarn"
     case needlesHooks = "Needles & hooks"
     case supplies = "Supplies"
+    case swatches = "Swatches"
 }
 
 enum StashViewMode: String, CaseIterable {
@@ -61,6 +62,10 @@ struct StashTabView: View {
     @State private var suppliesViewModel = SuppliesViewModel()
     @State private var showAddSupply = false
 
+    // Swatches state
+    @State private var swatchesViewModel = SwatchesViewModel()
+    @State private var showCreateSwatch = false
+
     var body: some View {
         NavigationStack(path: $navigationPath) {
             VStack(spacing: 0) {
@@ -73,6 +78,8 @@ struct StashTabView: View {
                     NeedlesView(viewModel: needlesViewModel, ravelryConnected: $ravelryConnected, showAddManual: $showAddManualNeedle, navigateToCatalog: $navigateToNeedleCatalog, viewMode: viewMode)
                 case .supplies:
                     SuppliesView(viewModel: suppliesViewModel, showAddSheet: $showAddSupply, viewMode: viewMode)
+                case .swatches:
+                    SwatchesView(viewModel: swatchesViewModel, showCreate: $showCreateSwatch, navigationPath: $navigationPath)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -86,6 +93,12 @@ struct StashTabView: View {
                     ToolSetDetailView(setId: id)
                 case .stashItemDetail(let id):
                     StashItemDetailView(itemId: id)
+                case .swatchDetail(let id):
+                    SwatchDetailView(swatchId: id) {
+                        Task { await swatchesViewModel.load() }
+                    }
+                case .swatchBrowse:
+                    SwatchBrowseView()
                 default:
                     EmptyView()
                 }
@@ -196,6 +209,24 @@ struct StashTabView: View {
                     .font(.body.weight(.medium))
             }
             .foregroundStyle(theme.primary)
+
+        case .swatches:
+            HStack(spacing: 16) {
+                Button {
+                    navigationPath.append(Route.swatchBrowse)
+                } label: {
+                    Image(systemName: "globe")
+                        .font(.body.weight(.medium))
+                }
+                .foregroundStyle(theme.primary)
+                Button {
+                    showCreateSwatch = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.body.weight(.medium))
+                }
+                .foregroundStyle(theme.primary)
+            }
         }
     }
 
@@ -223,6 +254,9 @@ struct StashTabView: View {
                         Text(section.rawValue)
                             .font(.subheadline.weight(selectedSection == section ? .semibold : .regular))
                             .foregroundStyle(selectedSection == section ? .primary : .secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                            .frame(maxWidth: .infinity, minHeight: 20)
                         Rectangle()
                             .fill(selectedSection == section ? theme.primary : .clear)
                             .frame(height: 2)
@@ -232,7 +266,7 @@ struct StashTabView: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, 16)
-        .background(Color(.systemBackground))
     }
 }

@@ -10,13 +10,7 @@ struct PostCard: View {
         VStack(alignment: .leading, spacing: 10) {
             // Author row
             HStack(spacing: 8) {
-                AsyncImage(url: URL(string: post.user.avatarUrl ?? "")) { image in
-                    image.resizable().scaledToFill()
-                } placeholder: {
-                    Color.gray.opacity(0.3)
-                }
-                .frame(width: 36, height: 36)
-                .clipShape(Circle())
+                AvatarImage(url: post.user.avatarUrl, size: 36)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(post.user.displayName ?? post.user.username)
@@ -32,6 +26,11 @@ struct PostCard: View {
             // Content
             Text(post.content)
                 .font(.body)
+
+            // Context tags (project, pattern, yarn, session)
+            if post.project != nil || post.pattern != nil || post.yarns?.isEmpty == false || post.sessionMinutes != nil {
+                postContextTags
+            }
 
             // Photo carousel
             if let photos = post.photos, !photos.isEmpty {
@@ -77,5 +76,45 @@ struct PostCard: View {
         .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    // MARK: - Context Tags
+
+    private var postContextTags: some View {
+        FlowLayout(spacing: 6) {
+            if let project = post.project {
+                contextPill(icon: "folder.fill", text: project.title, color: theme.primary)
+            }
+            if let pattern = post.pattern {
+                contextPill(icon: "doc.text.fill", text: pattern.title, color: Color(hex: "#4ECDC4"))
+            }
+            if let yarns = post.yarns {
+                ForEach(yarns) { yarn in
+                    let label = yarn.colorway != nil ? "\(yarn.yarnName) — \(yarn.colorway!)" : yarn.yarnName
+                    contextPill(icon: "tag.fill", text: label, color: .orange)
+                }
+            }
+            if let mins = post.sessionMinutes, mins > 0 {
+                let hrs = mins / 60
+                let m = mins % 60
+                let timeText = hrs > 0 ? "\(hrs)h \(m)m" : "\(m)m"
+                let rowText = post.sessionRows.map { " · \($0) rows" } ?? ""
+                contextPill(icon: "clock.fill", text: "\(timeText)\(rowText)", color: .purple)
+            }
+        }
+    }
+
+    private func contextPill(icon: String, text: String, color: Color) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 9))
+            Text(text)
+                .font(.caption2)
+                .lineLimit(1)
+        }
+        .foregroundStyle(color)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(color.opacity(0.1), in: Capsule())
     }
 }

@@ -1,23 +1,13 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, findOwned } from '@/lib/route-helpers'
 
-type Params = { params: Promise<{ id: string }> }
 
-async function getProject(projectId: string, userId: string) {
-  return prisma.projects.findFirst({
-    where: { id: projectId, user_id: userId, deleted_at: null },
-  })
-}
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-export async function GET(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-  const project = await getProject(id, user.id)
+  const project = await findOwned(prisma.projects, id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const projectTags = await prisma.project_tags.findMany({
@@ -27,15 +17,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
 
   const tags = projectTags.map((pt) => ({ id: pt.tag.id, name: pt.tag.name }))
   return NextResponse.json({ success: true, data: tags })
-}
+})
 
-export async function POST(req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const POST = withAuth(async (req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-  const project = await getProject(id, user.id)
+  const project = await findOwned(prisma.projects, id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const body = await req.json()
@@ -76,15 +63,12 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const tags = projectTags.map((pt) => ({ id: pt.tag.id, name: pt.tag.name }))
   return NextResponse.json({ success: true, data: tags }, { status: 201 })
-}
+})
 
-export async function DELETE(req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const DELETE = withAuth(async (req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-  const project = await getProject(id, user.id)
+  const project = await findOwned(prisma.projects, id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const body = await req.json()
@@ -97,4 +81,4 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true })
-}
+})

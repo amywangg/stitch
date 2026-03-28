@@ -1,8 +1,9 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
+
+export const dynamic = 'force-dynamic'
 const ONBOARDING_STEPS = [
   'welcome_seen',
   'craft_preference_set',
@@ -16,24 +17,16 @@ const ONBOARDING_STEPS = [
 type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
 
 // GET /api/v1/onboarding — fetch current onboarding state
-export async function GET() {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const GET = withAuth(async (_req, user) => {
   const onboarding = await prisma.user_onboarding.findUnique({
     where: { user_id: user.id },
   })
 
   return NextResponse.json({ success: true, data: onboarding })
-}
+})
 
 // PATCH /api/v1/onboarding — mark one or more steps complete
-export async function PATCH(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const PATCH = withAuth(async (req, user) => {
   const body = await req.json()
 
   // Only allow known step keys
@@ -64,4 +57,4 @@ export async function PATCH(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: onboarding })
-}
+})

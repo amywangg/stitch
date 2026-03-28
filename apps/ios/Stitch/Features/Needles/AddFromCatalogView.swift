@@ -82,14 +82,7 @@ struct AddFromCatalogView: View {
         .sheet(isPresented: $showAILookup) {
             AIToolLookupSheet()
         }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
-        } message: {
-            Text(viewModel.error ?? "")
-        }
+        .errorAlert(error: $viewModel.error)
     }
 }
 
@@ -328,14 +321,7 @@ struct ToolSetDetailView: View {
         } message: {
             Text(viewModel.addResult ?? "")
         }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
-        } message: {
-            Text(viewModel.error ?? "")
-        }
+        .errorAlert(error: $viewModel.error)
     }
 
     private func formatSetType(_ type: String) -> String {

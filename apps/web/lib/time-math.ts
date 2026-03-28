@@ -4,6 +4,8 @@
  * then projects completion time across pattern sections.
  */
 
+import { round } from '@/lib/utils'
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 export interface SessionData {
@@ -94,7 +96,7 @@ export function calculateSpeed(sessions: SessionData[]): SpeedProfile {
   else if (usable.length >= MEDIUM_CONFIDENCE_THRESHOLD) confidence = 'medium'
 
   return {
-    rows_per_hour: round2(rowsPerHour),
+    rows_per_hour: round(rowsPerHour, 2),
     confidence,
     sessions_analyzed: usable.length,
     total_rows_tracked: totalRows,
@@ -142,7 +144,7 @@ export function estimateProjectTime(
       completed_rows: sectionDone,
       remaining_rows: remaining,
       estimated_minutes: Math.round(estimatedMinutes),
-      estimated_hours: round2(estimatedMinutes / 60),
+      estimated_hours: round(estimatedMinutes / 60, 2),
       is_completed: section.completed,
     })
   }
@@ -151,14 +153,14 @@ export function estimateProjectTime(
     ? (totalRemainingRows / speed.rows_per_hour) * 60
     : 0
 
-  const percentComplete = totalRows > 0 ? round2((completedRows / totalRows) * 100) : 0
+  const percentComplete = totalRows > 0 ? round((completedRows / totalRows) * 100, 2) : 0
 
   return {
     speed,
     sections: sectionEstimates,
     total_remaining_rows: totalRemainingRows,
     total_remaining_minutes: Math.round(totalRemainingMinutes),
-    total_remaining_hours: round2(totalRemainingMinutes / 60),
+    total_remaining_hours: round(totalRemainingMinutes / 60, 2),
     percent_complete: percentComplete,
   }
 }
@@ -189,7 +191,7 @@ export function calculateSessionFrequency(
   const spanDays = Math.max(1, (latest - earliest) / (1000 * 60 * 60 * 24))
   const spanWeeks = Math.max(1, spanDays / 7)
 
-  const sessionsPerWeek = round2(sessions.length / spanWeeks)
+  const sessionsPerWeek = round(sessions.length / spanWeeks, 2)
   const avgMinutes = sessions.reduce((sum, s) => sum + s.duration_minutes, 0) / sessions.length
 
   return {
@@ -222,6 +224,3 @@ export function estimateCalendarDays(
   }
 }
 
-function round2(n: number): number {
-  return Math.round(n * 100) / 100
-}

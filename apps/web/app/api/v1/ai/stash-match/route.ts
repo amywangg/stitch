@@ -1,20 +1,17 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
-import { getDbUser } from '@/lib/auth'
+import { NextResponse } from 'next/server'
+import { withAuth } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 import { matchStashToPatterns } from '@/lib/agent'
 
+
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/v1/ai/stash-match
  * "What can I make with this yarn?" — matches a stash item to Ravelry patterns.
  *
  * Body: { stash_item_id: string, craft?: string, category?: string, page?: number }
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const proError = requirePro(user, 'AI pattern matching')
   if (proError) return proError
 
@@ -39,4 +36,4 @@ export async function POST(req: NextRequest) {
       { status: err instanceof Error && err.message === 'Stash item not found' ? 404 : 500 },
     )
   }
-}
+})

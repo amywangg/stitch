@@ -22,14 +22,7 @@ struct GlossaryDetailView: View {
         .navigationTitle(term?.name ?? "Term")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
-        .alert("Error", isPresented: .init(
-            get: { error != nil },
-            set: { if !$0 { error = nil } }
-        )) {
-            Button("OK") { error = nil }
-        } message: {
-            Text(error ?? "")
-        }
+        .errorAlert(error: $error)
     }
 
     // MARK: - Content

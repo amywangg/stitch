@@ -1,22 +1,17 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { emitActivity } from '@/lib/activity'
 
-type Params = { params: Promise<{ id: string }> }
 
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/v1/sessions/[id]/end
  * End a crafting session. Calculates total and active duration.
  * Snapshots ending progress for the session summary.
  */
-export async function POST(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
   const session = await prisma.crafting_sessions.findFirst({
     where: { id, user_id: user.id },
@@ -114,4 +109,4 @@ export async function POST(_req: NextRequest, { params }: Params) {
       },
     },
   })
-}
+})

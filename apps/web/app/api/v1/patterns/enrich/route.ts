@@ -1,11 +1,12 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { getRavelryPatternDetail } from '@/lib/ravelry-search'
 import { slugify } from '@/lib/utils'
 import { createClient } from '@supabase/supabase-js'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -21,12 +22,7 @@ export const maxDuration = 300
  * Batch-enriches the user's Ravelry-sourced patterns that are missing detailed data.
  * Also stores all photos and auto-downloads free PDFs.
  */
-export async function POST(req: NextRequest) {
-  try {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-
+export const POST = withAuth(async (_req, user) => {
   // Find all Ravelry-sourced patterns missing rich data
   const sparsePatterns = await prisma.patterns.findMany({
     where: {
@@ -152,11 +148,4 @@ export async function POST(req: NextRequest) {
     success: true,
     data: { enriched, failed, total: sparsePatterns.length },
   })
-  } catch (err) {
-    console.error('[POST /patterns/enrich]', err)
-    return NextResponse.json(
-      { error: 'INTERNAL_ERROR', message: err instanceof Error ? err.message : 'Unknown error' },
-      { status: 500 },
-    )
-  }
-}
+})

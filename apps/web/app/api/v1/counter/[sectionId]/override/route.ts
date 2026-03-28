@@ -1,21 +1,16 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-type Params = { params: Promise<{ sectionId: string }> }
 
+export const dynamic = 'force-dynamic'
 /**
  * PUT /api/v1/counter/[sectionId]/override
  * Create or update a custom instruction override for a step.
  * The original pattern instruction is preserved — override takes display priority.
  */
-export async function PUT(req: NextRequest, { params }: Params) {
-  const { sectionId } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const PUT = withAuth(async (req, user, params) => {
+  const sectionId = params!.sectionId
 
   const section = await prisma.project_sections.findFirst({
     where: { id: sectionId, project: { user_id: user.id, deleted_at: null } },
@@ -48,18 +43,14 @@ export async function PUT(req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true, data: override })
-}
+})
 
 /**
  * DELETE /api/v1/counter/[sectionId]/override
  * Remove a custom instruction override, reverting to the original pattern.
  */
-export async function DELETE(req: NextRequest, { params }: Params) {
-  const { sectionId } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const DELETE = withAuth(async (req, user, params) => {
+  const sectionId = params!.sectionId
 
   const section = await prisma.project_sections.findFirst({
     where: { id: sectionId, project: { user_id: user.id, deleted_at: null } },
@@ -76,4 +67,4 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true })
-}
+})

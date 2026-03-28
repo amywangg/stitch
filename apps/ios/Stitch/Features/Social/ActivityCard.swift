@@ -33,13 +33,7 @@ struct ActivityCard: View {
         VStack(alignment: .leading, spacing: 10) {
             // Author row
             HStack(spacing: 8) {
-                AsyncImage(url: URL(string: activity.user.avatarUrl ?? "")) { image in
-                    image.resizable().scaledToFill()
-                } placeholder: {
-                    Color.gray.opacity(0.3)
-                }
-                .frame(width: 36, height: 36)
-                .clipShape(Circle())
+                AvatarImage(url: activity.user.avatarUrl, size: 36)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(activity.user.displayName ?? activity.user.username)

@@ -1,6 +1,6 @@
 # Subscriptions and Pro Tier
 
-**Status:** Partially complete
+**Status:** Complete (iOS SDK + server gating + custom paywall)
 
 ## Problem Statement
 
@@ -16,102 +16,45 @@ RevenueCat manages subscriptions on both platforms: StoreKit 2 on iOS, Stripe vi
 
 | Route / File | Purpose | Status |
 |---|---|---|
-| `app/api/webhooks/revenuecat/route.ts` | Receives RevenueCat events, updates users.is_pro + subscriptions table | Skeleton only |
-| `lib/pro-gate.ts` - `requirePro()` | Server-side check, returns 403 response if user is not Pro | Complete |
-| `lib/pro-gate.ts` - `FREE_LIMITS` | Defines free tier caps (3 projects, 10 patterns, 2 PDFs/month) | Complete |
-| Web checkout page | RevenueCat Billing / Stripe checkout flow | Not started |
-| `GET /api/v1/subscription/status` | Returns current subscription details for the user | Not started |
+| `app/api/webhooks/revenuecat/route.ts` | Receives RevenueCat events, updates users.is_pro + subscriptions table | Complete |
+| `lib/pro-gate.ts` - `requirePro()` | Server-side check, returns 403 with PRO_REQUIRED if not Pro | Complete |
+| `lib/pro-gate.ts` - `requirePlus()` | Server-side check for Plus-or-above features | Complete |
+| `lib/pro-gate.ts` - `requireCapacity()` | Checks usage against tier limits (PDF parses/month, etc.) | Complete |
+| `lib/pro-gate.ts` - `TIER_LIMITS` | Centralized tier limit config for free/plus/pro | Complete |
+| `lib/pro-gate.ts` - `getUserTier()` | Derives tier from subscription.plan | Complete |
 
 ### iOS (SwiftUI)
 
 | Screen / Component | Purpose | Status |
 |---|---|---|
-| `SubscriptionManager.swift` | RevenueCat SDK wrapper: configure, purchase, restore, listen | Complete (real SDK) |
-| `ProGateBanner` component | Shows paywall via RevenueCatUI when user hits a limit | Complete |
-| PaywallView in SettingsView | Full paywall presentation for browsing/purchasing | Complete |
-| CustomerCenterView in SettingsView | Manage subscription, cancel, billing info | Complete |
-| Subscription status indicator | Show Pro badge in profile/settings | Not started |
+| `SubscriptionManager.swift` | RevenueCat SDK wrapper: configure, logIn, logOut, refresh, purchase, restore, listenForUpdates | Complete |
+| `SubscriptionManager.tier` | Computed tier (.free / .plus / .pro) from entitlements | Complete |
+| `StitchPaywallView.swift` | Custom paywall with Plus/Pro tier picker, feature list, pricing cards, purchase flow | Complete |
+| `ProGateBanner.swift` | Crown icon + "Upgrade to Pro" button, presents StitchPaywallView | Complete |
+| CustomerCenterView in SettingsView | RevenueCat-managed subscription management UI | Complete |
+| Pro badge in profile header | Gold ring around avatar for Pro users | Complete |
 
-### Web (Next.js)
+### Custom Paywall (StitchPaywallView)
 
-| Page / Component | Purpose | Status |
+All paywall presentations use `StitchPaywallView()` (not RevenueCat's default `PaywallView()`). Features:
+
+- **Tier picker** — Plus / Pro segmented control at top
+- **Feature list** — checkmarks for included features, minus for excluded, dynamically updates per tier
+- **Pricing cards** — yearly (with savings %) and monthly options side by side
+- **Purchase button** — "Subscribe to Pro yearly" with loading state
+- **Restore purchases** — link below purchase button
+- **Legal text** — auto-renewal terms
+
+### Pro-Gated Entry Points
+
+| Feature | Where gated | Gate type |
 |---|---|---|
-| Pricing page | Show Pro benefits and pricing | Not started |
-| Checkout flow | RevenueCat Billing / Stripe integration | Not started |
-| Pro badge component | Visual indicator in nav/profile | Not started |
-| Subscription management page | View status, cancel, update payment | Not started |
-| ProGateBanner component | Web equivalent of iOS gate banner | Not started |
-
-### Database
-
-| Table | Purpose |
-|---|---|
-| `users` | `is_pro` boolean flag checked by `requirePro()` |
-| `subscriptions` | Full subscription record: store, product_id, period_type, status, expires_at, original_purchase_date |
-
-## Implementation Checklist
-
-- [x] RevenueCat iOS SDK integration (SubscriptionManager.swift)
-- [x] SubscriptionManager: configure(), logIn(), logOut(), refresh(), purchasePro(), restorePurchases()
-- [x] SubscriptionManager: listenForUpdates() for real-time status changes
-- [x] PaywallView via RevenueCatUI in ProGateBanner
-- [x] CustomerCenterView in SettingsView
-- [x] requirePro() server-side gate
-- [x] FREE_LIMITS constants
-- [x] RevenueCat webhook route skeleton
-- [ ] App Store Connect: create products (plus.monthly, pro.monthly, pro.yearly, pro.lifetime)
-- [ ] RevenueCat dashboard: configure entitlements "Stitch Plus" and "Stitch Pro"
-- [ ] RevenueCat dashboard: configure offerings and paywall template (show all three tiers)
-- [ ] RevenueCat webhook handler: parse events, update users.is_pro and subscriptions table
-- [ ] Handle webhook event types: INITIAL_PURCHASE, RENEWAL, CANCELLATION, EXPIRATION, BILLING_ISSUE
-- [ ] Web Stripe checkout via RevenueCat Billing
-- [ ] Subscription status API route
-- [ ] Subscription status display on web
-- [ ] Grace period handling (keep Pro active during billing retry)
-- [ ] Promo codes and free trial configuration
-- [ ] Restore purchases error handling and UI feedback on iOS
-
-## Dependencies
-
-- Authentication (001) must be complete, users must exist in DB
-- App Store Connect account with products created
-- RevenueCat project with iOS app and web app configured
-- Stripe account connected to RevenueCat for web billing
-
-## Pricing Plans
-
-### Plans
-
-| Plan | Price | Notes |
-|------|-------|-------|
-| Free | $0 | Generous daily-use core loop |
-| Plus (monthly) | $1.99/mo | Unlimited projects, patterns, sync — no AI |
-| Pro (monthly) | $4.99/mo | Everything including AI tools |
-| Pro (annual) | $39.99/year | 33% off monthly Pro |
-| Pro (lifetime) | $99.99 | ~20 months of monthly; appeals to older demographic |
-
-App Store Connect product IDs:
-- `com.stitchmarker.plus.monthly`
-- `com.stitchmarker.pro.monthly`
-- `com.stitchmarker.pro.yearly`
-- `com.stitchmarker.pro.lifetime`
-
-Lifetime purchases set `expires_at = null` and `period_type = 'lifetime'` in the subscriptions table.
-
-### Why Three Tiers
-
-RevenueCat data shows 38% of churned subscribers would NOT have canceled if a lower-priced tier existed. The Plus tier captures the "I just want unlimited projects and sync" user without giving away AI margin. It also creates a natural step-up path: Free → Plus → Pro.
-
-## Reverse Trial
-
-New users receive 14 days of full Pro access on signup. See `017-monetization-and-growth.md` §4 for details.
-
-**Implementation:**
-- On user creation: set `users.trial_ends_at = now + 14 days`, `users.is_pro = true`
-- `requirePro()` must check `trial_ends_at` in addition to `is_pro`
-- Cron or webhook: when `trial_ends_at` passes and no active subscription, set `is_pro = false`
-- `GET /api/v1/subscription/status` returns `{ is_trial, trial_ends_at, days_remaining }` during trial
-- **Critical rule:** Never delete user data created during trial
+| AI pattern builder | PatternsView menu button | `subscriptions.isPro` → StitchPaywallView |
+| AI PDF parsing | StartPatternFlowView, PDFParseFlowView | `subscriptions.isPro` → StitchPaywallView |
+| AI parse prompt on project | ProjectDetailView, CounterView | `subscriptions.isPro` → StitchPaywallView |
+| AI tools (8 routes) | Server-side `requirePro()` | 403 PRO_REQUIRED |
+| PDF parsing over limit | Server-side `requireCapacity()` | 403 FREE_LIMIT_REACHED |
+| Active projects over limit | Server-side `requireCapacity()` | 403 FREE_LIMIT_REACHED |
 
 ## Tier Gating
 
@@ -119,28 +62,53 @@ New users receive 14 days of full Pro access on signup. See `017-monetization-an
 |---|---|---|---|
 | Row counter | Unlimited | Unlimited | Unlimited |
 | Stash / needles | Unlimited | Unlimited | Unlimited |
+| PDF storage | **Unlimited** | Unlimited | Unlimited |
 | Social posting | Yes | Yes | Yes |
-| Gauge calculator | Yes | Yes | Yes |
-| Heatmap / streaks | Yes | Yes | Yes |
-| Reviews | Yes | Yes | Yes |
-| Ravelry first import | Yes | Yes | Yes |
+| Pattern marketplace (buy/sell) | Yes | Yes | Yes |
+| Reviews & ratings | Yes | Yes | Yes |
 | Active projects | 3 | Unlimited | Unlimited |
 | Saved patterns | 15 | Unlimited | Unlimited |
 | PDF parsing (AI) | 2/month | 5/month | Unlimited |
-| PDF storage | 2 | 5 | Unlimited |
 | Cross-device realtime | No | Yes | Yes |
+| AI tools (8 routes) | No | No | Yes |
+| AI pattern builder | No | No | Yes |
 | Ravelry auto re-sync | No | No | Yes |
-| AI tools (other 8 routes) | No | No | Yes |
 | Row instruction explainer | Yes (GPT-4o-mini) | Yes | Yes |
+
+**Note:** PDF storage was made unlimited for all tiers. Only AI *parsing* of PDFs is gated.
+
+## Pricing Plans
+
+| Plan | Price |
+|------|-------|
+| Free | $0 |
+| Plus (monthly) | $1.99/mo |
+| Pro (monthly) | $4.99/mo |
+| Pro (annual) | $34.99/year (save 42%) |
+| Pro (lifetime) | $99.99 |
+
+## RevenueCat Configuration
+
+### Required Setup (RevenueCat Dashboard)
+
+1. **Products** — Import from App Store Connect: `stitch_monthly`, `stitch_yearly`, `stitch_lifetime`
+2. **Entitlements** — Create `Stitch Pro` (all 3 products) and `Stitch Plus` (plus products)
+3. **Offerings** — Default offering with `$rc_monthly`, `$rc_annual`, `$rc_lifetime` packages
+4. **API Key** — `test_wtNabmgUgQDoADuIhIGYnEuaFmp` (configured in `AppConfig.revenueCatAPIKey`)
+
+### RevenueCat SDK Integration
+
+- Configured in `StitchApp.init()` → `SubscriptionManager.shared.configure()`
+- User associated via `logIn(userId)` when Clerk auth completes (in RootView `.task(id: clerk.user?.id)`)
+- Entitlement stream listened via `listenForUpdates()` for real-time tier changes
+- `SubscriptionManager.shared.tier` checked by `subscriptions.isPro` / `subscriptions.isPlusOrAbove` in views
 
 ## Technical Notes
 
-- Two RevenueCat entitlements: `"Stitch Plus"` and `"Stitch Pro"`. Pro includes all Plus features. SubscriptionManager checks entitlements, not product IDs.
-- DB fields: `users.is_pro` (boolean) and `users.tier` (string: `"free"`, `"plus"`, `"pro"`). The `tier` field replaces the binary `is_pro` check. Migration: rename `is_pro` to `tier` or add `tier` alongside `is_pro` for backwards compatibility.
-- Server-side gating needs two helpers: `requirePlus(user, 'feature')` for Plus-or-above features (unlimited projects, sync) and `requirePro(user, 'feature')` for Pro-only features (AI tools, Ravelry re-sync). Both return `null` if allowed, `NextResponse` 403 if not.
-- RevenueCat webhook events include a `subscriber` object with `entitlements`. Check both entitlements' `expires_date` and `unsubscribe_detected_at` to determine tier.
-- The `subscriptions` table stores `period_type` (monthly, yearly, lifetime), `store` (app_store, stripe), and `product_id` for distinguishing Plus vs Pro.
-- On iOS, `SubscriptionManager` calls `logIn(appUserId)` with the Clerk user ID so RevenueCat can match the subscriber across platforms.
-- On iOS, `SubscriptionManager` calls `logIn(appUserId)` with the Clerk user ID so RevenueCat can match the subscriber across platforms.
-- Grace period: when RevenueCat sends BILLING_ISSUE, keep `is_pro = true` but set a `billing_issue_at` timestamp. Only revoke on EXPIRATION.
-- Lifetime purchases never expire. Set `expires_at = null` and `period_type = 'lifetime'` in the subscriptions table.
+- Two RevenueCat entitlements: `"Stitch Plus"` and `"Stitch Pro"`. Pro includes all Plus features
+- `SubscriptionManager` checks entitlements in order: Pro first, then Plus, else free
+- Server-side uses `subscription.plan` column: `"free"` | `"plus"` | `"pro"`
+- `users.is_pro` boolean kept for backward compatibility, synced from webhook
+- On iOS, `logIn(appUserId)` uses the Clerk user ID for cross-platform matching
+- All paywall presentations use `StitchPaywallView()` — never RevenueCat's default `PaywallView()`
+- `CustomerCenterView()` from RevenueCatUI is used only in SettingsView for subscription management

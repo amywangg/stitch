@@ -1,18 +1,15 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { getUserTier, TIER_LIMITS } from '@/lib/pro-gate'
 
+
+export const dynamic = 'force-dynamic'
 /**
  * GET /api/v1/me
  * Returns the current user's profile, tier, and feature limits.
  * Used by iOS app to gate features client-side and show correct upgrade prompts.
  */
-export async function GET() {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const GET = withAuth(async (_req, user) => {
   const tier = getUserTier(user)
   const limits = TIER_LIMITS[tier]
 
@@ -29,4 +26,4 @@ export async function GET() {
       limits,
     },
   })
-}
+})

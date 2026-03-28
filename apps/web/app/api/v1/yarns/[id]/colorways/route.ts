@@ -1,20 +1,14 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
-import { getRavelryClient } from '@/lib/ravelry-push'
+import { withAuth } from '@/lib/route-helpers'
+import { getRavelryClient } from '@/lib/ravelry-client'
 
+
+export const dynamic = 'force-dynamic'
 // GET /api/v1/yarns/[id]/colorways — returns colorway names for a yarn
 // Fetches from Ravelry stash search (community data) + our own DB
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-  const { id } = await params
+export const GET = withAuth(async (req, user, params) => {
+  const id = params!.id
 
   // Accept ?name=... as fallback for yarns not yet in our DB
   const nameParam = req.nextUrl.searchParams.get('name')
@@ -53,7 +47,7 @@ export async function GET(
   const merged = deduplicateColorways([...ravelryColorways, ...localColorways])
 
   return NextResponse.json({ success: true, data: { colorways: merged } })
-}
+})
 
 /** Fetch colorways from Ravelry stash search */
 async function fetchRavelryColorways(userId: string, yarnName: string | null): Promise<string[]> {

@@ -1,12 +1,11 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withAuth } from '@/lib/route-helpers'
 
+
+export const dynamic = 'force-dynamic'
 // GET /api/v1/tool-catalog — list brands with set counts
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
+export const GET = withAuth(async (req, _user) => {
   const search = req.nextUrl.searchParams.get('search')?.trim()
   const setType = req.nextUrl.searchParams.get('set_type')
 
@@ -28,4 +27,4 @@ export async function GET(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: { items: brands } })
-}
+})

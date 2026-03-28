@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/v1/gauge/compare
  * Compare pattern gauge to user's gauge and calculate adjustments needed.

@@ -182,6 +182,20 @@ One primary button per screen. If there are two equal actions, both are secondar
 
 ### Inputs
 
+**Minimize typing. Maximize pickers.** Wherever possible, use pickers, segmented controls, pill selectors, sliders, toggles, and steppers instead of text fields. Users should tap to select, not type to fill. Text fields are reserved for truly freeform content (titles, descriptions, notes).
+
+| Input type | Use when | Component |
+|-----------|----------|-----------|
+| Pill picker (horizontal scroll) | 5-20 predefined options | `metadataPill()` pattern |
+| Segmented control | 2-4 mutually exclusive options | `Picker(.segmented)` |
+| Menu picker | 4-10 options, less visual space | `Picker(.menu)` |
+| Slider | Numeric range (e.g., price $1-$100) | `Slider` with labels |
+| Stepper | Small integer values (strand count, quantity) | `Stepper` |
+| Toggle | Boolean on/off | `Toggle` |
+| Date picker | Dates | `DatePicker` |
+| Text field | Freeform text (names, titles, notes only) | Standard text field |
+
+Styling:
 - `bg-background-muted border border-border-default rounded-xl px-4 py-3`
 - Focus: `ring-2 ring-coral-500/30 border-coral-500`
 - Labels above inputs, not floating or inside
@@ -346,11 +360,51 @@ No parallax. No page transition animations on web. No bouncing loaders. No confe
 
 ---
 
+## Component Reuse (CRITICAL)
+
+**Never write UI patterns from scratch that already exist as shared components.** Check the component library before building anything.
+
+### iOS Shared Components (must use)
+
+| Need | Use | NOT |
+|------|-----|-----|
+| Error alert on a view | `.errorAlert(error: $viewModel.error)` | Manual `.alert("Error", isPresented: ...)` blocks |
+| Loading/empty/content states | `LoadableContent(isLoading:isEmpty:content:empty:)` | Manual `if isLoading / if isEmpty / else` chains |
+| Circular user avatar | `AvatarImage(url: user.avatarUrl, size: 36)` | Inline `AsyncImage` + `clipShape(Circle())` |
+| Remote image with rounded corners | `RemoteImage(url: item.photoUrl, cornerRadius: 12)` | Inline `AsyncImage` + `clipShape(RoundedRectangle(...))` |
+| Tab/segment picker | `SegmentTabPicker(selection: $tab)` | Inline HStack with buttons and underlines |
+| Primary/secondary buttons | `StitchButton(title:style:action:)` | Inline button styling |
+| Upgrade prompts | `ProGateBanner` | Custom paywall presentation |
+
+### Web Shared Components (must use)
+
+| Need | Use | NOT |
+|------|-----|-----|
+| Card container | `<Card>` or `<Card hover>` | Inline `rounded-xl bg-surface border border-border-default` |
+| CSS merging | `cn(base, conditional)` from `@/lib/utils` | String concatenation of Tailwind classes |
+
+### When to Extract a New Component
+
+Extract when a pattern appears in **2+ places**. Create in:
+- iOS: `Components/` directory (accessible to all features)
+- Web: `components/ui/` (design system primitives) or `components/features/` (domain-specific)
+
+### View File Size Limits
+
+- **iOS views**: Keep under 300 lines. If a view exceeds this, extract sub-views into separate files in the same feature directory. The parent view should be a thin coordinator composing child components.
+- **Web components**: Keep under 400 lines. Extract sections into sibling component files.
+- **Web pages**: Keep under 200 lines. Pages should compose feature components, not contain layout logic.
+
+---
+
 ## Anti-Patterns (Never Do These)
 
+- **Duplicating shared component patterns** — writing inline error alerts, loading states, avatar images, or tab pickers instead of using the shared components listed above
+- **Creating files over 500 lines** — split into sub-components immediately
 - Modals for content that could be a page (use modals only for confirmations and quick pickers)
 - Dropdown menus with more than 7 items (use a searchable list or bottom sheet instead)
 - Disabled buttons without explanation (hide the action or show why it is unavailable)
+- **Using text fields where pickers would work** — if there's a known set of options (needle sizes, yarn weights, materials, needle types), use a Picker, pill selector, or segmented control. Text fields are only for truly freeform content (titles, descriptions, notes).
 - Placeholder text as the only label for an input
 - Full-page loading spinners
 - "Are you sure?" confirmations for reversible actions

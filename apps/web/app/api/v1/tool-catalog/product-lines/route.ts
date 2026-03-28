@@ -1,13 +1,12 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withAuth } from '@/lib/route-helpers'
 
+
+export const dynamic = 'force-dynamic'
 // GET /api/v1/tool-catalog/product-lines — list individual needle/hook product lines
 // Query params: brand_id, type (circular|straight|dpn|crochet_hook), search
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
+export const GET = withAuth(async (req, _user) => {
   const brandId = req.nextUrl.searchParams.get('brand_id')
   const type = req.nextUrl.searchParams.get('type')
   const search = req.nextUrl.searchParams.get('search')?.trim()
@@ -31,4 +30,4 @@ export async function GET(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: { items } })
-}
+})

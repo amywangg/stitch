@@ -1,13 +1,25 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 import { decrypt } from '@/lib/encrypt'
 import { slugify } from '@/lib/utils'
 import { RavelryClient, RavelryAuthError, RavelryProjectSummary, RavelryProjectDetail } from '@/lib/ravelry-client'
 import { getRavelryPatternDetail } from '@/lib/ravelry-search'
+import { fetchRavelryDownload } from '@/lib/ravelry-download'
 import { emitActivity } from '@/lib/activity'
+import { ravelryCreateProject, ravelryUpdateProject, ravelryUploadPhoto } from '@/lib/ravelry-push'
+import { createClient } from '@supabase/supabase-js'
+
+
+export const dynamic = 'force-dynamic'
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+)
+
+const PDF_BUCKET = 'patterns'
+const MAX_PDF_SIZE = 20 * 1024 * 1024 // 20 MB
 
 export const maxDuration = 300
 
@@ -21,16 +33,6 @@ function mapStatus(ravelryStatus: string): string {
     Hibernating: 'hibernating',
   }
   return map[ravelryStatus] ?? 'active'
-}
-
-function reverseMapStatus(stitchStatus: string): string {
-  const map: Record<string, string> = {
-    active: 'In Progress',
-    completed: 'Finished',
-    frogged: 'Frogged',
-    hibernating: 'Hibernating',
-  }
-  return map[stitchStatus] ?? 'In Progress'
 }
 
 // Convert Ravelry gauge (stitches over N inches) to per-10cm
@@ -103,7 +105,7 @@ async function importProjectDetail(
   let linkedPatternId: string | null = null
   if (detail.pattern_id) {
     try {
-      linkedPatternId = await upsertPatternRich(userId, detail.pattern_id)
+      linkedPatternId = (await upsertPatternRich(userId, detail.pattern_id)).patternId
     } catch {
       // Fall back to basic upsert if full fetch fails
       if (detail.pattern) {
@@ -136,7 +138,7 @@ async function importProjectDetail(
     await prisma.projects.update({
       where: { id: existing.id },
       data: {
-        title: detail.name,
+        title: detail.name || 'Untitled project',
         status,
         craft_type: detail.craft_name?.toLowerCase() === 'crochet' ? 'crochet' : 'knitting',
         description: detail.notes ?? undefined,
@@ -158,7 +160,7 @@ async function importProjectDetail(
         ravelry_id: ravelryId,
         ravelry_permalink: detail.permalink,
         slug,
-        title: detail.name,
+        title: detail.name || 'Untitled project',
         craft_type: detail.craft_name?.toLowerCase() === 'crochet' ? 'crochet' : 'knitting',
         status,
         description: detail.notes ?? null,
@@ -311,24 +313,31 @@ async function upsertPattern(
   return created.id
 }
 
+interface PatternUpsertResult {
+  patternId: string
+  downloadUrl: string | null
+  hasPdfAlready: boolean
+}
+
 /**
  * Fetch full Ravelry pattern data and create/update a rich pattern record.
+ * Returns the pattern ID, download URL (if available), and whether a PDF is already attached.
  * Falls back to basic upsert if full detail fetch fails.
  */
-async function upsertPatternRich(userId: string, ravelryPatternId: number, force = false): Promise<string> {
+async function upsertPatternRich(userId: string, ravelryPatternId: number, force = false): Promise<PatternUpsertResult> {
   const existing = await prisma.patterns.findFirst({
     where: { user_id: userId, ravelry_id: String(ravelryPatternId) },
   })
 
-  // If we already have a rich record (has description or gauge), skip re-fetch unless forced
-  if (!force && existing && (existing.description || existing.gauge_stitches_per_10cm)) {
-    return existing.id
+  // If we already have a rich, non-deleted record with a PDF, skip re-fetch unless forced
+  if (!force && existing && !existing.deleted_at && (existing.description || existing.gauge_stitches_per_10cm) && existing.pdf_url) {
+    return { patternId: existing.id, downloadUrl: null, hasPdfAlready: true }
   }
 
   const detail = await getRavelryPatternDetail(ravelryPatternId, userId)
 
   const richData = {
-    title: detail.name,
+    title: detail.name || 'Untitled project',
     description: detail.notes ?? null,
     notes_html: detail.notes_html ?? null,
     craft_type: detail.craft ?? 'knitting',
@@ -357,7 +366,7 @@ async function upsertPatternRich(userId: string, ravelryPatternId: number, force
   if (existing) {
     await prisma.patterns.update({
       where: { id: existing.id },
-      data: richData,
+      data: { ...richData, deleted_at: null }, // Undelete if soft-deleted (re-synced from library)
     })
     patternId = existing.id
   } else {
@@ -380,22 +389,93 @@ async function upsertPatternRich(userId: string, ravelryPatternId: number, force
     })
   }
 
-  return patternId
+  return {
+    patternId,
+    downloadUrl: detail.download_location?.url ?? null,
+    hasPdfAlready: !!(existing?.pdf_url),
+  }
+}
+
+/**
+ * Download a PDF from Ravelry, store in Supabase, create pdf_uploads record, and link to pattern.
+ * Used during library sync for patterns with download_location.
+ * Returns true on success, false on failure (non-fatal).
+ */
+async function downloadAndAttachPdf(
+  userId: string,
+  patternId: string,
+  ravelryId: number,
+  downloadUrl: string,
+  patternTitle: string,
+): Promise<boolean> {
+  try {
+    const pdfBuffer = await fetchRavelryDownload(downloadUrl, userId)
+    if (!pdfBuffer) return false
+    if (pdfBuffer.length > MAX_PDF_SIZE) return false
+
+    // Upload to Supabase Storage
+    const timestamp = Date.now()
+    const safeFileName = slugify(patternTitle).slice(0, 80)
+    const storagePath = `${userId}/${timestamp}-ravelry-${ravelryId}-${safeFileName}.pdf`
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from(PDF_BUCKET)
+      .upload(storagePath, pdfBuffer, {
+        contentType: 'application/pdf',
+        upsert: false,
+      })
+
+    if (uploadError) {
+      console.error('[ravelry-sync] PDF storage upload failed:', uploadError)
+      return false
+    }
+
+    // Create signed URL (1 year)
+    const { data: signedData } = await supabaseAdmin.storage
+      .from(PDF_BUCKET)
+      .createSignedUrl(storagePath, 365 * 24 * 3600)
+
+    const pdfUrl = signedData?.signedUrl ?? null
+
+    // Create pdf_uploads record
+    const pdfUpload = await prisma.pdf_uploads.create({
+      data: {
+        user_id: userId,
+        file_name: `${safeFileName}.pdf`,
+        file_size: pdfBuffer.length,
+        status: 'stored',
+        storage_path: storagePath,
+        pattern_id: patternId,
+      },
+    })
+
+    // Update pattern with pdf_url
+    await prisma.patterns.update({
+      where: { id: patternId },
+      data: { pdf_url: pdfUrl },
+    })
+
+    return true
+  } catch (err) {
+    console.error(`[ravelry-sync] PDF download failed for pattern ${ravelryId}:`, err)
+    return false
+  }
 }
 
 // ─── Route ────────────────────────────────────────────────────────────────────
 
-export async function POST(_req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-
+export const POST = withAuth(async (_req, user) => {
   const connection = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
   if (!connection) return NextResponse.json({ error: 'Ravelry not connected' }, { status: 400 })
 
-  // Concurrent import guard
+  // Concurrent import guard — but allow restart if stuck for more than 5 minutes
   if (connection.import_status === 'importing') {
-    return NextResponse.json({ error: 'Import already in progress' }, { status: 409 })
+    const updatedAt = connection.updated_at?.getTime() ?? 0
+    const stuckThreshold = 5 * 60 * 1000 // 5 minutes
+    if (Date.now() - updatedAt < stuckThreshold) {
+      return NextResponse.json({ error: 'Import already in progress' }, { status: 409 })
+    }
+    // Stuck for over 5 minutes — allow restart
   }
 
   // TODO: Pro gate: free tier only gets first-time import
@@ -404,9 +484,10 @@ export async function POST(_req: NextRequest) {
   //   return proError!
   // }
 
+  // Clear any stale errors from previous syncs before starting
   await prisma.ravelry_connections.update({
     where: { user_id: user.id },
-    data: { import_status: 'importing', import_error: null },
+    data: { import_status: 'importing', import_error: null, import_stats: undefined },
   })
 
   const client = new RavelryClient(
@@ -419,32 +500,39 @@ export async function POST(_req: NextRequest) {
 
   // Verify OAuth tokens are still valid before starting the full sync
   try {
-    await client.getProfile()
+    const profile = await client.getProfile()
+    console.log('[ravelry-sync] Profile check OK:', profile?.user?.username ?? 'no username')
   } catch (err) {
-    await prisma.ravelry_connections.update({
-      where: { user_id: user.id },
-      data: {
-        import_status: 'error',
-        import_error: 'Ravelry session expired. Please disconnect and reconnect your Ravelry account.',
-      },
-    })
+    const errMsg = err instanceof Error ? err.message : String(err)
+    console.error('[ravelry-sync] Profile check FAILED:', errMsg)
+
+    // Only return 401 if it's truly an auth error
     if (err instanceof RavelryAuthError) {
+      await prisma.ravelry_connections.update({
+        where: { user_id: user.id },
+        data: {
+          import_status: 'error',
+          import_error: `Auth failed: ${errMsg}`,
+        },
+      })
       return NextResponse.json(
-        { error: 'Ravelry session expired', code: 'RAVELRY_AUTH_EXPIRED', message: err.message },
+        { error: 'Ravelry session expired', code: 'RAVELRY_AUTH_EXPIRED', message: errMsg },
         { status: 401 }
       )
     }
-    throw err
+
+    // Non-auth error (network, parsing, etc.) — log but continue with sync
+    console.warn('[ravelry-sync] Profile check failed with non-auth error, continuing sync anyway:', errMsg)
   }
 
   const stats = {
     profile: { updated: false },
     projects: { imported: 0, updated: 0, total: 0 },
-    patterns: { imported: 0, updated: 0 },
+    patterns: { imported: 0, updated: 0, pdfs_downloaded: 0 },
     queue: { imported: 0, updated: 0 },
     stash: { imported: 0, updated: 0 },
-    needles: { imported: 0, updated: 0 },
     friends: { matched: 0, followed: 0, notOnStitch: 0 },
+    push_back: { projects_created: 0, projects_updated: 0, photos_uploaded: 0, errors: 0 },
   }
   const errors: string[] = []
 
@@ -456,42 +544,6 @@ export async function POST(_req: NextRequest) {
     })
   }
 
-  // ── Phase 0: Push local changes to Ravelry before pulling ───────────────
-  if (connection.sync_to_ravelry) {
-    try {
-      const localProjects = await prisma.projects.findMany({
-        where: {
-          user_id: user.id,
-          ravelry_permalink: { not: null },
-          deleted_at: null,
-          updated_at: { gt: connection.synced_at ?? new Date(0) },
-        },
-      })
-
-      for (const proj of localProjects) {
-        try {
-          const ravelryUpdates: Record<string, string> = {}
-          ravelryUpdates.name = proj.title
-          ravelryUpdates.status_name = reverseMapStatus(proj.status)
-          if (proj.description || proj.mods_notes) {
-            const parts: string[] = []
-            if (proj.description) parts.push(proj.description)
-            if (proj.mods_notes) parts.push(`**Modifications:**\n${proj.mods_notes}`)
-            ravelryUpdates.notes = parts.join('\n\n')
-          }
-          if (proj.size_made) ravelryUpdates.size = proj.size_made
-          if (proj.started_at) ravelryUpdates.started = proj.started_at.toISOString().slice(0, 10)
-          if (proj.finished_at) ravelryUpdates.completed = proj.finished_at.toISOString().slice(0, 10)
-
-          await client.updateProject(proj.ravelry_permalink!, ravelryUpdates)
-        } catch (err) {
-          errors.push(`push project ${proj.ravelry_permalink}: ${err instanceof Error ? err.message : String(err)}`)
-        }
-      }
-    } catch (err) {
-      errors.push(`push: ${err instanceof Error ? err.message : String(err)}`)
-    }
-  }
   await updateProgress('profile')
 
   // ── Phase 1: Profile ─────────────────────────────────────────────────────
@@ -502,7 +554,7 @@ export async function POST(_req: NextRequest) {
       data: {
         ...(user.bio == null && profile.about_me ? { bio: profile.about_me } : {}),
         ...(user.location == null && profile.location ? { location: profile.location } : {}),
-        ...(user.avatar_url == null && profile.small_photo_url ? { avatar_url: profile.small_photo_url } : {}),
+        ...((user.avatar_source !== 'manual' && profile.small_photo_url) ? { avatar_url: profile.small_photo_url, avatar_source: 'ravelry' } : {}),
       },
     })
     stats.profile.updated = true
@@ -514,8 +566,12 @@ export async function POST(_req: NextRequest) {
   // ── Phase 2: Projects ────────────────────────────────────────────────────
   try {
     const summaries = await fetchAllPages<RavelryProjectSummary>(async page => {
-      const res = await client.listProjects(page)
-      return { items: res.projects, pageCount: res.paginator.page_count }
+      try {
+        const res = await client.listProjects(page)
+        return { items: res?.projects ?? [], pageCount: res?.paginator?.page_count ?? 0 }
+      } catch {
+        return { items: [] as RavelryProjectSummary[], pageCount: 0 }
+      }
     })
 
     stats.projects.total = summaries.length
@@ -536,31 +592,84 @@ export async function POST(_req: NextRequest) {
   await updateProgress('patterns')
 
   // ── Phase 3: Library (owned patterns) ────────────────────────────────────
+  // Collect patterns that need PDF downloads for Phase 3b
+  const pdfDownloadQueue: Array<{ patternId: string; ravelryId: number; downloadUrl: string; title: string }> = []
+
   try {
     const volumes = await fetchAllPages(async page => {
-      const res = await client.listLibrary(page)
-      return { items: res.volumes, pageCount: res.paginator.page_count }
+      try {
+        const res = await client.listLibrary(page)
+        console.log(`[ravelry-sync] Library page ${page}: ${res?.volumes?.length ?? 0} volumes, pageCount=${res?.paginator?.page_count ?? 0}`)
+        return { items: res?.volumes ?? [], pageCount: res?.paginator?.page_count ?? 0 }
+      } catch (err) {
+        console.error('[ravelry-sync] Library fetch error:', err instanceof Error ? err.message : String(err))
+        return { items: [] as any[], pageCount: 0 }
+      }
     })
+    console.log(`[ravelry-sync] Total library volumes: ${volumes.length}`)
 
     for (const vol of volumes) {
-      if (!vol.pattern) continue
+      // The search endpoint returns pattern_id as a top-level field.
+      // The list endpoint returns a nested pattern object. Handle both.
+      const ravelryPatternId = vol.pattern?.id ?? vol.pattern_id
+      if (!ravelryPatternId) continue
+
       try {
-        const existing = await prisma.patterns.findFirst({
-          where: { user_id: user.id, ravelry_id: String(vol.pattern.id) },
+        const existingBefore = await prisma.patterns.findFirst({
+          where: { user_id: user.id, ravelry_id: String(ravelryPatternId) },
         })
         // Try rich upsert first, fall back to basic
+        let result: PatternUpsertResult | null = null
         try {
-          await upsertPatternRich(user.id, vol.pattern.id)
+          result = await upsertPatternRich(user.id, ravelryPatternId)
         } catch {
+          // Fall back to basic upsert with data from the volume itself
+          const patternName = vol.pattern?.name ?? vol.title ?? 'Untitled'
+          const designerName = vol.pattern?.designer?.name ?? vol.author_name ?? null
+          const permalink = vol.pattern?.permalink ?? null
           await upsertPattern(
             user.id,
-            vol.pattern.id,
-            vol.pattern.name,
-            vol.pattern.designer?.name ?? null,
-            vol.pattern.permalink,
+            ravelryPatternId,
+            patternName,
+            designerName,
+            permalink,
           )
         }
-        if (existing) stats.patterns.updated++
+
+        // Queue PDF download if pattern has a Ravelry-hosted download URL.
+        // Paid patterns use /purchase/ URLs which require browser session — OAuth can't access those.
+        // Free Ravelry-hosted patterns use /dls/ or /dl/ URLs which work with OAuth.
+        const dlUrl = result?.downloadUrl
+        const isRavelryDownload = dlUrl && (dlUrl.includes('/dls/') || dlUrl.includes('/dl/')) && !dlUrl.includes('/purchase/')
+        if (result && isRavelryDownload && !result.hasPdfAlready) {
+          pdfDownloadQueue.push({
+            patternId: result.patternId,
+            ravelryId: ravelryPatternId,
+            downloadUrl: dlUrl,
+            title: vol.pattern?.name ?? vol.title ?? 'Untitled',
+          })
+        }
+
+        // Also check existing patterns that may have been synced before but lack PDFs
+        // (backwards compatibility: re-fetch download URL for patterns missing PDFs)
+        if (!result && existingBefore && !existingBefore.pdf_url) {
+          try {
+            const detail = await getRavelryPatternDetail(ravelryPatternId, user.id)
+            const backfillUrl = detail.download_location?.url
+            if (backfillUrl && (backfillUrl.includes('/dls/') || backfillUrl.includes('/dl/')) && !backfillUrl.includes('/purchase/')) {
+              pdfDownloadQueue.push({
+                patternId: existingBefore.id,
+                ravelryId: ravelryPatternId,
+                downloadUrl: backfillUrl,
+                title: vol.pattern?.name ?? vol.title ?? 'Untitled',
+              })
+            }
+          } catch {
+            // Non-fatal: pattern detail fetch failed, skip PDF
+          }
+        }
+
+        if (existingBefore) stats.patterns.updated++
         else stats.patterns.imported++
       } catch (err) {
         errors.push(`library ${vol.id}: ${err instanceof Error ? err.message : String(err)}`)
@@ -569,13 +678,39 @@ export async function POST(_req: NextRequest) {
   } catch (err) {
     errors.push(`library: ${err instanceof Error ? err.message : String(err)}`)
   }
+
+  // ── Phase 3b: Download PDFs from library ─────────────────────────────────
+  // Download PDFs for patterns that have download_location but no pdf_url yet.
+  // This runs after all patterns are imported so we don't slow down the import phase.
+  if (pdfDownloadQueue.length > 0) {
+    await updateProgress('pdfs')
+    for (const job of pdfDownloadQueue) {
+      try {
+        const success = await downloadAndAttachPdf(
+          user.id,
+          job.patternId,
+          job.ravelryId,
+          job.downloadUrl,
+          job.title,
+        )
+        if (success) stats.patterns.pdfs_downloaded++
+      } catch (err) {
+        errors.push(`pdf ${job.ravelryId}: ${err instanceof Error ? err.message : String(err)}`)
+      }
+    }
+  }
+
   await updateProgress('queue')
 
   // ── Phase 4: Queue ────────────────────────────────────────────────────────
   try {
     const queueItems = await fetchAllPages(async page => {
-      const res = await client.listQueue(page)
-      return { items: res.queued_projects, pageCount: res.paginator.page_count }
+      try {
+        const res = await client.listQueue(page)
+        return { items: res?.queued_projects ?? [], pageCount: res?.paginator?.page_count ?? 0 }
+      } catch {
+        return { items: [] as any[], pageCount: 0 }
+      }
     })
 
     for (const item of queueItems) {
@@ -617,7 +752,7 @@ export async function POST(_req: NextRequest) {
           stats.queue.updated++
         } else {
           // Extract cover image from pattern photos
-          const firstPhoto = patternInfo.photos?.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))[0]
+          const firstPhoto = patternInfo.photos?.sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))[0]
           const coverImageUrl = firstPhoto?.medium_url ?? firstPhoto?.small_url ?? null
 
           const patternId = await upsertPattern(
@@ -654,8 +789,12 @@ export async function POST(_req: NextRequest) {
   // ── Phase 5: Stash ────────────────────────────────────────────────────────
   try {
     const stashItems = await fetchAllPages(async page => {
-      const res = await client.listStash(page)
-      return { items: res.stash, pageCount: res.paginator.page_count }
+      try {
+        const res = await client.listStash(page)
+        return { items: res?.stash ?? [], pageCount: res?.paginator?.page_count ?? 0 }
+      } catch {
+        return { items: [] as any[], pageCount: 0 }
+      }
     })
 
     for (const item of stashItems) {
@@ -703,6 +842,13 @@ export async function POST(_req: NextRequest) {
               ).id
         }
 
+        // Map Ravelry stash_status to our status field
+        // Ravelry uses: "stash" (default), "used" (used up), "trade" (for sale/trade)
+        const ravelryStatus = item.stash_status?.id ?? item.stash_status_id
+        let status = 'in_stash'
+        if (ravelryStatus === 'used' || ravelryStatus === 2) status = 'used_up'
+        else if (ravelryStatus === 'trade' || ravelryStatus === 3) status = 'for_sale'
+
         // Upsert stash item by ravelry_id
         const existingStash = await prisma.user_stash.findFirst({
           where: { user_id: user.id, ravelry_id: String(item.id) },
@@ -716,6 +862,7 @@ export async function POST(_req: NextRequest) {
               skeins: item.skeins ?? 1,
               grams: item.grams ?? null,
               notes: item.notes ?? null,
+              status,
             },
           })
           stats.stash.updated++
@@ -729,6 +876,7 @@ export async function POST(_req: NextRequest) {
               skeins: item.skeins ?? 1,
               grams: item.grams ?? null,
               notes: item.notes ?? null,
+              status,
             },
           })
           stats.stash.imported++
@@ -740,47 +888,7 @@ export async function POST(_req: NextRequest) {
   } catch (err) {
     errors.push(`stash: ${err instanceof Error ? err.message : String(err)}`)
   }
-  await updateProgress('needles')
-
-  // ── Phase 6: Needles ─────────────────────────────────────────────────────
-  try {
-    const { needles } = await client.listNeedles()
-
-    for (const needle of needles) {
-      if (!needle.metric) continue
-      const sizeMm = parseFloat(needle.metric)
-      if (isNaN(sizeMm)) continue
-
-      try {
-        const ravelryId = String(needle.id)
-        const existing = await prisma.user_needles.findFirst({
-          where: { user_id: user.id, ravelry_id: ravelryId },
-        })
-
-        const needleData = {
-          type: mapNeedleType(needle.type_id),
-          size_mm: sizeMm,
-          size_label: needle.us ? `US ${needle.us} / ${needle.metric}mm` : `${needle.metric}mm`,
-          length_cm: needle.length ? Math.round(needle.length * 2.54) : null, // Ravelry length in inches
-          brand: needle.manufacturer ?? null,
-        }
-
-        if (existing) {
-          await prisma.user_needles.update({ where: { id: existing.id }, data: needleData })
-          stats.needles.updated++
-        } else {
-          await prisma.user_needles.create({
-            data: { user_id: user.id, ravelry_id: ravelryId, ...needleData },
-          })
-          stats.needles.imported++
-        }
-      } catch (err) {
-        errors.push(`needle ${needle.id}: ${err instanceof Error ? err.message : String(err)}`)
-      }
-    }
-  } catch (err) {
-    errors.push(`needles: ${err instanceof Error ? err.message : String(err)}`)
-  }
+  // Needles are Stitch-only — not synced from Ravelry
 
   await updateProgress('friends')
 
@@ -788,7 +896,7 @@ export async function POST(_req: NextRequest) {
   try {
     const allFriends = await fetchAllPages(async page => {
       const res = await client.listFriends(page)
-      return { items: res.friendships, pageCount: res.paginator.page_count }
+      return { items: res?.friendships ?? [], pageCount: res?.paginator?.page_count ?? 0 }
     })
 
     // Cross-reference ravelry usernames against ravelry_connections
@@ -824,19 +932,192 @@ export async function POST(_req: NextRequest) {
     errors.push(`friends: ${err instanceof Error ? err.message : String(err)}`)
   }
 
-  // ── Finalize ─────────────────────────────────────────────────────────────
-  const hasData = stats.projects.total > 0 || stats.patterns.imported > 0
-  const importStatus = errors.length > 0 && !hasData ? 'error' : 'done'
+  // ── Phase 7: Push Back to Ravelry ───────────────────────────────────────
+  await updateProgress('push_back')
+  try {
+    // Find Stitch-only projects (no ravelry_id) to create on Ravelry
+    const stitchOnlyProjects = await prisma.projects.findMany({
+      where: { user_id: user.id, deleted_at: null, ravelry_id: null },
+      select: { id: true, title: true, description: true, status: true, craft_type: true, started_at: true, finished_at: true, progress_pct: true },
+    })
 
+    for (const project of stitchOnlyProjects) {
+      try {
+        const ravelryId = await ravelryCreateProject(client, connection.ravelry_username, {
+          name: project.title,
+          notes: project.description ?? undefined,
+          status: project.status,
+          craft_type: project.craft_type,
+          started_at: project.started_at,
+          completed_at: project.finished_at,
+          progress: project.progress_pct ?? undefined,
+        })
+        if (ravelryId) {
+          await prisma.projects.update({ where: { id: project.id }, data: { ravelry_id: String(ravelryId) } })
+          stats.push_back.projects_created++
+        }
+      } catch {
+        stats.push_back.errors++
+      }
+    }
+
+    // Find projects with ravelry_id that may have local changes → push updates
+    const linkedProjects = await prisma.projects.findMany({
+      where: { user_id: user.id, deleted_at: null, ravelry_id: { not: null } },
+      select: { id: true, title: true, description: true, status: true, craft_type: true, started_at: true, finished_at: true, progress_pct: true, ravelry_id: true, updated_at: true },
+    })
+
+    for (const project of linkedProjects) {
+      try {
+        await ravelryUpdateProject(client, connection.ravelry_username, project.ravelry_id!, {
+          name: project.title,
+          notes: project.description,
+          status: project.status,
+          craft_type: project.craft_type,
+          started_at: project.started_at,
+          completed_at: project.finished_at,
+          progress: project.progress_pct ?? undefined,
+        })
+        stats.push_back.projects_updated++
+      } catch {
+        stats.push_back.errors++
+      }
+    }
+
+    // Queue project photos for background upload
+    // Strategy: user photos first, then pattern cover as fallback
+    await updateProgress('photos')
+    let photosQueued = 0
+    for (const project of linkedProjects) {
+      try {
+        // Check if Ravelry already has photos
+        const ravelryProject = await client.post<{ project: { photos: Array<{ id: number }> } }>(
+          `/projects/${connection.ravelry_username}/${project.ravelry_id}.json`,
+          {}
+        )
+        if ((ravelryProject?.project?.photos?.length ?? 0) > 0) continue // Already has photos
+
+        // Get user-uploaded project photos
+        const localPhotos = await prisma.project_photos.findMany({
+          where: { project_id: project.id },
+          orderBy: { sort_order: 'asc' },
+        })
+
+        if (localPhotos.length > 0) {
+          // Queue user photos
+          for (const photo of localPhotos) {
+            await prisma.ravelry_photo_queue.create({
+              data: { user_id: user.id, entity_type: 'project', ravelry_id: project.ravelry_id!, photo_url: photo.url },
+            })
+            photosQueued++
+          }
+        } else {
+          // No user photos — fall back to pattern cover image
+          const fullProject = await prisma.projects.findUnique({
+            where: { id: project.id },
+            select: { pattern: { select: { cover_image_url: true } } },
+          })
+          const coverUrl = fullProject?.pattern?.cover_image_url
+          if (coverUrl) {
+            await prisma.ravelry_photo_queue.create({
+              data: { user_id: user.id, entity_type: 'project', ravelry_id: project.ravelry_id!, photo_url: coverUrl },
+            })
+            photosQueued++
+          }
+        }
+      } catch {
+        // Non-critical
+      }
+    }
+
+    // Push stash items without ravelry_id to Ravelry
+    const stitchOnlyStash = await prisma.user_stash.findMany({
+      where: { user_id: user.id, ravelry_id: null },
+      include: { yarn: { include: { company: true } } },
+    })
+
+    for (const item of stitchOnlyStash) {
+      try {
+        const createRes = await client.post<{ stash: { id: number } }>(
+          `/people/${connection.ravelry_username}/stash/create.json`
+        )
+        const ravelryStashId = createRes?.stash?.id
+        if (ravelryStashId) {
+          // Call 1: Set yarn_id
+          const yarnUpdate: Record<string, unknown> = {}
+          if (item.yarn?.ravelry_id) yarnUpdate.yarn_id = parseInt(item.yarn.ravelry_id)
+          const initRes = await client.post<{ stash: { packs: Array<{ id: number }> } }>(
+            `/people/${connection.ravelry_username}/stash/${ravelryStashId}.json`, yarnUpdate
+          )
+          const packId = initRes?.stash?.packs?.[0]?.id
+
+          // Call 2: Flat fields
+          await client.post(`/people/${connection.ravelry_username}/stash/${ravelryStashId}.json`, {
+            notes: 'Synced from Stitch',
+            location: 'Stitch app',
+          })
+
+          // Call 3: Pack data
+          if (packId) {
+            await client.post(`/people/${connection.ravelry_username}/stash/${ravelryStashId}.json`, {
+              pack: { id: packId, skeins: item.skeins, ...(item.colorway ? { colorway: item.colorway } : {}) },
+            })
+          }
+
+          // Call 4: Stash-level colorway
+          if (item.colorway) {
+            await client.post(`/people/${connection.ravelry_username}/stash/${ravelryStashId}.json`, {
+              stash: { colorway_name: item.colorway },
+            })
+          }
+          await prisma.user_stash.update({ where: { id: item.id }, data: { ravelry_id: String(ravelryStashId) } })
+          stats.push_back.projects_created++
+        }
+      } catch {
+        stats.push_back.errors++
+      }
+    }
+    // Queue stash photos — user photo first, yarn product photo as fallback
+    const allStashWithRavelry = await prisma.user_stash.findMany({
+      where: { user_id: user.id, ravelry_id: { not: null } },
+      select: { id: true, ravelry_id: true, photo_url: true, yarn: { select: { image_url: true } } },
+    })
+    for (const item of allStashWithRavelry) {
+      try {
+        // Check if Ravelry already has a photo
+        const ravelryStash = await client.post<{ stash: { has_photo: boolean } }>(
+          `/people/${connection.ravelry_username}/stash/${item.ravelry_id}.json`, {}
+        )
+        if (ravelryStash?.stash?.has_photo) continue
+
+        // Pick best available photo: user custom → yarn product photo
+        const photoUrl = item.photo_url || item.yarn?.image_url
+        if (!photoUrl) continue
+
+        await prisma.ravelry_photo_queue.create({
+          data: { user_id: user.id, entity_type: 'stash', ravelry_id: item.ravelry_id!, photo_url: photoUrl },
+        })
+        photosQueued++
+      } catch {
+        // Skip
+      }
+    }
+    stats.push_back.photos_uploaded = photosQueued
+  } catch (err) {
+    errors.push(`push_back: ${err instanceof Error ? err.message : String(err)}`)
+  }
+
+  // ── Finalize ─────────────────────────────────────────────────────────────
+  // Always "done" — sync completed. Errors are informational, not fatal.
   await prisma.ravelry_connections.update({
     where: { user_id: user.id },
     data: {
       synced_at: new Date(),
-      import_status: importStatus,
+      import_status: 'done',
       import_error: errors.length > 0 ? errors.slice(0, 10).join('; ') : null,
       import_stats: stats,
     },
   })
 
   return NextResponse.json({ success: true, data: { ...stats, errors } })
-}
+})

@@ -1,27 +1,19 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
-
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (_req, user) => {
   const items = await prisma.user_supplies.findMany({
     where: { user_id: user.id },
     orderBy: [{ category: 'asc' }, { name: 'asc' }],
   })
 
   return NextResponse.json({ success: true, data: { items } })
-}
+})
 
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const body = await req.json()
   const { name, category, brand, quantity, notes } = body
 
@@ -41,4 +33,4 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: item }, { status: 201 })
-}
+})

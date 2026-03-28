@@ -1,8 +1,7 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 import { getOpenAI } from '@/lib/openai'
 import { compareGauges } from '@/lib/gauge'
@@ -23,6 +22,7 @@ import {
 } from '@/lib/yarn-math'
 import { buildYarnSubPrompt, type YarnSubAIResponse } from '@/lib/prompts/yarn-sub'
 
+export const dynamic = 'force-dynamic'
 export const maxDuration = 120
 
 // ─── Input validation ────────────────────────────────────────────────────────
@@ -90,14 +90,7 @@ interface ResolvedYarn {
  * stitch/row counts, and recalculates yardage for a substitute yarn or
  * multi-strand combo.
  */
-export async function POST(req: NextRequest) {
-  // Auth
-  const { userId: clerkId } = await auth()
-  if (!clerkId) {
-    return NextResponse.json({ error: 'Unauthorized', code: 'UNAUTHORIZED' }, { status: 401 })
-  }
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const proError = requirePro(user, 'yarn substitution')
   if (proError) return proError
 
@@ -383,4 +376,4 @@ export async function POST(req: NextRequest) {
       adjustments,
     },
   })
-}
+})

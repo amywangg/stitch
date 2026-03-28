@@ -1,8 +1,9 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
-import { getDbUser } from '@/lib/auth'
+import { NextResponse } from 'next/server'
+import { withAuth } from '@/lib/route-helpers'
 import { explainPatternRow } from '@/lib/agent'
 
+
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/v1/ai/explain-row
  * "What does this row mean?" — explains a pattern instruction in plain language.
@@ -15,11 +16,7 @@ import { explainPatternRow } from '@/lib/agent'
  *   previous_row?: string,
  * }
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  await getDbUser(clerkId)
-
+export const POST = withAuth(async (req, _user) => {
   const body = await req.json()
   const { instruction, craft_type, experience_level, previous_row } = body as {
     instruction: string
@@ -41,4 +38,4 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     )
   }
-}
+})

@@ -6,7 +6,7 @@ struct ProjectsView: View {
     @Binding var patternsSubTab: PatternsTab
     @Environment(ThemeManager.self) private var theme
     @State private var viewModel = ProjectsViewModel()
-    @State private var showingNewProject = false
+
     @State private var showingPatternPicker = false
     @State private var showPdfParseFlow = false
     @State private var showRavelryPrompt = false
@@ -15,6 +15,7 @@ struct ProjectsView: View {
     @AppStorage("projectsLayout") private var layout: ProjectsLayout = .grid
     @AppStorage("projectsSort") private var sort: ProjectsSort = .recentlyUpdated
     @State private var expandedSections: Set<String> = []
+
     @Environment(AppRouter.self) private var router: AppRouter
 
     var body: some View {
@@ -23,7 +24,15 @@ struct ProjectsView: View {
             mainScrollView
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(.hidden, for: .navigationBar)
-                .safeAreaInset(edge: .top) { headerBar }
+                .safeAreaInset(edge: .top) {
+                    ProjectHeaderBar(
+                        layout: $layout,
+                        sort: $sort,
+                        onNewFromPattern: { showingPatternPicker = true },
+                        onUploadPdf: { showPdfParseFlow = true },
+                        onBuildPattern: { buildNewPattern() }
+                    )
+                }
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                     case .projectDetail(let id):
@@ -32,6 +41,8 @@ struct ProjectsView: View {
                         CounterView(sectionId: sectionId, allSections: allSections, projectId: projectId, pdfUploadId: pdfUploadId)
                     case .patternDetail(let id):
                         PatternDetailView(patternId: id)
+                    case .patternBuilder(let id):
+                        PatternBuilderView(patternId: id)
                     default:
                         EmptyView()
                     }
@@ -41,20 +52,15 @@ struct ProjectsView: View {
             await viewModel.loadGrouped()
             await checkRavelryOnboarding()
         }
-        .onAppear {
-            // Refresh when returning from detail/counter views where status may have changed
-            if !viewModel.inProgressProjects.isEmpty || !viewModel.completedProjects.isEmpty {
+        .onChange(of: router.path) { oldPath, newPath in
+            // Refresh when navigating back from detail views (path got shorter)
+            if newPath.count < oldPath.count {
                 Task { await viewModel.loadGrouped() }
             }
         }
         .refreshable {
             await viewModel.syncRavelry()
             await viewModel.loadGrouped()
-        }
-        .sheet(isPresented: $showingNewProject) {
-            NewProjectSheet { title in
-                await viewModel.createProject(title: title)
-            }
         }
         .sheet(isPresented: $showingPatternPicker) {
             PatternPickerSheet(
@@ -69,6 +75,9 @@ struct ProjectsView: View {
                 },
                 onUploadPdf: {
                     showPdfParseFlow = true
+                },
+                onBuildPattern: {
+                    buildNewPattern()
                 }
             )
         }
@@ -109,15 +118,6 @@ struct ProjectsView: View {
         if viewModel.isLoading && viewModel.inProgressProjects.isEmpty && viewModel.queueItems.isEmpty {
             ProgressView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else if viewModel.inProgressProjects.isEmpty && viewModel.queueItems.isEmpty && viewModel.completedProjects.isEmpty {
-            // Truly empty — show in-progress empty state with CTAs
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 28) {
-                    inProgressEmptyState
-                }
-                .padding(.top, 8)
-                .padding(.bottom, 40)
-            }
         } else {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 28) {
@@ -139,10 +139,10 @@ struct ProjectsView: View {
         viewModel.queueItems.sorted { a, b in
             guard let pa = a.pattern, let pb = b.pattern else { return false }
             switch sort {
-            case .newest: return pa.createdAt > pb.createdAt
-            case .oldest: return pa.createdAt < pb.createdAt
+            case .newest: return (pa.createdAt ?? .distantPast) > (pb.createdAt ?? .distantPast)
+            case .oldest: return (pa.createdAt ?? .distantPast) < (pb.createdAt ?? .distantPast)
             case .alphabetical: return pa.title.localizedCaseInsensitiveCompare(pb.title) == .orderedAscending
-            case .recentlyUpdated: return pa.updatedAt > pb.updatedAt
+            case .recentlyUpdated: return (pa.updatedAt ?? .distantPast) > (pb.updatedAt ?? .distantPast)
             }
         }
     }
@@ -195,19 +195,19 @@ struct ProjectsView: View {
                             .clipShape(Capsule())
                     }
 
-                    HStack(spacing: 12) {
-                        Button {
-                            showingNewProject = true
-                        } label: {
-                            Text("Blank project")
-                                .font(.subheadline.weight(.medium))
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 10)
-                                .background(theme.primary.opacity(0.15))
-                                .foregroundStyle(theme.primary)
-                                .clipShape(Capsule())
-                        }
+                    Button {
+                        buildNewPattern()
+                    } label: {
+                        Label("Build a pattern", systemImage: "hammer")
+                            .font(.subheadline.weight(.medium))
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(theme.primary.opacity(0.15))
+                            .foregroundStyle(theme.primary)
+                            .clipShape(Capsule())
+                    }
 
+                    HStack(spacing: 12) {
                         Button {
                             patternsSubTab = .discover
                             selectedTab = .patterns
@@ -235,10 +235,12 @@ struct ProjectsView: View {
 
     @ViewBuilder
     private var queueSection: some View {
-        if !sortedQueue.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                sectionHeader(title: "Queue", count: sortedQueue.count, sectionKey: "queue")
+        VStack(alignment: .leading, spacing: 12) {
+            sectionHeader(title: "Queue", count: sortedQueue.count, sectionKey: "queue")
 
+            if sortedQueue.isEmpty {
+                queueEmptyState
+            } else {
                 let isExpanded = expandedSections.contains("queue")
                 let limit = layout.previewCount
                 let visible = isExpanded ? sortedQueue : Array(sortedQueue.prefix(limit))
@@ -259,6 +261,41 @@ struct ProjectsView: View {
         }
     }
 
+    private var queueEmptyState: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "text.line.first.and.arrowtriangle.forward")
+                .font(.system(size: 28))
+                .foregroundStyle(theme.primary.opacity(0.4))
+
+            Text("Queue is empty")
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.secondary)
+
+            Text("Save patterns you want to make next")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+
+            Button {
+                patternsSubTab = .discover
+                selectedTab = .patterns
+            } label: {
+                Label("Find patterns", systemImage: "magnifyingglass")
+                    .font(.caption.weight(.medium))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(theme.primary.opacity(0.12))
+                    .foregroundStyle(theme.primary)
+                    .clipShape(Capsule())
+            }
+            .padding(.top, 4)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 20)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .padding(.horizontal, 16)
+    }
+
     // MARK: - Queue Grid
 
     private func queueGrid(_ items: [QueueItem]) -> some View {
@@ -267,10 +304,25 @@ struct ProjectsView: View {
             GridItem(.flexible(), spacing: 14),
         ], spacing: 16) {
             ForEach(items) { item in
-                NavigationLink(value: Route.patternDetail(id: item.patternId)) {
-                    QueueGridCard(item: item)
+                ZStack(alignment: .topTrailing) {
+                    NavigationLink(value: Route.patternDetail(id: item.patternId)) {
+                        QueueGridCard(item: item)
+                    }
+                    .buttonStyle(.plain)
+
+                    // Remove button
+                    Button {
+                        Task { await viewModel.removeQueueItem(item) }
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.white)
+                            .padding(4)
+                            .background(.black.opacity(0.5), in: Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .padding(6)
                 }
-                .buttonStyle(.plain)
                 .contextMenu { queueContextMenu(item) }
             }
         }
@@ -282,10 +334,22 @@ struct ProjectsView: View {
     private func queueListContent(_ items: [QueueItem]) -> some View {
         VStack(spacing: 0) {
             ForEach(items) { item in
-                NavigationLink(value: Route.patternDetail(id: item.patternId)) {
-                    QueueListRow(item: item)
+                HStack(spacing: 0) {
+                    NavigationLink(value: Route.patternDetail(id: item.patternId)) {
+                        QueueListRow(item: item)
+                    }
+                    .buttonStyle(.plain)
+
+                    Button {
+                        Task { await viewModel.removeQueueItem(item) }
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .padding(8)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
                 .contextMenu { queueContextMenu(item) }
             }
         }
@@ -296,10 +360,25 @@ struct ProjectsView: View {
     private func queueLargeListContent(_ items: [QueueItem]) -> some View {
         VStack(spacing: 16) {
             ForEach(items) { item in
-                NavigationLink(value: Route.patternDetail(id: item.patternId)) {
-                    QueueLargeCard(item: item)
+                ZStack(alignment: .topTrailing) {
+                    NavigationLink(value: Route.patternDetail(id: item.patternId)) {
+                        QueueLargeCard(item: item)
+                    }
+                    .buttonStyle(.plain)
+
+                    // Remove button
+                    Button {
+                        Task { await viewModel.removeQueueItem(item) }
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(.white)
+                            .padding(5)
+                            .background(.black.opacity(0.5), in: Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .padding(8)
                 }
-                .buttonStyle(.plain)
                 .contextMenu { queueContextMenu(item) }
             }
         }
@@ -329,13 +408,57 @@ struct ProjectsView: View {
 
     @ViewBuilder
     private var completedSection: some View {
-        if !sortedCompleted.isEmpty {
+        if sortedCompleted.isEmpty {
+            completedEmptyState
+        } else {
             projectSection(
                 title: "Completed",
                 projects: sortedCompleted,
                 sectionKey: "completed",
                 showNew: false
             )
+        }
+    }
+
+    private var completedEmptyState: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Completed")
+                .font(.title2.bold())
+                .padding(.horizontal, 16)
+
+            VStack(spacing: 10) {
+                Image(systemName: "trophy")
+                    .font(.system(size: 28))
+                    .foregroundStyle(.yellow.opacity(0.6))
+
+                Text("No finished projects yet")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.secondary)
+
+                Text("Start a project and finish it to see it here")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+
+                if viewModel.inProgressProjects.isEmpty {
+                    Button {
+                        showingPatternPicker = true
+                    } label: {
+                        Label("Start a project", systemImage: "play.fill")
+                            .font(.caption.weight(.medium))
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .background(theme.primary.opacity(0.12))
+                            .foregroundStyle(theme.primary)
+                            .clipShape(Capsule())
+                    }
+                    .padding(.top, 4)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 20)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .padding(.horizontal, 16)
         }
     }
 
@@ -419,12 +542,12 @@ struct ProjectsView: View {
     private var newProjectButton: some View {
         HStack(spacing: 10) {
             Button {
-                showingPatternPicker = true
+                buildNewPattern()
             } label: {
                 HStack {
-                    Image(systemName: "book")
+                    Image(systemName: "hammer")
                         .font(.subheadline)
-                    Text("From pattern")
+                    Text("Build a pattern")
                         .font(.subheadline.weight(.medium))
                 }
                 .foregroundStyle(theme.primary)
@@ -435,12 +558,12 @@ struct ProjectsView: View {
             }
 
             Button {
-                showingNewProject = true
+                showingPatternPicker = true
             } label: {
                 HStack {
-                    Image(systemName: "plus")
+                    Image(systemName: "book")
                         .font(.subheadline)
-                    Text("Blank")
+                    Text("From pattern")
                         .font(.subheadline.weight(.medium))
                 }
                 .foregroundStyle(theme.primary)
@@ -512,87 +635,11 @@ struct ProjectsView: View {
         }
     }
 
-    // MARK: - Header Bar
-
-    private var headerBar: some View {
-        HStack(alignment: .center) {
-            Text("Projects")
-                .font(.largeTitle.bold())
-
-            Spacer()
-
-            HStack(spacing: 16) {
-                sortPicker
-                layoutPicker
-
-                Menu {
-                    Button {
-                        showingPatternPicker = true
-                    } label: {
-                        Label("Start from pattern", systemImage: "book")
-                    }
-                    Button {
-                        showPdfParseFlow = true
-                    } label: {
-                        Label("Upload PDF", systemImage: "doc.badge.plus")
-                    }
-                    Button {
-                        showingNewProject = true
-                    } label: {
-                        Label("Blank project", systemImage: "plus")
-                    }
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.body.weight(.medium))
-                }
-            }
-            .foregroundStyle(theme.primary)
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-        .background(Color(.systemBackground))
-    }
-
-    private var sortPicker: some View {
-        Menu {
-            ForEach(ProjectsSort.allCases, id: \.self) { option in
-                Button {
-                    withAnimation(.easeInOut(duration: 0.25)) { sort = option }
-                } label: {
-                    Label {
-                        Text(option.label)
-                    } icon: {
-                        if sort == option {
-                            Image(systemName: "checkmark")
-                        } else {
-                            Image(systemName: option.icon)
-                        }
-                    }
-                }
-            }
-        } label: {
-            Image(systemName: "arrow.up.arrow.down")
-                .font(.body.weight(.medium))
-        }
-    }
-
-    private var layoutPicker: some View {
-        Menu {
-            ForEach(ProjectsLayout.allCases, id: \.self) { mode in
-                Button {
-                    withAnimation(.easeInOut(duration: 0.25)) { layout = mode }
-                } label: {
-                    Label(mode.label, systemImage: mode.icon)
-                }
-            }
-        } label: {
-            Image(systemName: layout.icon)
-                .font(.body.weight(.medium))
-                .contentTransition(.symbolEffect(.replace))
-        }
-    }
-
     // MARK: - Helpers
+
+    private func buildNewPattern() {
+        router.push(.patternBuilder())
+    }
 
     private func checkRavelryOnboarding() async {
         do {
@@ -611,677 +658,6 @@ struct ProjectsView: View {
                 showRavelryPrompt = true
             }
         } catch {}
-    }
-}
-
-// MARK: - Shared Helpers
-
-private func projectProgress(_ project: Project) -> Double? {
-    guard let sections = project.sections, !sections.isEmpty else { return nil }
-    let totalTarget = sections.compactMap(\.targetRows).reduce(0, +)
-    guard totalTarget > 0 else { return nil }
-    let totalCurrent = sections.map(\.currentRow).reduce(0, +)
-    return min(Double(totalCurrent) / Double(totalTarget), 1.0)
-}
-
-private func projectStatusColor(_ status: String) -> Color {
-    switch status {
-    case "active": return Color(hex: "#4ECDC4")
-    case "completed": return .green
-    case "frogged": return .orange
-    case "hibernating": return .purple
-    case "queued": return Color(hex: "#FF6B6B")
-    default: return .secondary
-    }
-}
-
-// MARK: - Shared Components
-
-private struct ProjectRavelryBadge: View {
-    @Environment(ThemeManager.self) private var theme
-    var body: some View {
-        Text("R")
-            .font(.system(size: 9, weight: .bold))
-            .foregroundStyle(.white)
-            .padding(.horizontal, 4)
-            .padding(.vertical, 1)
-            .background(theme.primary, in: RoundedRectangle(cornerRadius: 3))
-    }
-}
-
-private struct ProjectStatusDot: View {
-    @Environment(ThemeManager.self) private var theme
-    let status: String
-    var body: some View {
-        Circle()
-            .fill(projectStatusColor(status))
-            .frame(width: 6, height: 6)
-    }
-}
-
-private struct CircularProgress: View {
-    let value: Double
-    @Environment(ThemeManager.self) private var theme
-    var body: some View {
-        ZStack {
-            Circle()
-                .stroke(Color(.systemGray5), lineWidth: 3)
-            Circle()
-                .trim(from: 0, to: value)
-                .stroke(theme.primary, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-            Text("\(Int(value * 100))")
-                .font(.system(size: 9, weight: .bold))
-                .foregroundStyle(.secondary)
-        }
-    }
-}
-
-private struct ProjectTagChips: View {
-    @Environment(ThemeManager.self) private var theme
-    let tags: [ProjectTag]
-    var limit: Int = 3
-    var style: TagStyle = .normal
-
-    enum TagStyle {
-        case normal
-        case onImage
-    }
-
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(Array(tags.prefix(limit))) { tag in
-                Text(tag.tag.name)
-                    .font(.system(size: 10, weight: .medium))
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(chipBackground)
-                    .foregroundStyle(chipForeground)
-                    .clipShape(Capsule())
-            }
-            if tags.count > limit {
-                Text("+\(tags.count - limit)")
-                    .font(.system(size: 10, weight: .medium))
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(chipBackground)
-                    .foregroundStyle(chipForeground)
-                    .clipShape(Capsule())
-            }
-        }
-    }
-
-    private var chipBackground: some ShapeStyle {
-        switch style {
-        case .normal:
-            return AnyShapeStyle(Color(.systemGray5))
-        case .onImage:
-            return AnyShapeStyle(Color.white.opacity(0.2))
-        }
-    }
-
-    private var chipForeground: some ShapeStyle {
-        switch style {
-        case .normal:
-            return AnyShapeStyle(Color.secondary)
-        case .onImage:
-            return AnyShapeStyle(Color.white.opacity(0.9))
-        }
-    }
-}
-
-// MARK: - Grid Card (Spotify-style)
-
-private struct ProjectGridCard: View {
-    let project: Project
-
-    @Environment(ThemeManager.self) private var theme
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            coverImage
-            textContent
-        }
-    }
-
-    private var coverImage: some View {
-        Color.clear
-            .aspectRatio(1, contentMode: .fit)
-            .overlay {
-                if let photoURL = project.coverImageUrl, let url = URL(string: photoURL) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().aspectRatio(contentMode: .fill)
-                        default:
-                            gridPlaceholder
-                        }
-                    }
-                } else {
-                    gridPlaceholder
-                }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-    }
-
-    private var gridPlaceholder: some View {
-        ZStack {
-            Color(.systemGray5)
-            Image(systemName: "photo")
-                .font(.system(size: 28))
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var textContent: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack(spacing: 5) {
-                Text(project.title)
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
-                    .foregroundStyle(.primary)
-
-                if project.ravelryId != nil {
-                    ProjectRavelryBadge()
-                }
-            }
-
-            HStack(spacing: 6) {
-                ProjectStatusDot(status: project.status)
-                Text(project.status.replacingOccurrences(of: "_", with: " ").capitalized)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            HStack(spacing: 4) {
-                if project.pdfUploadId != nil {
-                    Label("PDF", systemImage: "doc.fill")
-                        .font(.caption2)
-                        .foregroundStyle(.green)
-                }
-                if project.pattern?.aiParsed == true {
-                    Label("Parsed", systemImage: "sparkles")
-                        .font(.caption2)
-                        .foregroundStyle(.purple)
-                }
-            }
-
-            if let tags = project.tags, !tags.isEmpty {
-                ProjectTagChips(tags: tags, limit: 2)
-            }
-
-            if let progress = projectProgress(project) {
-                ProgressView(value: progress)
-                    .tint(theme.primary)
-                    .scaleEffect(y: 0.6)
-                    .padding(.top, 2)
-            }
-        }
-    }
-}
-
-// MARK: - List Row (Compact)
-
-private struct ProjectListRow: View {
-    @Environment(ThemeManager.self) private var theme
-    let project: Project
-
-    var body: some View {
-        HStack(spacing: 12) {
-            thumbnail
-            titleAndMeta
-            Spacer(minLength: 0)
-            if let progress = projectProgress(project) {
-                CircularProgress(value: progress)
-                    .frame(width: 28, height: 28)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-    }
-
-    private var thumbnail: some View {
-        Color.clear
-            .frame(width: 52, height: 52)
-            .overlay {
-                if let photoURL = project.coverImageUrl, let url = URL(string: photoURL) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().aspectRatio(contentMode: .fill)
-                        default:
-                            listPlaceholder
-                        }
-                    }
-                } else {
-                    listPlaceholder
-                }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
-    private var listPlaceholder: some View {
-        ZStack {
-            Color(.systemGray5)
-            Image(systemName: "photo")
-                .font(.system(size: 16))
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var titleAndMeta: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(project.title)
-                    .font(.subheadline.weight(.medium))
-                    .lineLimit(1)
-                    .foregroundStyle(.primary)
-                if project.ravelryId != nil {
-                    ProjectRavelryBadge()
-                }
-            }
-            HStack(spacing: 4) {
-                ProjectStatusDot(status: project.status)
-                Text(project.status.replacingOccurrences(of: "_", with: " ").capitalized)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Text("·")
-                    .font(.caption)
-                    .foregroundStyle(.quaternary)
-                Text(project.craftType.capitalized)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                if project.pdfUploadId != nil {
-                    Label("PDF", systemImage: "doc.fill")
-                        .font(.caption2)
-                        .foregroundStyle(.green)
-                }
-                if project.pattern?.aiParsed == true {
-                    Label("Parsed", systemImage: "sparkles")
-                        .font(.caption2)
-                        .foregroundStyle(.purple)
-                }
-            }
-            if let tags = project.tags, !tags.isEmpty {
-                ProjectTagChips(tags: tags, limit: 3)
-            }
-        }
-    }
-}
-
-// MARK: - Large Card (Editorial)
-
-private struct ProjectLargeCard: View {
-    let project: Project
-
-    @Environment(ThemeManager.self) private var theme
-    var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            heroImage
-            gradient
-            cardOverlay
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 240)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-    }
-
-    private var heroImage: some View {
-        Color(.systemGray5)
-            .overlay {
-                if let photoURL = project.coverImageUrl, let url = URL(string: photoURL) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().aspectRatio(contentMode: .fill)
-                        default:
-                            largePlaceholder
-                        }
-                    }
-                } else {
-                    largePlaceholder
-                }
-            }
-    }
-
-    private var largePlaceholder: some View {
-        ZStack {
-            Color(.systemGray6)
-            Image(systemName: "photo")
-                .font(.system(size: 40))
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var gradient: some View {
-        LinearGradient(
-            colors: [.clear, .black.opacity(0.7)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
-
-    private var cardOverlay: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Spacer()
-
-            HStack(spacing: 8) {
-                statusPill
-                if project.ravelryId != nil {
-                    Text("R")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.9))
-                        .padding(.horizontal, 5)
-                        .padding(.vertical, 2)
-                        .background(.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 4))
-                }
-                if project.pdfUploadId != nil {
-                    Label("PDF", systemImage: "doc.fill")
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(.green.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
-                        .foregroundStyle(.white)
-                }
-                if project.pattern?.aiParsed == true {
-                    Label("Parsed", systemImage: "sparkles")
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(.purple.opacity(0.5), in: RoundedRectangle(cornerRadius: 6))
-                        .foregroundStyle(.white)
-                }
-            }
-
-            Text(project.title)
-                .font(.title3.weight(.bold))
-                .foregroundStyle(.white)
-                .lineLimit(2)
-
-            HStack(spacing: 8) {
-                Text(project.craftType.capitalized)
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.75))
-                if let yarn = project.yarns?.first?.yarn {
-                    Text("·")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.5))
-                    Text(yarn.name)
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.75))
-                        .lineLimit(1)
-                }
-            }
-
-            if let tags = project.tags, !tags.isEmpty {
-                ProjectTagChips(tags: tags, limit: 3, style: .onImage)
-            }
-
-            if let progress = projectProgress(project) {
-                ProgressView(value: progress)
-                    .tint(theme.primary)
-                    .background(Color.white.opacity(0.2), in: Capsule())
-            }
-        }
-        .padding(16)
-    }
-
-    private var statusPill: some View {
-        Text(project.status.replacingOccurrences(of: "_", with: " ").capitalized)
-            .font(.caption.weight(.semibold))
-            .padding(.horizontal, 8)
-            .padding(.vertical, 3)
-            .background(projectStatusColor(project.status).opacity(0.85))
-            .foregroundStyle(.white)
-            .clipShape(Capsule())
-    }
-}
-
-// MARK: - Queue Grid Card
-
-private struct QueueGridCard: View {
-    let item: QueueItem
-    @Environment(ThemeManager.self) private var theme
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            coverImage
-            textContent
-        }
-    }
-
-    private var coverImage: some View {
-        Color.clear
-            .aspectRatio(1, contentMode: .fit)
-            .overlay {
-                if let coverUrl = item.pattern?.coverImageUrl, let url = URL(string: coverUrl) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().aspectRatio(contentMode: .fill)
-                        default:
-                            placeholder
-                        }
-                    }
-                } else {
-                    placeholder
-                }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-    }
-
-    private var placeholder: some View {
-        ZStack {
-            Color(.systemGray5)
-            Image(systemName: "book.closed")
-                .font(.system(size: 28))
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var textContent: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack(spacing: 5) {
-                Text(item.pattern?.title ?? "Unknown pattern")
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
-                    .foregroundStyle(.primary)
-                if item.ravelryQueueId != nil {
-                    ProjectRavelryBadge()
-                }
-            }
-            HStack(spacing: 6) {
-                ProjectStatusDot(status: "queued")
-                Text("Queued")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            if let designer = item.pattern?.designerName {
-                Text(designer)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-        }
-    }
-}
-
-// MARK: - Queue List Row
-
-private struct QueueListRow: View {
-    let item: QueueItem
-    @Environment(ThemeManager.self) private var theme
-
-    var body: some View {
-        HStack(spacing: 12) {
-            thumbnail
-            titleAndMeta
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-    }
-
-    private var thumbnail: some View {
-        Color.clear
-            .frame(width: 52, height: 52)
-            .overlay {
-                if let coverUrl = item.pattern?.coverImageUrl, let url = URL(string: coverUrl) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().aspectRatio(contentMode: .fill)
-                        default:
-                            placeholder
-                        }
-                    }
-                } else {
-                    placeholder
-                }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
-    private var placeholder: some View {
-        ZStack {
-            Color(.systemGray5)
-            Image(systemName: "book.closed")
-                .font(.system(size: 16))
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var titleAndMeta: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(item.pattern?.title ?? "Unknown pattern")
-                    .font(.subheadline.weight(.medium))
-                    .lineLimit(1)
-                    .foregroundStyle(.primary)
-                if item.ravelryQueueId != nil {
-                    ProjectRavelryBadge()
-                }
-            }
-            HStack(spacing: 4) {
-                ProjectStatusDot(status: "queued")
-                Text("Queued")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                if let craft = item.pattern?.craftType {
-                    Text("·")
-                        .font(.caption)
-                        .foregroundStyle(.quaternary)
-                    Text(craft.capitalized)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            if let designer = item.pattern?.designerName {
-                Text(designer)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-        }
-    }
-}
-
-// MARK: - Queue Large Card
-
-private struct QueueLargeCard: View {
-    let item: QueueItem
-    @Environment(ThemeManager.self) private var theme
-
-    var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            heroImage
-            gradient
-            cardOverlay
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 240)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-    }
-
-    private var heroImage: some View {
-        Color(.systemGray5)
-            .overlay {
-                if let coverUrl = item.pattern?.coverImageUrl, let url = URL(string: coverUrl) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().aspectRatio(contentMode: .fill)
-                        default:
-                            largePlaceholder
-                        }
-                    }
-                } else {
-                    largePlaceholder
-                }
-            }
-    }
-
-    private var largePlaceholder: some View {
-        ZStack {
-            Color(.systemGray6)
-            Image(systemName: "book.closed")
-                .font(.system(size: 40))
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var gradient: some View {
-        LinearGradient(
-            colors: [.clear, .black.opacity(0.7)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
-
-    private var cardOverlay: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Spacer()
-
-            HStack(spacing: 8) {
-                Text("Queued")
-                    .font(.caption.weight(.semibold))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
-                    .background(projectStatusColor("queued").opacity(0.85))
-                    .foregroundStyle(.white)
-                    .clipShape(Capsule())
-                if item.ravelryQueueId != nil {
-                    Text("R")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.9))
-                        .padding(.horizontal, 5)
-                        .padding(.vertical, 2)
-                        .background(.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 4))
-                }
-            }
-
-            Text(item.pattern?.title ?? "Unknown pattern")
-                .font(.title3.weight(.bold))
-                .foregroundStyle(.white)
-                .lineLimit(2)
-
-            HStack(spacing: 8) {
-                if let craft = item.pattern?.craftType {
-                    Text(craft.capitalized)
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.75))
-                }
-                if let designer = item.pattern?.designerName {
-                    Text("·")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.5))
-                    Text(designer)
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.75))
-                        .lineLimit(1)
-                }
-            }
-        }
-        .padding(16)
     }
 }
 
@@ -1370,6 +746,7 @@ struct PatternPickerSheet: View {
     let onSelect: (String) async -> Void
     var onDiscover: (() -> Void)?
     var onUploadPdf: (() -> Void)?
+    var onBuildPattern: (() -> Void)?
     @Environment(ThemeManager.self) private var theme
     @Environment(\.dismiss) private var dismiss
     @State private var patterns: [Pattern] = []
@@ -1432,6 +809,20 @@ struct PatternPickerSheet: View {
                                     .foregroundStyle(theme.primary)
                                     .clipShape(Capsule())
                             }
+                        }
+                        Button {
+                            dismiss()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                onBuildPattern?()
+                            }
+                        } label: {
+                            Label("Build a pattern", systemImage: "hammer")
+                                .font(.subheadline.weight(.medium))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(theme.primary.opacity(0.15))
+                                .foregroundStyle(theme.primary)
+                                .clipShape(Capsule())
                         }
                         Spacer()
                     }

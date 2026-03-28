@@ -1,20 +1,15 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-type Params = { params: Promise<{ sectionId: string }> }
 
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/v1/counter/[sectionId]/notes
  * Add a note, modification, or measurement to a specific step.
  */
-export async function POST(req: NextRequest, { params }: Params) {
-  const { sectionId } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user, params) => {
+  const sectionId = params!.sectionId
 
   const section = await prisma.project_sections.findFirst({
     where: { id: sectionId, project: { user_id: user.id, deleted_at: null } },
@@ -53,18 +48,14 @@ export async function POST(req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true, data: note })
-}
+})
 
 /**
  * GET /api/v1/counter/[sectionId]/notes?step=4
  * List notes for a section, optionally filtered by step.
  */
-export async function GET(req: NextRequest, { params }: Params) {
-  const { sectionId } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const GET = withAuth(async (req, user, params) => {
+  const sectionId = params!.sectionId
 
   const section = await prisma.project_sections.findFirst({
     where: { id: sectionId, project: { user_id: user.id, deleted_at: null } },
@@ -81,4 +72,4 @@ export async function GET(req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true, data: notes })
-}
+})

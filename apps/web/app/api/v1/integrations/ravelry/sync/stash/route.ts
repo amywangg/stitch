@@ -1,10 +1,11 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { decrypt } from '@/lib/encrypt'
 import { RavelryClient } from '@/lib/ravelry-client'
 
+
+export const dynamic = 'force-dynamic'
 async function fetchAllPages<T>(
   fetchPage: (page: number) => Promise<{ items: T[]; pageCount: number }>,
 ): Promise<T[]> {
@@ -17,11 +18,7 @@ async function fetchAllPages<T>(
   return all
 }
 
-export async function POST(_req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-
+export const POST = withAuth(async (_req, user) => {
   const connection = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
   if (!connection) return NextResponse.json({ error: 'Ravelry not connected' }, { status: 400 })
 
@@ -123,4 +120,4 @@ export async function POST(_req: NextRequest) {
   }
 
   return NextResponse.json({ success: true, data: { ...stats, errors } })
-}
+})

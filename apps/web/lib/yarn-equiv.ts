@@ -5,6 +5,7 @@
  */
 
 import { YARN_WEIGHT_ORDER, isValidYarnWeight, type YarnWeight } from '@/lib/yarn-math'
+import { round } from '@/lib/utils'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -185,11 +186,11 @@ export function scoreEquivalence(source: YarnProfile, candidate: YarnProfile): S
 
   return {
     yarn: candidate,
-    score: Math.round(score * 100) / 100,
+    score: round(score, 2),
     weight_match: weightMatch,
-    fiber_overlap: Math.round(fiber * 100) / 100,
-    yardage_similarity: Math.round(yardage * 100) / 100,
-    grams_similarity: Math.round(grams * 100) / 100,
+    fiber_overlap: round(fiber, 2),
+    yardage_similarity: round(yardage, 2),
+    grams_similarity: round(grams, 2),
   }
 }
 

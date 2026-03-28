@@ -1,19 +1,14 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
 import { requirePro } from '@/lib/pro-gate'
+import { withAuth, parsePagination, paginatedResponse } from '@/lib/route-helpers'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  await getDbUser(clerkId) // validates user exists
-
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, _user) => {
   const postId = req.nextUrl.searchParams.get('postId')
   const activityEventId = req.nextUrl.searchParams.get('activityEventId')
-  const page = parseInt(req.nextUrl.searchParams.get('page') ?? '1')
-  const limit = Math.min(parseInt(req.nextUrl.searchParams.get('limit') ?? '50'), 50)
+  const { page, limit, skip } = parsePagination(req, 50, 50)
 
   if (!postId && !activityEventId) {
     return NextResponse.json({ error: 'postId or activityEventId is required' }, { status: 400 })
@@ -28,7 +23,7 @@ export async function GET(req: NextRequest) {
     prisma.comments.findMany({
       where,
       orderBy: { created_at: 'asc' },
-      skip: (page - 1) * limit,
+      skip,
       take: limit,
       include: {
         user: { select: { id: true, username: true, display_name: true, avatar_url: true } },
@@ -37,23 +32,10 @@ export async function GET(req: NextRequest) {
     prisma.comments.count({ where }),
   ])
 
-  return NextResponse.json({
-    success: true,
-    data: {
-      items: comments,
-      total,
-      page,
-      pageSize: limit,
-      hasMore: total > page * limit,
-    },
-  })
-}
+  return paginatedResponse(comments, total, page, limit)
+})
 
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const proErr = requirePro(user, 'commenting')
   if (proErr) return proErr
 
@@ -108,4 +90,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ success: true, data: comment }, { status: 201 })
-}
+})

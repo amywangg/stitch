@@ -1,9 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, findOwned } from '@/lib/route-helpers'
 import { createClient } from '@supabase/supabase-js'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -16,19 +17,12 @@ const BUCKET = 'patterns'
  * Returns a short-lived signed URL for viewing the PDF.
  * Only the owning user can access their PDFs.
  */
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const GET = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-  const { id } = await params
-
-  const upload = await prisma.pdf_uploads.findFirst({
-    where: { id, user_id: user.id },
-  })
+  const upload = await findOwned<{
+    id: string; file_name: string; file_size: number; status: string; storage_path: string
+  }>(prisma.pdf_uploads, id, user.id, { softDelete: false })
 
   if (!upload) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -55,26 +49,19 @@ export async function GET(
       expiresIn: 3600,
     },
   })
-}
+})
 
 /**
  * DELETE /api/v1/pdf/[id]
  * Delete a stored PDF — removes from Supabase Storage and DB.
  * Also clears references from any projects or queue items.
  */
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const DELETE = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-  const { id } = await params
-
-  const upload = await prisma.pdf_uploads.findFirst({
-    where: { id, user_id: user.id },
-  })
+  const upload = await findOwned<{
+    id: string; storage_path: string
+  }>(prisma.pdf_uploads, id, user.id, { softDelete: false })
 
   if (!upload) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -103,4 +90,4 @@ export async function DELETE(
   ])
 
   return NextResponse.json({ success: true })
-}
+})

@@ -1,21 +1,17 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, parsePagination } from '@/lib/route-helpers'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
-  const page = parseInt(req.nextUrl.searchParams.get('page') ?? '1')
-  const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '20')
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, user) => {
+  const { page, limit, skip } = parsePagination(req)
 
   const [items, total, unreadCount] = await Promise.all([
     prisma.notifications.findMany({
       where: { user_id: user.id },
       orderBy: { created_at: 'desc' },
-      skip: (page - 1) * limit,
+      skip,
       take: limit,
       include: {
         sender: {
@@ -38,4 +34,4 @@ export async function GET(req: NextRequest) {
       hasMore: total > page * limit,
     },
   })
-}
+})

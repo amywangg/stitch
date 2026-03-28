@@ -25,6 +25,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Stitch uses the camera to take photos of your yarn, projects, and swatches.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Stitch accesses your photo library to add images of your projects and yarn.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Stitch uses the microphone for hands-free voice counting while you knit.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Stitch uses speech recognition for hands-free voice commands during counting.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

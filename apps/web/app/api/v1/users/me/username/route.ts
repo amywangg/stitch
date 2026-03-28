@@ -1,9 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { z } from 'zod'
 
+
+export const dynamic = 'force-dynamic'
 const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/
 const COOLDOWN_DAYS = 30
 
@@ -15,11 +16,7 @@ const schema = z.object({
     .regex(USERNAME_REGEX, 'Lowercase letters, numbers, and underscores only'),
 })
 
-export async function PATCH(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const PATCH = withAuth(async (req, user) => {
   const body = await req.json()
 
   const parsed = schema.safeParse(body)
@@ -72,4 +69,4 @@ export async function PATCH(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: updated })
-}
+})

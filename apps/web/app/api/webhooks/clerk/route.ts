@@ -4,6 +4,8 @@ import { Webhook } from 'svix'
 import { prisma } from '@/lib/prisma'
 import { slugify } from '@/lib/utils'
 
+
+export const dynamic = 'force-dynamic'
 type ClerkUserEvent = {
   type: 'user.created' | 'user.updated' | 'user.deleted'
   data: {

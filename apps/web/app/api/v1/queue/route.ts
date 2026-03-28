@@ -1,40 +1,30 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
-import { getRavelryPushClient } from '@/lib/ravelry-push'
 import { emitActivity } from '@/lib/activity'
+import { withAuth, parsePagination, paginatedResponse } from '@/lib/route-helpers'
+import { getRavelryClient } from '@/lib/ravelry-client'
+import { ravelryAddToQueue } from '@/lib/ravelry-push'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
-  const page = parseInt(req.nextUrl.searchParams.get('page') ?? '1')
-  const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '50')
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, user) => {
+  const { page, limit, skip } = parsePagination(req, 50)
 
   const [items, total] = await Promise.all([
     prisma.pattern_queue.findMany({
       where: { user_id: user.id },
       orderBy: { sort_order: 'asc' },
-      skip: (page - 1) * limit,
+      skip,
       take: limit,
       include: { pattern: true, pdf_upload: true },
     }),
     prisma.pattern_queue.count({ where: { user_id: user.id } }),
   ])
 
-  return NextResponse.json({
-    success: true,
-    data: { items, total, page, pageSize: limit, hasMore: total > page * limit },
-  })
-}
+  return paginatedResponse(items, total, page, limit)
+})
 
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const body = await req.json()
   const { pattern_id, notes, pdf_upload_id } = body
 
@@ -64,24 +54,21 @@ export async function POST(req: NextRequest) {
 
   emitActivity({ userId: user.id, type: 'pattern_queued', patternId: pattern_id })
 
-  // Ravelry write-back: only if pattern has a ravelry_id
-  if (pattern.ravelry_id) {
-    const push = await getRavelryPushClient(user.id)
-    if (push) {
-      try {
-        const { queued_project: rq } = await push.client.addToQueue({
-          pattern_id: Number(pattern.ravelry_id),
-          notes: notes ?? undefined,
-        })
+  // Push to Ravelry queue (non-blocking)
+  if (!item.ravelry_queue_id) {
+    getRavelryClient(user.id).then(async (client) => {
+      if (!client) return
+      const conn = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
+      if (!conn) return
+      const ravelryQueueId = await ravelryAddToQueue(client, conn.ravelry_username)
+      if (ravelryQueueId) {
         await prisma.pattern_queue.update({
           where: { id: item.id },
-          data: { ravelry_queue_id: String(rq.id) },
+          data: { ravelry_queue_id: String(ravelryQueueId) },
         })
-      } catch {
-        // Ravelry unavailable — queue item still created in Stitch
       }
-    }
+    }).catch(err => console.error('[ravelry-push] queue add:', err))
   }
 
   return NextResponse.json({ success: true, data: item }, { status: 201 })
-}
+})

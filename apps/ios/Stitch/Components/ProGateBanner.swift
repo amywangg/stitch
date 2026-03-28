@@ -1,11 +1,10 @@
 import SwiftUI
-import RevenueCatUI
 
 /// Shows an upsell overlay for features that require Pro.
-/// Tapping "Upgrade to Pro" presents the RevenueCat paywall sheet.
+/// Tapping "Upgrade" presents the custom Stitch paywall sheet.
 struct ProGateBanner: View {
     let featureName: String
-    @Environment(SubscriptionManager.self) private var subscriptions
+    var requiredTier: String = "Pro"
     @Environment(ThemeManager.self) private var theme
     @State private var showPaywall = false
 
@@ -15,10 +14,10 @@ struct ProGateBanner: View {
                 .font(.largeTitle)
                 .foregroundStyle(theme.primary)
 
-            Text("Stitch Pro")
+            Text("Stitch \(requiredTier)")
                 .font(.title2.bold())
 
-            Text("\(featureName) is a Pro feature. Upgrade to unlock unlimited access.")
+            Text("\(featureName) requires \(requiredTier). Upgrade to unlock.")
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
@@ -27,7 +26,7 @@ struct ProGateBanner: View {
             Button {
                 showPaywall = true
             } label: {
-                Text("Upgrade to Pro")
+                Text("Upgrade to \(requiredTier)")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
@@ -39,13 +38,7 @@ struct ProGateBanner: View {
         }
         .padding()
         .sheet(isPresented: $showPaywall) {
-            PaywallView()
-                .onPurchaseCompleted { _ in
-                    showPaywall = false
-                }
-                .onRestoreCompleted { _ in
-                    showPaywall = false
-                }
+            StitchPaywallView()
         }
     }
 }

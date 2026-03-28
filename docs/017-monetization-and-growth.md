@@ -328,6 +328,155 @@ Scale whichever channel shows the best CPI-to-LTV ratio after 30-60 days.
 
 ---
 
+## 12. Pattern Marketplace
+
+**Status:** API routes and infrastructure implemented. Web pages and iOS views pending.
+
+### Revenue Model
+
+Creators sell their original patterns through Stitch. Payments are processed via **Stripe Connect (Express accounts)** on web. iOS users are linked to the web checkout page via Apple's External Purchase Link entitlement — no IAP needed.
+
+| | Amount |
+|---|---|
+| **Platform fee** | 12% per sale |
+| **Stripe fee** | ~2.9% + $0.30 (standard) |
+| **Creator receives** | ~85% of sale price |
+| **Price range** | $1.00 - $100.00 USD |
+
+For comparison: Ravelry charges 3.5% after the first $30/month in sales (effectively 0% for small sellers). Etsy charges 6.5% transaction + 3% payment processing. Our 12% is higher than Ravelry but competitive with Etsy, and justified by the PDF protection, in-app delivery, and built-in audience.
+
+### How It Works
+
+1. **Creator onboarding** — Creator connects Stripe via Express account (hosted onboarding, ~2 min). Stripe handles identity verification, tax forms, and payout management.
+2. **Listing** — Creator sets `price_cents` and `is_marketplace: true` on their pattern. Must be original work (not Ravelry-sourced, not from a paid PDF), with a cover photo and description.
+3. **Discovery** — Marketplace browse page with search, filter by craft/category/weight/price, sort by newest/popular/price.
+4. **Purchase** — Buyer clicks "Buy for $X.XX" → Stripe Checkout Session → payment split automatically via `application_fee_amount` (12% to platform, 88% to creator's Connect account).
+5. **Fulfillment** — `checkout.session.completed` webhook marks purchase as completed, increments `sales_count`, notifies seller.
+6. **Access** — Buyer can view the full pattern (including row-by-row instructions) and download a watermarked PDF.
+
+### PDF Protection (Critical for Creator Trust)
+
+Creators will not list patterns if they fear piracy. Five technical layers protect their work:
+
+| Layer | What it does |
+|-------|-------------|
+| **Auth + ownership check** | Every PDF request verifies the user owns or has purchased the pattern |
+| **Per-buyer watermarking** | Every PDF page is stamped with the buyer's username, transaction ID, and purchase date. If it leaks, it's traceable |
+| **No raw URLs** | PDF bytes are streamed through our API. No permanent download links, no direct Supabase Storage URLs |
+| **Rate limiting** | Max 20 PDF views per hour per user. Prevents bulk scraping |
+| **Access logging** | Every view is logged with user ID, IP address, user agent, and timestamp. Anomalous patterns trigger alerts |
+
+Additionally: if watermarking fails for any reason, the server **fails closed** — the PDF is not served without a watermark. The original uploaded PDF is never served directly to buyers.
+
+### Legal Framework
+
+Three agreements govern the marketplace:
+
+**Buyer agreement** (accepted at checkout):
+- Personal, non-transferable, non-exclusive license
+- No redistribution, resale, or upload to other platforms
+- Watermark removal is a violation
+- Violation = account termination + legal action
+
+**Creator agreement** (accepted when listing):
+- Confirms original work, no copyright infringement
+- Grants platform distribution rights
+- Acknowledges 12% platform fee + Stripe processing
+- Patterns must be complete (no drafts or placeholders)
+
+**DMCA policy:**
+- Standard notice-and-takedown process
+- Counter-notification supported
+- Three valid takedowns = permanent marketplace ban
+
+### Content Gating
+
+| User relationship | What they see |
+|---|---|
+| **Anyone** | Title, description, cover photo, metadata (gauge, sizes, difficulty, yarn weight), reviews |
+| **Buyer (paid)** | All of the above + row-by-row instructions + watermarked PDF |
+| **Creator (owner)** | Full access + unwatermarked PDF + sales stats |
+
+Free marketplace patterns (price_cents = null) are accessible to all authenticated users, similar to community patterns.
+
+### Tier Interaction
+
+The marketplace is available to **all tiers** (Free, Plus, Pro). There is no subscription requirement to buy or sell patterns. This maximizes the buyer pool and avoids fragmenting the marketplace.
+
+However, AI tools for working with purchased patterns (yarn substitution, size recommendation, etc.) remain Pro-gated. This creates a natural upsell: "You bought a sweater pattern — upgrade to Pro to get AI size recommendations for your measurements."
+
+### iOS Flow
+
+iOS cannot process payments directly (Apple's rules). Instead:
+
+1. User browses marketplace patterns in-app
+2. For paid patterns, taps "Purchase on stitch.app" → opens `SFSafariViewController` to web checkout
+3. After completing payment, returns to app
+4. App re-checks ownership via `GET /marketplace/{id}/ownership`
+5. Pattern instructions and watermarked PDF are now accessible in-app
+
+Apple's **External Purchase Link entitlement** (post-2024) allows linking to web checkout for digital content purchased outside the app. No 30% Apple commission.
+
+### Creator Earnings Dashboard
+
+Creators can view their earnings via `GET /marketplace/earnings`:
+- Total sales count and revenue
+- This month's earnings
+- Number of patterns listed
+- Recent 20 sales with buyer username, pattern title, and amount
+
+Payout management (bank details, schedule, tax forms) is handled entirely through Stripe's hosted Express dashboard — we don't build or maintain payment infrastructure.
+
+### Key Database Models
+
+```
+pattern_purchases {
+  buyer_id, pattern_id, seller_id
+  price_cents, platform_fee_cents, seller_amount_cents
+  stripe_session_id (unique), stripe_payment_intent
+  status: "pending" | "completed" | "refunded"
+  @@unique([buyer_id, pattern_id])
+}
+
+pdf_access_logs {
+  user_id, pdf_upload_id, pattern_id
+  ip_address, user_agent, access_type
+  // "view" | "download" | "watermarked_view"
+}
+
+users += stripe_connect_id, stripe_onboarded, seller_bio
+patterns += price_cents, currency, is_marketplace, sales_count
+```
+
+### API Routes
+
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `/marketplace` | GET | Browse marketplace (search, filter, sort) |
+| `/marketplace/[id]` | GET | Pattern detail (gates instructions behind purchase) |
+| `/marketplace/[id]/checkout` | POST | Create Stripe Checkout Session |
+| `/marketplace/[id]/ownership` | GET | Check if user has access |
+| `/marketplace/[id]/pdf` | GET | Serve watermarked PDF |
+| `/marketplace/purchases` | GET | User's purchased patterns |
+| `/marketplace/earnings` | GET | Creator earnings dashboard |
+| `/marketplace/connect` | POST | Start Stripe Connect onboarding |
+| `/marketplace/connect/status` | GET | Check onboarding completion |
+| `/marketplace/connect/dashboard` | GET | Stripe Express dashboard link |
+| `/marketplace/agreements` | GET | Legal agreement texts |
+| `/webhooks/stripe` | POST | Purchase fulfillment + refunds |
+
+### Growth Implications
+
+The marketplace creates a **two-sided network effect**:
+- More creators → more patterns → more buyers → more revenue for creators → more creators
+- Each creator promotes Stitch to their existing audience (Ravelry, Instagram, newsletter)
+- Pattern sales give creators a financial reason to prefer Stitch over Ravelry (competitive commission rate)
+- Buyers who purchase patterns are deeply invested users with high retention
+
+This mirrors Ravelry's original growth strategy — the pattern marketplace was what made Ravelry indispensable, not the project tracking. The key difference: Ravelry's marketplace was web-only. Stitch offers mobile-first browsing with in-app pattern access, which is a better experience for the 18-34 growth segment.
+
+---
+
 ## Sources
 
 **Monetization:**

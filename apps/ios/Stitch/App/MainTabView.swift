@@ -10,6 +10,7 @@ enum AppTab: String {
 
 struct MainTabView: View {
     @Environment(ThemeManager.self) private var theme
+    @Environment(NotificationService.self) private var notifications
     @State private var selectedTab: AppTab = .feed
     @State private var patternsSubTab: PatternsTab = .myPatterns
 
@@ -20,6 +21,7 @@ struct MainTabView: View {
                     Label("Feed", systemImage: "bubble.left.and.text.bubble.right")
                 }
                 .tag(AppTab.feed)
+                .badge(notifications.unreadCount)
 
             ProjectsView(selectedTab: $selectedTab, patternsSubTab: $patternsSubTab)
                 .tabItem {

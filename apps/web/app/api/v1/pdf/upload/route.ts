@@ -1,10 +1,11 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { FREE_LIMITS } from '@/lib/pro-gate'
 import { createClient } from '@supabase/supabase-js'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -20,29 +21,8 @@ const MAX_SIZE = 20 * 1024 * 1024 // 20 MB
  * The PDF can later be attached to projects or queue items,
  * and optionally AI-parsed into a structured pattern.
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-
-  // Enforce stored PDFs limit for free users
-  if (!user.is_pro) {
-    const storedCount = await prisma.pdf_uploads.count({
-      where: { user_id: user.id },
-    })
-    if (storedCount >= FREE_LIMITS.storedPdfs) {
-      return NextResponse.json(
-        {
-          error: 'Stored PDF limit reached',
-          code: 'FREE_LIMIT_REACHED',
-          message: `Free accounts can store up to ${FREE_LIMITS.storedPdfs} PDFs. Upgrade to Pro for unlimited storage.`,
-          upgrade_url: '/settings/billing',
-        },
-        { status: 403 }
-      )
-    }
-  }
+export const POST = withAuth(async (req, user) => {
+  // PDF storage is unlimited for all tiers
 
   const formData = await req.formData()
   const patternId = formData.get('pattern_id') as string | null
@@ -96,4 +76,4 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: pdfUpload })
-}
+})

@@ -1,12 +1,13 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { getRavelryPatternDetail } from '@/lib/ravelry-search'
 import { fetchRavelryDownload } from '@/lib/ravelry-download'
 import { slugify } from '@/lib/utils'
 import { createClient } from '@supabase/supabase-js'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -22,11 +23,7 @@ const BUCKET = 'patterns'
  *
  * Body: { ravelry_id: number }
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-
+export const POST = withAuth(async (req, user) => {
   const body = await req.json()
   const { ravelry_id } = body as { ravelry_id: number }
 
@@ -167,7 +164,7 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: pattern }, { status: 201 })
-}
+})
 
 /**
  * DELETE /api/v1/ravelry/patterns/save
@@ -175,11 +172,7 @@ export async function POST(req: NextRequest) {
  *
  * Body: { ravelry_id: number }
  */
-export async function DELETE(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-
+export const DELETE = withAuth(async (req, user) => {
   const body = await req.json()
   const { ravelry_id } = body as { ravelry_id: number }
 
@@ -194,4 +187,4 @@ export async function DELETE(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true })
-}
+})

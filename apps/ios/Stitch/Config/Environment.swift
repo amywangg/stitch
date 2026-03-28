@@ -8,7 +8,7 @@ enum AppConfig {
         #if DEBUG
         return "http://192.168.2.46:3000/api/v1"
         #else
-        return "https://your-production-domain.com/api/v1"
+        return "https://stitch-marker.com/api/v1"
         #endif
     }
 
@@ -18,7 +18,7 @@ enum AppConfig {
         #if DEBUG
         return "http://127.0.0.1:54321"
         #else
-        return "https://your-project-ref.supabase.co"
+        return "https://stitch-marker.com/supabase"  // TODO: Update with hosted Supabase URL (e.g. https://xxxxx.supabase.co)
         #endif
     }
 
@@ -26,7 +26,7 @@ enum AppConfig {
         #if DEBUG
         return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"
         #else
-        return "your-production-anon-key"
+        return "UPDATE_WITH_PROD_ANON_KEY"  // Update with your hosted Supabase anon key
         #endif
     }
 

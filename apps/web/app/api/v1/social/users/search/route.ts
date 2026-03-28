@@ -1,13 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, user) => {
   const q = req.nextUrl.searchParams.get('q')?.trim()
   const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '20')
 
@@ -45,4 +42,4 @@ export async function GET(req: NextRequest) {
       isFollowing: u.followers.length > 0,
     })),
   })
-}
+})

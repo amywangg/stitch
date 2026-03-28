@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+
+export const dynamic = 'force-dynamic'
 // GET /api/v1/glossary — list/search glossary terms (no auth required)
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl

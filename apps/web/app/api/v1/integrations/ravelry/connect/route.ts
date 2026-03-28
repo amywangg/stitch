@@ -1,5 +1,5 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import { withAuth } from '@/lib/route-helpers'
 import { encrypt } from '@/lib/encrypt'
 import crypto from 'crypto'
 
@@ -10,11 +10,8 @@ export const dynamic = 'force-dynamic'
  * Obtains a request token from Ravelry. The request token secret is encrypted
  * and embedded in the callback URL so it survives across browser contexts.
  */
-export async function GET(req: NextRequest) {
+export const GET = withAuth(async (req, _user) => {
   try {
-    const { userId: clerkId } = await auth()
-    if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
     const clientKey = process.env.RAVELRY_CLIENT_KEY
     const clientSecret = process.env.RAVELRY_CLIENT_SECRET
     const callbackBase = process.env.RAVELRY_CALLBACK_URL
@@ -128,7 +125,7 @@ export async function GET(req: NextRequest) {
     console.error('Ravelry connect error:', err)
     return NextResponse.json({ error: String(err) }, { status: 500 })
   }
-}
+})
 
 /** RFC 3986 percent-encoding */
 function percentEncode(str: string): string {

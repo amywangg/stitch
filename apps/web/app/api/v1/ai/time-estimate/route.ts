@@ -1,8 +1,7 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 import { getOpenAI } from '@/lib/openai'
 import {
@@ -15,6 +14,7 @@ import {
 } from '@/lib/time-math'
 import { buildTimeEstimatePrompt, type TimeEstimateAIResponse } from '@/lib/prompts/time-estimate'
 
+export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
 // ─── Input validation ────────────────────────────────────────────────────────
@@ -35,13 +35,7 @@ const requestSchema = z.object({
  * Speed is derived from the user's crafting_sessions (row tracking + timer data).
  * Falls back to a default 15 rows/hour if no session data exists.
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) {
-    return NextResponse.json({ error: 'Unauthorized', code: 'UNAUTHORIZED' }, { status: 401 })
-  }
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const proError = requirePro(user, 'time estimation')
   if (proError) return proError
 
@@ -227,4 +221,4 @@ export async function POST(req: NextRequest) {
       milestone_note: aiResult.milestone_note,
     },
   })
-}
+})

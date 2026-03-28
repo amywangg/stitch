@@ -39,6 +39,23 @@ final class PatternDetailViewModel {
         }
     }
 
+    func togglePublic(_ isPublic: Bool) async {
+        guard let pattern else { return }
+        let previous = pattern.isPublic
+        self.pattern?.isPublic = isPublic
+        do {
+            struct Body: Encodable { let is_public: Bool }
+            struct Updated: Decodable { let id: String; let isPublic: Bool }
+            let _: APIResponse<Updated> = try await APIClient.shared.patch(
+                "/patterns/\(pattern.id)",
+                body: Body(is_public: isPublic)
+            )
+        } catch {
+            self.pattern?.isPublic = previous
+            self.error = error.localizedDescription
+        }
+    }
+
     var isAddingToQueue = false
     var didAddToQueue = false
 
@@ -68,6 +85,7 @@ final class PatternDetailViewModel {
 
 struct PatternDetailView: View {
     let patternId: String
+    var onDelete: (() -> Void)?
     @Environment(ThemeManager.self) private var theme
     @Environment(AppRouter.self) private var router: AppRouter
     @State private var viewModel = PatternDetailViewModel()
@@ -75,7 +93,26 @@ struct PatternDetailView: View {
     @State private var showPdfViewer = false
     @State private var showPdfUpload = false
     @State private var showStartFlow = false
+    @State private var showShareAgreement = false
+    @State private var showSellSheet = false
+    @State private var showGeneratedPdf = false
+    @State private var generatedPdfData: Data?
+    @State private var isGeneratingPdf = false
+    @State private var showWriteReview = false
+    @State private var reviewsViewModel: PatternReviewsViewModel?
+    @State private var fullScreenImageUrl: URL?
     @Environment(\.dismiss) private var dismiss
+
+    /// Type 1: built in-app (has sections with rows)
+    private var isBuiltPattern: Bool {
+        guard let sections = viewModel.pattern?.sections else { return false }
+        return sections.contains { $0.rows != nil && !($0.rows?.isEmpty ?? true) }
+    }
+
+    /// Type 2: uploaded PDF
+    private var hasUploadedPdf: Bool {
+        viewModel.pattern?.firstPdfUploadId != nil
+    }
 
     var body: some View {
         Group {
@@ -87,7 +124,9 @@ struct PatternDetailView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         // Photo carousel
                         if !pattern.allPhotoUrls.isEmpty {
-                            PatternPhotoCarousel(urls: pattern.allPhotoUrls)
+                            PatternPhotoCarousel(urls: pattern.allPhotoUrls, onTapImage: { url in
+                                fullScreenImageUrl = url
+                            })
                         }
 
                         VStack(alignment: .leading, spacing: 16) {
@@ -108,7 +147,7 @@ struct PatternDetailView: View {
 
                             // Metadata chips
                             FlowLayout(spacing: 8) {
-                                if let craft = pattern.craftType.nilIfEmpty {
+                                if let craft = pattern.craftType, !craft.isEmpty {
                                     MetadataChip(label: craft.capitalized, icon: "hand.draw")
                                 }
                                 if let difficulty = pattern.difficulty {
@@ -120,8 +159,11 @@ struct PatternDetailView: View {
                                 if let weight = pattern.yarnWeight {
                                     MetadataChip(label: weight, icon: "scalemass")
                                 }
-                                if pattern.aiParsed {
+                                if pattern.aiParsed == true {
                                     MetadataChip(label: "AI parsed", icon: "sparkles")
+                                }
+                                if pattern.ravelryId == nil && (pattern.sourceFree == true || isBuiltPattern) {
+                                    StitchOriginalChip()
                                 }
                             }
 
@@ -168,6 +210,14 @@ struct PatternDetailView: View {
                                 sectionsAccordion(sections)
                             }
 
+                            // Reviews
+                            if let reviewsVM = reviewsViewModel {
+                                PatternReviewsSection(
+                                    viewModel: reviewsVM,
+                                    showWriteReview: $showWriteReview
+                                )
+                            }
+
                             // Action buttons
                             actionButtons(pattern)
                         }
@@ -183,25 +233,47 @@ struct PatternDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
+                    NavigationLink(value: Route.patternBuilder(id: patternId)) {
+                        Label("Edit structure", systemImage: "hammer")
+                    }
                     if let sourceUrl = viewModel.pattern?.sourceUrl, let url = URL(string: sourceUrl) {
                         ShareLink(item: url) {
                             Label("Share", systemImage: "square.and.arrow.up")
                         }
                     }
-                    if viewModel.pattern?.firstPdfUploadId != nil {
+                    if isBuiltPattern {
+                        Button {
+                            Task { await generateAndShowPdf() }
+                        } label: {
+                            Label("View PDF", systemImage: "doc.text")
+                        }
+                    } else if hasUploadedPdf {
                         Button {
                             showPdfViewer = true
                         } label: {
                             Label("View PDF", systemImage: "doc.text")
                         }
                     }
-                    Button {
-                        showPdfUpload = true
-                    } label: {
-                        Label(
-                            viewModel.pattern?.firstPdfUploadId != nil ? "Replace PDF" : "Attach PDF",
-                            systemImage: "doc.badge.plus"
-                        )
+                    if !isBuiltPattern {
+                        Button {
+                            showPdfUpload = true
+                        } label: {
+                            Label(
+                                hasUploadedPdf ? "Replace PDF" : "Upload PDF",
+                                systemImage: "doc.badge.plus"
+                            )
+                        }
+                    }
+                    // Sell pattern — only for original content (not Ravelry, not from paid source)
+                    if viewModel.pattern?.sourceFree == true && viewModel.pattern?.ravelryId == nil && (isBuiltPattern || hasUploadedPdf) {
+                        Button {
+                            showSellSheet = true
+                        } label: {
+                            Label(
+                                viewModel.pattern?.isMarketplace == true ? "Manage listing" : "Sell this pattern",
+                                systemImage: "dollarsign.circle"
+                            )
+                        }
                     }
                     Button(role: .destructive) {
                         showDeleteConfirmation = true
@@ -221,25 +293,52 @@ struct PatternDetailView: View {
         } message: {
             Text("This pattern will be removed from your library.")
         }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
+        .confirmationDialog(
+            "Share with community",
+            isPresented: $showShareAgreement,
+            titleVisibility: .visible
+        ) {
+            Button("Share pattern") {
+                Task { await viewModel.togglePublic(true) }
+            }
+            Button("Cancel", role: .cancel) {}
         } message: {
-            Text(viewModel.error ?? "")
+            Text("By sharing, you confirm this is your original work or that you have permission to share it. You are responsible for ensuring your pattern does not infringe on any copyrights or intellectual property rights.")
         }
-        .task { await viewModel.load(patternId: patternId) }
+        .sheet(isPresented: $showWriteReview) {
+            if let reviewsVM = reviewsViewModel {
+                WriteReviewSheet(viewModel: reviewsVM) {
+                    Task { await viewModel.load(patternId: patternId) }
+                }
+            }
+        }
+        .sheet(isPresented: $showSellSheet) {
+            if let pattern = viewModel.pattern {
+                SellPatternSheet(pattern: pattern) {
+                    Task { await viewModel.load(patternId: patternId) }
+                }
+            }
+        }
+        .errorAlert(error: $viewModel.error)
+        .task {
+            await viewModel.load(patternId: patternId)
+            let reviewsVM = PatternReviewsViewModel(patternId: patternId)
+            reviewsViewModel = reviewsVM
+            await reviewsVM.load()
+        }
         .onChange(of: viewModel.didDelete) { _, deleted in
-            if deleted { dismiss() }
+            if deleted {
+                onDelete?()
+                dismiss()
+            }
         }
-        .sheet(isPresented: $showPdfViewer) {
+        .fullScreenCover(isPresented: $showPdfViewer) {
             if let pattern = viewModel.pattern, let pdfId = pattern.firstPdfUploadId {
                 NavigationStack {
-                    PDFViewerView(pdfUploadId: pdfId, fileName: pattern.title)
+                    PDFMarkupView(pdfUploadId: pdfId, fileName: pattern.title)
                         .toolbar {
                             ToolbarItem(placement: .cancellationAction) {
-                                Button("Done") { showPdfViewer = false }
+                                Button("Close") { showPdfViewer = false }
                             }
                         }
                 }
@@ -257,14 +356,76 @@ struct PatternDetailView: View {
                 }
             }
         }
+        .sheet(isPresented: $showGeneratedPdf) {
+            if let data = generatedPdfData {
+                NavigationStack {
+                    PDFDataViewerView(pdfData: data, fileName: viewModel.pattern?.title ?? "Pattern")
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Done") { showGeneratedPdf = false }
+                            }
+                        }
+                }
+            }
+        }
+        .fullScreenCover(isPresented: Binding(
+            get: { fullScreenImageUrl != nil },
+            set: { if !$0 { fullScreenImageUrl = nil } }
+        )) {
+            if let url = fullScreenImageUrl {
+                FullScreenImageViewer(url: url)
+            }
+        }
+    }
+
+    // MARK: - Generate PDF
+
+    private func generateAndShowPdf() async {
+        guard let patternId = viewModel.pattern?.id else { return }
+        isGeneratingPdf = true
+        defer { isGeneratingPdf = false }
+        do {
+            let data = try await APIClient.shared.rawPost(
+                "/pdf/generate",
+                body: ["pattern_id": patternId]
+            )
+            generatedPdfData = data
+            showGeneratedPdf = true
+        } catch {
+            viewModel.error = error.localizedDescription
+        }
     }
 
     // MARK: - PDF Status Callout
 
     @ViewBuilder
     private func pdfStatusCallout(_ pattern: Pattern) -> some View {
-        if pattern.firstPdfUploadId != nil {
-            // PDF attached — compact success state
+        if isBuiltPattern {
+            // Type 1: built in-app — PDF is auto-generated
+            HStack(spacing: 8) {
+                Image(systemName: "doc.text.fill")
+                    .foregroundStyle(theme.primary)
+                    .font(.subheadline)
+                Text("Pattern PDF available")
+                    .font(.subheadline.weight(.medium))
+                Spacer()
+                Button {
+                    Task { await generateAndShowPdf() }
+                } label: {
+                    if isGeneratingPdf {
+                        ProgressView().controlSize(.small)
+                    } else {
+                        Text("View")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(theme.primary)
+                    }
+                }
+                .disabled(isGeneratingPdf)
+            }
+            .padding(12)
+            .background(theme.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+        } else if hasUploadedPdf {
+            // Type 2: uploaded PDF
             HStack(spacing: 8) {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)
@@ -289,8 +450,68 @@ struct PatternDetailView: View {
             }
             .padding(12)
             .background(Color.green.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+        } else if pattern.ravelryId != nil {
+            // Ravelry pattern with no local PDF — prompt to upload + link to Ravelry
+            VStack(spacing: 10) {
+                // Upload PDF prompt
+                Button {
+                    showPdfUpload = true
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "arrow.down.doc.fill")
+                            .font(.title3)
+                            .foregroundStyle(theme.primary)
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Add pattern PDF")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.primary)
+                            Text("Download from Ravelry, then upload here for row tracking")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Spacer(minLength: 0)
+
+                        Image(systemName: "plus.circle.fill")
+                            .font(.body)
+                            .foregroundStyle(theme.primary)
+                    }
+                    .padding(14)
+                    .background(theme.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .strokeBorder(theme.primary.opacity(0.2), lineWidth: 1)
+                    )
+                }
+                .buttonStyle(.plain)
+
+                // View on Ravelry link
+                let teal = Color(hex: "#4ECDC4")
+                if let urlString = pattern.sourceUrl ?? pattern.ravelryId.map({ "https://www.ravelry.com/patterns/library/\($0)" }),
+                   let url = URL(string: urlString) {
+                    Link(destination: url) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "link")
+                                .font(.caption)
+                                .foregroundStyle(teal)
+                            Text("View on Ravelry")
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(teal)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption2)
+                                .foregroundStyle(teal)
+                        }
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(teal.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
         } else {
-            // No PDF — compact but clear CTA
+            // No PDF and no built sections — show upload CTA
             Button {
                 showPdfUpload = true
             } label: {
@@ -300,10 +521,10 @@ struct PatternDetailView: View {
                         .foregroundStyle(theme.primary)
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Attach pattern PDF")
+                        Text("Upload pattern PDF")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(.primary)
-                        Text("Unlock row-by-row tracking and AI parsing")
+                        Text("Add your PDF and fill in pattern details")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -552,8 +773,60 @@ struct PatternDetailView: View {
                 .buttonStyle(.plain)
             }
 
-            // View PDF button
-            if pattern.firstPdfUploadId != nil {
+            // Share with community — only for Stitch-built patterns (no Ravelry link, no PDF upload)
+            if pattern.sourceFree == true && pattern.ravelryId == nil {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Share with community")
+                            .font(.subheadline.weight(.medium))
+                        Text("Let other knitters discover this pattern")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Toggle("", isOn: Binding(
+                        get: { pattern.isPublic ?? false },
+                        set: { newValue in
+                            if newValue {
+                                showShareAgreement = true
+                            } else {
+                                Task { await viewModel.togglePublic(false) }
+                            }
+                        }
+                    ))
+                    .labelsHidden()
+                    .tint(theme.primary)
+                }
+                .padding(12)
+                .background(Color(.secondarySystemGroupedBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+
+            // PDF buttons
+            if isBuiltPattern {
+                // Type 1: auto-generated PDF
+                Button {
+                    Task { await generateAndShowPdf() }
+                } label: {
+                    HStack {
+                        if isGeneratingPdf {
+                            ProgressView().controlSize(.small)
+                        } else {
+                            Image(systemName: "doc.text")
+                        }
+                        Text("View PDF")
+                            .fontWeight(.medium)
+                    }
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+                .disabled(isGeneratingPdf)
+                .buttonStyle(.plain)
+            } else if hasUploadedPdf {
+                // Type 2: uploaded PDF
                 Button {
                     showPdfViewer = true
                 } label: {
@@ -589,6 +862,21 @@ private struct MetadataChip: View {
     }
 }
 
+private struct StitchOriginalChip: View {
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "seal.fill")
+                .font(.caption2)
+            Text("Stitch")
+                .font(.caption.weight(.semibold))
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color(hex: "#FF6B6B"), in: Capsule())
+    }
+}
+
 // FlowLayout is defined in ProfileView.swift (shared)
 
 private extension String {
@@ -601,6 +889,7 @@ private extension String {
 
 private struct PatternPhotoCarousel: View {
     let urls: [String]
+    var onTapImage: ((URL) -> Void)?
     @State private var currentIndex = 0
 
     var body: some View {
@@ -616,6 +905,10 @@ private struct PatternPhotoCarousel: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 340)
                         .clipped()
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            onTapImage?(url)
+                        }
                         .tag(index)
                     }
                 }

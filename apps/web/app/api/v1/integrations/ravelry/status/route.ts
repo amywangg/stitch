@@ -1,15 +1,12 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { decrypt } from '@/lib/encrypt'
 import { RavelryClient, RavelryAuthError } from '@/lib/ravelry-client'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
 
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, user) => {
   const connection = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
 
   // Optional: validate token health when ?validate=true is passed
@@ -26,13 +23,15 @@ export async function GET(req: NextRequest) {
       await client.getProfile()
       tokenValid = true
     } catch (err) {
-      tokenValid = false
-      // Mark connection as having auth issues
+      // Only mark as invalid for actual auth errors
       if (err instanceof RavelryAuthError) {
-        await prisma.ravelry_connections.update({
-          where: { user_id: user.id },
-          data: { import_error: 'Ravelry session expired. Please reconnect.' },
-        })
+        tokenValid = false
+        console.error('[ravelry-status] Auth error:', (err as Error).message)
+      } else {
+        // Network error, timeout, etc. — don't mark tokens as invalid
+        // Return null so the UI doesn't show "expired"
+        tokenValid = null
+        console.warn('[ravelry-status] Non-auth validation error:', (err as Error).message)
       }
     }
   }
@@ -50,4 +49,4 @@ export async function GET(req: NextRequest) {
       ...(tokenValid !== null ? { token_valid: tokenValid } : {}),
     },
   })
-}
+})

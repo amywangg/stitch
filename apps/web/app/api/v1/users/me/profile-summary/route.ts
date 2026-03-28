@@ -1,14 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-export async function GET() {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
-
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (_req, user) => {
   // Parallel queries for all profile data
   const [
     counts,
@@ -55,6 +51,7 @@ export async function GET() {
         status: true,
         craft_type: true,
         photos: { orderBy: { sort_order: 'asc' }, take: 1, select: { url: true } },
+        pattern: { select: { cover_image_url: true } },
         sections: {
           select: { current_row: true, target_rows: true },
           orderBy: { sort_order: 'asc' },
@@ -199,6 +196,29 @@ export async function GET() {
   const memberSince = user.created_at
   const activeProjects = recentProjects.filter((p) => p.status === 'active').length
 
+  // If user has no avatar but is connected to Ravelry, fetch their Ravelry photo
+  let ravelryAvatarUrl: string | null = null
+  if (!user.avatar_url && ravelryConnection) {
+    try {
+      const { getRavelryClient } = await import('@/lib/ravelry-client')
+      const client = await getRavelryClient(user.id)
+      if (client) {
+        const profile = await client.getProfile()
+        const photoUrl = profile?.user?.small_photo_url
+        if (photoUrl) {
+          ravelryAvatarUrl = photoUrl.startsWith('http') ? photoUrl : `https://images4.ravelry.com${photoUrl}`
+          // Backfill so we don't fetch next time
+          await prisma.users.update({
+            where: { id: user.id },
+            data: { avatar_url: ravelryAvatarUrl, avatar_source: 'ravelry' },
+          })
+        }
+      }
+    } catch (err) {
+      console.error('[profile-summary] Ravelry avatar backfill failed:', err instanceof Error ? err.message : err)
+    }
+  }
+
   return NextResponse.json({
     success: true,
     data: {
@@ -206,7 +226,7 @@ export async function GET() {
         id: user.id,
         username: user.username,
         displayName: user.display_name,
-        avatarUrl: user.avatar_url,
+        avatarUrl: user.avatar_url ?? ravelryAvatarUrl,
         bio: user.bio,
         location: user.location,
         website: user.website,
@@ -241,4 +261,4 @@ export async function GET() {
       subscription: counts.subscription,
     },
   })
-}
+})

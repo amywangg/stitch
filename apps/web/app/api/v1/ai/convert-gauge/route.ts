@@ -1,9 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
-import { getDbUser } from '@/lib/auth'
+import { NextResponse } from 'next/server'
+import { withAuth } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 import { convertPatternGauge } from '@/lib/agent'
 
+
+export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 /**
@@ -18,11 +19,7 @@ export const maxDuration = 60
  *   new_rows_per_10cm: number,
  * }
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const proError = requirePro(user, 'AI gauge conversion')
   if (proError) return proError
 
@@ -61,4 +58,4 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     )
   }
-}
+})

@@ -26,8 +26,15 @@ final class PatternDiscoverViewModel {
     var photosOnly: Bool = false
     var hideOwned: Bool = false
 
+    // Curated browse sections
+    var popularPatterns: [DiscoverPattern] = []
+    var topRatedPatterns: [DiscoverPattern] = []
+    var newestPatterns: [DiscoverPattern] = []
+    var isBrowseLoading = false
+
     private var searchTask: Task<Void, Never>?
     private var didLoadSavedIds = false
+    private var didLoadBrowse = false
 
     func loadSavedIds() async {
         guard !didLoadSavedIds else { return }
@@ -170,6 +177,32 @@ final class PatternDiscoverViewModel {
         }
     }
 
+    func loadBrowseSections() async {
+        guard !didLoadBrowse else { return }
+        didLoadBrowse = true
+        isBrowseLoading = true
+        defer { isBrowseLoading = false }
+
+        async let popular: APIResponse<PatternSearchResponse> = APIClient.shared.get(
+            "/ravelry/search?sort=popularity&photo=yes&page_size=10&page=1"
+        )
+        async let topRated: APIResponse<PatternSearchResponse> = APIClient.shared.get(
+            "/ravelry/search?sort=rating&photo=yes&page_size=10&page=1"
+        )
+        async let newest: APIResponse<PatternSearchResponse> = APIClient.shared.get(
+            "/ravelry/search?sort=date&photo=yes&page_size=10&page=1"
+        )
+
+        do {
+            let (popRes, ratedRes, newRes) = try await (popular, topRated, newest)
+            popularPatterns = popRes.data.patterns
+            topRatedPatterns = ratedRes.data.patterns
+            newestPatterns = newRes.data.patterns
+        } catch {
+            // Non-critical — browse sections just won't show
+        }
+    }
+
     func selectCategory(_ cat: String?) {
         category = (category == cat) ? nil : cat
         search()
@@ -267,7 +300,7 @@ struct PatternDiscoverView: View {
                 } else if viewModel.results.isEmpty && !viewModel.query.isEmpty {
                     ContentUnavailableView.search(text: viewModel.query)
                 } else if viewModel.results.isEmpty {
-                    trendingPrompt
+                    curatedBrowseSections
                 } else {
                     resultsList
                 }
@@ -275,6 +308,7 @@ struct PatternDiscoverView: View {
             .padding(.bottom, 32)
         }
         .task { await viewModel.loadSavedIds() }
+        .task { await viewModel.loadBrowseSections() }
         .onChange(of: viewModel.query) { _, newValue in
             if newValue.isEmpty && viewModel.category == nil {
                 viewModel.results = []
@@ -284,14 +318,7 @@ struct PatternDiscoverView: View {
         .sheet(isPresented: $showFilters) {
             PatternFilterSheet(viewModel: viewModel)
         }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
-        } message: {
-            Text(viewModel.error ?? "")
-        }
+        .errorAlert(error: $viewModel.error)
     }
 
     // MARK: - Search Bar
@@ -302,7 +329,7 @@ struct PatternDiscoverView: View {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.secondary)
                     .font(.subheadline)
-                TextField("Search Ravelry patterns", text: $viewModel.query)
+                TextField("Search patterns", text: $viewModel.query)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .focused($isSearchFocused)
@@ -512,24 +539,104 @@ struct PatternDiscoverView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Trending Prompt
+    // MARK: - Curated Browse Sections
 
-    private var trendingPrompt: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "sparkle.magnifyingglass")
-                .font(.system(size: 40))
-                .foregroundStyle(theme.primary.opacity(0.4))
-                .padding(.top, 40)
-
-            Text("Search or pick a category")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            Text("Browse thousands of patterns from Ravelry")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+    private var curatedBrowseSections: some View {
+        Group {
+            if viewModel.isBrowseLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 40)
+            } else {
+                VStack(alignment: .leading, spacing: 24) {
+                    if !viewModel.popularPatterns.isEmpty {
+                        browseCarousel(title: "Most popular", patterns: viewModel.popularPatterns)
+                    }
+                    if !viewModel.topRatedPatterns.isEmpty {
+                        browseCarousel(title: "Top rated", patterns: viewModel.topRatedPatterns)
+                    }
+                    if !viewModel.newestPatterns.isEmpty {
+                        browseCarousel(title: "Recently added", patterns: viewModel.newestPatterns)
+                    }
+                }
+            }
         }
-        .frame(maxWidth: .infinity)
+    }
+
+    private func browseCarousel(title: String, patterns: [DiscoverPattern]) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title)
+                .font(.headline)
+                .padding(.horizontal)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(patterns) { pattern in
+                        NavigationLink(value: Route.ravelryPatternDetail(
+                            ravelryId: pattern.ravelryId,
+                            name: pattern.name,
+                            photoUrl: pattern.photoUrl
+                        )) {
+                            browsePatternCard(pattern)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+
+    private func browsePatternCard(_ pattern: DiscoverPattern) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if let photoUrl = pattern.photoUrl, let url = URL(string: photoUrl) {
+                AsyncImage(url: url) { image in
+                    image.resizable().scaledToFill()
+                } placeholder: {
+                    Color(.systemGray5)
+                }
+                .frame(width: 150, height: 200)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            } else {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.systemGray5))
+                    .frame(width: 150, height: 200)
+                    .overlay {
+                        Image(systemName: "book.closed")
+                            .font(.title2)
+                            .foregroundStyle(.tertiary)
+                    }
+            }
+
+            Text(pattern.name)
+                .font(.caption.weight(.medium))
+                .lineLimit(1)
+                .frame(width: 150, alignment: .leading)
+
+            if let designer = pattern.designer {
+                Text(designer)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .frame(width: 150, alignment: .leading)
+            }
+
+            HStack(spacing: 4) {
+                if let rating = pattern.rating, rating > 0 {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 9))
+                        .foregroundStyle(theme.primary)
+                    Text(String(format: "%.1f", rating))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                if pattern.free {
+                    Text("Free")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.green)
+                }
+            }
+        }
     }
 
     // MARK: - Results
@@ -583,241 +690,3 @@ struct PatternDiscoverView: View {
     }
 }
 
-// MARK: - Filter Sheet
-
-private struct PatternFilterSheet: View {
-    @Environment(ThemeManager.self) private var theme
-    @Bindable var viewModel: PatternDiscoverViewModel
-    @Environment(\.dismiss) private var dismiss
-    @State private var designerText = ""
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                // Yarn weight
-                Section("Yarn weight") {
-                    Picker("Weight", selection: Binding(
-                        get: { viewModel.weight ?? "" },
-                        set: { viewModel.weight = $0.isEmpty ? nil : $0 }
-                    )) {
-                        Text("Any").tag("")
-                        ForEach(PatternDiscoverViewModel.yarnWeights, id: \.value) { w in
-                            Text(w.label).tag(w.value)
-                        }
-                    }
-                    .pickerStyle(.navigationLink)
-                }
-
-                // Fit / Size
-                Section("Fit / Size") {
-                    Picker("Fit", selection: Binding(
-                        get: { viewModel.fit ?? "" },
-                        set: { viewModel.fit = $0.isEmpty ? nil : $0 }
-                    )) {
-                        Text("Any").tag("")
-                        ForEach(PatternDiscoverViewModel.fitOptions, id: \.value) { f in
-                            Text(f.label).tag(f.value)
-                        }
-                    }
-                    .pickerStyle(.navigationLink)
-                }
-
-                // Difficulty
-                Section("Difficulty") {
-                    Picker("Skill level", selection: Binding(
-                        get: { viewModel.difficulty ?? "" },
-                        set: { viewModel.difficulty = $0.isEmpty ? nil : $0 }
-                    )) {
-                        Text("Any").tag("")
-                        ForEach(PatternDiscoverViewModel.difficultyOptions, id: \.value) { d in
-                            Text(d.label).tag(d.value)
-                        }
-                    }
-                    .pickerStyle(.navigationLink)
-                }
-
-                // Designer
-                Section("Designer") {
-                    HStack {
-                        TextField("Designer name", text: $designerText)
-                            .textInputAutocapitalization(.words)
-                            .onSubmit {
-                                viewModel.designer = designerText.trimmingCharacters(in: .whitespaces).isEmpty
-                                    ? nil
-                                    : designerText.trimmingCharacters(in: .whitespaces)
-                            }
-                        if !designerText.isEmpty {
-                            Button {
-                                designerText = ""
-                                viewModel.designer = nil
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundStyle(.secondary)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-
-                // Other options
-                Section {
-                    Toggle("With photos only", isOn: $viewModel.photosOnly)
-                    Toggle("Hide patterns in library", isOn: $viewModel.hideOwned)
-                }
-
-                // Clear all
-                if viewModel.activeFilterCount > 0 {
-                    Section {
-                        Button("Clear all filters", role: .destructive) {
-                            designerText = ""
-                            viewModel.clearAllFilters()
-                            dismiss()
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Filters")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Apply") {
-                        // Commit designer text
-                        let trimmed = designerText.trimmingCharacters(in: .whitespaces)
-                        viewModel.designer = trimmed.isEmpty ? nil : trimmed
-                        viewModel.search()
-                        dismiss()
-                    }
-                    .fontWeight(.semibold)
-                }
-            }
-            .onAppear {
-                designerText = viewModel.designer ?? ""
-            }
-        }
-        .presentationDetents([.medium, .large])
-    }
-}
-
-// MARK: - Pattern Row
-
-private struct DiscoverPatternRow: View {
-    @Environment(ThemeManager.self) private var theme
-    let pattern: DiscoverPattern
-    let isSaved: Bool
-    let onSave: () -> Void
-
-    var body: some View {
-        HStack(spacing: 12) {
-            patternCover
-            patternInfo
-            Spacer(minLength: 0)
-            saveButton
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-    }
-
-    private var patternCover: some View {
-        Color.clear
-            .frame(width: 56, height: 80)
-            .overlay {
-                if let photoUrl = pattern.photoUrl, let url = URL(string: photoUrl) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().aspectRatio(contentMode: .fill)
-                        default:
-                            coverPlaceholder
-                        }
-                    }
-                } else {
-                    coverPlaceholder
-                }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
-    private var coverPlaceholder: some View {
-        ZStack {
-            Color(.systemGray5)
-            Image(systemName: "book.closed")
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var patternInfo: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(pattern.name)
-                .font(.subheadline.weight(.medium))
-                .lineLimit(2)
-                .foregroundStyle(.primary)
-
-            if let designer = pattern.designer {
-                Text("by \(designer)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            HStack(spacing: 6) {
-                if pattern.free {
-                    Text("Free")
-                        .font(.caption2.weight(.medium))
-                        .foregroundStyle(theme.primary)
-                }
-                if let weight = pattern.weight {
-                    Text(weight.capitalized)
-                        .font(.caption2)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 1)
-                        .background(Color(.systemGray5), in: RoundedRectangle(cornerRadius: 4))
-                }
-                if let difficulty = pattern.difficulty {
-                    HStack(spacing: 2) {
-                        Image(systemName: "chart.bar")
-                            .font(.system(size: 9))
-                        Text(String(format: "%.1f", difficulty))
-                            .font(.caption2)
-                    }
-                    .foregroundStyle(.secondary)
-                }
-                if let rating = pattern.rating {
-                    HStack(spacing: 2) {
-                        Image(systemName: "star.fill")
-                            .font(.system(size: 9))
-                            .foregroundStyle(theme.primary)
-                        Text(String(format: "%.1f", rating))
-                            .font(.caption2)
-                    }
-                }
-            }
-
-            if let gauge = pattern.gauge {
-                Text(gauge)
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var saveButton: some View {
-        if isSaved {
-            Image(systemName: "bookmark.fill")
-                .foregroundStyle(theme.primary)
-                .font(.title3)
-        } else {
-            Button {
-                onSave()
-            } label: {
-                Image(systemName: "bookmark")
-                    .foregroundStyle(theme.primary)
-                    .font(.title3)
-            }
-            .buttonStyle(.plain)
-        }
-    }
-}

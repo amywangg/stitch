@@ -137,6 +137,97 @@ final class APIClient {
         try await request("DELETE", path: path, body: body)
     }
 
+    // MARK: - Raw Data Request (e.g., PDF download)
+
+    func rawPost(_ path: String, body: [String: Any]) async throws -> Data {
+        guard let url = URL(string: AppConfig.apiBaseURL + path) else {
+            throw APIError.invalidURL
+        }
+
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if let token = await ClerkManager.shared.sessionToken() {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (data, response) = try await session.data(for: req)
+
+        guard let http = response as? HTTPURLResponse else {
+            throw APIError.networkError(URLError(.badServerResponse))
+        }
+
+        if http.statusCode == 401 { throw APIError.unauthorized }
+        guard (200..<300).contains(http.statusCode) else {
+            throw APIError.httpError(statusCode: http.statusCode, body: data)
+        }
+
+        return data
+    }
+
+    // MARK: - Dictionary Body Request (for dynamic key/value bodies)
+
+    func patch(_ path: String, body: [String: Any]) async throws -> Data {
+        guard let url = URL(string: AppConfig.apiBaseURL + path) else {
+            throw APIError.invalidURL
+        }
+
+        var req = URLRequest(url: url)
+        req.httpMethod = "PATCH"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if let token = await ClerkManager.shared.sessionToken() {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (data, response) = try await session.data(for: req)
+
+        guard let http = response as? HTTPURLResponse else {
+            throw APIError.networkError(URLError(.badServerResponse))
+        }
+
+        if http.statusCode == 401 { throw APIError.unauthorized }
+        guard (200..<300).contains(http.statusCode) else {
+            throw APIError.httpError(statusCode: http.statusCode, body: data)
+        }
+
+        return data
+    }
+
+    func post(_ path: String, body: [String: Any]) async throws -> Data {
+        guard let url = URL(string: AppConfig.apiBaseURL + path) else {
+            throw APIError.invalidURL
+        }
+
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if let token = await ClerkManager.shared.sessionToken() {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (data, response) = try await session.data(for: req)
+
+        guard let http = response as? HTTPURLResponse else {
+            throw APIError.networkError(URLError(.badServerResponse))
+        }
+
+        if http.statusCode == 401 { throw APIError.unauthorized }
+        guard (200..<300).contains(http.statusCode) else {
+            throw APIError.httpError(statusCode: http.statusCode, body: data)
+        }
+
+        return data
+    }
+
     // MARK: - Multipart Upload
 
     func upload<T: Decodable>(
@@ -144,6 +235,7 @@ final class APIClient {
         imageData: Data,
         mimeType: String = "image/jpeg",
         fileName: String = "avatar.jpg",
+        method: String = "POST",
         fields: [String: String] = [:]
     ) async throws -> T {
         guard let url = URL(string: AppConfig.apiBaseURL + path) else {
@@ -152,7 +244,7 @@ final class APIClient {
 
         let boundary = UUID().uuidString
         var req = URLRequest(url: url)
-        req.httpMethod = "POST"
+        req.httpMethod = method
         req.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 
         if let token = await ClerkManager.shared.sessionToken() {
@@ -200,7 +292,28 @@ extension JSONDecoder {
     static let iso8601: JSONDecoder = {
         let d = JSONDecoder()
         d.keyDecodingStrategy = .convertFromSnakeCase
-        d.dateDecodingStrategy = .iso8601
+        // Prisma returns ISO 8601 dates with fractional seconds (e.g. "2024-03-16T12:00:00.000Z").
+        // The built-in .iso8601 strategy does NOT handle fractional seconds, so we use a custom
+        // strategy that tries both formats.
+        let formatterWithFraction = ISO8601DateFormatter()
+        formatterWithFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let formatterWithout = ISO8601DateFormatter()
+        formatterWithout.formatOptions = [.withInternetDateTime]
+
+        d.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let string = try container.decode(String.self)
+            if let date = formatterWithFraction.date(from: string) {
+                return date
+            }
+            if let date = formatterWithout.date(from: string) {
+                return date
+            }
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Cannot decode date: \(string)"
+            )
+        }
         return d
     }()
 }

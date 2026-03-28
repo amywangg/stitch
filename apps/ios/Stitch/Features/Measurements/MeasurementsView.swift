@@ -7,9 +7,12 @@ struct MeasurementsView: View {
     @State private var viewModel = MeasurementsViewModel()
 
     var body: some View {
-        MeasurementsForm(viewModel: viewModel, isOnboarding: false)
-            .navigationTitle("My measurements")
-            .navigationBarTitleDisplayMode(.inline)
+        ScrollView {
+            MeasurementsForm(viewModel: viewModel, isOnboarding: false)
+                .padding(.bottom, 40)
+        }
+        .navigationTitle("My measurements")
+        .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -26,14 +29,7 @@ struct MeasurementsView: View {
                 }
             }
             .task { await viewModel.load() }
-            .alert("Error", isPresented: .init(
-                get: { viewModel.error != nil },
-                set: { if !$0 { viewModel.error = nil } }
-            )) {
-                Button("OK") { viewModel.error = nil }
-            } message: {
-                Text(viewModel.error ?? "")
-            }
+            .errorAlert(error: $viewModel.error)
     }
 }
 

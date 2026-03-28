@@ -1,13 +1,14 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { getRavelryPatternDetail } from '@/lib/ravelry-search'
 import { fetchRavelryDownload } from '@/lib/ravelry-download'
 import { FREE_LIMITS } from '@/lib/pro-gate'
 import { slugify } from '@/lib/utils'
 import { createClient } from '@supabase/supabase-js'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -16,37 +17,18 @@ const supabaseAdmin = createClient(
 const BUCKET = 'patterns'
 const MAX_PDF_SIZE = 20 * 1024 * 1024 // 20 MB
 
-type Params = { params: Promise<{ id: string }> }
-
 /**
  * POST /api/v1/ravelry/patterns/:id/download
  * Download a free Ravelry pattern PDF → store in Supabase → create pattern record.
  * Returns the created pattern so the iOS app can navigate to it.
  */
-export async function POST(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const ravelryId = parseInt(id, 10)
+export const POST = withAuth(async (_req, user, params) => {
+  const ravelryId = parseInt(params!.id, 10)
   if (isNaN(ravelryId)) {
     return NextResponse.json({ error: 'Invalid pattern ID' }, { status: 400 })
   }
 
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-
-  // Check PDF storage limit for free users
-  if (!user.is_pro) {
-    const storedCount = await prisma.pdf_uploads.count({ where: { user_id: user.id } })
-    if (storedCount >= FREE_LIMITS.storedPdfs) {
-      return NextResponse.json(
-        {
-          error: 'FREE_LIMIT_REACHED',
-          message: `Free accounts can store up to ${FREE_LIMITS.storedPdfs} PDFs. Upgrade to Pro for unlimited storage.`,
-        },
-        { status: 403 },
-      )
-    }
-  }
+  // PDF storage is unlimited for all tiers
 
   // Check if we already have this pattern saved with a PDF
   const existing = await prisma.patterns.findFirst({
@@ -67,8 +49,8 @@ export async function POST(_req: NextRequest, { params }: Params) {
     )
   }
 
-  if (!detail.free || !detail.download_location) {
-    return NextResponse.json({ error: 'Pattern is not free or has no download link' }, { status: 400 })
+  if (!detail.download_location) {
+    return NextResponse.json({ error: 'Pattern has no download link. It may require purchase on Ravelry first.' }, { status: 400 })
   }
 
   // Download the PDF from Ravelry's download URL (requires authentication)
@@ -202,4 +184,4 @@ export async function POST(_req: NextRequest, { params }: Params) {
   }
 
   return NextResponse.json({ success: true, data: pattern }, { status: 201 })
-}
+})

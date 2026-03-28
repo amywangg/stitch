@@ -14,10 +14,7 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, '')
 }
 
-export function formatDate(date: Date | string): string {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(date))
+export function round(n: number, decimals: number): number {
+  const factor = Math.pow(10, decimals)
+  return Math.round(n * factor) / factor
 }

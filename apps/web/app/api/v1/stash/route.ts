@@ -1,40 +1,36 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
-import { getRavelryPushClient } from '@/lib/ravelry-push'
 import { emitActivity } from '@/lib/activity'
+import { withAuth, parsePagination, paginatedResponse } from '@/lib/route-helpers'
+import { getRavelryClient } from '@/lib/ravelry-client'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
-  const page = parseInt(req.nextUrl.searchParams.get('page') ?? '1')
-  const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '50')
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, user) => {
+  const { page, limit, skip } = parsePagination(req, 50)
+  const url = new URL(req.url)
+  const statusFilter = url.searchParams.get('status') // "in_stash" | "used_up" | "gifted" | "for_sale" | null (all)
+
+  const where = {
+    user_id: user.id,
+    ...(statusFilter ? { status: statusFilter } : {}),
+  }
 
   const [items, total] = await Promise.all([
     prisma.user_stash.findMany({
-      where: { user_id: user.id },
+      where,
       orderBy: { created_at: 'desc' },
-      skip: (page - 1) * limit,
+      skip,
       take: limit,
       include: { yarn: { include: { company: true } } },
     }),
-    prisma.user_stash.count({ where: { user_id: user.id } }),
+    prisma.user_stash.count({ where }),
   ])
 
-  return NextResponse.json({
-    success: true,
-    data: { items, total, page, pageSize: limit, hasMore: total > page * limit },
-  })
-}
+  return paginatedResponse(items, total, page, limit)
+})
 
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const body = await req.json()
   const { yarn_id, colorway, skeins, grams, notes } = body
 
@@ -114,25 +110,79 @@ export async function POST(req: NextRequest) {
     metadata: { yarnName: yarn.name },
   })
 
-  // Ravelry write-back
-  const push = await getRavelryPushClient(user.id)
-  if (push) {
+  // Push to Ravelry stash (non-blocking)
+  // Create shell, then link yarn_id (which sets name + photo) and set notes/colorway
+  getRavelryClient(user.id).then(async (client) => {
+    if (!client) return
+    const conn = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
+    if (!conn) return
     try {
-      const { stash: rs } = await push.client.createStashItem({
-        name: colorway ? `${yarn.name} - ${colorway}` : yarn.name,
-        colorway: colorway ?? undefined,
-        skeins: skeins ?? undefined,
-        grams: grams ?? undefined,
-        notes: notes ?? undefined,
-      })
-      await prisma.user_stash.update({
-        where: { id: item.id },
-        data: { ravelry_id: String(rs.id) },
-      })
-    } catch {
-      // Ravelry unavailable — stash item still created in Stitch
+      const createRes = await client.post<{ stash: { id: number } }>(
+        `/people/${conn.ravelry_username}/stash/create.json`
+      )
+      const ravelryStashId = createRes?.stash?.id
+      if (ravelryStashId) {
+        const updateBody: Record<string, unknown> = {}
+
+        // Link to Ravelry yarn (this sets name + photo automatically)
+        if (yarn.ravelry_id) {
+          updateBody.yarn_id = parseInt(yarn.ravelry_id)
+        }
+
+        // Call 1: Set yarn_id (creates pack, sets name + product photo)
+        const linkRes = await client.post<{ stash: { packs: Array<{ id: number }> } }>(
+          `/people/${conn.ravelry_username}/stash/${ravelryStashId}.json`,
+          updateBody
+        )
+        const packId = linkRes?.stash?.packs?.[0]?.id
+
+        // Call 2: Flat fields — notes, location
+        await client.post(`/people/${conn.ravelry_username}/stash/${ravelryStashId}.json`, {
+          notes: 'Synced from Stitch',
+          location: 'Stitch app',
+        })
+
+        // Call 3: Pack data — colorway + skeins via pack singular wrapper
+        if (packId) {
+          await client.post(`/people/${conn.ravelry_username}/stash/${ravelryStashId}.json`, {
+            pack: {
+              id: packId,
+              ...(item.colorway ? { colorway: item.colorway } : {}),
+              skeins: item.skeins,
+            },
+          })
+        }
+
+        // Call 4: Stash-level colorway via stash wrapper
+        if (item.colorway) {
+          await client.post(`/people/${conn.ravelry_username}/stash/${ravelryStashId}.json`, {
+            stash: { colorway_name: item.colorway },
+          })
+        }
+
+        // Save ravelry_id for future sync
+        await prisma.user_stash.update({
+          where: { id: item.id },
+          data: { ravelry_id: String(ravelryStashId) },
+        })
+
+        // Queue photo upload — user photo or yarn product photo as fallback
+        const photoUrl = item.photo_url || yarn.image_url
+        if (photoUrl) {
+          await prisma.ravelry_photo_queue.create({
+            data: {
+              user_id: user.id,
+              entity_type: 'stash',
+              ravelry_id: String(ravelryStashId),
+              photo_url: photoUrl,
+            },
+          }).catch(() => {}) // Non-critical
+        }
+      }
+    } catch (err) {
+      console.error('[ravelry-push] stash create:', err)
     }
-  }
+  }).catch(err => console.error('[ravelry-push] stash create:', err))
 
   return NextResponse.json({ success: true, data: item }, { status: 201 })
-}
+})

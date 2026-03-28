@@ -17,7 +17,14 @@ struct NotificationsView: View {
                 )
             } else {
                 List(viewModel.notifications) { notification in
-                    notificationRow(notification)
+                    Button {
+                        if !notification.read {
+                            Task { await viewModel.markRead(notification.id) }
+                        }
+                    } label: {
+                        notificationRow(notification)
+                    }
+                    .buttonStyle(.plain)
                 }
                 .listStyle(.plain)
             }
@@ -37,13 +44,7 @@ struct NotificationsView: View {
     private func notificationRow(_ notification: StitchNotification) -> some View {
         HStack(spacing: 10) {
             if let sender = notification.sender {
-                AsyncImage(url: URL(string: sender.avatarUrl ?? "")) { image in
-                    image.resizable().scaledToFill()
-                } placeholder: {
-                    Color.gray.opacity(0.3)
-                }
-                .frame(width: 36, height: 36)
-                .clipShape(Circle())
+                AvatarImage(url: sender.avatarUrl, size: 36)
             }
 
             VStack(alignment: .leading, spacing: 2) {
@@ -77,12 +78,24 @@ struct NotificationsView: View {
         case "follow":
             text.append(AttributedString(" started following you"))
         case "like":
-            text.append(AttributedString(" liked your \(notification.resourceType ?? "post")"))
+            let target = notification.resourceType == "activity_event" ? "activity" : "post"
+            text.append(AttributedString(" liked your \(target)"))
         case "comment":
-            text.append(AttributedString(" commented on your \(notification.resourceType ?? "post")"))
+            let target = notification.resourceType == "activity_event" ? "activity" : "post"
+            text.append(AttributedString(" commented on your \(target)"))
         case "mention":
             text.append(AttributedString(" mentioned you"))
+        case "new_post":
+            text.append(AttributedString(" shared a new post"))
+        case "pattern_sold":
+            if let message = notification.message {
+                return AttributedString(message)
+            }
+            text.append(AttributedString(" purchased your pattern"))
         default:
+            if let message = notification.message {
+                return AttributedString(message)
+            }
             text.append(AttributedString(" interacted with you"))
         }
 

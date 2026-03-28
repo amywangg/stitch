@@ -1,10 +1,11 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { createClient } from '@supabase/supabase-js'
 import { moderateImage } from '@/lib/moderation'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -13,12 +14,7 @@ const supabaseAdmin = createClient(
 const BUCKET = 'avatars'
 const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
 
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-
+export const POST = withAuth(async (req, user) => {
   const formData = await req.formData()
   const file = formData.get('file') as File | null
   if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 })
@@ -65,8 +61,8 @@ export async function POST(req: NextRequest) {
   // Update user record
   await prisma.users.update({
     where: { id: user.id },
-    data: { avatar_url: avatarUrl },
+    data: { avatar_url: avatarUrl, avatar_source: 'manual' },
   })
 
   return NextResponse.json({ success: true, data: { avatarUrl } })
-}
+})

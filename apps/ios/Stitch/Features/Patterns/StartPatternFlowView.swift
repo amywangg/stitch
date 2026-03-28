@@ -8,8 +8,10 @@ struct StartPatternFlowView: View {
     var onCreatedProject: ((String) -> Void)?
 
     @Environment(ThemeManager.self) private var theme
+    @Environment(SubscriptionManager.self) private var subscriptions
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = StartPatternFlowViewModel()
+    @State private var showProPaywall = false
 
     private var resolvedPatternId: String? {
         pattern?.id ?? patternId
@@ -64,6 +66,9 @@ struct StartPatternFlowView: View {
                 }
             }
         }
+        .sheet(isPresented: $showProPaywall) {
+            StitchPaywallView()
+        }
     }
 
     private var navigationTitle: String {
@@ -92,16 +97,44 @@ struct StartPatternFlowView: View {
                 }
 
                 if viewModel.pattern != nil {
-                    // PDF status
-                    pdfStatusSection
+                    // If AI parsed with multiple sizes, show size selection
+                    // Otherwise, just create the project immediately
+                    if viewModel.isAiParsed && viewModel.hasMultipleSizes {
+                        parseStatusSection
 
-                    // Parse status
-                    parseStatusSection
+                        Button {
+                            viewModel.step = .selectSize
+                        } label: {
+                            actionButtonLabel("Choose size and start", icon: "ruler")
+                        }
+                    } else {
+                        // Quick start — create project immediately
+                        Button {
+                            Task { await viewModel.quickStart() }
+                        } label: {
+                            actionButtonLabel("Start project", icon: "play.fill")
+                        }
 
-                    Spacer(minLength: 20)
-
-                    // Primary action
-                    primarySetupAction
+                        // Show what they'll get
+                        if viewModel.hasPdf && !viewModel.isAiParsed {
+                            HStack(spacing: 10) {
+                                Image(systemName: "doc.text.fill")
+                                    .foregroundStyle(.green)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("PDF will be attached to your project")
+                                        .font(.caption.weight(.medium))
+                                    Text("You can parse it with AI later for row-by-row tracking")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                            }
+                            .padding(12)
+                            .background(Color.green.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
+                        } else if viewModel.isAiParsed {
+                            parseStatusSection
+                        }
+                    }
                 }
             }
             .padding()
@@ -132,7 +165,7 @@ struct StartPatternFlowView: View {
                 }
 
                 HStack(spacing: 6) {
-                    if let craft = pattern.craftType.nilIfEmpty {
+                    if let craft = pattern.craftType, !craft.isEmpty {
                         chipLabel(craft.capitalized)
                     }
                     if let difficulty = pattern.difficulty {
@@ -146,37 +179,6 @@ struct StartPatternFlowView: View {
         .padding(14)
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 14))
-    }
-
-    @ViewBuilder
-    private var pdfStatusSection: some View {
-        if viewModel.hasPdf {
-            HStack(spacing: 10) {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
-                Text("PDF attached")
-                    .font(.subheadline.weight(.medium))
-                Spacer()
-            }
-            .padding(12)
-            .background(Color.green.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
-        } else {
-            HStack(spacing: 10) {
-                Image(systemName: "doc.badge.plus")
-                    .font(.title3)
-                    .foregroundStyle(.orange)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("No PDF attached")
-                        .font(.subheadline.weight(.medium))
-                    Text("Attach a PDF to enable AI-powered row-by-row tracking")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-            }
-            .padding(12)
-            .background(Color.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
-        }
     }
 
     @ViewBuilder
@@ -208,62 +210,7 @@ struct StartPatternFlowView: View {
         }
     }
 
-    @ViewBuilder
-    private var primarySetupAction: some View {
-        if viewModel.isAiParsed && viewModel.hasMultipleSizes {
-            // Parsed with multiple sizes — go to size selection
-            Button {
-                viewModel.step = .selectSize
-            } label: {
-                actionButtonLabel("Choose size", icon: "ruler")
-            }
-        } else if viewModel.isAiParsed {
-            // Parsed with single/no size — go to review
-            Button {
-                viewModel.selectedSizeName = viewModel.pattern?.sizes?.first?.name
-                viewModel.step = .review
-            } label: {
-                actionButtonLabel("Continue", icon: "arrow.right")
-            }
-        } else if viewModel.hasPdf && viewModel.canParseWithAI {
-            // Has PDF but not parsed — offer parse
-            VStack(spacing: 10) {
-                Button {
-                    Task {
-                        if let pdfId = viewModel.pattern?.firstPdfUploadId {
-                            await viewModel.parseWithAI(uploadId: pdfId)
-                        }
-                    }
-                } label: {
-                    actionButtonLabel("Parse with AI", icon: "sparkles")
-                }
-
-                Button {
-                    viewModel.step = .manualSetup
-                } label: {
-                    Text("Set up manually instead")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        } else {
-            // No PDF or can't parse — manual setup
-            VStack(spacing: 10) {
-                Button {
-                    viewModel.step = .manualSetup
-                } label: {
-                    actionButtonLabel("Set up sections", icon: "list.bullet")
-                }
-
-                if !viewModel.hasPdf {
-                    Text("Attach a PDF from the pattern detail to unlock AI parsing")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-            }
-        }
-    }
+    // primarySetupAction removed — quick start handles everything
 
     private func actionButtonLabel(_ text: String, icon: String) -> some View {
         HStack {

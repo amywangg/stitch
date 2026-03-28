@@ -37,7 +37,9 @@ stitch/
 | Subscriptions | RevenueCat (Apple IAP + Stripe web) |
 | File storage | Supabase Storage |
 | Realtime | Supabase Realtime (counter sync) |
+| Payments | Stripe Connect (marketplace pattern sales) |
 | AI/PDF parsing | Next.js API routes (`openai` + `pdf-parse`) |
+| PDF manipulation | `pdf-lib` (watermarking purchased PDFs) |
 | Deployment | Vercel (web) + Xcode/TestFlight (iOS) |
 
 ---
@@ -52,6 +54,12 @@ stitch/
 6. **Never use `service_role` key client-side** — only in server-side API routes
 7. **Never expose API keys to the iOS client** — all secrets live in `.env.local` and Next.js routes
 8. **No third-party cloud storage integrations** (Google Drive, Dropbox, iCloud, etc.) — all file storage uses Supabase Storage. External integrations are limited to Ravelry only.
+9. **Always regenerate Xcode project after adding, removing, or renaming any Swift file** — run `cd apps/ios && xcodegen generate` immediately after file changes. The `.xcodeproj` is generated from `project.yml` and won't pick up new files otherwise.
+10. **Always offer "from stash/collection" alongside manual entry** — whenever a user can add a yarn, needle, or other item, present both "Add manually" and "From stash" (or "From collection" for needles) options via a `Menu`. Use `StashPickerSheet` for yarns and `NeedlePickerSheet` for needles. After a user manually creates an item, offer to save it to their stash/collection for future use.
+11. **Document major features in `docs/`** — after implementing a new feature or making a significant change to an existing one (new API routes, new models, new user-facing flow), update or create the relevant doc in `docs/`. Bug fixes, minor tweaks, and non-mission-critical changes do not need documentation. The docs serve as architectural memory for future development.
+12. **Stripe Connect for payments** — pattern marketplace payments go through Stripe Connect (Express accounts). Platform takes 12% via `application_fee_amount`. All payment flows happen on web (Apple's External Purchase Link entitlement). iOS links to web checkout via `SFSafariViewController`. Never process payments in the iOS app directly.
+13. **Watermark purchased PDFs** — every PDF served to a buyer must be watermarked with their username and transaction ID via `lib/pdf-watermark.ts`. If watermarking fails, fail closed (don't serve unwatermarked). Owners see unwatermarked originals.
+14. **Never delete from Ravelry during sync** — sync operations (import, re-sync, push-back) must only create or update records on Ravelry, never delete. Deleting from Ravelry is only allowed when a user explicitly deletes a specific item via a user-initiated action (e.g., `DELETE /projects/[id]`). A sync bug that wipes a user's Ravelry data would be catastrophic and unrecoverable.
 
 ---
 
@@ -130,7 +138,7 @@ Key rules: All input validated with Zod schemas (in `apps/web/lib/schemas/`). St
 
 Load `/data-modeling` before adding or modifying any database model. Full spec at `.claude/skills/data-modeling/SKILL.md`.
 
-Key rules: Models are lowercase plural snake_case. All IDs are UUID (`@default(uuid())`). Every model gets `created_at`; mutable models get `updated_at @updatedAt`. Soft deletes (`deleted_at`) on user content (projects, patterns, posts, comments) only. Index every FK in WHERE clauses. Composite indexes for common query patterns (user_id + created_at for feeds). String enums with comment docs, not Prisma enum blocks. Ravelry sync fields are optional (`String?`) with `@@unique([user_id, ravelry_id])`. After changes: `prisma validate` then `db:push` then `db:generate`.
+Key rules: Models are lowercase plural snake_case. All IDs are UUID (`@default(uuid())`). Every model gets `created_at`; mutable models get `updated_at DateTime @default(now()) @updatedAt`. Soft deletes (`deleted_at`) on user content (projects, patterns, posts, comments, pattern_queue). Index EVERY FK column — no exceptions. Composite indexes for common query patterns (user_id + created_at for feeds). String enums with comment docs, not Prisma enum blocks. Ravelry sync fields are optional (`String?`) with `@@unique([user_id, ravelry_id])`. After changes: `prisma validate` then `db:push` then `db:generate`.
 
 ---
 
@@ -193,9 +201,96 @@ ENCRYPTION_KEY=...
 
 # AI / PDF parsing
 OPENAI_API_KEY=sk-...
+
+# Stripe (Marketplace)
+STRIPE_SECRET_KEY=sk_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_APP_URL=https://stitch.app
 ```
 
 iOS config: `apps/ios/Stitch/Config/Environment.swift` (API URLs, Clerk publishable key, RevenueCat key, Supabase keys — all with `#if DEBUG` switches).
+
+---
+
+## Code Organization (CRITICAL)
+
+**Reuse before you write. Check before you create.** Every new view, route, or component must reuse existing shared infrastructure. Duplicated code is a bug.
+
+### File Size Limits
+
+| Platform | Soft limit | Hard limit | Action |
+|----------|-----------|------------|--------|
+| Swift views | 300 lines | 500 lines | Extract sub-views into same-directory files |
+| Swift ViewModels | 200 lines | 400 lines | Extract helpers into utilities |
+| TypeScript routes | 150 lines | 300 lines | Extract logic into `lib/` helpers |
+| React components | 200 lines | 400 lines | Extract sub-components |
+| Utility/lib files | 250 lines | 400 lines | Split by domain |
+
+When splitting, keep the parent as a **thin coordinator** that composes child components. Pass data via props/init params, not global state.
+
+### Before Writing Any Code, Check For
+
+1. **Existing shared components** — `Components/` (iOS), `components/ui/` (web)
+2. **Existing route helpers** — `lib/route-helpers.ts` has `withAuth`, `parsePagination`, `paginatedResponse`, `findOwned`, `generateUniqueSlug`
+3. **Existing shared schemas** — `lib/schemas/common.ts` has `paginationSchema`, `idParamSchema`
+4. **Existing utilities** — `lib/utils.ts` has `cn()`, `slugify()`, `round()`
+5. **Existing ViewModifier/protocols** — `ErrorAlertModifier`, `LoadableContent`, `Loadable`
+
+### iOS Shared Components (always use these)
+
+| Component | File | Replaces |
+|-----------|------|----------|
+| `ErrorAlertModifier` | `Components/ErrorAlertModifier.swift` | Manual `.alert("Error", ...)` pattern |
+| `LoadableContent` | `Components/LoadableContent.swift` | Manual `if isLoading / if isEmpty / else` switching |
+| `AvatarImage` | `Components/AvatarImage.swift` | Circular `AsyncImage` with person placeholder |
+| `RemoteImage` | `Components/RemoteImage.swift` | Rounded `AsyncImage` with gray placeholder |
+| `SegmentTabPicker` | `Components/SegmentTabPicker.swift` | Inline underline-style tab pickers |
+| `RavelrySyncHelper` | `Core/Network/RavelrySyncHelper.swift` | Duplicated Ravelry sync logic in ViewModels |
+| `GridLayout` | `Models/ListPreferences.swift` | Duplicated grid/list/large layout enums |
+| `StitchButton` | `Components/StitchButton.swift` | Custom button styling |
+| `ProGateBanner` | `Components/ProGateBanner.swift` | Upgrade prompts |
+| `StarRatingView` | `Features/Patterns/PatternReviewsView.swift` | Read-only star rating display |
+| `StarRatingPicker` | `Features/Patterns/PatternReviewsView.swift` | Interactive tap-to-rate stars |
+| `PatternReviewsSection` | `Features/Patterns/PatternReviewsView.swift` | Embeddable reviews list with write button |
+| `SafariView` | `Features/Marketplace/SellPatternSheet.swift` | `SFSafariViewController` wrapper for web flows |
+
+**Every new iOS view MUST use `ErrorAlertModifier` instead of writing its own `.alert` block.** Every view with loading/empty states MUST use `LoadableContent`. Every circular avatar MUST use `AvatarImage`. No exceptions.
+
+### Web Shared Infrastructure (always use these)
+
+| Helper | File | Replaces |
+|--------|------|----------|
+| `withAuth()` | `lib/route-helpers.ts` | Manual `auth()` + `getDbUser()` + try/catch in every route |
+| `parsePagination()` | `lib/route-helpers.ts` | Manual page/limit parsing from query params |
+| `paginatedResponse()` | `lib/route-helpers.ts` | Manual `{ items, total, page, pageSize, hasMore }` construction |
+| `findOwned()` | `lib/route-helpers.ts` | Manual `findFirst({ where: { id, user_id } })` + null check |
+| `generateUniqueSlug()` | `lib/route-helpers.ts` | Manual slug uniqueness loops |
+| `Card` | `components/ui/Card.tsx` | Repeated `rounded-xl bg-surface border border-border-default` |
+| `round()` | `lib/utils.ts` | Inline `Math.round(x * N) / N` patterns |
+| Zod schemas | `lib/schemas/*.ts` | Manual `allowed` field filtering |
+| `stripe` | `lib/stripe.ts` | Stripe client + `calculateFees()` |
+| `watermarkPdf()` | `lib/pdf-watermark.ts` | Per-buyer PDF watermarking |
+| `agreements` | `lib/agreements.ts` | Legal text (buyer, creator, DMCA) |
+
+**Every new API route MUST use `withAuth()`.** Every paginated route MUST use `parsePagination()` + `paginatedResponse()`. Every POST/PATCH MUST validate with Zod. No exceptions.
+
+### When to Extract a New Shared Component
+
+Extract when you see the **same pattern in 2+ places**. Don't wait for 3.
+
+- Same UI layout appearing in multiple views → extract to `Components/` (iOS) or `components/` (web)
+- Same API call pattern in multiple routes → extract to `lib/`
+- Same ViewModel logic in multiple ViewModels → extract to a protocol extension or helper
+- Same Tailwind class combo in 3+ places → extract to a component
+
+### Anti-Patterns (Code Organization)
+
+- Copying code from one view/route to another instead of extracting shared logic
+- Creating a new utility function that already exists in `utils.ts`
+- Writing inline error alerts instead of using `ErrorAlertModifier`
+- Writing manual auth boilerplate instead of using `withAuth()`
+- Creating a file over 500 lines without splitting
+- Putting reusable logic inside a specific feature directory instead of shared `Components/` or `lib/`
 
 ---
 
@@ -206,6 +301,8 @@ iOS config: `apps/ios/Stitch/Config/Environment.swift` (API URLs, Clerk publisha
 - Add `// MARK:` sections for organization in Swift files
 - If touching Supabase schema, include the migration SQL + RLS policy
 - If adding an API route, include the Swift `APIClient` method to call it
+- **Check shared infrastructure first** — use `withAuth`, `parsePagination`, `ErrorAlertModifier`, etc.
+- **Never duplicate patterns** that already exist as shared components
 
 ---
 
@@ -214,50 +311,97 @@ iOS config: `apps/ios/Stitch/Config/Environment.swift` (API URLs, Clerk publisha
 ### Recipe: Add a New API Route (Next.js)
 
 1. Create `apps/web/app/api/v1/your-domain/route.ts`
-2. Pattern:
+2. Create Zod schema in `apps/web/lib/schemas/your-domain.ts`
+3. Pattern:
 
 ```typescript
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, parsePagination, paginatedResponse } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-  // business logic
-  return NextResponse.json({ success: true, data: ... })
-}
+// GET: list with pagination
+export const GET = withAuth(async (req, user) => {
+  const { page, limit, skip } = parsePagination(req)
+  const where = { user_id: user.id, deleted_at: null }
+  const [items, total] = await Promise.all([
+    prisma.things.findMany({ where, skip, take: limit, orderBy: { created_at: 'desc' } }),
+    prisma.things.count({ where }),
+  ])
+  return paginatedResponse(items, total, page, limit)
+})
+
+// POST: create with validation
+const CreateSchema = z.object({ title: z.string().trim().min(1).max(200) })
+
+export const POST = withAuth(async (req, user) => {
+  const body = await req.json()
+  const parsed = CreateSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Validation failed', fields: parsed.error.flatten().fieldErrors }, { status: 400 })
+  }
+  const thing = await prisma.things.create({ data: { ...parsed.data, user_id: user.id } })
+  return NextResponse.json({ success: true, data: thing }, { status: 201 })
+})
 ```
 
-3. Always use `getDbUser(clerkId)` to resolve the DB user.
-4. Use Zod for input validation on POST/PATCH routes.
+4. For routes with `[id]` params, use `params` from `withAuth`:
+
+```typescript
+export const GET = withAuth(async (req, user, params) => {
+  const { id } = params!
+  // use findOwned() for ownership check
+})
+```
+
 5. For Pro-gated features: `const err = requirePro(user, 'feature name'); if (err) return err`
 6. Also add the corresponding `APIClient` method in Swift.
 
 ### Recipe: Add a New iOS Screen
 
-1. **ViewModel**: `apps/ios/Stitch/Features/YourFeature/YourViewModel.swift` — `@Observable` class
-2. **View**: `apps/ios/Stitch/Features/YourFeature/YourView.swift` — SwiftUI `View`
-3. **API call**: `APIClient.shared.get/post/patch/delete()` — attaches Clerk JWT automatically
-4. **Navigation**: Add `Route` case to `AppRouter.swift`, add `.navigationDestination` in parent view
+1. **Check shared components first** — can you use `LoadableContent`, `AvatarImage`, `RemoteImage`, `SegmentTabPicker`?
+2. **ViewModel**: `apps/ios/Stitch/Features/YourFeature/YourViewModel.swift` — `@Observable` class
+3. **View**: `apps/ios/Stitch/Features/YourFeature/YourView.swift` — SwiftUI `View`
+4. **Always add**: `.errorAlert(error: $viewModel.error)` — never write manual alert blocks
+5. **For lists**: Use `LoadableContent` for loading/empty/content states
+6. **For avatars**: Use `AvatarImage(url:size:)` — never write inline AsyncImage circles
+7. **API call**: `APIClient.shared.get/post/patch/delete()` — attaches Clerk JWT automatically
+8. **Navigation**: Add `Route` case to `AppRouter.swift`, add `.navigationDestination` in parent view
+9. **Keep views under 300 lines** — extract sub-views into same-directory files
+10. **Run `xcodegen generate`** after adding new files
 
 ### Recipe: Add a New DB Model
 
 1. Edit `packages/db/prisma/schema.prisma`
-2. Run `pnpm db:push` (dev) or `pnpm db:migrate` (production)
-3. Run `pnpm db:generate` to regenerate the client
-4. Write RLS policy in the same commit
+2. Add `@@index` on every FK column that will appear in WHERE clauses
+3. Add `updated_at DateTime @default(now()) @updatedAt` if the model is mutable
+4. Add `deleted_at DateTime?` if it's user content that should support soft delete
+5. Run `pnpm db:push` (dev) or `pnpm db:migrate` (production)
+6. Run `pnpm db:generate` to regenerate the client
+7. Write RLS policy in the same commit
 
 ### Recipe: Full-Stack Feature (End to End)
 
-1. DB schema change → `pnpm db:generate`
-2. API route(s) in `apps/web/app/api/v1/`
-3. **iOS first**: ViewModel + View + APIClient call + navigation wiring
-4. **Web second**: Page component in `apps/web/app/(app)/your-page/`
-5. Realtime (if needed): Supabase Realtime channel in `useCounterRealtime` / `RealtimeManager`
+1. DB schema change → `pnpm db:push` → `pnpm db:generate`
+2. Zod schemas in `apps/web/lib/schemas/`
+3. API route(s) in `apps/web/app/api/v1/` — use `withAuth`, `parsePagination`, Zod validation
+4. iOS models in `Models/Models.swift` — Codable structs matching API response
+5. **iOS first**: ViewModel + View + APIClient call + navigation wiring — use shared components
+6. **Web second**: Page component in `apps/web/app/(app)/your-page/`
+7. Realtime (if needed): Supabase Realtime channel in `useCounterRealtime` / `RealtimeManager`
+8. **Document**: If this is a major feature, create or update the relevant `docs/0XX-feature-name.md`
+9. **Run `xcodegen generate`** if new Swift files were added
+
+### Recipe: Pattern with Marketplace Listing
+
+1. Creator builds pattern (Type 1: in-app builder) or uploads PDF (Type 2)
+2. Fill in metadata (title, description, cover photo, gauge, yarn weight)
+3. Add yarns (manual or from stash) and needles (manual or from collection)
+4. For Type 1: add sections and row instructions → PDF auto-generates
+5. For Type 2: PDF is already attached → optionally AI-parse for structured data
+6. To sell: tap "Sell this pattern" → `SellPatternSheet` → Stripe Connect onboarding → set price → list
+7. Buyers browse marketplace → checkout on web via Stripe → watermarked PDF delivery
 
 ---
 
@@ -483,7 +627,7 @@ cd apps/ios && xcodegen generate
 
 **Schema**: `packages/db/prisma/schema.prisma`
 
-**Key models**: `users`, `subscriptions`, `ravelry_connections`, `projects`, `project_sections`, `row_counter_history`, `project_gauge`, `patterns`, `pattern_sections`, `pattern_rows`, `posts`, `comments`, `likes`, `follows`, `notifications`
+**Key models**: `users`, `subscriptions`, `ravelry_connections`, `projects`, `project_sections`, `row_counter_history`, `project_gauge`, `patterns`, `pattern_sections`, `pattern_rows`, `pattern_purchases`, `pattern_reviews`, `pdf_uploads`, `pdf_access_logs`, `posts`, `comments`, `likes`, `follows`, `notifications`
 
 **Always import prisma from**:
 ```typescript
@@ -504,8 +648,11 @@ import { prisma } from '@stitch/db'      // in packages
 | Row counter | ✓ | ✓ | ✓ |
 | Stash / needles | Unlimited | Unlimited | Unlimited |
 | Social posting | ✓ | ✓ | ✓ |
+| Pattern marketplace (buy/sell) | ✓ | ✓ | ✓ |
+| Reviews & ratings | ✓ | ✓ | ✓ |
 | Active projects | 3 | Unlimited | Unlimited |
 | Saved patterns | 15 | Unlimited | Unlimited |
+| PDF upload (manual metadata) | ✓ | ✓ | ✓ |
 | PDF parsing (AI) | 2/month | 5/month | Unlimited |
 | Cross-device realtime | — | ✓ | ✓ |
 | AI tools (other 8 routes) | — | — | ✓ |
@@ -583,20 +730,42 @@ Bidirectional OAuth sync via `apps/web/app/api/v1/integrations/ravelry/`.
 
 ### Source of Truth
 
-- **Ravelry is source of truth** for synced data
-- App writes → Ravelry API first → our tables update on next sync
-- Never write directly to synced tables without going through Ravelry API (when `sync_to_ravelry` is enabled)
+- **Stitch is source of truth** — users manage data in Stitch, which syncs bidirectionally with Ravelry
+- **Bidirectional sync** — we pull from Ravelry on import/sync, and push changes back when users modify data in Stitch
 - `ravelry_connections.synced_at` tracks last successful sync
+- OAuth scope `app-write` grants full read+write access via POST/PUT/DELETE
 
-### Sync Strategy
+### Sync Safety
 
-| Data | Our table | Sync direction | Trigger |
-|------|-----------|---------------|---------|
-| Stash | `user_stash` | Ravelry → Stitch (+ write-back if enabled) | App open + manual |
-| Queue | `pattern_queue` | Ravelry → Stitch | App open + manual |
-| Projects | `projects` | Bidirectional | App open + manual |
-| Needles | `user_needles` | Ravelry → Stitch | App open + manual |
-| Patterns | `patterns` | Snapshot on save only | User action |
+- **Never bulk-delete on Ravelry** — sync operations (import, re-sync) only create or update records on Ravelry, never delete. Deleting from Ravelry is only allowed when a user explicitly deletes a specific item via a user-initiated action.
+- **Partial failure is OK** — if sync fails partway through, the data imported so far is kept. The next sync picks up where it left off. Never roll back a partial import.
+- **Local data survives sync** — items created in Stitch without a Ravelry ID are never touched by sync. They're Stitch-only data and stay forever.
+- **Empty accounts are valid** — 0 items from any endpoint = success, not error.
+- **Push after primary DB write** — always write to Stitch DB first, then push to Ravelry. If Ravelry push fails, log but don't fail the request.
+
+### Sync Strategy (Bidirectional)
+
+| Data | Our table | Pull (Ravelry → Stitch) | Push (Stitch → Ravelry) |
+|------|-----------|------------------------|------------------------|
+| Projects | `projects` | Manual sync | On create/update/delete |
+| Patterns | `patterns` | Manual sync (library) | — (patterns are Ravelry-authored) |
+| Queue | `pattern_queue` | Manual sync | On add/remove |
+| Stash | `user_stash` | Manual sync | On add/update |
+| Profile | `users` | Manual sync (backfill) | — (managed in Ravelry) |
+| Friends | `follows` | Manual sync (auto-follow) | — (managed in Ravelry) |
+| Needles | — | **Not synced** (unreliable endpoint) | — |
+
+### Write-back Pattern
+
+When a user modifies data in Stitch that has a `ravelry_id`, push the change to Ravelry:
+```typescript
+// Always: DB write first, Ravelry push second, non-blocking
+const project = await prisma.projects.update({ where: { id }, data: updates })
+if (project.ravelry_id) {
+  pushToRavelry(client, project).catch(err => console.error('[ravelry-push]', err))
+}
+```
+Use `client.post()`, `client.put()`, `client.delete()` from `RavelryClient`.
 
 ### Auth & Tokens
 
@@ -611,6 +780,23 @@ Bidirectional OAuth sync via `apps/web/app/api/v1/integrations/ravelry/`.
 - Pagination uses `page` + `page_size` params, max `page_size` is 100
 - Pattern availability can be null for free patterns — always treat as optional
 - Rate limit: respect 1 req/sec for search endpoints, batch where possible
+- **Write requests use JSON** — `Content-Type: application/json`. OAuth 1.0a with `app-write` scope.
+- **Stash writes need 4 separate calls** — different fields require different body formats: flat for notes/location, `pack` singular wrapper for colorway/skeins, `stash` wrapper for colorway_name. NEVER combine formats in one call — silently fails.
+- **Rails nested params** — `packs_attributes` must be object with string keys (`{"0": {...}}`), NOT a JSON array. This is how Rails parses `accepts_nested_attributes_for`.
+- **`/fiber/` endpoints** — documented in API but return 404/500. Use `/stash/` endpoints instead.
+- **302 from personal endpoints = empty data or missing scope** — treat as empty, not as auth expiry. Never show "connection expired" for a 302.
+- **Library endpoint** (`/people/{username}/library/list.json`) returns 302 for accounts with no library. Catch and return empty.
+- **Needles endpoint** (`/people/{username}/needles.json`) is unreliable. Needles are Stitch-only.
+- **Empty accounts are valid** — 0 items on any endpoint = success, not error. An empty sync should show "Sync complete — 0 items".
+
+### API Key Types
+
+| Type | Format | Capabilities |
+|------|--------|-------------|
+| Basic Auth: read only | `read-XXXXX` | Public GET only |
+| Basic Auth: personal | `purl-XXXXX` | Personal GET for own account |
+| **OAuth 1.0a** | 32-char hex | **Full read+write for authorized users** — this is what we use |
+| OAuth 2.0 | After setup | Bearer token auth |
 
 **Key endpoints**: `/patterns/search.json`, `/patterns/[id].json`, `/people/[username]/stash.json`, `/people/[username]/queue/list.json`
 
@@ -632,14 +818,36 @@ Schema supports an AI knitting assistant: `agent_conversations` + `agent_message
 
 ## Common Pitfalls
 
+### Infrastructure
+- **Use `withAuth()`**: Never write manual `auth()` + `getDbUser()` boilerplate — use `withAuth()` from `lib/route-helpers.ts`
+- **Use shared components**: Never write manual error alerts, loading states, or avatar images — use the shared components
+- **Validate with Zod**: Never use manual `allowed` field filtering — define a Zod schema in `lib/schemas/`
 - **Prisma import**: Always `@/lib/prisma` in web, `@stitch/db` in packages
-- **Auth in routes**: Always `await auth()` then `getDbUser(clerkId)` — both steps required
+
+### API Routes
 - **Response format**: `{ success: true, data: ... }` for success; `{ error: '...' }` for errors
 - **Return errors, don't throw**: In Next.js route handlers use `return NextResponse.json(...)`, not `throw`
-- **Soft deletes**: Always add `deleted_at: null` to queries for projects and patterns
+- **Soft deletes**: Always add `deleted_at: null` to queries for projects, patterns, posts, comments, pattern_queue
 - **Pro gate**: Call `requirePro(user, 'feature name')` before gated logic
+- **Pagination**: Use `parsePagination()` + `paginatedResponse()` — never parse page/limit manually
+
+### iOS
+- **Error alerts**: Always use `.errorAlert(error: $viewModel.error)` — never write inline `.alert("Error", ...)` blocks
+- **Loading states**: Use `LoadableContent` — never write inline `if isLoading / if isEmpty` switching
+- **Avatars**: Use `AvatarImage(url:size:)` — never write inline circular AsyncImage
+- **Data loading**: Use `.task {}` for all initial data loading — never `.onAppear { Task { } }`
+- **CancellationError**: Always catch `CancellationError` separately in ViewModel `load()` methods — otherwise view dismissal shows spurious errors
+- **File size**: Keep views under 300 lines — extract sub-views into same-directory files
+- **XcodeGen**: Run `xcodegen generate` after adding new Swift files
+- **iOS tokens**: Keychain only via `KeychainManager.shared` — never UserDefaults
+
+### Web
 - **Path alias**: Use `@/` always — never `../../` relative paths in web app
 - **CSS merging**: Use `cn()` from `@/lib/utils` — never string concatenation
-- **iOS tokens**: Keychain only via `KeychainManager.shared` — never UserDefaults
+- **Card styling**: Use `<Card>` component — never repeat `rounded-xl bg-surface border border-border-default`
+- **Rounding**: Use `round(n, decimals)` from `@/lib/utils` — never inline `Math.round(x * N) / N`
+
+### General
 - **Env files**: Single root `.env.local` — app-level files are symlinks, don't edit them directly
 - **No `.js` extensions**: Next.js uses bundler resolution
+- **No code duplication**: If you're copying code from another file, stop and extract a shared helper instead

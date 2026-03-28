@@ -1,4 +1,5 @@
 import type { pattern_sizes, user_measurements } from '@stitch/db'
+import { round } from '@/lib/utils'
 
 type PatternSize = Pick<
   pattern_sizes,
@@ -54,7 +55,7 @@ function classifyEase(easeCm: number): SizeRecommendation['fit'] {
 }
 
 function fitDescription(fit: SizeRecommendation['fit'], easeCm: number): string {
-  const easeInches = Math.round(easeCm / 2.54 * 10) / 10
+  const easeInches = round(easeCm / 2.54, 1)
   switch (fit) {
     case 'tight':
       return `Negative/minimal ease (${easeInches}" ease) — body-hugging fit`
@@ -136,10 +137,10 @@ export function recommendSizes(
     results.push({
       name: size.name,
       sort_order: size.sort_order,
-      ease_cm: Math.round(weightedEase * 10) / 10,
+      ease_cm: round(weightedEase, 1),
       fit,
       recommendation: fitDescription(fit, weightedEase),
-      score: Math.round(score * 10) / 10,
+      score: round(score, 1),
     })
   }
 

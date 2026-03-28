@@ -1,24 +1,21 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, generateUniqueSlug } from '@/lib/route-helpers'
 import { FREE_LIMITS } from '@/lib/pro-gate'
-import { slugify } from '@/lib/utils'
 import { getTotalExpandedRows } from '@/lib/instruction-resolver'
 import { emitActivity } from '@/lib/activity'
+import { getRavelryClient } from '@/lib/ravelry-client'
+import { ravelryCreateProject } from '@/lib/ravelry-push'
 
+
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/v1/projects/create-from-pattern
  * Creates a project from a parsed pattern with sections linked to pattern sections.
  * Each project section tracks current_step and current_row (tap within step).
  * Respects free tier project limits.
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-
+export const POST = withAuth(async (req, user) => {
   const body = await req.json()
   const patternId = body.pattern_id as string | undefined
   if (!patternId) {
@@ -63,12 +60,7 @@ export async function POST(req: NextRequest) {
   const manualSections = body.manual_sections as Array<{ name: string; target_rows?: number }> | undefined
 
   // Generate unique slug
-  let slug = slugify(pattern.title)
-  let attempt = 0
-  while (await prisma.projects.findUnique({ where: { user_id_slug: { user_id: user.id, slug } } })) {
-    attempt++
-    slug = `${slugify(pattern.title)}-${attempt}`
-  }
+  const slug = await generateUniqueSlug(prisma.projects, user.id, pattern.title)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let sectionData: any[]
@@ -159,5 +151,23 @@ export async function POST(req: NextRequest) {
     patternId,
   })
 
+  // Push to Ravelry (non-blocking)
+  getRavelryClient(user.id).then(async (client) => {
+    if (!client) return
+    const conn = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
+    if (!conn) return
+    const ravelryId = await ravelryCreateProject(client, conn.ravelry_username, {
+      name: project.title,
+      craft_type: project.craft_type,
+      started_at: project.started_at,
+    })
+    if (ravelryId) {
+      await prisma.projects.update({
+        where: { id: project.id },
+        data: { ravelry_id: String(ravelryId) },
+      })
+    }
+  }).catch(err => console.error('[ravelry-push] create-from-pattern:', err))
+
   return NextResponse.json({ success: true, data: project })
-}
+})

@@ -1,15 +1,12 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
+
+export const dynamic = 'force-dynamic'
 const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const GET = withAuth(async (req, user) => {
   const q = req.nextUrl.searchParams.get('q')?.toLowerCase().trim()
 
   if (!q) {
@@ -45,4 +42,4 @@ export async function GET(req: NextRequest) {
       reason: existing ? 'Username is already taken' : null,
     },
   })
-}
+})

@@ -1,25 +1,21 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 import { openai } from '@/lib/openai'
 import { COLORWAY_IDENTIFY_SYSTEM_PROMPT } from '@/lib/prompts/colorway-identify'
 import { createClient } from '@supabase/supabase-js'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
 )
 
-type Params = { params: Promise<{ id: string }> }
+export const POST = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-export async function POST(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
   const proError = requirePro(user, 'AI colorway identification')
   if (proError) return proError
 
@@ -97,4 +93,4 @@ export async function POST(_req: NextRequest, { params }: Params) {
     const message = error instanceof Error ? error.message : 'Colorway identification failed'
     return NextResponse.json({ error: message }, { status: 502 })
   }
-}
+})

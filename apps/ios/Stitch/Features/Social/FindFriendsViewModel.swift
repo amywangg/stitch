@@ -31,8 +31,16 @@ final class FindFriendsViewModel {
         do {
             let response: APIResponse<RavelryFriendsResponse> = try await APIClient.shared.get("/social/friends/ravelry")
             ravelryFriends = response.data
+        } catch is CancellationError {
+            // View dismissed
+        } catch let apiError as APIError {
+            // 400 = not connected, that's fine. Other errors should show.
+            if apiError.errorCode != "UNAUTHORIZED" {
+                // Silently ignore — user isn't connected to Ravelry
+            }
         } catch {
-            // Ravelry not connected — that's okay
+            // Network or decode error — don't block the UI but log it
+            print("[FindFriends] Ravelry load failed: \(error.localizedDescription)")
         }
     }
 

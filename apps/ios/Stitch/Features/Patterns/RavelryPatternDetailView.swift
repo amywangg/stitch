@@ -179,14 +179,7 @@ struct RavelryPatternDetailView: View {
                 }
             }
         }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
-        } message: {
-            Text(viewModel.error ?? "")
-        }
+        .errorAlert(error: $viewModel.error)
         .task { await viewModel.load(ravelryId: ravelryId) }
     }
 
@@ -220,115 +213,22 @@ struct RavelryPatternDetailView: View {
 
     private func patternContent(_ detail: RavelryPatternDetail) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Photo gallery
-            if !detail.photos.isEmpty {
-                photoGallery(detail.photos)
-            }
+            RavelryPatternHeader(
+                detail: detail,
+                selectedPhotoIndex: $selectedPhotoIndex
+            )
 
             VStack(alignment: .leading, spacing: 20) {
-                // Title + designer
-                titleSection(detail)
-
                 // Action buttons
                 actionButtons(detail)
 
-                // Gauge card
-                if detail.gaugeStitches != nil || detail.gaugeRows != nil || detail.gaugeNeedleMm != nil {
-                    gaugeSection(detail)
-                }
-
-                // Quick metadata
-                metadataSection(detail)
-
-                // Sizes
-                if let sizes = detail.sizesAvailable, !sizes.isEmpty {
-                    sizesSection(sizes)
-                }
-
-                // Needles
-                if !detail.needleSizes.isEmpty {
-                    needlesSection(detail.needleSizes)
-                }
-
-                // Yarn / materials
-                if !detail.packs.isEmpty {
-                    yarnSection(detail.packs)
-                }
-
-                // Parsed note sections (measurements, materials, etc.)
-                if let parsedNotes = detail.parsedNotes, !parsedNotes.isEmpty {
-                    notesSections(parsedNotes)
-                }
-
+                // Info sections (gauge, metadata, sizes, needles, yarn, notes)
+                RavelryPatternInfo(
+                    detail: detail,
+                    expandedNoteSection: $expandedNoteSection
+                )
             }
             .padding()
-        }
-    }
-
-    // MARK: - Photo Gallery
-
-    private func photoGallery(_ photos: [String]) -> some View {
-        TabView(selection: $selectedPhotoIndex) {
-            ForEach(Array(photos.enumerated()), id: \.offset) { index, urlStr in
-                if let url = URL(string: urlStr) {
-                    AsyncImage(url: url) { image in
-                        image.resizable().aspectRatio(contentMode: .fill)
-                    } placeholder: {
-                        Color.secondary.opacity(0.1)
-                            .overlay { ProgressView() }
-                    }
-                    .tag(index)
-                }
-            }
-        }
-        .tabViewStyle(.page(indexDisplayMode: photos.count > 1 ? .always : .never))
-        .frame(height: 360)
-        .clipped()
-    }
-
-    // MARK: - Title
-
-    private func titleSection(_ detail: RavelryPatternDetail) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(detail.name)
-                .font(.title2.weight(.bold))
-
-            if let designer = detail.designer {
-                Text("by \(designer)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-
-            HStack(spacing: 12) {
-                if let rating = detail.rating {
-                    HStack(spacing: 4) {
-                        Image(systemName: "star.fill")
-                            .foregroundStyle(theme.primary)
-                        Text(String(format: "%.1f", rating))
-                            .fontWeight(.medium)
-                        Text("(\(detail.ratingCount))")
-                            .foregroundStyle(.secondary)
-                    }
-                    .font(.subheadline)
-                }
-
-                if detail.free {
-                    Text("Free")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.green)
-                } else if let price = detail.price, price > 0 {
-                    Text(formatPrice(price, currency: detail.currency))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
-                }
-            }
-            .padding(.top, 2)
-
-            if !detail.patternCategories.isEmpty {
-                Text(detail.patternCategories.joined(separator: " · "))
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-            }
         }
     }
 
@@ -361,7 +261,7 @@ struct RavelryPatternDetailView: View {
                 }
                 .disabled(viewModel.isSaving || viewModel.didSave)
             } else {
-                // Paid pattern — buy on Ravelry
+                // Paid pattern without download access — buy on Ravelry
                 Button {
                     showPurchaseSafari = true
                 } label: {
@@ -539,252 +439,6 @@ struct RavelryPatternDetailView: View {
         return String(format: "%@%.2f", symbol, price)
     }
 
-    // MARK: - Gauge
-
-    private func gaugeSection(_ detail: RavelryPatternDetail) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Gauge")
-                .font(.headline)
-
-            HStack(spacing: 10) {
-                if let sts = detail.gaugeStitches {
-                    gaugeCard(String(format: "%.0f", sts), "sts", "per 10 cm")
-                }
-                if let rows = detail.gaugeRows {
-                    gaugeCard(String(format: "%.0f", rows), "rows", "per 10 cm")
-                }
-                if let needle = detail.gaugeNeedleMm {
-                    gaugeCard(String(format: "%.1f", needle), "mm", "needle")
-                }
-            }
-
-            if let pattern = detail.gaugeStitchPattern {
-                Text("in \(pattern)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 4)
-            }
-        }
-    }
-
-    private func gaugeCard(_ value: String, _ unit: String, _ label: String) -> some View {
-        VStack(spacing: 2) {
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text(value)
-                    .font(.title3.weight(.semibold))
-                Text(unit)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(.secondary)
-            }
-            Text(label)
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
-    }
-
-    // MARK: - Metadata
-
-    private func metadataSection(_ detail: RavelryPatternDetail) -> some View {
-        LazyVGrid(columns: [
-            GridItem(.flexible(), spacing: 10),
-            GridItem(.flexible(), spacing: 10),
-        ], spacing: 10) {
-            if let weight = detail.weight {
-                metadataChip(icon: "scalemass", value: weight.capitalized)
-            }
-            if let difficulty = detail.difficulty {
-                metadataChip(icon: "chart.bar", value: String(format: "%.1f / 5", difficulty))
-            }
-            if let yardage = formatYardage(min: detail.yardageMin, max: detail.yardageMax) {
-                metadataChip(icon: "line.3.horizontal", value: yardage)
-            }
-            metadataChip(icon: "hand.draw", value: detail.craft.capitalized)
-        }
-    }
-
-    private func metadataChip(icon: String, value: String) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.caption)
-                .foregroundStyle(theme.primary)
-            Text(value)
-                .font(.subheadline)
-                .lineLimit(1)
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
-    }
-
-    // MARK: - Sizes
-
-    private func sizesSection(_ sizes: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Sizes")
-                .font(.headline)
-
-            let sizeList = sizes
-                .components(separatedBy: CharacterSet(charactersIn: ",/"))
-                .map { $0.trimmingCharacters(in: .whitespaces) }
-                .filter { !$0.isEmpty }
-
-            if sizeList.count > 1 {
-                // Show as capsule chips
-                FlowLayout(spacing: 8) {
-                    ForEach(sizeList, id: \.self) { size in
-                        Text(size)
-                            .font(.caption.weight(.medium))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.secondary.opacity(0.08), in: Capsule())
-                    }
-                }
-            } else {
-                Text(sizes)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    // MARK: - Needles
-
-    private func needlesSection(_ needles: [String]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Needles")
-                .font(.headline)
-
-            ForEach(needles, id: \.self) { needle in
-                HStack(spacing: 8) {
-                    Image(systemName: "pencil.and.outline")
-                        .font(.caption)
-                        .foregroundStyle(theme.primary)
-                    Text(needle)
-                        .font(.subheadline)
-                }
-            }
-        }
-    }
-
-    // MARK: - Yarn
-
-    private func yarnSection(_ packs: [RavelryPatternDetail.YarnPack]) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Suggested yarn")
-                .font(.headline)
-
-            ForEach(Array(packs.enumerated()), id: \.offset) { _, pack in
-                HStack(spacing: 12) {
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(theme.primary.opacity(0.15))
-                        .frame(width: 4, height: 36)
-
-                    VStack(alignment: .leading, spacing: 3) {
-                        if let name = pack.yarnName {
-                            Text(name)
-                                .font(.subheadline.weight(.medium))
-                        }
-                        HStack(spacing: 6) {
-                            if let company = pack.yarnCompany {
-                                Text(company)
-                            }
-                            if let yards = pack.totalYards {
-                                Text("·")
-                                Text("\(Int(yards)) yds")
-                            }
-                            if let skeins = pack.skeins {
-                                Text("·")
-                                Text("\(Int(skeins)) skeins")
-                            }
-                        }
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: - Parsed Notes
-
-    private func notesSections(_ sections: [RavelryPatternDetail.NoteSection]) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            ForEach(sections, id: \.title) { section in
-                // Skip sections already displayed as structured UI
-                if !isRedundantSection(section.title) {
-                    noteCard(section)
-                }
-            }
-        }
-    }
-
-    private func noteCard(_ section: RavelryPatternDetail.NoteSection) -> some View {
-        let isExpanded = expandedNoteSection == section.title
-        let isShort = section.content.count < 200
-
-        return VStack(alignment: .leading, spacing: 6) {
-            if isShort {
-                // Short sections — always show fully
-                Text(section.title)
-                    .font(.headline)
-                MarkdownBoldText(section.content)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            } else {
-                // Longer sections — collapsible
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        expandedNoteSection = isExpanded ? nil : section.title
-                    }
-                } label: {
-                    HStack {
-                        Text(section.title)
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Image(systemName: "chevron.down")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.tertiary)
-                            .rotationEffect(.degrees(isExpanded ? 180 : 0))
-                    }
-                }
-                .buttonStyle(.plain)
-
-                MarkdownBoldText(section.content)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(isExpanded ? nil : 3)
-            }
-        }
-    }
-
-    /// Sections that are already shown as structured UI — skip them in the notes list
-    private func isRedundantSection(_ title: String) -> Bool {
-        let lower = title.lowercased()
-        return lower == "sizes" || lower == "gauge" || lower == "needles"
-    }
-
-
-    // MARK: - Helpers
-
-    private func formatYardage(min: Int?, max: Int?) -> String? {
-        switch (min, max) {
-        case let (lo?, hi?) where lo == hi:
-            return "\(lo) yards"
-        case let (lo?, hi?):
-            return "\(lo)–\(hi) yards"
-        case let (lo?, nil):
-            return "\(lo)+ yards"
-        case let (nil, hi?):
-            return "Up to \(hi) yards"
-        default:
-            return nil
-        }
-    }
 }
 
 // MARK: - Safari Sheet

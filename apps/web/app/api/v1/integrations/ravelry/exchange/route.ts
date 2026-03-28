@@ -1,10 +1,11 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { encrypt, decrypt } from '@/lib/encrypt'
 import crypto from 'crypto'
 
+
+export const dynamic = 'force-dynamic'
 /** RFC 3986 percent-encoding */
 function percentEncode(str: string): string {
   return encodeURIComponent(str).replace(/[!'()*]/g, c =>
@@ -17,13 +18,8 @@ function percentEncode(str: string): string {
  * The iOS app calls this after ASWebAuthenticationSession returns the callback.
  * It passes the oauth_token, oauth_verifier, and encrypted state from the connect step.
  */
-export async function POST(req: NextRequest) {
+export const POST = withAuth(async (req, user) => {
   try {
-    const { userId: clerkId } = await auth()
-    if (!clerkId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     const body = await req.json()
     const oauthToken = body.oauth_token as string | undefined
     const oauthVerifier = body.oauth_verifier as string | undefined
@@ -121,8 +117,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing tokens from Ravelry' }, { status: 502 })
     }
 
-    const user = await getDbUser(clerkId)
-
     await prisma.ravelry_connections.upsert({
       where: { user_id: user.id },
       create: {
@@ -149,4 +143,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     )
   }
-}
+})

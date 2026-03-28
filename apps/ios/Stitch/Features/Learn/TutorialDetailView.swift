@@ -28,14 +28,7 @@ struct TutorialDetailView: View {
             }
         }
         .task { await viewModel.load(tutorialId: tutorialId) }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
-        } message: {
-            Text(viewModel.error ?? "")
-        }
+        .errorAlert(error: $viewModel.error)
     }
 
     // MARK: - Content

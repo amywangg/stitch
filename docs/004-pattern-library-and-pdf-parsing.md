@@ -1,6 +1,6 @@
 # Pattern Library and PDF Parsing
 
-**Status:** Schema complete, AI route exists
+**Status:** Complete
 
 ## Problem Statement
 
@@ -8,7 +8,7 @@ Knitters accumulate patterns from many sources: PDFs, Ravelry, printed booklets.
 
 ## Solution Overview
 
-Patterns are stored with full structured data: sections, rows with instructions, sizes, gauge info, and tags. Users can create patterns manually, import from Ravelry (see 005), or upload a PDF for AI parsing. PDF parsing uses `pdf-parse` for text extraction and GPT-4o for structuring the content. Parsed results go through a review screen where users can correct errors before saving.
+Patterns are stored with full structured data: sections, rows with instructions, sizes, gauge info, and tags. Users can create patterns manually via the pattern builder, import from Ravelry, or upload a PDF for AI parsing. PDF parsing uses `pdf-parse` for text extraction and GPT-4o for structuring the content.
 
 ## Key Components
 
@@ -16,108 +16,84 @@ Patterns are stored with full structured data: sections, rows with instructions,
 
 | Route | Purpose | Status |
 |---|---|---|
-| `GET /api/v1/patterns` | List user's patterns (paginated, filterable) | Not started |
-| `POST /api/v1/patterns` | Create pattern manually | Not started |
-| `GET /api/v1/patterns/[id]` | Get pattern with sections, rows, sizes | Not started |
-| `PATCH /api/v1/patterns/[id]` | Update pattern details | Not started |
-| `DELETE /api/v1/patterns/[id]` | Soft delete pattern | Not started |
-| `POST /api/v1/patterns/[id]/sections` | Add section to pattern | Not started |
-| `PATCH /api/v1/patterns/[id]/sections/[sectionId]` | Update section | Not started |
-| `POST /api/v1/pdf/parse` | Upload PDF, extract text, GPT-4o structures it | Exists (needs refinement) |
-| `POST /api/v1/pdf/upload` | Upload PDF to Supabase Storage, create pdf_uploads record | Not started |
-| `GET /api/v1/gauge/measurement-to-rows` | Convert target cm to estimated rows | Exists |
-| `POST /api/v1/gauge/rows-to-measurement` | Convert row count to estimated cm/inches | Exists |
-| `POST /api/v1/gauge/compare` | Compare pattern gauge vs user gauge | Exists |
+| `GET /api/v1/patterns` | List user's patterns (paginated, folder-filterable) | Complete |
+| `POST /api/v1/patterns` | Create pattern manually | Complete |
+| `GET /api/v1/patterns/[id]` | Get pattern with sections, rows, sizes, photos, yarns | Complete |
+| `PATCH /api/v1/patterns/[id]` | Update pattern details, move to folder | Complete |
+| `DELETE /api/v1/patterns/[id]` | Soft delete pattern | Complete |
+| `GET/POST /api/v1/patterns/folders` | List and create pattern folders | Complete |
+| `PATCH/DELETE /api/v1/patterns/folders/[id]` | Rename, delete folders | Complete |
+| `POST /api/v1/pdf/parse` | Upload PDF → extract text → GPT-4o structures it. Pro-gated. | Complete |
+| `POST /api/v1/pdf/upload` | Upload PDF to Supabase Storage | Complete |
+| `GET /api/v1/pdf/[id]` | Get signed URL for PDF download | Complete |
+| `GET/PUT /api/v1/pdf/[id]/annotations` | Load/save PDF annotations per user | Complete |
+| `POST /api/v1/patterns/enrich` | Enrich pattern metadata from Ravelry | Complete |
+| `POST /api/v1/patterns/[id]/apply-size` | Apply size to pattern sections | Complete |
+| `GET /api/v1/ravelry/search` | Proxy search to Ravelry with filters | Complete |
+| `GET /api/v1/ravelry/patterns/[id]` | Get Ravelry pattern detail | Complete |
 
 ### iOS (SwiftUI)
 
 | Screen / Component | Purpose | Status |
 |---|---|---|
-| `PatternsView` | Grid/list of saved patterns with search and filters | Not started |
-| `PatternDetailView` | Full pattern info, sections, gauge, linked projects | Not started |
-| `PatternUploadView` | PDF picker, upload progress, triggers AI parsing | Not started |
-| `PatternReviewView` | Review and edit AI-extracted data before saving | Not started |
-| `PatternReadingView` | Follow-along mode: current row highlighted, tap to advance | Not started |
-| `PatternCreateView` | Manual pattern entry form | Not started |
-| `PatternViewModel` | MVVM observable class for pattern operations | Not started |
+| `PatternsView` | Tab view: My Patterns, Discover, Learn. Folder navigation, sort/layout options | Complete |
+| `PatternDetailView` | Full pattern view with sections, sizes, cover carousel, metadata | Complete |
+| `PatternBuilderView` | In-app pattern creation with section/row editor | Complete |
+| `AIPatternBuilderView` | AI-powered pattern generation (Pro-gated) | Complete |
+| `PDFParseFlowView` | Upload PDF → AI parse → Ravelry match → size selection → project creation. Pro-gated. | Complete |
+| `PDFMarkupView` | Annotatable PDF viewer with highlight, pen, text note, eraser tools | Complete |
+| `PDFMarkupToolbar` | Bottom toolbar for annotation tools with color/width picker | Complete |
+| `PDFAnnotationManager` | Annotation state with undo/redo, auto-save, sync to document | Complete |
+| `PatternDiscoverView` | Ravelry search with curated browse sections (Most Popular, Top Rated, Recently Added) | Complete |
+| `StartPatternFlowView` | Start project from pattern with size selection. AI parse button Pro-gated. | Complete |
 
-### Web (Next.js)
+### PDF Markup / Annotation
 
-| Page / Component | Purpose | Status |
-|---|---|---|
-| `(app)/patterns/page.tsx` | Pattern library with grid view and filters | Not started |
-| `(app)/patterns/[id]/page.tsx` | Pattern detail page | Not started |
-| `(app)/patterns/upload/page.tsx` | PDF upload with drag-and-drop | Not started |
-| `(app)/patterns/[id]/review/page.tsx` | Review AI-parsed pattern data | Not started |
-| Pattern reading component | Row-by-row follow-along view | Not started |
-| PDF upload component | File picker with progress indicator | Not started |
+All tiers including free can annotate PDFs:
 
-### Database
+- **Highlight** — tap or drag to create yellow highlight rectangles
+- **Pen** — freehand drawing with 4 colors (red/blue/green/black) and 3 widths
+- **Text note** — tap to place, enter text via alert
+- **Eraser** — tap annotation to remove
+- **Undo/redo** — standard stack, per-session
+- **Auto-save** — every 30 seconds + on dismiss
+- **Storage** — one JSON record per user per PDF in `pdf_annotations` table
+- **Floating counter** — row counter pill in top-right of PDF viewer (increment, decrement, reset)
 
-| Table | Purpose |
-|---|---|
-| `patterns` | Core pattern record: title, author, craft_type, difficulty, yarn_weight, deleted_at |
-| `pattern_sections` | Named sections within a pattern (e.g., "Body", "Sleeves") |
-| `pattern_rows` | Individual row instructions with stitch counts per section |
-| `pattern_sizes` | Size variants (S, M, L, etc.) with measurements |
-| `pattern_tags` | User and auto-generated tags |
-| `pdf_uploads` | Tracks uploaded PDFs: file_name, file_size, storage_path, status, parsed_pattern_id |
+### Pattern Discovery
 
-## Implementation Checklist
+The Discover tab shows curated browse sections before search:
 
-- [x] Database schema for patterns, pattern_sections, pattern_rows, pattern_sizes, pattern_tags
-- [x] pdf_uploads table for tracking uploads
-- [x] Gauge fields on patterns (gauge_stitches_per_10cm, gauge_rows_per_10cm)
-- [x] Soft delete support on patterns
-- [x] POST /api/v1/pdf/parse route (pdf-parse + GPT-4o)
-- [x] Gauge calculation routes (measurement-to-rows, rows-to-measurement, compare)
-- [ ] Pattern CRUD API routes
-- [ ] Pattern section and row CRUD API routes
-- [ ] PDF upload to Supabase Storage route
-- [ ] Refine GPT-4o prompt for better pattern extraction accuracy
-- [ ] Handle multi-size patterns (extract instructions per size)
-- [ ] Cover image extraction from PDF first page
-- [ ] iOS PatternsView with grid layout and search
-- [ ] iOS PatternDetailView
-- [ ] iOS PatternUploadView with document picker
-- [ ] iOS PatternReviewView for editing parsed data
-- [ ] iOS PatternReadingView (row-by-row follow-along)
-- [ ] iOS manual pattern creation
-- [ ] Web pattern library page with filters
-- [ ] Web pattern detail page
-- [ ] Web PDF upload page with drag-and-drop
-- [ ] Web pattern review page
-- [ ] Pattern search by craft type, difficulty, yarn weight, tags
-- [ ] Enforce free tier limits (15 patterns, 2 PDF uploads/month)
+- **Most Popular** — horizontal card carousel, sorted by Ravelry popularity
+- **Top Rated** — sorted by rating
+- **Recently Added** — sorted by date
 
-## Dependencies
+Each card shows pattern photo (150x200 portrait), name, designer, star rating, "Free" badge. Search with filters: craft, weight, category, difficulty, designer, photos-only.
 
-- Authentication (001) for user identification
-- Subscriptions (002) for Pro gating on PDF parsing and pattern limits
-- Supabase Storage bucket for PDF files
-- OpenAI API key for GPT-4o pattern parsing
+## AI Parse Flow
+
+1. User selects PDF (via file picker)
+2. Pro gate check — non-Pro users see StitchPaywallView
+3. PDF uploaded to Supabase Storage
+4. `POST /pdf/parse` sends PDF to GPT-4o → returns structured pattern
+5. Ravelry match screen (optional) — suggests matching Ravelry patterns
+6. Size selection screen (if multiple sizes)
+7. Project creation from parsed pattern
 
 ## Tier Gating
 
 | Feature | Free | Plus | Pro |
 |---|---|---|---|
-| Saved patterns | 15 max | Unlimited | Unlimited |
-| PDF parsing (AI) | 2/month | 5/month | Unlimited |
-| PDF storage | 2 | 5 | Unlimited |
-| Manual pattern creation | Yes | Yes | Yes |
-| Pattern reading mode | Yes | Yes | Yes |
-| Gauge calculator | Yes | Yes | Yes |
-
-PDF parsing is available on all tiers (metered). This is critical because the row counter, glossary linking, and AI tools all depend on patterns being in structured format. Without parsing, most of the app's value is inaccessible.
-
-New users receive 14 days of full Pro access (reverse trial). All limits expand to unlimited during trial, then revert to the user's tier. Patterns created during trial are never deleted.
+| PDF storage/upload | Unlimited | Unlimited | Unlimited |
+| PDF annotation/markup | Yes | Yes | Yes |
+| AI PDF parsing | 2/month | 5/month | Unlimited |
+| AI pattern builder | No | No | Yes |
+| Pattern browsing/saving | 15 saved | Unlimited | Unlimited |
 
 ## Technical Notes
 
-- PDF parsing flow: (1) upload PDF to Supabase Storage, (2) create `pdf_uploads` record with status "processing", (3) extract text with `pdf-parse`, (4) send text to GPT-4o with structured output prompt, (5) return parsed JSON for review, (6) user confirms, (7) save as pattern with sections/rows, (8) update pdf_uploads status to "completed" with parsed_pattern_id.
-- The GPT-4o prompt should request JSON output matching the pattern_sections/pattern_rows schema. Key fields to extract: section names, row-by-row instructions, stitch counts, repeat indicators, gauge, yarn weight, needle size.
-- Multi-size patterns are common. The prompt should extract instructions for all sizes. Pattern rows store size-specific stitch counts in a JSON field.
-- The review screen is critical for user trust. AI extraction will have errors, especially with complex lace or colorwork patterns. Users must be able to edit every field before saving.
-- PDF text extraction quality varies wildly. Some PDFs use images for charts, which `pdf-parse` cannot read. Consider adding a note to users that chart-heavy patterns may need manual entry.
-- Free tier PDF limit (2/month) is tracked by counting `pdf_uploads` rows for the user within the current calendar month.
-- Pattern reading mode should remember the user's current position per pattern, stored locally on device and optionally synced via the project's linked section counter.
+- PDF annotations use PDFKit native annotations with a transparent touch overlay for gesture handling
+- Annotation data stored as JSON array in `pdf_annotations.annotation_data`
+- `TouchInterceptOverlay` passes touches through to PDFView when no tool is active
+- Pattern folders support nesting (parent_id) with drag-to-move context menu
+- PDF counter in viewer is local state only — not persisted

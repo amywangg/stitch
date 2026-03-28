@@ -5,6 +5,8 @@ import { getDbUser } from '@/lib/auth'
 import { encrypt, decrypt } from '@/lib/encrypt'
 import crypto from 'crypto'
 
+
+export const dynamic = 'force-dynamic'
 /**
  * Step 2 of Ravelry OAuth 1.0a (HMAC-SHA1).
  *

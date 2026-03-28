@@ -57,13 +57,53 @@ enum PatternsSort: String, CaseIterable {
     func sorted(_ patterns: [Pattern]) -> [Pattern] {
         switch self {
         case .newest:
-            return patterns.sorted { $0.createdAt > $1.createdAt }
+            return patterns.sorted { ($0.createdAt ?? .distantPast) > ($1.createdAt ?? .distantPast) }
         case .oldest:
-            return patterns.sorted { $0.createdAt < $1.createdAt }
+            return patterns.sorted { ($0.createdAt ?? .distantPast) < ($1.createdAt ?? .distantPast) }
         case .alphabetical:
             return patterns.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
         case .recentlyUpdated:
-            return patterns.sorted { $0.updatedAt > $1.updatedAt }
+            return patterns.sorted { ($0.updatedAt ?? .distantPast) > ($1.updatedAt ?? .distantPast) }
+        }
+    }
+}
+
+enum PatternFilter: String, CaseIterable, Identifiable {
+    case all
+    case hasPdf
+    case aiParsed
+    case fromRavelry
+    case free
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .all: return "All"
+        case .hasPdf: return "Has PDF"
+        case .aiParsed: return "AI parsed"
+        case .fromRavelry: return "From Ravelry"
+        case .free: return "Free"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .all: return "tray.full"
+        case .hasPdf: return "doc.fill"
+        case .aiParsed: return "sparkles"
+        case .fromRavelry: return "arrow.down.circle"
+        case .free: return "gift"
+        }
+    }
+
+    func matches(_ pattern: Pattern) -> Bool {
+        switch self {
+        case .all: return true
+        case .hasPdf: return pattern.firstPdfUploadId != nil
+        case .aiParsed: return pattern.aiParsed == true
+        case .fromRavelry: return pattern.ravelryId != nil
+        case .free: return pattern.sourceFree == true
         }
     }
 }
@@ -74,12 +114,40 @@ final class PatternsViewModel {
     var patterns: [Pattern] = []  // unfiled patterns (root level)
     var isLoading = false
     var error: String?
+    var searchText = ""
+    var activeFilter: PatternFilter = .all
 
     // Folder navigation
     var currentFolder: PatternFolder?
     var folderPatterns: [Pattern] = []
     var folderChildren: [PatternFolder] = []
     var isFolderLoading = false
+
+    var filteredPatterns: [Pattern] {
+        var result = patterns
+        if activeFilter != .all {
+            result = result.filter { activeFilter.matches($0) }
+        }
+        if !searchText.isEmpty {
+            let query = searchText.lowercased()
+            result = result.filter { pattern in
+                pattern.title.lowercased().contains(query)
+                || (pattern.designerName?.lowercased().contains(query) ?? false)
+                || (pattern.yarnWeight?.lowercased().contains(query) ?? false)
+                || (pattern.garmentType?.lowercased().contains(query) ?? false)
+            }
+        }
+        return result
+    }
+
+    /// Counts for showing filter badges
+    var filterCounts: [PatternFilter: Int] {
+        var counts: [PatternFilter: Int] = [:]
+        for filter in PatternFilter.allCases {
+            counts[filter] = patterns.filter { filter.matches($0) }.count
+        }
+        return counts
+    }
 
     // MARK: - Load root (folders + unfiled patterns)
 

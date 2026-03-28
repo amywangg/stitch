@@ -1,19 +1,16 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
-import { getDbUser } from '@/lib/auth'
+import { NextResponse } from 'next/server'
+import { withAuth } from '@/lib/route-helpers'
 import { searchRavelryPatterns } from '@/lib/ravelry-search'
 
+
+export const dynamic = 'force-dynamic'
 /**
  * GET /api/v1/ravelry/search
  * Proxy Ravelry pattern search. Never stores results — always fresh.
  *
  * Query params: query, craft, weight, yardage_max, pc, fit, availability, sort, page, page_size
  */
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await getDbUser(clerkId)
-
+export const GET = withAuth(async (req, user) => {
   const { searchParams } = new URL(req.url)
 
   try {
@@ -44,4 +41,4 @@ export async function GET(req: NextRequest) {
       { status: 502 },
     )
   }
-}
+})

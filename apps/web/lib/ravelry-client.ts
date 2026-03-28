@@ -78,6 +78,12 @@ export interface RavelryLibraryItem {
   id: number
   title: string
   url: string | null
+  pattern_id: number | null
+  author_name: string | null
+  has_downloads: boolean
+  // The search endpoint returns pattern_id (number), NOT a nested pattern object.
+  // The list endpoint returns a nested pattern object, but it returns {} for most accounts.
+  // We use pattern_id + getRavelryPatternDetail() to get full pattern data.
   pattern: {
     id: number
     name: string
@@ -122,7 +128,11 @@ export interface RavelryStashItem {
 export interface RavelryFriend {
   friend_id: number
   friend_username: string
-  small_photo_url: string | null
+  friend_avatar: {
+    tiny_photo_url: string | null
+    photo_url: string | null
+    large_photo_url: string | null
+  } | null
   created_at: string
 }
 
@@ -200,87 +210,88 @@ export class RavelryClient {
         .join(', ')
   }
 
-  private async get<T>(path: string, params?: Record<string, string | number>): Promise<T> {
+  private async request<T>(
+    method: string,
+    path: string,
+    params?: Record<string, string | number>,
+    body?: Record<string, unknown>,
+  ): Promise<T> {
     const url = new URL(`${BASE_URL}${path}`)
-    if (params) {
+    if (params && method === 'GET') {
       for (const [k, v] of Object.entries(params)) {
         url.searchParams.set(k, String(v))
       }
     }
     const fullUrl = url.toString()
-    const res = await fetch(fullUrl, {
-      headers: {
-        Authorization: this.buildAuthHeader('GET', fullUrl),
-        Accept: 'application/json',
-      },
-      redirect: 'manual',
-    })
 
-    // Ravelry returns 302 to login page when OAuth tokens are expired/revoked
-    if (res.status >= 300 && res.status < 400) {
-      throw new RavelryAuthError('Ravelry session expired. Please reconnect your Ravelry account.')
+    const headers: Record<string, string> = {
+      Authorization: this.buildAuthHeader(method, fullUrl),
+      Accept: 'application/json',
     }
 
-    if (res.status === 401 || res.status === 403) {
-      throw new RavelryAuthError('Ravelry authorization failed. Please reconnect your Ravelry account.')
+    const fetchOpts: RequestInit = {
+      method,
+      headers,
+      redirect: method === 'GET' ? 'follow' : 'manual',
+    }
+
+    if (body && method !== 'GET') {
+      headers['Content-Type'] = 'application/json'
+      fetchOpts.body = JSON.stringify(body)
+    }
+
+    const res = await fetch(fullUrl, fetchOpts)
+
+    // Ravelry returns 302 to login page when endpoint requires different permissions
+    // Only check for non-GET (GET follows redirects automatically)
+    if (method !== 'GET' && res.status >= 300 && res.status < 400) {
+      throw new Error(`Ravelry redirected for ${path} — this endpoint may require additional app permissions.`)
+    }
+
+    if (res.status === 401) {
+      throw new RavelryAuthError('Ravelry rejected the OAuth token. Please disconnect and reconnect.')
+    }
+
+    if (res.status === 403) {
+      throw new Error(`Ravelry denied access to ${path}. Your Ravelry API app may need additional permissions.`)
     }
 
     if (!res.ok) {
-      throw new Error(`Ravelry API ${res.status}: ${path}`)
+      const errBody = await res.text().catch(() => '')
+      throw new Error(`Ravelry API ${res.status} ${method} ${path}: ${errBody.slice(0, 200)}`)
     }
 
+    // Some write endpoints return 200 with no body
     const contentType = res.headers.get('content-type') ?? ''
-    if (contentType.includes('text/html')) {
-      throw new RavelryAuthError('Ravelry returned a login page instead of data. Please reconnect your Ravelry account.')
+    if (!contentType.includes('json')) {
+      return {} as T
     }
 
     const text = await res.text()
     try {
       return JSON.parse(text) as T
     } catch {
-      // Check if response is HTML (auth redirect that slipped through)
       if (text.trimStart().startsWith('<!DOCTYPE') || text.trimStart().startsWith('<html')) {
-        throw new RavelryAuthError('Ravelry session expired. Please reconnect your Ravelry account.')
+        throw new Error(`Ravelry returned a login page for ${path}. This endpoint may require re-authorization.`)
       }
       throw new Error(`Ravelry API invalid JSON from ${path}: ${text.slice(0, 100)}`)
     }
   }
 
-  private async post<T>(path: string, body: Record<string, unknown>): Promise<T> {
-    const fullUrl = `${BASE_URL}${path}`
-    const res = await fetch(fullUrl, {
-      method: 'POST',
-      headers: { Authorization: this.buildAuthHeader('POST', fullUrl), 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(body),
-    })
-    if (!res.ok) {
-      throw new Error(`Ravelry API ${res.status}: POST ${path}`)
-    }
-    return res.json() as Promise<T>
+  private async get<T>(path: string, params?: Record<string, string | number>): Promise<T> {
+    return this.request('GET', path, params)
   }
 
-  private async patch<T>(path: string, body: Record<string, unknown>): Promise<T> {
-    const fullUrl = `${BASE_URL}${path}`
-    const res = await fetch(fullUrl, {
-      method: 'PATCH',
-      headers: { Authorization: this.buildAuthHeader('PATCH', fullUrl), 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(body),
-    })
-    if (!res.ok) {
-      throw new Error(`Ravelry API ${res.status}: PATCH ${path}`)
-    }
-    return res.json() as Promise<T>
+  async post<T>(path: string, body?: Record<string, unknown>): Promise<T> {
+    return this.request('POST', path, undefined, body)
   }
 
-  private async del(path: string): Promise<void> {
-    const fullUrl = `${BASE_URL}${path}`
-    const res = await fetch(fullUrl, {
-      method: 'DELETE',
-      headers: { Authorization: this.buildAuthHeader('DELETE', fullUrl), Accept: 'application/json' },
-    })
-    if (!res.ok) {
-      throw new Error(`Ravelry API ${res.status}: DELETE ${path}`)
-    }
+  async put<T>(path: string, body?: Record<string, unknown>): Promise<T> {
+    return this.request('PUT', path, undefined, body)
+  }
+
+  async delete<T>(path: string): Promise<T> {
+    return this.request('DELETE', path)
   }
 
   // ─── Binary fetch (for file downloads) ──────────────────────────────────────
@@ -333,7 +344,20 @@ export class RavelryClient {
   }
 
   async listLibrary(page = 1): Promise<{ volumes: RavelryLibraryItem[]; paginator: Paginator }> {
-    return this.get(`/people/${this.username}/library/list.json`, { page, page_size: 100 })
+    try {
+      // Note: /library/list.json returns {} for most accounts.
+      // /library/search.json is the correct endpoint that returns volumes + paginator.
+      return await this.get(`/people/${this.username}/library/search.json`, { page, page_size: 100 })
+    } catch (err) {
+      // Library endpoint returns 302 or HTML for accounts with empty/inaccessible library
+      // Treat as empty — not an error
+      const msg = err instanceof Error ? err.message : String(err)
+      if (msg.includes('login page') || msg.includes('redirected') || msg.includes('invalid JSON')) {
+        console.log(`[ravelry] Library endpoint returned non-data response (page ${page}), treating as empty`)
+        return { volumes: [], paginator: { results: 0, page: 1, page_count: 0 } }
+      }
+      throw err
+    }
   }
 
   async getPattern(id: number): Promise<{
@@ -370,62 +394,35 @@ export class RavelryClient {
   async listFriends(page = 1): Promise<{ friendships: RavelryFriend[]; paginator: Paginator }> {
     return this.get(`/people/${this.username}/friends/list.json`, { page, page_size: 100 })
   }
+}
 
-  // ─── Project write ──────────────────────────────────────────────────────────
+// ─── Factory ──────────────────────────────────────────────────────────────────
 
-  async createProject(data: {
-    name: string
-    status_name: string
-    craft_name: string
-    started?: string
-  }): Promise<{ project: { id: number; permalink: string } }> {
-    return this.post(`/projects/${this.username}.json`, data)
-  }
+/**
+ * Returns a ready RavelryClient for read-only operations if the user
+ * has a Ravelry connection. Returns null if not connected or missing env vars.
+ */
+export async function getRavelryClient(
+  userId: string,
+): Promise<RavelryClient | null> {
+  // Lazy-import prisma + decrypt to avoid circular deps at module level
+  const { prisma } = await import('@/lib/prisma')
+  const { decrypt } = await import('@/lib/encrypt')
 
-  async updateProject(
-    permalink: string,
-    data: Partial<{ name: string; status_name: string; notes: string; size: string; started: string; completed: string }>,
-  ): Promise<void> {
-    await this.patch(`/projects/${this.username}/${permalink}.json`, data)
-  }
+  const connection = await prisma.ravelry_connections.findUnique({
+    where: { user_id: userId },
+  })
+  if (!connection) return null
 
-  async deleteProject(permalink: string): Promise<void> {
-    await this.del(`/projects/${this.username}/${permalink}.json`)
-  }
+  const clientKey = process.env.RAVELRY_CLIENT_KEY
+  const clientSecret = process.env.RAVELRY_CLIENT_SECRET
+  if (!clientKey || !clientSecret) return null
 
-  // ─── Queue write ────────────────────────────────────────────────────────────
-
-  async addToQueue(data: {
-    pattern_id: number
-    notes?: string
-  }): Promise<{ queued_project: { id: number } }> {
-    return this.post(`/people/${this.username}/queue.json`, data)
-  }
-
-  async removeFromQueue(queueId: string): Promise<void> {
-    await this.del(`/people/${this.username}/queue/${queueId}.json`)
-  }
-
-  // ─── Stash write ────────────────────────────────────────────────────────────
-
-  async createStashItem(data: {
-    name: string
-    colorway?: string
-    skeins?: number
-    grams?: number
-    notes?: string
-  }): Promise<{ stash: { id: number } }> {
-    return this.post(`/people/${this.username}/stash.json`, data)
-  }
-
-  async updateStashItem(
-    stashId: string,
-    data: Partial<{ colorway: string; skeins: number; grams: number; notes: string }>,
-  ): Promise<void> {
-    await this.patch(`/people/${this.username}/stash/${stashId}.json`, data)
-  }
-
-  async deleteStashItem(stashId: string): Promise<void> {
-    await this.del(`/people/${this.username}/stash/${stashId}.json`)
-  }
+  return new RavelryClient(
+    clientKey,
+    clientSecret,
+    decrypt(connection.access_token),
+    decrypt(connection.token_secret),
+    connection.ravelry_username,
+  )
 }

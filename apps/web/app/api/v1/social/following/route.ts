@@ -1,21 +1,17 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, parsePagination, paginatedResponse } from '@/lib/route-helpers'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
-  const page = parseInt(req.nextUrl.searchParams.get('page') ?? '1')
-  const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '20')
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, user) => {
+  const { page, limit, skip } = parsePagination(req)
 
   const [items, total] = await Promise.all([
     prisma.follows.findMany({
       where: { follower_id: user.id },
       orderBy: { created_at: 'desc' },
-      skip: (page - 1) * limit,
+      skip,
       take: limit,
       include: {
         following: {
@@ -26,14 +22,5 @@ export async function GET(req: NextRequest) {
     prisma.follows.count({ where: { follower_id: user.id } }),
   ])
 
-  return NextResponse.json({
-    success: true,
-    data: {
-      items: items.map((f) => f.following),
-      total,
-      page,
-      pageSize: limit,
-      hasMore: total > page * limit,
-    },
-  })
-}
+  return paginatedResponse(items.map((f) => f.following), total, page, limit)
+})

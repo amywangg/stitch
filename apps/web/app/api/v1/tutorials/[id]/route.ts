@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+
+export const dynamic = 'force-dynamic'
 // GET /api/v1/tutorials/[id] — single tutorial with all steps (no auth required)
 export async function GET(
   _req: NextRequest,

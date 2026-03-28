@@ -39,32 +39,25 @@ apps/web/app/api/v1/
 
 ## Handler Skeleton
 
+**Always use `withAuth()` from `lib/route-helpers.ts`.** Never write manual auth boilerplate.
+
 Every route handler follows the same structure:
 
 ```typescript
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, parsePagination, paginatedResponse, findOwned, generateUniqueSlug } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 
-export async function POST(req: NextRequest) {
-  // 1. Authenticate
-  const { userId: clerkId } = await auth()
-  if (!clerkId) {
-    return NextResponse.json(
-      { error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
-      { status: 401 }
-    )
-  }
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
+  // 1. Auth is already handled by withAuth — user is resolved
 
   // 2. Pro-gate (if applicable)
   const proError = requirePro(user, 'feature name')
   if (proError) return proError
 
-  // 3. Parse and validate input
+  // 3. Parse and validate input (always use Zod)
   const body = await req.json()
   const parsed = CreateProjectSchema.safeParse(body)
   if (!parsed.success) {
@@ -75,12 +68,12 @@ export async function POST(req: NextRequest) {
   }
 
   // 4. Business logic
+  const slug = await generateUniqueSlug(prisma.projects, user.id, parsed.data.title)
   const project = await prisma.projects.create({
-    data: { ...parsed.data, user_id: user.id },
+    data: { ...parsed.data, user_id: user.id, slug },
   })
 
   // 5. Side effects (Ravelry push, activity events, notifications)
-  // Fire-and-forget for non-critical side effects
   const push = await getRavelryPushClient(user.id)
   if (push) {
     pushToRavelry(() => push.client.createProject({ name: project.title }))
@@ -88,10 +81,33 @@ export async function POST(req: NextRequest) {
 
   // 6. Return structured response
   return NextResponse.json({ success: true, data: project }, { status: 201 })
-}
+})
 ```
 
-**Order matters.** Auth first, then pro-gate, then validation, then business logic, then side effects, then response. Never rearrange.
+**Order matters.** Auth (via `withAuth`) → pro-gate → validation → business logic → side effects → response. Never rearrange.
+
+### Route helpers available in `lib/route-helpers.ts`
+
+| Helper | Purpose |
+|--------|---------|
+| `withAuth(handler)` | Wraps route with Clerk auth + `getDbUser`. Handler receives `(req, user, params?)` |
+| `parsePagination(req, defaultLimit?, maxLimit?)` | Parses `page`/`limit` query params. Returns `{ page, limit, skip }` |
+| `paginatedResponse(items, total, page, pageSize)` | Builds standard paginated JSON response |
+| `findOwned(model, id, userId, options?)` | Finds record with ownership check + soft delete filter |
+| `generateUniqueSlug(model, userId, title)` | Generates unique slug per user with collision handling |
+
+### Routes with URL params
+
+For `[id]` routes, params are available as the third argument:
+
+```typescript
+export const GET = withAuth(async (req, user, params) => {
+  const { id } = params!
+  const item = await findOwned(prisma.patterns, id, user.id)
+  if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  return NextResponse.json({ success: true, data: item })
+})
+```
 
 ---
 
@@ -491,46 +507,166 @@ return NextResponse.json({ success: true })
 
 ---
 
-## Ravelry Sync Pattern
+## Ravelry API Write Reference
+
+> **CRITICAL**: Ravelry's API is a Rails app. Different endpoints accept different body formats.
+> Fields that look identical may need different wrapper keys depending on the entity.
+> Always test with the exact format documented here — small deviations silently fail (200 OK but null values).
+
+### Projects — Full CRUD (flat JSON body)
+
+```
+POST /projects/{username}/create.json        → creates empty shell, returns { project: { id } }
+POST /projects/{username}/{id}.json          → update (flat JSON body)
+DELETE /projects/{username}/{id}.json        → delete
+```
+
+**Writable fields (flat):** `name`, `notes`, `craft_id` (1=knitting, 2=crochet), `status_id` (1=active, 2=completed, 3=hibernating, 4=frogged), `started` (YYYY-MM-DD), `completed`, `rating`, `progress` (0-100), `made_for`, `tag_names` (array)
+
+**Pattern: create empty → update with data (2 calls)**
+
+### Stash — Multi-call update (3 different body formats!)
+
+```
+POST /people/{username}/stash/create.json     → creates empty shell
+POST /people/{username}/stash/{id}.json       → update (SEE BELOW for format)
+DELETE /people/{username}/stash/{id}.json     → delete
+POST /people/{username}/stash/{id}/create_photo.json → attach photo
+```
+
+**CRITICAL: Stash requires 4 separate API calls because different fields need different body formats:**
+
+```typescript
+// Call 1: Link yarn (flat) — sets name + product photo automatically
+await client.post(`/people/${u}/stash/${id}.json`, { yarn_id: 62569 })
+// Response includes packs[0].id which you need for Call 3
+
+// Call 2: Flat fields — notes, location
+await client.post(`/people/${u}/stash/${id}.json`, {
+  notes: 'Colorway: Archangel\n4 skeins\nSynced from Stitch',
+  location: 'My LYS',
+})
+
+// Call 3: Pack data via "pack" (SINGULAR) wrapper — colorway + skeins
+await client.post(`/people/${u}/stash/${id}.json`, {
+  pack: { id: packId, colorway: 'Archangel', skeins: 4 }
+})
+
+// Call 4: Stash-level colorway via "stash" wrapper
+await client.post(`/people/${u}/stash/${id}.json`, {
+  stash: { colorway_name: 'Archangel' }
+})
+```
+
+**What each format sets:**
+
+| Field | Format | Example |
+|-------|--------|---------|
+| Yarn name + product photo | flat `yarn_id` | `{ yarn_id: 62569 }` |
+| Notes | flat | `{ notes: "..." }` |
+| Location | flat | `{ location: "My LYS" }` |
+| Dye lot | flat | `{ dye_lot: "A-2026" }` |
+| **Pack colorway** | `pack` singular wrapper | `{ pack: { id: X, colorway: "Archangel" } }` |
+| **Pack skeins** | `pack` singular wrapper | `{ pack: { id: X, skeins: 4 } }` |
+| **Stash colorway** | `stash` wrapper | `{ stash: { colorway_name: "Archangel" } }` |
+
+**What does NOT work on stash:** `tag_names`, `total_grams`, `total_yards`, `grams_per_skein`, `yards_per_skein`, `shop_name`, `packs_attributes` as JSON array (must be object with string keys if used)
+
+**Photo upload flow (works for both projects and stash):**
+
+```typescript
+// Step 1: Get upload token
+const tokenRes = await client.post('/upload/request_token.json', { type: 'project', id: projectId })
+// type: 'project' | 'stash'
+
+// Step 2: Upload image via FormData
+const formData = new FormData()
+formData.append('upload_token', tokenRes.upload_token)
+formData.append('file0', new Blob([imageBuffer], { type: 'image/jpeg' }), 'photo.jpg')
+const uploadRes = await fetch('https://api.ravelry.com/upload/image.json', { method: 'POST', body: formData })
+const imageId = (await uploadRes.json()).uploads.file0.image_id
+
+// Step 3: Attach photo — CRITICAL: MUST use FormData, NOT JSON!
+// Sending image_id as JSON silently fails (returns 200 but job never completes)
+const attachForm = new FormData()
+attachForm.append('image_id', String(imageId))
+const attachRes = await fetch(`https://api.ravelry.com/projects/${u}/${id}/create_photo.json`, {
+  method: 'POST', body: attachForm,
+})
+const statusToken = (await attachRes.json()).status_token
+
+// Step 4: Poll /photos/status.json (NOT /upload/status.json!) until complete
+// GET /photos/status.json?status_token=... → { complete: true, failed: false, photo: { id, urls... } }
+```
+
+**CRITICAL GOTCHAS:**
+- `create_photo` MUST receive `image_id` as **FormData**, NOT JSON. JSON silently fails.
+- Poll **`/photos/status.json`** for completion, NOT `/upload/status.json` (which returns 302)
+- Works for both `/projects/{u}/{id}/create_photo.json` and `/people/{u}/stash/{id}/create_photo.json`
+- Use `image/jpeg` — PNG may fail in some cases
+- Processing takes 3-10 seconds typically
+
+### Favorites — Create + Delete (flat body)
+
+```
+POST /people/{username}/favorites/create.json  → { type: "pattern", favorited_id: 12345 }
+DELETE /people/{username}/favorites/{id}.json  → delete
+```
+
+**CRITICAL: Body must be FLAT, not nested under a key.** Types: pattern, yarn, project, stash, designer, yarnbrand
+
+### Queue — Create shell + Delete (fields ignored)
+
+```
+POST /people/{username}/queue/create.json     → empty shell only
+DELETE /people/{username}/queue/{id}.json     → delete
+```
+
+### NOT Writable
+
+- **Needles** — all write attempts return 302
+- **`/fiber/` endpoints** — documented in API but return 404/500 in practice. Use `/stash/` instead.
+- **Profile** — no write endpoint
+
+### Rails Nested Params Gotcha
+
+When Ravelry's API debug log shows params like:
+```
+stash = {"colorway_name"=>"Blue", "packs_attributes"=>{"0"=>{"id"=>"123", "colorway"=>"Blue"}}}
+```
+This means the JSON body should use **object keys as strings** for `packs_attributes`:
+```json
+{ "stash": { "packs_attributes": { "0": { "id": "123", "colorway": "Blue" } } } }
+```
+NOT a JSON array `[{ "id": "123" }]`. Rails parses `{"0": {...}}` as an indexed hash, which maps to `accepts_nested_attributes_for`.
 
 ### When to push to Ravelry
 
-- **CREATE:** Await the Ravelry call to capture `ravelry_id` and `ravelry_permalink`. Catch errors gracefully -- the Stitch record is still created.
-- **UPDATE:** Fire-and-forget. Do not block the response on Ravelry.
-- **DELETE:** Fire-and-forget. Do not block the response on Ravelry.
+- **Projects (CRUD):** Push on every create/update/delete when `ravelry_id` exists
+- **Stash (CRUD):** Push on create (4-call pattern above), delete when `ravelry_id` exists
+- **Queue (add/remove):** Push on add/remove when `ravelry_queue_id` exists
+- **Favorites (save/unsave):** Push when saving/unsaving a Ravelry pattern
+- Always **DB first, Ravelry second, non-blocking**
 
-### Pattern
+### Push Pattern
 
 ```typescript
-import { getRavelryPushClient, pushToRavelry } from '@/lib/ravelry-push'
-
-// After creating a project in Stitch:
-const push = await getRavelryPushClient(user.id)
-if (push && project.ravelry_permalink) {
-  // UPDATE/DELETE: fire-and-forget
-  pushToRavelry(() => push.client.updateProject(project.ravelry_permalink!, { status_name: 'Finished' }))
-}
-
-if (push) {
-  // CREATE: await to capture IDs
-  try {
-    const { project: rp } = await push.client.createProject({ name: project.title })
-    await prisma.projects.update({
-      where: { id: project.id },
-      data: { ravelry_id: String(rp.id), ravelry_permalink: rp.permalink },
-    })
-  } catch {
-    // Ravelry unavailable -- project still exists in Stitch
-  }
-}
+getRavelryClient(user.id).then(async (client) => {
+  if (!client) return
+  const conn = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
+  if (!conn) return
+  // ... push logic here
+}).catch(err => console.error('[ravelry-push]', err))
 ```
 
 ### Rules
 
-1. **Never block Stitch operations on Ravelry failures.** The user's action in Stitch always succeeds.
-2. **Only push if `sync_to_ravelry` is true** (checked inside `getRavelryPushClient`).
-3. **Log Ravelry push errors** but do not surface them to the user.
-4. **Side effects (Ravelry push, activity events, notifications) go after the primary database operation**, never before.
+1. **Never block Stitch operations on Ravelry failures.** The user's action always succeeds.
+2. **Only push if the record has a `ravelry_id`** — Stitch-only records are never pushed.
+3. **Log errors** with `[ravelry-push]` prefix but do not surface to the user.
+4. **Side effects go after the primary DB write**, never before.
+5. **Never bulk-delete on Ravelry** — only on explicit user-initiated item deletions.
+6. **Different fields need different body formats** — NEVER combine flat + `pack` + `stash` wrappers in one call.
 
 ---
 
@@ -685,13 +821,89 @@ const [section] = await prisma.$transaction([
 
 ---
 
+## Marketplace & Payment Patterns
+
+### Content gating (purchased patterns)
+
+When a route returns content that may be gated behind a purchase, check ownership first:
+
+```typescript
+const isOwner = pattern.user_id === user.id
+const isFree = pattern.price_cents === null || pattern.price_cents === 0
+
+let isPurchased = false
+if (!isOwner && !isFree) {
+  const purchase = await prisma.pattern_purchases.findUnique({
+    where: { buyer_id_pattern_id: { buyer_id: user.id, pattern_id: id } },
+  })
+  isPurchased = purchase?.status === 'completed'
+}
+
+const hasAccess = isOwner || isPurchased || isFree
+// Conditionally include sections/rows based on hasAccess
+```
+
+### Aggregate updates (reviews, ratings)
+
+When creating/updating/deleting a child record that affects an aggregate on the parent, always update the parent after the mutation:
+
+```typescript
+// After creating/updating/deleting a review:
+const agg = await prisma.pattern_reviews.aggregate({
+  where: { pattern_id: id },
+  _avg: { rating: true },
+  _count: true,
+})
+await prisma.patterns.update({
+  where: { id },
+  data: { rating: agg._avg.rating, rating_count: agg._count },
+})
+```
+
+Extract this into a shared helper if used in multiple handlers.
+
+### Webhook handlers
+
+Webhook routes (`/api/webhooks/*`) don't use `withAuth()` — they verify the provider's signature instead:
+
+```typescript
+export async function POST(req: NextRequest) {
+  const body = await req.text()
+  const sig = req.headers.get('stripe-signature')
+  const event = stripe.webhooks.constructEvent(body, sig!, webhookSecret)
+  // Handle event...
+  return NextResponse.json({ received: true })
+}
+```
+
+Always: verify signature first, handle events idempotently, use `metadata` fields to link Stripe objects back to our DB records.
+
+### Protected file delivery
+
+Sensitive files (purchased PDFs) are never served via direct Supabase URLs. Instead:
+
+1. Auth + ownership/purchase check
+2. Rate limit (max views per hour)
+3. Log access (`pdf_access_logs`)
+4. Download from Supabase server-side
+5. Apply watermark (for buyers, not owners)
+6. Stream bytes in response with `no-store` cache headers
+
+If watermarking fails, **fail closed** — do not serve unwatermarked content.
+
+---
+
 ## Anti-Patterns (Never Do These)
 
+- **Writing manual auth boilerplate** instead of using `withAuth()` — this was the #1 source of code duplication
+- **Writing manual pagination** instead of using `parsePagination()` + `paginatedResponse()`
+- **Manual field allowlist iteration** (`for (const key of allowed)`) instead of Zod schemas
+- **Duplicating slug generation** — use `generateUniqueSlug()` from `lib/route-helpers.ts`
+- **Duplicating ownership checks** — use `findOwned()` from `lib/route-helpers.ts`
 - Throwing errors instead of returning `NextResponse.json(...)` in route handlers
 - Fetching by `id` alone without `user_id` in the where clause (authorization bypass)
 - Using `findUnique` with only `id` then checking `user_id` after (timing leak)
 - Accepting unbounded arrays or strings (always set `.max()`)
-- Manual field allowlist iteration instead of Zod schemas
 - Returning raw Prisma errors to the client
 - Mixing `page_size` and `pageSize` naming in query params
 - Hardcoding page sizes that differ across routes without reason
@@ -700,3 +912,4 @@ const [section] = await prisma.$transaction([
 - Calling `req.json()` without wrapping in try/catch (malformed JSON crashes the handler)
 - Running Ravelry push before the primary database write
 - Using `deleteMany` without a `user_id` filter
+- Creating route files over 300 lines — extract business logic into `lib/` helpers

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import type { Tier } from '@/lib/pro-gate'
 
+
+export const dynamic = 'force-dynamic'
 type RevenueCatEvent = {
   event: {
     type: string // 'INITIAL_PURCHASE' | 'RENEWAL' | 'CANCELLATION' | 'EXPIRATION' | 'UNCANCELLATION' | ...

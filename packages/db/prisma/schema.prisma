@@ -18,14 +18,21 @@ model users {
   username         String  @unique
   display_name     String?
   avatar_url       String?
+  avatar_source    String?   // "manual" | "ravelry" — tracks origin to avoid overriding manual uploads
   bio              String?
   location         String?
   website          String?
   craft_preference String  @default("both") // "knitting" | "crochet" | "both"
   experience_level String? // "beginner" | "intermediate" | "advanced"
+  knitting_style   String? // "english" | "continental" | null (not set / crochet-only)
   is_pro           Boolean @default(false)
   username_changed_at DateTime? // cooldown: one change per 30 days
   activity_sharing Json?   // { project_started, project_completed, stash_added, row_milestone, pattern_queued, ... } — null = all on
+
+  // Marketplace / Stripe Connect
+  stripe_connect_id   String?   @unique  // Stripe Connect Express account ID
+  stripe_onboarded    Boolean   @default(false)
+  seller_bio          String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -55,6 +62,12 @@ model users {
   pattern_reviews     pattern_reviews[]
   crafting_sessions   crafting_sessions[]
   measurements        user_measurements?
+  swatches            swatches[]
+  purchases           pattern_purchases[] @relation("buyer")
+  sales               pattern_purchases[] @relation("seller")
+  pdf_access_logs     pdf_access_logs[]
+  pdf_annotations     pdf_annotations[]
+  ravelry_photo_queue ravelry_photo_queue[]
 
   @@index([clerk_id])
   @@index([username])
@@ -133,9 +146,13 @@ model yarns {
   image_url         String?
   created_at        DateTime @default(now())
 
-  company      yarn_companies? @relation(fields: [company_id], references: [id], onDelete: SetNull)
-  stash_items  user_stash[]
-  project_yarn project_yarns[]
+  company       yarn_companies? @relation(fields: [company_id], references: [id], onDelete: SetNull)
+  stash_items   user_stash[]
+  project_yarn  project_yarns[]
+  pattern_yarns pattern_yarns[]
+  swatch_yarns  swatch_yarns[]
+
+  @@index([company_id])
 }
 
 // User's personal yarn inventory
@@ -157,6 +174,8 @@ model user_stash {
   user         users           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   yarn         yarns           @relation(fields: [yarn_id], references: [id], onDelete: Cascade)
   project_yarn project_yarns[]
+  swatch_yarns swatch_yarns[]
+  post_yarns   post_yarns[]
 
   @@unique([user_id, ravelry_id])
   @@index([user_id])
@@ -178,6 +197,30 @@ model project_yarns {
   stash_item user_stash? @relation(fields: [stash_item_id], references: [id], onDelete: SetNull)
 
   @@index([project_id])
+  @@index([yarn_id])
+  @@index([stash_item_id])
+}
+
+// Which needle(s)/hook(s) are used in a project
+model project_needles {
+  id        String   @id @default(uuid())
+  project_id String
+  needle_id  String? // optional link to user_needles
+  // Free-text fallback when not linking to user's needle collection
+  type       String  // "straight" | "circular" | "dpn" | "crochet_hook" | "interchangeable_tip" | "interchangeable_cable"
+  size_mm    Float
+  size_label String? // "US 7", "4.5mm"
+  length_cm  Int?
+  material   String?
+  brand      String?
+  notes      String?
+  created_at DateTime @default(now())
+
+  project projects       @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  needle  user_needles?  @relation(fields: [needle_id], references: [id], onDelete: SetNull)
+
+  @@index([project_id])
+  @@index([needle_id])
 }
 
 // ─── Tool Catalog (Needles/Hooks Product Database) ───────────────────────────
@@ -277,8 +320,10 @@ model user_needles {
   tool_set_id String?  // which catalog set this was added from (if any)
   ravelry_id  String?
   created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
 
-  user users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user             users              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  project_needles  project_needles[]
 
   @@unique([user_id, ravelry_id])
   @@index([user_id])
@@ -326,6 +371,7 @@ model projects {
   ravelry_id        String?
   ravelry_permalink String?
   pdf_upload_id     String?   // attached PDF for reference while working
+  progress_pct      Int?      // manual 0-100 progress for non-parsed projects (null = compute from sections)
   started_at        DateTime?
   finished_at       DateTime?
   deleted_at        DateTime?
@@ -339,11 +385,13 @@ model projects {
   gauge             project_gauge?
   photos            project_photos[]
   yarns             project_yarns[]
+  needles           project_needles[]
   tags              project_tags[]
   posts             posts[]
   activity_events   activity_events[]
   pattern_reviews   pattern_reviews[]
   crafting_sessions crafting_sessions[]
+  swatches          project_swatches[]
 
   @@unique([user_id, slug])
   @@unique([user_id, ravelry_id])
@@ -472,9 +520,16 @@ model patterns {
   source_free     Boolean?
   ravelry_id      String?
   ai_parsed       Boolean   @default(false)
+  ai_generated    Boolean   @default(false) // true = created by AI pattern builder
+  builder_input   Json?               // stores PatternBuilderInput for re-generating other sizes
   raw_text        String?   @db.Text  // stored PDF text for re-parsing with different size
   selected_size   String?             // which size was parsed row-by-row ("M", "XL", etc.)
   parse_version   Int       @default(1)
+  // Marketplace
+  price_cents         Int?      // null = free, > 0 = paid (USD cents, min 100 = $1.00)
+  currency            String    @default("usd")
+  is_marketplace      Boolean   @default(false)  // listed for sale
+  sales_count         Int       @default(0)       // denormalized for popularity sort
   deleted_at      DateTime?
   created_at      DateTime  @default(now())
   updated_at      DateTime  @updatedAt
@@ -491,11 +546,37 @@ model patterns {
   reviews         pattern_reviews[]
   activity_events activity_events[]
 
+  pattern_yarns   pattern_yarns[]
+  swatches        pattern_swatches[]
+  purchases       pattern_purchases[]
+  post_refs       posts[]            @relation("post_pattern")
+
   @@unique([user_id, slug])
   @@unique([user_id, ravelry_id])
   @@index([user_id])
   @@index([folder_id])
   @@index([is_public])
+  @@index([is_marketplace, deleted_at])
+}
+
+// Yarns used in a pattern (supports stranding — multiple yarns held together)
+model pattern_yarns {
+  id            String  @id @default(uuid())
+  pattern_id    String
+  yarn_id       String?           // optional link to yarns catalog
+  name          String            // free-text yarn name, e.g. "Malabrigo Rios"
+  weight        String?           // "lace" | "fingering" | "sport" | "dk" | "worsted" | "aran" | "bulky" | "super_bulky"
+  colorway      String?
+  fiber_content String?           // e.g. "100% Merino", "72% Mohair 28% Silk"
+  strands       Int     @default(1) // how many strands of this yarn held together
+  sort_order    Int     @default(0)
+  created_at    DateTime @default(now())
+
+  pattern patterns @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
+  yarn    yarns?   @relation(fields: [yarn_id], references: [id], onDelete: SetNull)
+
+  @@index([pattern_id])
+  @@index([yarn_id])
 }
 
 model pattern_sections {
@@ -576,6 +657,8 @@ model pattern_sizes {
   back_length_cm       Float?
   head_circumference_cm Float?
   foot_length_cm       Float?
+  foot_circumference_cm Float?
+  hand_circumference_cm Float?
   yardage            Int?
 
   pattern  patterns           @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
@@ -626,6 +709,7 @@ model pattern_queue {
   sort_order       Int      @default(0)
   ravelry_queue_id String?
   created_at       DateTime @default(now())
+  deleted_at       DateTime?
 
   user       users        @relation(fields: [user_id], references: [id], onDelete: Cascade)
   pattern    patterns     @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
@@ -668,23 +752,45 @@ model saved_patterns {
 // ─── Social ───────────────────────────────────────────────────────────────────
 
 model posts {
-  id         String    @id @default(uuid())
-  user_id    String
-  content    String
-  project_id String?
-  deleted_at DateTime?
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  id              String    @id @default(uuid())
+  user_id         String
+  content         String
+  project_id      String?
+  pattern_id      String?
+  session_minutes Int?      // time spent crafting (optional session log)
+  session_rows    Int?      // rows completed in this session
+  deleted_at      DateTime?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
 
   user      users            @relation(fields: [user_id], references: [id], onDelete: Cascade)
   project   projects?        @relation(fields: [project_id], references: [id], onDelete: SetNull)
+  pattern   patterns?        @relation("post_pattern", fields: [pattern_id], references: [id], onDelete: SetNull)
   photos    post_photos[]
   comments  comments[]
   likes     likes[]
   bookmarks post_bookmarks[]
+  yarns     post_yarns[]
 
   @@index([user_id])
   @@index([created_at])
+  @@index([project_id])
+  @@index([pattern_id])
+}
+
+// Yarns tagged in a post
+model post_yarns {
+  id         String @id @default(uuid())
+  post_id    String
+  yarn_name  String         // display name (e.g. "Malabrigo Rios")
+  colorway   String?
+  weight     String?        // "worsted", "dk", etc.
+  stash_id   String?        // optional link to user's stash item
+
+  post       posts       @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  stash_item user_stash? @relation(fields: [stash_id], references: [id], onDelete: SetNull)
+
+  @@index([post_id])
 }
 
 // Multiple photos per post
@@ -709,6 +815,8 @@ model post_bookmarks {
   post posts @relation(fields: [post_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, post_id])
+  @@index([post_id])
+  @@index([user_id])
 }
 
 // Comments on posts OR activity events (exactly one parent must be set)
@@ -725,6 +833,7 @@ model comments {
   post           posts?           @relation(fields: [post_id], references: [id], onDelete: Cascade)
   activity_event activity_events? @relation(fields: [activity_event_id], references: [id], onDelete: Cascade)
 
+  @@index([user_id])
   @@index([post_id])
   @@index([activity_event_id])
 }
@@ -745,6 +854,7 @@ model likes {
 
   @@unique([user_id, post_id])
   @@unique([user_id, activity_event_id, reaction])
+  @@index([user_id])
   @@index([post_id])
   @@index([activity_event_id])
 }
@@ -773,6 +883,7 @@ model notifications {
   message       String?  // optional display text override
   read          Boolean  @default(false)
   created_at    DateTime @default(now())
+  updated_at    DateTime @default(now()) @updatedAt
 
   user   users  @relation("recipient", fields: [user_id], references: [id], onDelete: Cascade)
   sender users? @relation("sender", fields: [sender_id], references: [id], onDelete: SetNull)
@@ -870,6 +981,7 @@ model glossary_synonyms {
   term       glossary_terms @relation(fields: [term_id], references: [id], onDelete: Cascade)
 
   @@unique([term_id, synonym])
+  @@index([term_id])
   @@index([synonym])
 }
 
@@ -887,14 +999,64 @@ model pdf_uploads {
   storage_path String   // path in Supabase Storage bucket (private)
   error        String?
   created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
 
   user          users          @relation(fields: [user_id], references: [id], onDelete: Cascade)
   pattern       patterns?      @relation(fields: [pattern_id], references: [id], onDelete: SetNull)
   projects      projects[]
   queue_items   pattern_queue[]
+  access_logs   pdf_access_logs[]
+  annotations   pdf_annotations[]
 
   @@index([user_id])
   @@index([user_id, created_at])
+}
+
+// ─── PDF Annotations ─────────────────────────────────────────────────────────
+
+// ─── Ravelry Photo Upload Queue ───────────────────────────────────────────────
+
+// Background queue for uploading photos to Ravelry. Photos are queued during
+// sync and processed asynchronously via a cron or separate request.
+model ravelry_photo_queue {
+  id            String   @id @default(uuid())
+  user_id       String
+  // "project" or "stash"
+  entity_type   String
+  // Ravelry ID of the project or stash item
+  ravelry_id    String
+  // URL of the photo to download and upload (from Supabase Storage)
+  photo_url     String
+  // "pending" | "processing" | "completed" | "failed"
+  status        String   @default("pending")
+  error         String?
+  attempts      Int      @default(0)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now()) @updatedAt
+
+  user users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([status, created_at])
+  @@index([user_id])
+}
+
+// Stores per-user, per-PDF markup data (highlights, pen strokes, text notes).
+// One record per user per PDF — upserted on save.
+model pdf_annotations {
+  id            String   @id @default(uuid())
+  user_id       String
+  pdf_upload_id String
+  // JSON array of annotation objects: { type, page, bounds, color, points?, text?, width? }
+  annotation_data Json
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now()) @updatedAt
+
+  user       users       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  pdf_upload pdf_uploads @relation(fields: [pdf_upload_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, pdf_upload_id])
+  @@index([user_id])
+  @@index([pdf_upload_id])
 }
 
 // ─── Activity Feed ──────────────────────────────────────────────────────────
@@ -1109,4 +1271,136 @@ model user_onboarding {
   updated_at            DateTime  @updatedAt
 
   user users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+// ─── Swatches ──────────────────────────────────────────────────────────────────
+
+model swatches {
+  id                String    @id @default(uuid())
+  user_id           String
+  slug              String
+  title             String
+  notes             String?
+  is_public         Boolean   @default(false)
+  craft_type        String    @default("knitting") // "knitting" | "crochet"
+  stitch_pattern    String?   // e.g. "stockinette", "2x2 rib", "seed stitch"
+  stitches_per_10cm Float?
+  rows_per_10cm     Float?
+  needle_size_mm    Float?
+  needle_size_label String?   // "US 7", "4.5mm"
+  needle_type       String?   // "straight" | "circular" | "dpn"
+  washed            Boolean   @default(false)
+  blocked           Boolean   @default(false)
+  width_cm          Float?
+  height_cm         Float?
+  photo_url         String?
+  photo_path        String?   // storage path for deletion
+  deleted_at        DateTime?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  user     users              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  yarns    swatch_yarns[]
+  projects project_swatches[]
+  patterns pattern_swatches[]
+
+  @@unique([user_id, slug])
+  @@index([user_id, created_at])
+  @@index([is_public, created_at])
+  @@index([deleted_at])
+}
+
+model swatch_yarns {
+  id            String  @id @default(uuid())
+  swatch_id     String
+  stash_item_id String?
+  yarn_id       String?
+  name_override String?
+  colorway      String?
+  strands       Int     @default(1)
+  sort_order    Int     @default(0)
+
+  swatch     swatches    @relation(fields: [swatch_id], references: [id], onDelete: Cascade)
+  stash_item user_stash? @relation(fields: [stash_item_id], references: [id], onDelete: SetNull)
+  yarn       yarns?      @relation(fields: [yarn_id], references: [id], onDelete: SetNull)
+
+  @@index([swatch_id])
+  @@index([stash_item_id])
+  @@index([yarn_id])
+}
+
+model project_swatches {
+  project_id String
+  swatch_id  String
+  created_at DateTime @default(now())
+
+  project projects @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  swatch  swatches @relation(fields: [swatch_id], references: [id], onDelete: Cascade)
+
+  @@id([project_id, swatch_id])
+  @@index([swatch_id])
+}
+
+model pattern_swatches {
+  pattern_id String
+  swatch_id  String
+  created_at DateTime @default(now())
+
+  pattern patterns @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
+  swatch  swatches @relation(fields: [swatch_id], references: [id], onDelete: Cascade)
+
+  @@id([pattern_id, swatch_id])
+  @@index([swatch_id])
+}
+
+// ─── Pattern Marketplace ──────────────────────────────────────────────────────
+
+// Tracks paid pattern purchases via Stripe Connect
+model pattern_purchases {
+  id                    String   @id @default(uuid())
+  buyer_id              String
+  pattern_id            String
+  seller_id             String
+  price_cents           Int       // price at time of purchase
+  platform_fee_cents    Int       // platform cut (12%)
+  seller_amount_cents   Int       // what seller receives
+  currency              String    @default("usd")
+  stripe_session_id     String    @unique  // Stripe Checkout Session ID
+  stripe_payment_intent String?   // Stripe PaymentIntent ID (set by webhook)
+  // "pending" | "completed" | "refunded"
+  status                String    @default("pending")
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @default(now()) @updatedAt
+
+  buyer   users    @relation("buyer", fields: [buyer_id], references: [id], onDelete: Cascade)
+  pattern patterns @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
+  seller  users    @relation("seller", fields: [seller_id], references: [id], onDelete: Cascade)
+
+  @@unique([buyer_id, pattern_id])
+  @@index([buyer_id])
+  @@index([pattern_id])
+  @@index([seller_id])
+  @@index([stripe_session_id])
+  @@index([status])
+}
+
+// ─── PDF Access Logging ───────────────────────────────────────────────────────
+
+// Tracks every PDF view for abuse detection and forensic tracing
+model pdf_access_logs {
+  id              String   @id @default(uuid())
+  user_id         String
+  pdf_upload_id   String
+  pattern_id      String?
+  ip_address      String?
+  user_agent      String?
+  access_type     String   // "view" | "download" | "watermarked_view"
+  created_at      DateTime @default(now())
+
+  user       users       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  pdf_upload pdf_uploads @relation(fields: [pdf_upload_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([pdf_upload_id])
+  @@index([user_id, created_at])
 }

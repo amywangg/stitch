@@ -1,22 +1,17 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, findOwned } from '@/lib/route-helpers'
 import { recommendSizes } from '@/lib/size-recommendation'
 
-type Params = { params: Promise<{ id: string }> }
 
+export const dynamic = 'force-dynamic'
 /**
  * GET /api/v1/patterns/[id]/recommend-size
  * Returns ranked size recommendations based on user measurements.
  * Pure math — not Pro-gated.
  */
-export async function GET(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const GET = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
   const pattern = await prisma.patterns.findFirst({
     where: { id, user_id: user.id, deleted_at: null },
@@ -61,4 +56,4 @@ export async function GET(_req: NextRequest, { params }: Params) {
       has_measurements: true,
     },
   })
-}
+})

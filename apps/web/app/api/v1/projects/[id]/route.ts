@@ -1,30 +1,15 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
-import { getRavelryPushClient, pushToRavelry } from '@/lib/ravelry-push'
 import { emitActivity } from '@/lib/activity'
+import { withAuth, findOwned } from '@/lib/route-helpers'
+import { getRavelryClient } from '@/lib/ravelry-client'
+import { ravelryUpdateProject, ravelryDeleteProject } from '@/lib/ravelry-push'
 
-function reverseMapStatus(stitchStatus: string): string {
-  const map: Record<string, string> = {
-    active: 'In Progress',
-    completed: 'Finished',
-    frogged: 'Frogged',
-    hibernating: 'Hibernating',
-  }
-  return map[stitchStatus] ?? 'In Progress'
-}
 
-type Params = { params: Promise<{ id: string }> }
-
-export async function GET(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-  const project = await prisma.projects.findFirst({
-    where: { id, user_id: user.id, deleted_at: null },
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (_req, user, params) => {
+  const { id } = params!
+  const project = await findOwned(prisma.projects, id, user.id, {
     include: {
       sections: {
         orderBy: { sort_order: 'asc' },
@@ -42,30 +27,25 @@ export async function GET(_req: NextRequest, { params }: Params) {
       },
       gauge: true,
       photos: { orderBy: { sort_order: 'asc' } },
-      yarns: { include: { yarn: { include: { company: true } } } },
+      yarns: { include: { yarn: { include: { company: true } }, stash_item: true } },
+      needles: { include: { needle: true } },
       pdf_upload: true,
       tags: { include: { tag: true } },
     },
   })
 
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
-  console.log('[project-detail]', project.id, 'photos:', project.photos?.length, 'yarns:', project.yarns?.length, 'gauge:', !!project.gauge)
+  console.log('[project-detail]', (project as any).id, 'photos:', (project as any).photos?.length, 'yarns:', (project as any).yarns?.length, 'gauge:', !!(project as any).gauge)
   return NextResponse.json({ success: true, data: project })
-}
+})
 
-export async function PATCH(req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-  const project = await prisma.projects.findFirst({
-    where: { id, user_id: user.id, deleted_at: null },
-  })
+export const PATCH = withAuth(async (req, user, params) => {
+  const { id } = params!
+  const project = await findOwned(prisma.projects, id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   const body = await req.json()
-  const allowed = ['title', 'description', 'status', 'craft_type', 'size_made', 'mods_notes', 'category', 'started_at', 'finished_at', 'pdf_upload_id'] as const
+  const allowed = ['title', 'description', 'status', 'craft_type', 'size_made', 'mods_notes', 'category', 'started_at', 'finished_at', 'pdf_upload_id', 'progress_pct'] as const
   const updates: Record<string, unknown> = {}
   for (const key of allowed) {
     if (key in body) updates[key] = body[key]
@@ -84,67 +64,54 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const updated = await prisma.projects.update({ where: { id }, data: updates })
 
   // Emit activity for status changes
-  if ('status' in updates && updates.status !== project.status) {
+  if ('status' in updates && updates.status !== (project as any).status) {
     if (updates.status === 'completed') {
-      emitActivity({ userId: user.id, type: 'project_completed', projectId: project.id })
+      emitActivity({ userId: user.id, type: 'project_completed', projectId: (project as any).id })
     } else if (updates.status === 'frogged') {
-      emitActivity({ userId: user.id, type: 'project_frogged', projectId: project.id })
+      emitActivity({ userId: user.id, type: 'project_frogged', projectId: (project as any).id })
     }
   }
 
-  // Ravelry write-back
-  if (updated.ravelry_permalink) {
-    const push = await getRavelryPushClient(user.id)
-    if (push) {
-      const ravelryUpdates: Record<string, string> = {}
-      if ('title' in updates) ravelryUpdates.name = updated.title
-      if ('status' in updates) ravelryUpdates.status_name = reverseMapStatus(updated.status)
-      if ('description' in updates || 'mods_notes' in updates) {
-        // Combine notes + mods for Ravelry (it has a single notes field)
-        const parts: string[] = []
-        if (updated.description) parts.push(updated.description)
-        if (updated.mods_notes) parts.push(`**Modifications:**\n${updated.mods_notes}`)
-        if (parts.length > 0) ravelryUpdates.notes = parts.join('\n\n')
-      }
-      if ('size_made' in updates && updated.size_made) ravelryUpdates.size = updated.size_made
-      if ('started_at' in updates && updated.started_at) {
-        ravelryUpdates.started = updated.started_at.toISOString().slice(0, 10)
-      }
-      if ('finished_at' in updates && updated.finished_at) {
-        ravelryUpdates.completed = updated.finished_at.toISOString().slice(0, 10)
-      }
-      if (Object.keys(ravelryUpdates).length > 0) {
-        pushToRavelry(() => push.client.updateProject(updated.ravelry_permalink!, ravelryUpdates))
-      }
-    }
+  // Push to Ravelry (non-blocking)
+  if ((updated as any).ravelry_id) {
+    getRavelryClient(user.id).then(async (client) => {
+      if (!client) return
+      const conn = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
+      if (!conn) return
+      await ravelryUpdateProject(client, conn.ravelry_username, (updated as any).ravelry_id, {
+        name: (updated as any).title,
+        notes: (updated as any).description,
+        status: (updated as any).status,
+        craft_type: (updated as any).craft_type,
+        started_at: (updated as any).started_at,
+        completed_at: (updated as any).finished_at,
+        progress: (updated as any).progress_pct ?? undefined,
+      })
+    }).catch(err => console.error('[ravelry-push] project update:', err))
   }
 
   return NextResponse.json({ success: true, data: updated })
-}
+})
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-  const project = await prisma.projects.findFirst({
-    where: { id, user_id: user.id, deleted_at: null },
-  })
+export const DELETE = withAuth(async (_req, user, params) => {
+  const { id } = params!
+  const project = await findOwned(prisma.projects, id, user.id)
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
-  await prisma.projects.update({
+  const deletedProject = await prisma.projects.update({
     where: { id },
     data: { deleted_at: new Date() },
   })
 
-  // Ravelry write-back
-  if (project.ravelry_permalink) {
-    const push = await getRavelryPushClient(user.id)
-    if (push) {
-      pushToRavelry(() => push.client.deleteProject(project.ravelry_permalink!))
-    }
+  // Delete from Ravelry (non-blocking)
+  if ((deletedProject as any).ravelry_id) {
+    getRavelryClient(user.id).then(async (client) => {
+      if (!client) return
+      const conn = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
+      if (!conn) return
+      await ravelryDeleteProject(client, conn.ravelry_username, (deletedProject as any).ravelry_id)
+    }).catch(err => console.error('[ravelry-push] project delete:', err))
   }
 
   return NextResponse.json({ success: true, data: {} })
-}
+})

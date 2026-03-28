@@ -1,11 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, findOwned } from '@/lib/route-helpers'
 import { getRavelryPatternDetail } from '@/lib/ravelry-search'
 
-type Params = { params: Promise<{ id: string }> }
 
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/v1/patterns/:id/link-ravelry
  * Link an AI-parsed pattern to a Ravelry pattern.
@@ -14,16 +13,14 @@ type Params = { params: Promise<{ id: string }> }
  *
  * Body: { ravelry_id: number }
  */
-export async function POST(req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const POST = withAuth(async (req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-
-  const pattern = await prisma.patterns.findFirst({
-    where: { id, user_id: user.id, deleted_at: null },
-  })
+  const pattern = await findOwned<{
+    id: string
+    needle_sizes: string[]
+    [key: string]: unknown
+  }>(prisma.patterns, id, user.id)
   if (!pattern) return NextResponse.json({ error: 'Pattern not found' }, { status: 404 })
 
   const body = await req.json()
@@ -113,4 +110,4 @@ export async function POST(req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true, data: updated })
-}
+})

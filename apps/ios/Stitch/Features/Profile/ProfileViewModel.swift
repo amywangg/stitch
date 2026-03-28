@@ -53,11 +53,21 @@ struct ProfileProject: Decodable, Identifiable {
     let status: String
     let craftType: String
     let photos: [ProfileProjectPhoto]
+    let pattern: ProfileProjectPattern?
     let sections: [ProfileProjectSection]
+
+    /// Best cover image: user photo first, then pattern cover
+    var coverImageUrl: String? {
+        photos.first?.url ?? pattern?.coverImageUrl
+    }
 }
 
 struct ProfileProjectPhoto: Decodable {
     let url: String
+}
+
+struct ProfileProjectPattern: Decodable {
+    let coverImageUrl: String?
 }
 
 struct ProfileProjectSection: Decodable {

@@ -1,13 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-export async function PATCH(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
+export const dynamic = 'force-dynamic'
+export const PATCH = withAuth(async (req, user) => {
   const body = await req.json().catch(() => ({}))
   const { ids } = body as { ids?: string[] }
 
@@ -26,4 +23,4 @@ export async function PATCH(req: NextRequest) {
   }
 
   return NextResponse.json({ success: true, data: {} })
-}
+})

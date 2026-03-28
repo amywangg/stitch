@@ -1,24 +1,18 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { z } from 'zod'
 
+
+export const dynamic = 'force-dynamic'
 const progressSchema = z.object({
   last_step: z.number().int().min(0),
   completed: z.boolean().optional(),
 })
 
 // POST /api/v1/tutorials/[id]/progress — update tutorial progress (auth required)
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-  const { id: tutorialId } = await params
+export const POST = withAuth(async (req, user, params) => {
+  const tutorialId = params!.id
 
   let body: unknown
   try {
@@ -70,4 +64,4 @@ export async function POST(
   })
 
   return NextResponse.json({ success: true, data: progress })
-}
+})

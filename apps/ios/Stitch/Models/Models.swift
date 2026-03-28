@@ -46,16 +46,29 @@ struct RavelryConnection: Codable {
         let currentPhase: String?
         let profile: ProfileStats?
         let projects: CountStats?
-        let patterns: CountStats?
+        let patterns: PatternStats?
         let queue: CountStats?
         let stash: CountStats?
         let needles: CountStats?
+        let pushBack: PushBackStats?
 
         struct ProfileStats: Codable { let updated: Bool? }
         struct CountStats: Codable {
             let imported: Int?
             let updated: Int?
             let total: Int?
+        }
+        struct PatternStats: Codable {
+            let imported: Int?
+            let updated: Int?
+            let total: Int?
+            let pdfsDownloaded: Int?
+        }
+        struct PushBackStats: Codable {
+            let projectsCreated: Int?
+            let projectsUpdated: Int?
+            let photosUploaded: Int?
+            let errors: Int?
         }
     }
 }
@@ -76,6 +89,7 @@ struct Project: Codable, Identifiable {
     let ravelryId: String?
     let ravelryPermalink: String?
     var pdfUploadId: String?
+    var progressPct: Int?
     var startedAt: Date?
     var finishedAt: Date?
     let deletedAt: Date?
@@ -84,6 +98,7 @@ struct Project: Codable, Identifiable {
     var sections: [ProjectSection]?
     var photos: [ProjectPhoto]?
     var yarns: [ProjectYarn]?
+    var needles: [ProjectNeedle]?
     var gauge: ProjectGauge?
     var pdfUpload: PdfUpload?
     var tags: [ProjectTag]?
@@ -155,24 +170,63 @@ struct ProjectPhoto: Codable, Identifiable {
     let sortOrder: Int
 }
 
+struct YarnDetail: Codable {
+    let id: String
+    let name: String
+    let weight: String?
+    let company: YarnCompany?
+}
+
+struct YarnCompany: Codable {
+    let id: String
+    let name: String
+}
+
 struct ProjectYarn: Codable, Identifiable {
     let id: String
     let projectId: String
     let nameOverride: String?
     let colorway: String?
     let skeinsUsed: Double?
+    let stashItemId: String?
     let yarn: YarnDetail?
+    let stashItem: StashItemRef?
 
-    struct YarnDetail: Codable {
-        let id: String
-        let name: String
-        let weight: String?
-        let company: Company?
-
-        struct Company: Codable {
-            let id: String
-            let name: String
+    /// Display name: yarn company + name, or name override fallback
+    var displayName: String {
+        if let company = yarn?.company?.name, let name = yarn?.name {
+            return "\(company) \(name)"
         }
+        return yarn?.name ?? nameOverride ?? "Unknown yarn"
+    }
+
+    struct StashItemRef: Codable {
+        let id: String
+        let colorway: String?
+        let skeins: Double?
+        let photoUrl: String?
+    }
+}
+
+struct ProjectNeedle: Codable, Identifiable {
+    let id: String
+    let projectId: String
+    let needleId: String?
+    let type: String
+    let sizeMm: Double
+    let sizeLabel: String?
+    let lengthCm: Int?
+    let material: String?
+    let brand: String?
+    let notes: String?
+    let needle: Needle?
+
+    /// Human-readable label: "4.5mm circular, 80cm"
+    var displayLabel: String {
+        let typeLabel = type.replacingOccurrences(of: "_", with: " ").capitalized
+        var parts = ["\(String(format: sizeMm.truncatingRemainder(dividingBy: 1) == 0 ? "%.0f" : "%.2g", sizeMm))mm \(typeLabel)"]
+        if let cm = lengthCm { parts.append("\(cm)cm") }
+        return parts.joined(separator: ", ")
     }
 }
 
@@ -183,6 +237,21 @@ struct ProjectGauge: Codable {
     let rowsPer10cm: Double?
     let needleSizeMm: Double?
     let yarnWeight: String?
+}
+
+struct GaugeEstimate: Codable {
+    let effectiveWeight: String
+    let effectiveWeightLabel: String
+    let totalThicknessScore: Int
+    let stitchesPer10cm: GaugeRange
+    let rowsPer10cm: GaugeRange
+    let needleSizeMm: GaugeRange
+
+    struct GaugeRange: Codable {
+        let min: Double
+        let max: Double
+        let midpoint: Double
+    }
 }
 
 // MARK: - Grouped Projects
@@ -220,22 +289,22 @@ struct PatternFolder: Codable, Identifiable {
 
 struct Pattern: Codable, Identifiable, Hashable {
     let id: String
-    let userId: String
+    let userId: String?
     let folderId: String?
-    let slug: String
+    let slug: String?
     let title: String
     let description: String?
-    let craftType: String
+    let craftType: String?
     let difficulty: String?
     let garmentType: String?
     let designerName: String?
     let sourceUrl: String?
     let pdfUrl: String?
     let coverImageUrl: String?
-    let isPublic: Bool
+    var isPublic: Bool?
     let sourceFree: Bool?
     let ravelryId: String?
-    let aiParsed: Bool
+    let aiParsed: Bool?
     let needleSizeMm: Double?
     let needleSizes: [String]?
     let sizesAvailable: String?
@@ -247,15 +316,20 @@ struct Pattern: Codable, Identifiable, Hashable {
     let rating: Double?
     let ratingCount: Int?
     let notesHtml: String?
-    let createdAt: Date
-    let updatedAt: Date
+    let createdAt: Date?
+    let updatedAt: Date?
     let yardageMin: Int?
     let yardageMax: Int?
+    let priceCents: Int?
+    let currency: String?
+    let isMarketplace: Bool?
+    let salesCount: Int?
     let isQueued: Bool?
     let folder: PatternFolderRef?
     let sections: [PatternSection]?
     let sizes: [PatternSize]?
     let photos: [PatternPhoto]?
+    let patternYarns: [PatternYarn]?
     let pdfUploads: [PdfUpload]?
 
     var firstPdfUploadId: String? { pdfUploads?.first?.id }
@@ -272,6 +346,21 @@ struct Pattern: Codable, Identifiable, Hashable {
     }
 
     static func == (lhs: Pattern, rhs: Pattern) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+struct PatternYarn: Codable, Identifiable, Hashable {
+    let id: String
+    let patternId: String
+    var name: String
+    var weight: String?
+    var colorway: String?
+    var fiberContent: String?
+    var strands: Int
+    let sortOrder: Int
+    let yarn: YarnDetail?
+
+    static func == (lhs: PatternYarn, rhs: PatternYarn) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
@@ -335,6 +424,54 @@ struct PatternFolderRef: Codable {
     let id: String
     let name: String
     let color: String?
+}
+
+// MARK: - Community Pattern
+
+struct CommunityPattern: Codable, Identifiable {
+    let id: String
+    let title: String
+    let designerName: String?
+    let craftType: String
+    let garmentType: String?
+    let difficulty: String?
+    let yarnWeight: String?
+    let coverImageUrl: String?
+    let rating: Double?
+    let ratingCount: Int?
+    let createdAt: Date
+    let author: CommunityPatternAuthor
+}
+
+struct CommunityPatternAuthor: Codable {
+    let username: String
+    let displayName: String?
+    let avatarUrl: String?
+}
+
+struct CommunityPatternDetail: Codable {
+    let id: String
+    let title: String
+    let description: String?
+    let designerName: String?
+    let craftType: String
+    let garmentType: String?
+    let difficulty: String?
+    let yarnWeight: String?
+    let coverImageUrl: String?
+    let sizesAvailable: String?
+    let needleSizes: [String]?
+    let gaugeStitchesPer10cm: Double?
+    let gaugeRowsPer10cm: Double?
+    let gaugeStitchPattern: String?
+    let needleSizeMm: Double?
+    let yardageMin: Int?
+    let yardageMax: Int?
+    let rating: Double?
+    let ratingCount: Int?
+    let sourceUrl: String?
+    let createdAt: Date
+    let author: CommunityPatternAuthor
 }
 
 // MARK: - Social
@@ -407,13 +544,39 @@ struct FeedPost: Codable {
     let createdAt: Date
     let user: PostAuthor
     let photos: [PostPhoto]?
+    let project: PostLinkedProject?
+    let pattern: PostLinkedPattern?
+    let yarns: [PostYarn]?
+    let sessionMinutes: Int?
+    let sessionRows: Int?
     var isLiked: Bool
     let count: PostCounts?
 
     enum CodingKeys: String, CodingKey {
-        case id, userId, content, createdAt, user, photos, isLiked
+        case id, userId, content, createdAt, user, photos, project, pattern, yarns
+        case sessionMinutes, sessionRows, isLiked
         case count = "_count"
     }
+}
+
+struct PostLinkedProject: Codable, Identifiable {
+    let id: String
+    let title: String
+    let slug: String?
+}
+
+struct PostLinkedPattern: Codable, Identifiable {
+    let id: String
+    let title: String
+    let slug: String?
+    let coverImageUrl: String?
+}
+
+struct PostYarn: Codable, Identifiable {
+    let id: String
+    let yarnName: String
+    let colorway: String?
+    let weight: String?
 }
 
 struct FeedActivity: Codable {
@@ -635,6 +798,55 @@ struct Needle: Identifiable, Codable {
     let toolSetBrandName: String?
     let toolSetImageUrl: String?
     let ravelryId: String?
+}
+
+// MARK: - Swatches
+
+struct Swatch: Codable, Identifiable {
+    let id: String
+    let userId: String
+    let slug: String
+    var title: String
+    var notes: String?
+    var isPublic: Bool
+    var craftType: String
+    var stitchPattern: String?
+    var stitchesPer10cm: Double?
+    var rowsPer10cm: Double?
+    var needleSizeMm: Double?
+    var needleSizeLabel: String?
+    var needleType: String?
+    var washed: Bool
+    var blocked: Bool
+    var widthCm: Double?
+    var heightCm: Double?
+    var photoUrl: String?
+    let createdAt: Date
+    let updatedAt: Date
+    var yarns: [SwatchYarn]?
+    var user: SwatchAuthor?
+}
+
+struct SwatchYarn: Codable, Identifiable {
+    let id: String
+    let nameOverride: String?
+    let colorway: String?
+    let strands: Int
+    let yarn: YarnDetail?
+
+    var displayName: String {
+        if let company = yarn?.company?.name, let name = yarn?.name {
+            return "\(company) \(name)"
+        }
+        return yarn?.name ?? nameOverride ?? "Unknown yarn"
+    }
+}
+
+struct SwatchAuthor: Codable {
+    let id: String
+    let username: String
+    let displayName: String?
+    let avatarUrl: String?
 }
 
 // MARK: - Tool Catalog
@@ -866,14 +1078,14 @@ struct ContextStep: Codable {
 
 struct PdfUpload: Codable, Identifiable {
     let id: String
-    let userId: String
+    let userId: String?
     let patternId: String?
-    let fileName: String
-    let fileSize: Int
-    let status: String // "stored" | "parsed" | "failed"
-    let storagePath: String
+    let fileName: String?
+    let fileSize: Int?
+    let status: String?
+    let storagePath: String?
     let error: String?
-    let createdAt: Date
+    let createdAt: Date?
 }
 
 struct PdfSignedUrl: Codable {
@@ -1047,5 +1259,230 @@ struct SessionSummary: Codable {
 struct EndSessionResponse: Codable {
     let session: CraftingSession
     let summary: SessionSummary
+}
+
+// MARK: - AI Pattern Builder
+
+struct PatternBuilderConfig: Codable {
+    let projectTypes: [ProjectTypeConfig]
+    let sizeCharts: [String: [String: [String: Double]]]
+}
+
+struct ProjectTypeConfig: Codable, Identifiable {
+    let type: String
+    let label: String
+    let description: String
+    let questions: [BuilderQuestion]
+    let sizeChartKey: String
+    let recommendedYarnWeights: [String]
+
+    var id: String { type }
+}
+
+struct BuilderQuestion: Codable, Identifiable {
+    let key: String
+    let label: String
+    let type: String
+    let options: [BuilderQuestionOption]?
+    let dependsOn: BuilderDependsOn?
+    let required: Bool
+
+    var id: String { key }
+}
+
+struct BuilderQuestionOption: Codable, Identifiable, Hashable {
+    let value: String
+    let label: String
+    let description: String?
+    let `default`: Bool?
+
+    var id: String { value }
+}
+
+struct BuilderDependsOn: Codable {
+    let key: String
+    let values: [String]
+}
+
+// MARK: - Reviews
+
+struct PatternReview: Codable, Identifiable {
+    let id: String
+    let userId: String
+    let patternId: String
+    let projectId: String?
+    let rating: Double
+    let difficultyRating: Double?
+    let content: String?
+    let wouldMakeAgain: Bool?
+    let createdAt: Date
+    let updatedAt: Date
+    let user: ReviewAuthor
+    let project: ReviewProject?
+}
+
+struct ReviewAuthor: Codable {
+    let username: String
+    let displayName: String?
+    let avatarUrl: String?
+}
+
+struct ReviewProject: Codable, Identifiable {
+    let id: String
+    let title: String
+}
+
+struct ReviewsResponse: Codable {
+    let items: [PatternReview]
+    let total: Int
+    let page: Int
+    let pageSize: Int
+    let hasMore: Bool
+    let userReview: PatternReview?
+}
+
+// MARK: - Marketplace
+
+struct MarketplacePattern: Codable, Identifiable {
+    let id: String
+    let slug: String
+    let title: String
+    let description: String?
+    let craftType: String
+    let difficulty: String?
+    let garmentType: String?
+    let yarnWeight: String?
+    let coverImageUrl: String?
+    let designerName: String?
+    let priceCents: Int?
+    let currency: String?
+    let salesCount: Int?
+    let rating: Double?
+    let ratingCount: Int?
+    let createdAt: Date
+    let user: MarketplaceAuthor
+
+    var formattedPrice: String {
+        guard let cents = priceCents, cents > 0 else { return "Free" }
+        return String(format: "$%.2f", Double(cents) / 100.0)
+    }
+
+    var isFree: Bool { priceCents == nil || priceCents == 0 }
+}
+
+struct MarketplaceAuthor: Codable {
+    let id: String
+    let username: String
+    let displayName: String?
+    let avatarUrl: String?
+}
+
+struct MarketplacePatternDetail: Codable {
+    let id: String
+    let slug: String
+    let title: String
+    let description: String?
+    let craftType: String
+    let difficulty: String?
+    let garmentType: String?
+    let yarnWeight: String?
+    let coverImageUrl: String?
+    let designerName: String?
+    let priceCents: Int?
+    let currency: String?
+    let salesCount: Int?
+    let rating: Double?
+    let ratingCount: Int?
+    let createdAt: Date
+    let user: MarketplaceSellerInfo
+    let sizes: [PatternSize]?
+    let photos: [PatternPhoto]?
+    let patternYarns: [PatternYarn]?
+    let sections: [PatternSection]?  // null if not purchased
+    let isOwner: Bool
+    let isPurchased: Bool
+    let hasAccess: Bool
+
+    var formattedPrice: String {
+        guard let cents = priceCents, cents > 0 else { return "Free" }
+        return String(format: "$%.2f", Double(cents) / 100.0)
+    }
+}
+
+struct MarketplaceSellerInfo: Codable {
+    let id: String
+    let username: String
+    let displayName: String?
+    let avatarUrl: String?
+    let sellerBio: String?
+}
+
+struct PatternOwnership: Codable {
+    let owned: Bool
+    let purchased: Bool
+    let free: Bool
+    let hasAccess: Bool
+    let purchaseDate: Date?
+}
+
+struct CheckoutResponse: Codable {
+    let checkoutUrl: String
+}
+
+struct ConnectResponse: Codable {
+    let url: String
+}
+
+struct ConnectStatus: Codable {
+    let connected: Bool
+    let chargesEnabled: Bool
+    let detailsSubmitted: Bool?
+    let onboardingUrl: String?
+}
+
+struct EarningsSummary: Codable {
+    let totalSales: Int
+    let totalEarningsCents: Int
+    let thisMonthCents: Int
+    let patternsListed: Int
+    let recentSales: [RecentSale]
+}
+
+struct RecentSale: Codable, Identifiable {
+    let id: String
+    let priceCents: Int
+    let platformFeeCents: Int
+    let sellerAmountCents: Int
+    let createdAt: Date
+    let pattern: RecentSalePattern
+    let buyer: RecentSaleBuyer
+}
+
+struct RecentSalePattern: Codable {
+    let title: String
+    let slug: String
+}
+
+struct RecentSaleBuyer: Codable {
+    let username: String
+    let displayName: String?
+}
+
+struct AgreementSection: Codable, Identifiable {
+    let heading: String
+    let body: String
+    var id: String { heading }
+}
+
+struct Agreement: Codable {
+    let version: String
+    let title: String
+    let sections: [AgreementSection]
+}
+
+struct AllAgreements: Codable {
+    let buyer: Agreement
+    let creator: Agreement
+    let dmca: Agreement
 }
 

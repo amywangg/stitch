@@ -1,20 +1,13 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, findOwned } from '@/lib/route-helpers'
 
-type Params = { params: Promise<{ id: string }> }
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const dynamic = 'force-dynamic'
+export const DELETE = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-
-  const comment = await prisma.comments.findFirst({
-    where: { id, user_id: user.id, deleted_at: null },
-  })
+  const comment = await findOwned(prisma.comments, id, user.id)
   if (!comment) return NextResponse.json({ error: 'Comment not found' }, { status: 404 })
 
   await prisma.comments.update({
@@ -23,4 +16,4 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true, data: {} })
-}
+})

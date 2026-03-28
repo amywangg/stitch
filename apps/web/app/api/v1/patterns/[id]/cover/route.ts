@@ -1,17 +1,16 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, findOwned } from '@/lib/route-helpers'
 import { createClient } from '@supabase/supabase-js'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
 )
 
 const BUCKET = 'patterns'
-
-type Params = { params: Promise<{ id: string }> }
 
 /**
  * PUT /api/v1/patterns/[id]/cover
@@ -23,16 +22,10 @@ type Params = { params: Promise<{ id: string }> }
  *
  * The user can replace the auto-fetched cover with their own image.
  */
-export async function PUT(req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const PUT = withAuth(async (req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-
-  const pattern = await prisma.patterns.findFirst({
-    where: { id, user_id: user.id, deleted_at: null },
-  })
+  const pattern = await findOwned(prisma.patterns, id, user.id)
   if (!pattern) return NextResponse.json({ error: 'Pattern not found' }, { status: 404 })
 
   const contentType = req.headers.get('content-type') ?? ''
@@ -63,7 +56,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
     const buffer = Buffer.from(await file.arrayBuffer())
     const ext = file.type.split('/')[1] === 'jpeg' ? 'jpg' : file.type.split('/')[1]
-    const storagePath = `${user.id}/covers/${pattern.id}.${ext}`
+    const storagePath = `${user.id}/covers/${id}.${ext}`
 
     const { error: uploadError } = await supabaseAdmin.storage
       .from(BUCKET)
@@ -93,22 +86,16 @@ export async function PUT(req: NextRequest, { params }: Params) {
     success: true,
     data: { id: updated.id, cover_image_url: updated.cover_image_url },
   })
-}
+})
 
 /**
  * DELETE /api/v1/patterns/[id]/cover
  * Remove the cover image.
  */
-export async function DELETE(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const DELETE = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
-
-  const pattern = await prisma.patterns.findFirst({
-    where: { id, user_id: user.id, deleted_at: null },
-  })
+  const pattern = await findOwned(prisma.patterns, id, user.id)
   if (!pattern) return NextResponse.json({ error: 'Pattern not found' }, { status: 404 })
 
   await prisma.patterns.update({
@@ -117,4 +104,4 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true })
-}
+})

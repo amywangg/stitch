@@ -1,14 +1,15 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 import { getOpenAI } from '@/lib/openai'
 import { isValidYarnWeight, YARN_WEIGHT_ORDER, type YarnWeight } from '@/lib/yarn-math'
 import { rankEquivalents, type YarnProfile } from '@/lib/yarn-equiv'
 import { buildYarnEquivPrompt, type YarnEquivAIResponse } from '@/lib/prompts/yarn-equiv'
 
+
+export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
 // ─── Input validation ────────────────────────────────────────────────────────
@@ -56,13 +57,7 @@ const requestSchema = z.object({
  *
  * Searches user's stash, the yarn catalog, or both.
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) {
-    return NextResponse.json({ error: 'Unauthorized', code: 'UNAUTHORIZED' }, { status: 401 })
-  }
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const proError = requirePro(user, 'yarn equivalence')
   if (proError) return proError
 
@@ -332,4 +327,4 @@ export async function POST(req: NextRequest) {
       candidates_evaluated: candidates.length,
     },
   })
-}
+})

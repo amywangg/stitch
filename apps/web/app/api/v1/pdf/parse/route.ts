@@ -1,15 +1,15 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
-import { getDbUser } from '@/lib/auth'
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { withAuth, generateUniqueSlug } from '@/lib/route-helpers'
 import { requirePro } from '@/lib/pro-gate'
 import { extractPdfText } from '@/lib/pdf'
 import { parsePatternMetadata } from '@/lib/openai'
-import { prisma } from '@/lib/prisma'
-import { slugify } from '@/lib/utils'
 import { autoFetchCoverImage } from '@/lib/pattern-cover'
 import { searchRavelryPatterns } from '@/lib/ravelry-search'
 import { createClient } from '@supabase/supabase-js'
 
+
+export const dynamic = 'force-dynamic'
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -21,18 +21,13 @@ export const maxDuration = 60 // seconds — allow time for AI parsing
 
 /**
  * POST /api/v1/pdf/parse
- * Stage 1: Upload PDF → extract text → AI extracts metadata (title, sizes, gauge, sections).
- * Does NOT parse row-by-row instructions — use POST /api/v1/patterns/[id]/apply-size for that.
+ * Stage 1: Upload PDF -> extract text -> AI extracts metadata (title, sizes, gauge, sections).
+ * Does NOT parse row-by-row instructions -- use POST /api/v1/patterns/[id]/apply-size for that.
  * Stores raw_text on the pattern for later re-parsing.
  *
  * Pro required.
  */
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
-
+export const POST = withAuth(async (req, user) => {
   // AI parsing requires Pro
   const proError = requirePro(user, 'AI pattern parsing')
   if (proError) return proError
@@ -138,12 +133,7 @@ export async function POST(req: NextRequest) {
 
   // Save pattern shell + sizes to DB
   const title = parsed.title ?? fileName.replace(/\.pdf$/i, '')
-  let slug = slugify(title)
-  let attempt = 0
-  while (await prisma.patterns.findUnique({ where: { user_id_slug: { user_id: user.id, slug } } })) {
-    attempt++
-    slug = `${slugify(title)}-${attempt}`
-  }
+  const slug = await generateUniqueSlug(prisma.patterns, user.id, title)
 
   const pattern = await prisma.patterns.create({
     data: {
@@ -277,4 +267,4 @@ export async function POST(req: NextRequest) {
       next_step: ravelryMatches.length > 0 ? 'link_ravelry' : 'select_size',
     },
   })
-}
+})

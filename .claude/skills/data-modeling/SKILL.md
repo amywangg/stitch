@@ -54,8 +54,10 @@ created_at DateTime @default(now())
 Models whose rows are updated after creation also get:
 
 ```prisma
-updated_at DateTime @updatedAt
+updated_at DateTime @default(now()) @updatedAt
 ```
+
+**CRITICAL:** Always include `@default(now())` alongside `@updatedAt`. Without `@default(now())`, adding `updated_at` to a table that already has rows will fail because Prisma cannot backfill a required column with no default. The `@default(now())` handles both existing rows and new rows, while `@updatedAt` ensures the field auto-updates on every subsequent write.
 
 **Immutable models** (join tables, history/log entries, events) skip `updated_at`:
 - `project_tags`, `pattern_tags`, `post_bookmarks` (join tables)
@@ -83,7 +85,9 @@ Do NOT add soft deletes to:
 
 ### Current soft-delete models
 
-`projects`, `patterns`, `posts`, `comments`
+`projects`, `patterns`, `posts`, `comments`, `pattern_queue`
+
+**Rule of thumb:** If a user can "remove" something from a list (queue, library, stash) and might want to undo it, or if the record is referenced by activity events, add `deleted_at`. When in doubt for user-facing content, add it — it's cheap and prevents data loss.
 
 ---
 
@@ -170,10 +174,12 @@ status      String   @default("active")
 
 ### Always index
 
-1. **Foreign keys** used in WHERE clauses: `user_id`, `project_id`, `pattern_id`
+1. **EVERY foreign key column** — no exceptions. Even if the FK is only used in JOINs today, it will likely appear in WHERE clauses as features grow. Missing FK indexes cause full table scans that are invisible until the table is large enough to hurt.
 2. **Timestamp fields** used for sorting or range queries: `created_at` on feed-visible models
 3. **Status fields** used for filtering: `deleted_at` (soft delete queries)
 4. **Unique lookup fields**: `clerk_id`, `username`, `email`, `slug`
+
+**Audit lesson:** The codebase audit found 5 missing FK indexes (`company_id` on yarns, `yarn_id` and `stash_item_id` on project_yarns, `user_id` on likes and comments, `post_id` and `user_id` on post_bookmarks). When adding a relation, always add `@@index([fk_field])` in the same edit.
 
 ### Composite indexes
 
@@ -382,7 +388,7 @@ When adding a new table to `schema.prisma`:
 
 1. **Name:** lowercase plural snake_case
 2. **ID:** `id String @id @default(uuid())`
-3. **Timestamps:** `created_at DateTime @default(now())` always; add `updated_at DateTime @updatedAt` if mutable
+3. **Timestamps:** `created_at DateTime @default(now())` always; add `updated_at DateTime @default(now()) @updatedAt` if mutable
 4. **Soft delete:** Add `deleted_at DateTime?` if the model is user-created content that may be referenced elsewhere
 5. **Foreign keys:** `{model}_id String` with `@relation` and `onDelete` behavior
 6. **Indexes:** `@@index` on every FK used in WHERE clauses; composite indexes for common query patterns
@@ -498,15 +504,32 @@ await prisma.user_stash.createMany({
 
 ## Anti-Patterns (Never Do These)
 
+### Schema design
 - Using `autoincrement()` for IDs (sequential, guessable, environment-dependent)
 - Storing enum values not documented in schema comments
 - Adding a JSON field when the shape is consistent (use proper columns)
-- Forgetting `@@index` on foreign keys used in WHERE clauses
-- Using `findFirst` without a `user_id` filter (authorization bypass risk)
-- Creating a migration for every small dev change (use `db:push` locally)
-- Skipping `db:generate` after `db:push` (stale client types)
-- Adding `updated_at` to immutable/append-only models (misleading)
-- Storing derived data (counts, aggregates) as columns instead of computing them
 - Using camelCase for field names (breaks convention, confuses Prisma client mapping)
 - Circular cascade deletes (A cascades to B, B cascades to A)
 - Missing `onDelete` behavior on relations (defaults to `Restrict`, which blocks deletes)
+- Adding `updated_at` to immutable/append-only models (misleading)
+- Storing derived data (counts, aggregates) as columns instead of computing them — **exception**: `sales_count` and `rating`/`rating_count` on `patterns` are denormalized for sort/display performance. Update them via aggregate queries after mutations.
+
+### Marketplace and payment models
+- **Purchase tables use `@@unique([buyer_id, resource_id])`** — one purchase per user per resource. Use upsert for idempotency.
+- **Store price at time of purchase** — never reference current price from the parent. Prices change; the purchase record is a snapshot.
+- **Stripe IDs go in dedicated columns** with `@unique` — `stripe_session_id`, `stripe_connect_id`, `stripe_payment_intent`. Index these for webhook lookups.
+- **Status columns on payment records** — use string enums: `"pending" | "completed" | "refunded"`. Always filter on status in queries (a pending purchase is NOT an active purchase).
+- **Access logging models are append-only** — `pdf_access_logs` has `created_at` but no `updated_at` (never edited).
+
+### Indexes and constraints
+- **Forgetting `@@index` on ANY foreign key** — every FK gets an index, no exceptions. Add it in the same edit as the relation.
+- Adding a relation without checking if the FK column has an `@@index`
+
+### Timestamps
+- **Using `@updatedAt` without `@default(now())`** — this will fail `db:push` on tables with existing rows because Prisma cannot backfill a required column without a default. Always write `updated_at DateTime @default(now()) @updatedAt`.
+- **Forgetting `updated_at` on mutable models** — if the model can be edited after creation, it needs `updated_at`. The audit found `user_needles`, `notifications`, and `pdf_uploads` were all missing it.
+
+### Queries and workflow
+- Using `findFirst` without a `user_id` filter (authorization bypass risk)
+- Creating a migration for every small dev change (use `db:push` locally)
+- Skipping `db:generate` after `db:push` (stale client types)

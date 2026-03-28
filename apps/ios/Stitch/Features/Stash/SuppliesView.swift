@@ -82,14 +82,7 @@ struct SuppliesView: View {
                 viewModel.items.append(item)
             }
         }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
-        } message: {
-            Text(viewModel.error ?? "")
-        }
+        .errorAlert(error: $viewModel.error)
     }
 
     private var grouped: [(category: String, items: [Supply])] {

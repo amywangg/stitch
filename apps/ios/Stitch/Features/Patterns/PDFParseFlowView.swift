@@ -5,9 +5,11 @@ struct PDFParseFlowView: View {
     var onCreatedProject: ((String) -> Void)?
 
     @Environment(ThemeManager.self) private var theme
+    @Environment(SubscriptionManager.self) private var subscriptions
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = PDFParseFlowViewModel()
     @State private var isPickerPresented = false
+    @State private var showProPaywall = false
 
     var body: some View {
         NavigationStack {
@@ -47,6 +49,9 @@ struct PDFParseFlowView: View {
                     onCreatedProject?(projectId)
                 }
             }
+        }
+        .sheet(isPresented: $showProPaywall) {
+            StitchPaywallView()
         }
     }
 
@@ -120,6 +125,12 @@ struct PDFParseFlowView: View {
 
             guard let data = try? Data(contentsOf: url) else {
                 viewModel.step = .error("Failed to read the file.")
+                return
+            }
+
+            // Pro-gate AI parsing
+            if !subscriptions.isPro {
+                showProPaywall = true
                 return
             }
 
@@ -372,7 +383,7 @@ struct PDFParseFlowView: View {
                     if let sections = pattern.sections, !sections.isEmpty {
                         infoChip("\(sections.count) sections")
                     }
-                    if let craft = pattern.craftType.nilIfEmpty {
+                    if let craft = pattern.craftType, !craft.isEmpty {
                         infoChip(craft.capitalized)
                     }
                 }

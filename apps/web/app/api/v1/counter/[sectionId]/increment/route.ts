@@ -1,19 +1,13 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
-import { getRavelryPushClient, pushToRavelry } from '@/lib/ravelry-push'
+import { withAuth } from '@/lib/route-helpers'
 import { emitActivity } from '@/lib/activity'
 import { resolveStep, getStepPosition, shouldAutoAdvance, getSectionProgress } from '@/lib/instruction-resolver'
 
-type Params = { params: Promise<{ sectionId: string }> }
 
-export async function POST(_req: NextRequest, { params }: Params) {
-  const { sectionId } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const dynamic = 'force-dynamic'
+export const POST = withAuth(async (_req, user, params) => {
+  const sectionId = params!.sectionId
 
   const section = await prisma.project_sections.findFirst({
     where: { id: sectionId, project: { user_id: user.id, deleted_at: null } },
@@ -110,18 +104,6 @@ export async function POST(_req: NextRequest, { params }: Params) {
       })
 
       emitActivity({ userId: user.id, type: 'project_completed', projectId: section.project_id })
-
-      if (section.project.ravelry_permalink) {
-        const push = await getRavelryPushClient(user.id)
-        if (push) {
-          pushToRavelry(() =>
-            push.client.updateProject(section.project.ravelry_permalink!, {
-              status_name: 'Finished',
-              completed: today.toISOString().slice(0, 10),
-            }),
-          )
-        }
-      }
     }
   }
 
@@ -167,4 +149,4 @@ export async function POST(_req: NextRequest, { params }: Params) {
       instruction,
     },
   })
-}
+})

@@ -2,8 +2,10 @@ import SwiftUI
 
 struct FeedView: View {
     @Environment(ThemeManager.self) private var theme
+    @Environment(NotificationService.self) private var notificationService
     @State private var viewModel = FeedViewModel()
     @State private var commentsVM: CommentsViewModel?
+    @State private var showCompose = false
 
     var body: some View {
         NavigationStack {
@@ -15,6 +17,9 @@ struct FeedView: View {
                         feedHeader
                         tabPicker
                     }
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    composeButton
                 }
                 .navigationDestination(for: Route.self) { route in
                     switch route {
@@ -39,6 +44,11 @@ struct FeedView: View {
             CommentsView(viewModel: vm)
                 .presentationDetents([.medium, .large])
         }
+        .sheet(isPresented: $showCompose) {
+            ComposePostView {
+                Task { await viewModel.loadFeed() }
+            }
+        }
     }
 
     // MARK: - Header
@@ -56,7 +66,9 @@ struct FeedView: View {
                     Image(systemName: "square.and.arrow.up")
                 }
                 NavigationLink(value: Route.notifications) {
-                    Image(systemName: "bell")
+                    Image(systemName: notificationService.unreadCount > 0 ? "bell.badge.fill" : "bell")
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(notificationService.unreadCount > 0 ? theme.primary : .secondary, theme.primary)
                 }
                 NavigationLink(value: Route.findFriends) {
                     Image(systemName: "person.badge.plus")
@@ -144,6 +156,23 @@ struct FeedView: View {
             .padding(.horizontal)
         }
         .refreshable { await viewModel.loadFeed() }
+    }
+
+    // MARK: - Compose Button
+
+    private var composeButton: some View {
+        Button {
+            showCompose = true
+        } label: {
+            Image(systemName: "plus")
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: 56, height: 56)
+                .background(theme.primary, in: Circle())
+                .shadow(color: .black.opacity(0.15), radius: 8, y: 4)
+        }
+        .padding(.trailing, 20)
+        .padding(.bottom, 20)
     }
 
     @ViewBuilder

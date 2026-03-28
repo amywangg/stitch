@@ -1,13 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
+export const dynamic = 'force-dynamic'
+export const POST = withAuth(async (req, user) => {
   const body = await req.json()
   const { userId: targetId } = body
 
@@ -31,17 +28,14 @@ export async function POST(req: NextRequest) {
       type: 'follow',
       resource_type: 'user',
       resource_id: user.id,
+      message: `${user.username} started following you`,
     },
   }).catch(() => {})
 
   return NextResponse.json({ success: true, data: follow }, { status: 201 })
-}
+})
 
-export async function DELETE(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const DELETE = withAuth(async (req, user) => {
   const body = await req.json()
   const { userId: targetId } = body
 
@@ -52,4 +46,4 @@ export async function DELETE(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: {} })
-}
+})

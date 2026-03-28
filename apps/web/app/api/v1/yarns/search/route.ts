@@ -1,14 +1,11 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
-import { getDbUser } from '@/lib/auth'
+import { NextResponse } from 'next/server'
+import { withAuth } from '@/lib/route-helpers'
 import { searchRavelryYarns } from '@/lib/ravelry-yarn-search'
 
-// GET /api/v1/yarns/search?q=cascade+220&weight=worsted&page=1
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
+export const dynamic = 'force-dynamic'
+// GET /api/v1/yarns/search?q=cascade+220&weight=worsted&page=1
+export const GET = withAuth(async (req, user) => {
   const query = req.nextUrl.searchParams.get('q') ?? ''
   const weight = req.nextUrl.searchParams.get('weight') ?? undefined
   const fiber = req.nextUrl.searchParams.get('fiber') ?? undefined
@@ -36,4 +33,4 @@ export async function GET(req: NextRequest) {
     const status = message.includes('Connect your Ravelry') ? 400 : 502
     return NextResponse.json({ error: message }, { status })
   }
-}
+})

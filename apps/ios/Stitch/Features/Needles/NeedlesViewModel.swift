@@ -4,9 +4,7 @@ import Foundation
 final class NeedlesViewModel {
     var needles: [Needle] = []
     var isLoading = false
-    var isSyncing = false
     var error: String?
-    var syncMessage: String?
 
     func load() async {
         isLoading = true
@@ -35,38 +33,6 @@ final class NeedlesViewModel {
             struct Empty: Decodable {}
             let _: APIResponse<Empty> = try await APIClient.shared.delete("/needles/sets/\(setId)")
             needles.removeAll { $0.toolSetId == setId }
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    func syncRavelry() async {
-        isSyncing = true
-        syncMessage = nil
-        defer { isSyncing = false }
-        do {
-            struct SyncResult: Decodable {
-                let imported: Int
-                let updated: Int
-                let skipped: Int?
-                let errors: [String]?
-            }
-            let response: APIResponse<SyncResult> = try await APIClient.shared.post(
-                "/integrations/ravelry/sync/needles"
-            )
-            let result = response.data
-            await load()
-
-            if let errors = result.errors, !errors.isEmpty {
-                syncMessage = "Synced with \(errors.count) error(s): \(errors.first ?? "")"
-            } else if result.imported == 0 && result.updated == 0 {
-                syncMessage = "Needles are up to date"
-            } else {
-                var parts: [String] = []
-                if result.imported > 0 { parts.append("\(result.imported) imported") }
-                if result.updated > 0 { parts.append("\(result.updated) updated") }
-                syncMessage = parts.joined(separator: ", ")
-            }
         } catch {
             self.error = error.localizedDescription
         }

@@ -8,6 +8,7 @@ import { openai } from '@/lib/openai'
 import { prisma } from '@/lib/prisma'
 import { searchRavelryPatterns } from '@/lib/ravelry-search'
 import { compareGauges } from '@/lib/gauge'
+import { round } from '@/lib/utils'
 
 // ─── Stash matching: "What can I make with this yarn?" ──────────────────────
 
@@ -268,8 +269,8 @@ Return JSON array: [{ "name": "...", "rows": [{ "row_number": 1, "original_instr
     pattern_title: pattern.title,
     original_gauge: { stitches_per_10cm: originalStitchesPer10cm, rows_per_10cm: originalRowsPer10cm },
     new_gauge: { stitches_per_10cm: newStitchesPer10cm, rows_per_10cm: newRowsPer10cm },
-    stitch_ratio: Math.round(stitchRatio * 1000) / 1000,
-    row_ratio: Math.round(rowRatio * 1000) / 1000,
+    stitch_ratio: round(stitchRatio, 3),
+    row_ratio: round(rowRatio, 3),
     sections: parsed.sections ?? [],
   }
 }

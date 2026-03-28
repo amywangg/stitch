@@ -16,6 +16,11 @@ final class YarnSearchViewModel {
     var colorways: [String] = []
     var selectedWeight: String?
 
+    // Curated browse sections
+    var popularYarns: [YarnSearchResult] = []
+    var topRatedYarns: [YarnSearchResult] = []
+    private var didLoadBrowse = false
+
     private var searchTask: Task<Void, Never>?
 
     func search() {
@@ -66,6 +71,24 @@ final class YarnSearchViewModel {
             hasMore = response.data.paginator.page < response.data.paginator.pageCount
         } catch {
             self.error = error.localizedDescription
+        }
+    }
+
+    func loadBrowseSections() async {
+        guard !didLoadBrowse else { return }
+        didLoadBrowse = true
+        async let popular: APIResponse<YarnSearchResponse> = APIClient.shared.get(
+            "/yarns/search?q=yarn&sort=best&page_size=10&page=1"
+        )
+        async let topRated: APIResponse<YarnSearchResponse> = APIClient.shared.get(
+            "/yarns/search?q=merino&sort=rating&page_size=10&page=1"
+        )
+        do {
+            let (popRes, ratedRes) = try await (popular, topRated)
+            popularYarns = popRes.data.yarns
+            topRatedYarns = ratedRes.data.yarns
+        } catch {
+            // Non-critical
         }
     }
 
@@ -217,7 +240,23 @@ struct YarnSearchView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") { dismiss() }
+                    if !viewModel.query.isEmpty {
+                        Button {
+                            viewModel.query = ""
+                            viewModel.results = []
+                            viewModel.totalResults = 0
+                            viewModel.hasMore = false
+                            viewModel.selectedWeight = nil
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.left")
+                                    .font(.caption.weight(.semibold))
+                                Text("Browse")
+                            }
+                        }
+                    } else {
+                        Button("Done") { dismiss() }
+                    }
                 }
             }
             .sheet(item: $selectedYarn) { yarn in
@@ -236,14 +275,8 @@ struct YarnSearchView: View {
                     Task { await viewModel.loadColorways(yarn: yarn) }
                 }
             }
-            .alert("Error", isPresented: .init(
-                get: { viewModel.error != nil },
-                set: { if !$0 { viewModel.error = nil } }
-            )) {
-                Button("OK") { viewModel.error = nil }
-            } message: {
-                Text(viewModel.error ?? "")
-            }
+            .errorAlert(error: $viewModel.error)
+            .task { await viewModel.loadBrowseSections() }
         }
     }
 
@@ -252,6 +285,14 @@ struct YarnSearchView: View {
     private var browseContent: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
+                // Curated carousels
+                if !viewModel.popularYarns.isEmpty {
+                    yarnCarousel(title: "Most popular", yarns: viewModel.popularYarns)
+                }
+                if !viewModel.topRatedYarns.isEmpty {
+                    yarnCarousel(title: "Top rated", yarns: viewModel.topRatedYarns)
+                }
+
                 // Weight filter chips
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Browse by weight")
@@ -340,6 +381,59 @@ struct YarnSearchView: View {
                     .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(theme.primary)
             }
+    }
+
+    // MARK: - Yarn Carousel
+
+    private func yarnCarousel(title: String, yarns: [YarnSearchResult]) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title)
+                .font(.headline)
+                .padding(.horizontal, 16)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(yarns) { yarn in
+                        Button { selectedYarn = yarn } label: {
+                            VStack(alignment: .leading, spacing: 6) {
+                                if let photoUrl = yarn.photoUrl, let url = URL(string: photoUrl) {
+                                    AsyncImage(url: url) { image in
+                                        image.resizable().scaledToFill()
+                                    } placeholder: {
+                                        Color(.systemGray5)
+                                    }
+                                    .frame(width: 130, height: 130)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                } else {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color(.systemGray5))
+                                        .frame(width: 130, height: 130)
+                                        .overlay {
+                                            Image(systemName: "wand.and.rays.inverse")
+                                                .foregroundStyle(.tertiary)
+                                        }
+                                }
+
+                                Text(yarn.name)
+                                    .font(.caption.weight(.medium))
+                                    .lineLimit(1)
+                                    .frame(width: 130, alignment: .leading)
+
+                                if let company = yarn.companyName {
+                                    Text(company)
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
+                                        .frame(width: 130, alignment: .leading)
+                                }
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, 16)
+            }
+        }
     }
 
     // MARK: - Results List

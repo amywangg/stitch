@@ -16,6 +16,7 @@ enum PatternsTab: String, CaseIterable {
 
 struct PatternsView: View {
     @Environment(ThemeManager.self) private var theme
+    @Environment(SubscriptionManager.self) private var subscriptions
     @Binding var initialSubTab: PatternsTab
     @State private var viewModel = PatternsViewModel()
     @State private var selectedTab: PatternsTab = .myPatterns
@@ -28,9 +29,12 @@ struct PatternsView: View {
     @State private var patternToMove: Pattern?
     @AppStorage("patternsLayout") private var layout: PatternsLayout = .list
     @AppStorage("patternsSort") private var sort: PatternsSort = .recentlyUpdated
+    @State private var navigationPath = NavigationPath()
+    @State private var showProPaywall = false
+    @State private var showAIBuilder = false
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             VStack(spacing: 0) {
                 tabPicker
                 tabContent
@@ -41,9 +45,15 @@ struct PatternsView: View {
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .patternDetail(let id):
-                    PatternDetailView(patternId: id)
+                    PatternDetailView(patternId: id, onDelete: {
+                        Task { await viewModel.loadRoot() }
+                    })
                 case .patternFolder(let id, let name):
                     PatternFolderView(folderId: id, folderName: name, viewModel: viewModel)
+                case .patternBuilder(let id):
+                    PatternBuilderView(patternId: id)
+                case .communityPatternDetail(let id):
+                    CommunityPatternDetailView(patternId: id)
                 case .ravelryPatternDetail(let ravelryId, let name, let photoUrl):
                     RavelryPatternDetailView(ravelryId: ravelryId, patternName: name, previewPhotoUrl: photoUrl)
                 case .glossaryBrowse(let category):
@@ -54,12 +64,22 @@ struct PatternsView: View {
                     TutorialListView()
                 case .tutorialDetail(let id):
                     TutorialDetailView(tutorialId: id)
+                case .marketplace:
+                    MarketplaceView()
+                case .marketplaceDetail(let id):
+                    MarketplacePatternDetailView(patternId: id)
                 default:
                     EmptyView()
                 }
             }
         }
         .task { await viewModel.loadRoot() }
+        .onChange(of: navigationPath) {
+            // Reload when navigating back (e.g., after creating/editing a pattern)
+            if navigationPath.isEmpty {
+                Task { await viewModel.loadRoot() }
+            }
+        }
         .onChange(of: initialSubTab) { _, newValue in
             selectedTab = newValue
         }
@@ -68,6 +88,12 @@ struct PatternsView: View {
                 // Navigate to the new project
                 // The projects tab handles navigation via its own router
             }
+        }
+        .fullScreenCover(isPresented: $showAIBuilder) {
+            AIPatternBuilderView()
+                .onDisappear {
+                    Task { await viewModel.loadRoot() }
+                }
         }
         .alert("New folder", isPresented: $showNewFolder) {
             TextField("Folder name", text: $newFolderName)
@@ -121,13 +147,9 @@ struct PatternsView: View {
                 }
             )
         }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
-        } message: {
-            Text(viewModel.error ?? "")
+        .errorAlert(error: $viewModel.error)
+        .sheet(isPresented: $showProPaywall) {
+            StitchPaywallView()
         }
     }
 
@@ -144,6 +166,23 @@ struct PatternsView: View {
                     patternsLayoutPicker
 
                     Menu {
+                        Button {
+                            if subscriptions.isPro {
+                                showAIBuilder = true
+                            } else {
+                                showProPaywall = true
+                            }
+                        } label: {
+                            Label(
+                                subscriptions.isPro ? "AI pattern builder" : "AI pattern builder (Pro)",
+                                systemImage: "sparkles"
+                            )
+                        }
+                        Button {
+                            navigationPath.append(Route.patternBuilder())
+                        } label: {
+                            Label("Build a pattern", systemImage: "hammer")
+                        }
                         Button {
                             showUploadSheet = true
                         } label: {
@@ -240,7 +279,7 @@ struct PatternsView: View {
             myPatternsContent
                 .refreshable { await viewModel.loadRoot() }
         case .discover:
-            PatternDiscoverView()
+            DiscoverContainerView()
         case .learn:
             LearnView()
         }
@@ -256,15 +295,83 @@ struct PatternsView: View {
         } else if viewModel.folders.isEmpty && viewModel.patterns.isEmpty {
             emptyState
         } else {
-            scrollContent
+            VStack(spacing: 0) {
+                searchAndFilters
+                scrollContent
+            }
         }
+    }
+
+    // MARK: - Search & Filters
+
+    private var searchAndFilters: some View {
+        VStack(spacing: 8) {
+            // Search bar
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                TextField("Search patterns", text: $viewModel.searchText)
+                    .font(.subheadline)
+                    .textFieldStyle(.plain)
+                if !viewModel.searchText.isEmpty {
+                    Button {
+                        viewModel.searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+            .padding(.horizontal, 16)
+
+            // Filter chips
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(PatternFilter.allCases) { filter in
+                        let count = viewModel.filterCounts[filter] ?? 0
+                        let isActive = viewModel.activeFilter == filter
+                        if filter == .all || count > 0 {
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    viewModel.activeFilter = isActive && filter != .all ? .all : filter
+                                }
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: filter.icon)
+                                        .font(.caption2)
+                                    Text(filter.label)
+                                        .font(.caption.weight(.medium))
+                                    if filter != .all && count > 0 {
+                                        Text("\(count)")
+                                            .font(.caption2.weight(.semibold))
+                                            .foregroundStyle(isActive ? .white.opacity(0.8) : .secondary)
+                                    }
+                                }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(isActive ? theme.primary : Color(.secondarySystemGroupedBackground), in: Capsule())
+                                .foregroundStyle(isActive ? .white : .primary)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+            }
+        }
+        .padding(.vertical, 8)
     }
 
     private var emptyState: some View {
         ContentUnavailableView {
             Label("No patterns yet", systemImage: "book.closed")
         } description: {
-            Text("Upload a PDF or discover patterns from Ravelry.")
+            Text("Upload a PDF or discover patterns.")
         } actions: {
             Button {
                 withAnimation { selectedTab = .discover }
@@ -284,17 +391,24 @@ struct PatternsView: View {
     }
 
     private var sortedPatterns: [Pattern] {
-        sort.sorted(viewModel.patterns)
+        sort.sorted(viewModel.filteredPatterns)
+    }
+
+    private var isSearchingOrFiltering: Bool {
+        !viewModel.searchText.isEmpty || viewModel.activeFilter != .all
     }
 
     private var scrollContent: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 20) {
-                if !viewModel.folders.isEmpty {
+                if !viewModel.folders.isEmpty && !isSearchingOrFiltering {
                     foldersSection
                 }
                 if !sortedPatterns.isEmpty {
                     patternsSection
+                } else if isSearchingOrFiltering {
+                    ContentUnavailableView.search(text: viewModel.searchText)
+                        .padding(.top, 40)
                 }
             }
             .padding(.bottom, 32)
@@ -416,530 +530,4 @@ struct PatternsView: View {
         }
     }
 
-}
-
-// MARK: - Folder Card
-
-private struct FolderCard: View {
-    @Environment(ThemeManager.self) private var theme
-    let folder: PatternFolder
-
-    var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "folder.fill")
-                .font(.title3)
-                .foregroundStyle(folderColor)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(folder.name)
-                    .font(.subheadline.weight(.medium))
-                    .lineLimit(1)
-                    .foregroundStyle(.primary)
-
-                let count = folder.count?.patterns ?? 0
-                Text("\(count) \(count == 1 ? "pattern" : "patterns")")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
-        }
-        .padding(12)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-
-    private var folderColor: Color {
-        if let hex = folder.color {
-            return Color(hex: hex)
-        }
-        return theme.primary
-    }
-}
-
-// MARK: - Pattern Row
-
-struct PatternRow: View {
-    @Environment(ThemeManager.self) private var theme
-    let pattern: Pattern
-
-    private var hasPatternData: Bool {
-        pattern.aiParsed || pattern.pdfUrl != nil || pattern.designerName != nil || pattern.difficulty != nil
-    }
-
-    var body: some View {
-        HStack(spacing: 12) {
-            patternCover
-            patternInfo
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 6)
-    }
-
-    private var patternCover: some View {
-        ZStack {
-            if let coverUrl = pattern.coverImageUrl, let url = URL(string: coverUrl) {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image.resizable().aspectRatio(contentMode: .fill)
-                    default:
-                        patternCoverPlaceholder
-                    }
-                }
-            } else {
-                patternCoverPlaceholder
-            }
-        }
-        .frame(width: 50, height: 70)
-        .clipShape(RoundedRectangle(cornerRadius: 6))
-    }
-
-    private var patternCoverPlaceholder: some View {
-        ZStack {
-            Color(.systemGray5)
-            Image(systemName: "book.closed")
-                .font(.system(size: 16))
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var patternInfo: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(pattern.title)
-                .font(.subheadline.weight(.medium))
-                .lineLimit(2)
-                .foregroundStyle(.primary)
-
-            if let designer = pattern.designerName {
-                Text(designer)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            HStack(spacing: 6) {
-                if let difficulty = pattern.difficulty {
-                    Text(difficulty.capitalized)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-                if pattern.firstPdfUploadId != nil {
-                    Label("PDF", systemImage: "doc.fill")
-                        .font(.caption2)
-                        .foregroundStyle(.green)
-                }
-                if pattern.aiParsed {
-                    Label("Parsed", systemImage: "sparkles")
-                        .font(.caption2)
-                        .foregroundStyle(.purple)
-                }
-                if !hasPatternData {
-                    Label("Saved from Ravelry", systemImage: "arrow.down.circle")
-                        .font(.caption2)
-                        .foregroundStyle(.orange)
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Folder Detail View
-
-struct PatternFolderView: View {
-    @Environment(ThemeManager.self) private var theme
-    let folderId: String
-    let folderName: String
-    @Bindable var viewModel: PatternsViewModel
-    @State private var showNewSubfolder = false
-    @State private var newSubfolderName = ""
-    @State private var patternToMove: Pattern?
-
-    var body: some View {
-        Group {
-            if viewModel.isFolderLoading && viewModel.folderPatterns.isEmpty {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if viewModel.folderChildren.isEmpty && viewModel.folderPatterns.isEmpty {
-                ContentUnavailableView(
-                    "Empty folder",
-                    systemImage: "folder",
-                    description: Text("Move patterns here to organize your library.")
-                )
-            } else {
-                folderScrollContent
-            }
-        }
-        .navigationTitle(folderName)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    showNewSubfolder = true
-                } label: {
-                    Image(systemName: "folder.badge.plus")
-                }
-            }
-        }
-        .task { await viewModel.loadFolder(PatternFolder(
-            id: folderId, parentId: nil, name: folderName, color: nil,
-            sortOrder: 0, createdAt: .now, updatedAt: .now
-        )) }
-        .alert("New subfolder", isPresented: $showNewSubfolder) {
-            TextField("Folder name", text: $newSubfolderName)
-            Button("Cancel", role: .cancel) { newSubfolderName = "" }
-            Button("Create") {
-                let name = newSubfolderName.trimmingCharacters(in: .whitespaces)
-                newSubfolderName = ""
-                guard !name.isEmpty else { return }
-                Task { await viewModel.createFolder(name: name, parentId: folderId) }
-            }
-        }
-        .sheet(item: $patternToMove) { pattern in
-            MoveToFolderSheet(
-                pattern: pattern,
-                folders: viewModel.folders,
-                onMove: { folderId in
-                    Task { await viewModel.movePattern(pattern, toFolder: folderId) }
-                }
-            )
-        }
-    }
-
-    private var folderScrollContent: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 20) {
-                if !viewModel.folderChildren.isEmpty {
-                    subfoldersGrid
-                }
-                patternsInFolder
-            }
-            .padding(.bottom, 32)
-        }
-    }
-
-    private var subfoldersGrid: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Subfolders")
-                .font(.headline)
-                .padding(.horizontal)
-
-            LazyVGrid(columns: [
-                GridItem(.flexible(), spacing: 12),
-                GridItem(.flexible(), spacing: 12),
-            ], spacing: 12) {
-                ForEach(viewModel.folderChildren) { child in
-                    NavigationLink(value: Route.patternFolder(id: child.id, name: child.name)) {
-                        FolderCard(folder: child)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(.horizontal)
-        }
-    }
-
-    private var patternsInFolder: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            if !viewModel.folderChildren.isEmpty && !viewModel.folderPatterns.isEmpty {
-                Text("Patterns")
-                    .font(.headline)
-                    .padding(.horizontal)
-            }
-
-            ForEach(viewModel.folderPatterns) { pattern in
-                NavigationLink(value: Route.patternDetail(id: pattern.id)) {
-                    PatternRow(pattern: pattern)
-                }
-                .buttonStyle(.plain)
-                .contextMenu {
-                    Button {
-                        patternToMove = pattern
-                    } label: {
-                        Label("Move to folder", systemImage: "folder")
-                    }
-                    Button {
-                        Task { await viewModel.movePattern(pattern, toFolder: nil) }
-                    } label: {
-                        Label("Remove from folder", systemImage: "folder.badge.minus")
-                    }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Move to Folder Sheet
-
-private struct MoveToFolderSheet: View {
-    @Environment(ThemeManager.self) private var theme
-    let pattern: Pattern
-    let folders: [PatternFolder]
-    let onMove: (String?) -> Void
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            List {
-                if pattern.folderId != nil {
-                    Button {
-                        onMove(nil)
-                        dismiss()
-                    } label: {
-                        Label("Remove from folder", systemImage: "tray")
-                    }
-                }
-
-                ForEach(folders) { folder in
-                    Button {
-                        onMove(folder.id)
-                        dismiss()
-                    } label: {
-                        Label {
-                            HStack {
-                                Text(folder.name)
-                                Spacer()
-                                if pattern.folderId == folder.id {
-                                    Image(systemName: "checkmark")
-                                        .foregroundStyle(theme.primary)
-                                }
-                            }
-                        } icon: {
-                            Image(systemName: "folder.fill")
-                                .foregroundStyle(folder.color.map { Color(hex: $0) } ?? theme.primary)
-                        }
-                    }
-                    .disabled(pattern.folderId == folder.id)
-                }
-            }
-            .navigationTitle("Move to folder")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-            }
-        }
-        .presentationDetents([.medium])
-    }
-}
-
-// MARK: - Pattern Grid Card
-
-private struct PatternGridCard: View {
-    @Environment(ThemeManager.self) private var theme
-    let pattern: Pattern
-
-    private var hasPatternData: Bool {
-        pattern.aiParsed || pattern.pdfUrl != nil || pattern.designerName != nil || pattern.difficulty != nil
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            coverImage
-            textContent
-        }
-    }
-
-    private var coverImage: some View {
-        ZStack(alignment: .topTrailing) {
-            Color(.systemGray5)
-                .aspectRatio(2.0/3.0, contentMode: .fit)
-                .overlay {
-                    if let coverUrl = pattern.coverImageUrl, let url = URL(string: coverUrl) {
-                        AsyncImage(url: url) { phase in
-                            switch phase {
-                            case .success(let image):
-                                image.resizable().aspectRatio(contentMode: .fill)
-                            default:
-                                gridPlaceholder
-                            }
-                        }
-                    } else {
-                        gridPlaceholder
-                    }
-                }
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-
-            if !hasPatternData {
-                Image(systemName: "arrow.down.circle.fill")
-                    .font(.system(size: 14))
-                    .foregroundStyle(.orange)
-                    .padding(6)
-            }
-        }
-    }
-
-    private var gridPlaceholder: some View {
-        ZStack {
-            Color(.systemGray5)
-            Image(systemName: "book.closed")
-                .font(.system(size: 28))
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var textContent: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(pattern.title)
-                .font(.subheadline.weight(.semibold))
-                .lineLimit(2)
-                .foregroundStyle(.primary)
-
-            if let designer = pattern.designerName {
-                Text(designer)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-
-            HStack(spacing: 6) {
-                if let difficulty = pattern.difficulty {
-                    Text(difficulty.capitalized)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-                if pattern.firstPdfUploadId != nil {
-                    Label("PDF", systemImage: "doc.fill")
-                        .font(.caption2)
-                        .foregroundStyle(.green)
-                }
-                if pattern.aiParsed {
-                    Label("Parsed", systemImage: "sparkles")
-                        .font(.caption2)
-                        .foregroundStyle(.purple)
-                } else if !hasPatternData {
-                    Text("No pattern data")
-                        .font(.caption2)
-                        .foregroundStyle(.orange)
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Pattern Large Card (Editorial)
-
-private struct PatternLargeCard: View {
-    let pattern: Pattern
-
-    private var hasPatternData: Bool {
-        pattern.aiParsed || pattern.pdfUrl != nil || pattern.designerName != nil || pattern.difficulty != nil
-    }
-
-    var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            heroImage
-            gradient
-            cardOverlay
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 260)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-    }
-
-    private var heroImage: some View {
-        Color(.systemGray5)
-            .overlay {
-                if let coverUrl = pattern.coverImageUrl, let url = URL(string: coverUrl) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().aspectRatio(contentMode: .fill)
-                        default:
-                            largePlaceholder
-                        }
-                    }
-                } else {
-                    largePlaceholder
-                }
-            }
-    }
-
-    private var largePlaceholder: some View {
-        ZStack {
-            Color(.systemGray6)
-            Image(systemName: "book.closed")
-                .font(.system(size: 40))
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var gradient: some View {
-        LinearGradient(
-            colors: [.clear, .black.opacity(0.7)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
-
-    private var cardOverlay: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Spacer()
-
-            HStack(spacing: 8) {
-                if let difficulty = pattern.difficulty {
-                    Text(difficulty.capitalized)
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 6))
-                        .foregroundStyle(.white)
-                }
-                if pattern.firstPdfUploadId != nil {
-                    Label("PDF", systemImage: "doc.fill")
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(.green.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
-                        .foregroundStyle(.white)
-                }
-                if pattern.aiParsed {
-                    Label("Parsed", systemImage: "sparkles")
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(.purple.opacity(0.5), in: RoundedRectangle(cornerRadius: 6))
-                        .foregroundStyle(.white)
-                }
-                if !hasPatternData {
-                    Label("Saved from Ravelry", systemImage: "arrow.down.circle")
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(.orange.opacity(0.7), in: RoundedRectangle(cornerRadius: 6))
-                        .foregroundStyle(.white)
-                }
-            }
-
-            Text(pattern.title)
-                .font(.title3.weight(.bold))
-                .foregroundStyle(.white)
-                .lineLimit(2)
-
-            if let designer = pattern.designerName {
-                Text(designer)
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.75))
-            }
-
-            HStack(spacing: 8) {
-                Text(pattern.craftType.capitalized)
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.75))
-                if let garment = pattern.garmentType {
-                    Text("·")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.5))
-                    Text(garment.capitalized)
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.75))
-                }
-            }
-        }
-        .padding(16)
-    }
 }

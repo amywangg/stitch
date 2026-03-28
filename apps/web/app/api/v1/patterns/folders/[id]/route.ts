@@ -1,10 +1,9 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-type Params = { params: Promise<{ id: string }> }
 
+export const dynamic = 'force-dynamic'
 // Rename Prisma's _count to count for cleaner client decoding
 function transformFolder(folder: Record<string, unknown>): Record<string, unknown> {
   const { _count, children, ...rest } = folder
@@ -15,12 +14,9 @@ function transformFolder(folder: Record<string, unknown>): Record<string, unknow
   }
 }
 
-export async function GET(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const GET = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
   const folder = await prisma.pattern_folders.findFirst({
     where: { id, user_id: user.id },
     include: {
@@ -38,14 +34,11 @@ export async function GET(_req: NextRequest, { params }: Params) {
 
   if (!folder) return NextResponse.json({ error: 'Folder not found' }, { status: 404 })
   return NextResponse.json({ success: true, data: transformFolder(folder as unknown as Record<string, unknown>) })
-}
+})
 
-export async function PATCH(req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const PATCH = withAuth(async (req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
   const folder = await prisma.pattern_folders.findFirst({
     where: { id, user_id: user.id },
   })
@@ -71,14 +64,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   })
 
   return NextResponse.json({ success: true, data: transformFolder(updated as unknown as Record<string, unknown>) })
-}
+})
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const DELETE = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
   const folder = await prisma.pattern_folders.findFirst({
     where: { id, user_id: user.id },
   })
@@ -99,4 +89,4 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   await prisma.pattern_folders.delete({ where: { id } })
 
   return NextResponse.json({ success: true, data: {} })
-}
+})

@@ -1,16 +1,12 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
-type Params = { params: Promise<{ id: string }> }
 
-export async function POST(_req: NextRequest, { params }: Params) {
-  const { id } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const dynamic = 'force-dynamic'
+export const POST = withAuth(async (_req, user, params) => {
+  const id = params!.id
 
-  const user = await getDbUser(clerkId)
   const post = await prisma.posts.findFirst({ where: { id, deleted_at: null } })
   if (!post) return NextResponse.json({ error: 'Post not found' }, { status: 404 })
 
@@ -25,5 +21,19 @@ export async function POST(_req: NextRequest, { params }: Params) {
   }
 
   await prisma.likes.create({ data: { post_id: id, user_id: user.id } })
+
+  // Notify post owner (don't notify yourself)
+  if (post.user_id !== user.id) {
+    prisma.notifications.create({
+      data: {
+        user_id: post.user_id,
+        sender_id: user.id,
+        type: 'like',
+        resource_type: 'post',
+        resource_id: id,
+      },
+    }).catch(() => {})
+  }
+
   return NextResponse.json({ success: true, data: { liked: true } })
-}
+})

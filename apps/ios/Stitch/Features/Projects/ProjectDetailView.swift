@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 @Observable
 final class ProjectDetailViewModel {
@@ -76,6 +77,95 @@ final class ProjectDetailViewModel {
         }
     }
 
+    // MARK: - Yarn CRUD
+
+    func addYarnFromStash(stashItemId: String) async {
+        guard let project else { return }
+        do {
+            let _ = try await APIClient.shared.post(
+                "/projects/\(project.id)/yarns",
+                body: ["stash_item_id": stashItemId]
+            )
+            await load(projectId: project.id)
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
+    func addYarnManual(name: String) async {
+        guard let project else { return }
+        do {
+            let _ = try await APIClient.shared.post(
+                "/projects/\(project.id)/yarns",
+                body: ["name_override": name]
+            )
+            await load(projectId: project.id)
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
+    func deleteYarn(_ yarnId: String) async {
+        guard let project else { return }
+        // Optimistic: remove from local state
+        self.project?.yarns?.removeAll { $0.id == yarnId }
+        do {
+            struct Empty: Decodable {}
+            let _: APIResponse<Empty> = try await APIClient.shared.delete(
+                "/projects/\(project.id)/yarns/\(yarnId)"
+            )
+        } catch {
+            self.error = error.localizedDescription
+            await load(projectId: project.id)
+        }
+    }
+
+    // MARK: - Needle CRUD
+
+    func addNeedleFromCollection(needleId: String) async {
+        guard let project else { return }
+        do {
+            let _ = try await APIClient.shared.post(
+                "/projects/\(project.id)/needles",
+                body: ["needle_id": needleId]
+            )
+            await load(projectId: project.id)
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
+    func addNeedleManual(type: String, sizeMm: Double, sizeLabel: String?, material: String?) async {
+        guard let project else { return }
+        do {
+            var body: [String: Any] = ["type": type, "size_mm": sizeMm]
+            if let sl = sizeLabel { body["size_label"] = sl }
+            if let m = material { body["material"] = m }
+            let _ = try await APIClient.shared.post(
+                "/projects/\(project.id)/needles",
+                body: body
+            )
+            await load(projectId: project.id)
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
+    func deleteNeedle(_ needleId: String) async {
+        guard let project else { return }
+        // Optimistic: remove from local state
+        self.project?.needles?.removeAll { $0.id == needleId }
+        do {
+            struct Empty: Decodable {}
+            let _: APIResponse<Empty> = try await APIClient.shared.delete(
+                "/projects/\(project.id)/needles/\(needleId)"
+            )
+        } catch {
+            self.error = error.localizedDescription
+            await load(projectId: project.id)
+        }
+    }
+
     func save() async {
         guard let project else { return }
         isSaving = true
@@ -102,6 +192,81 @@ final class ProjectDetailViewModel {
             self.error = error.localizedDescription
         }
     }
+
+    var isUploadingPhoto = false
+
+    func uploadPhoto(imageData: Data, projectId: String) async {
+        isUploadingPhoto = true
+        defer { isUploadingPhoto = false }
+        do {
+            let _: APIResponse<ProjectPhoto> = try await APIClient.shared.upload(
+                "/projects/\(projectId)/photos",
+                imageData: imageData,
+                mimeType: "image/jpeg",
+                fileName: "project_photo.jpg"
+            )
+            await load(projectId: projectId)
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
+    func deletePhoto(_ photoId: String, projectId: String) async {
+        // Optimistic remove
+        project?.photos?.removeAll { $0.id == photoId }
+        struct Body: Encodable { let photo_id: String }
+        do {
+            struct Empty: Decodable {}
+            let _: APIResponse<Empty> = try await APIClient.shared.delete(
+                "/projects/\(projectId)/photos",
+                body: Body(photo_id: photoId)
+            )
+        } catch {
+            self.error = error.localizedDescription
+            await load(projectId: projectId)
+        }
+    }
+
+    func addCounter(name: String, targetRows: Int?, projectId: String) async {
+        struct Body: Encodable {
+            let name: String
+            let target_rows: Int?
+        }
+        do {
+            let _: APIResponse<ProjectSection> = try await APIClient.shared.post(
+                "/projects/\(projectId)/sections",
+                body: Body(name: name, target_rows: targetRows)
+            )
+            await load(projectId: projectId)
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
+    func saveProgress(_ pct: Int, projectId: String) async {
+        project?.progressPct = pct
+        struct Body: Encodable { let progress_pct: Int }
+        do {
+            let _: APIResponse<Project> = try await APIClient.shared.patch(
+                "/projects/\(projectId)", body: Body(progress_pct: pct)
+            )
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
+    func deleteCounter(_ sectionId: String, projectId: String) async {
+        project?.sections?.removeAll { $0.id == sectionId }
+        do {
+            struct Empty: Decodable {}
+            let _: APIResponse<Empty> = try await APIClient.shared.delete(
+                "/projects/\(projectId)/sections/\(sectionId)"
+            )
+        } catch {
+            self.error = error.localizedDescription
+            await load(projectId: projectId)
+        }
+    }
 }
 
 struct ProjectDetailView: View {
@@ -113,11 +278,26 @@ struct ProjectDetailView: View {
     @State private var showPdfPicker = false
     @State private var showPdfViewer = false
     @State private var showLogSession = false
+    @State private var showYarnPicker = false
+    @State private var showNeedlePicker = false
+    @State private var yarnToDelete: ProjectYarn?
+    @State private var needleToDelete: ProjectNeedle?
     @State private var showNoteEditor = false
     @State private var editingNoteField: NoteField = .description
     @State private var editingNoteText = ""
+    @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var showPhotoPicker = false
+    @State private var showProPaywall = false
+    @State private var showAddCounter = false
+    @State private var newCounterName = ""
+    @State private var newCounterTarget: String = ""
     @Environment(AppRouter.self) private var router
+    @Environment(SubscriptionManager.self) private var subscriptions
     @Environment(\.dismiss) private var dismiss
+
+    private enum NoteField {
+        case description, modsNotes
+    }
 
     var body: some View {
         contentView
@@ -173,7 +353,7 @@ struct ProjectDetailView: View {
                                 Button {
                                     Task { await viewModel.attachPdf(nil) }
                                 } label: {
-                                    Label("Detach PDF", systemImage: "doc.badge.minus")
+                                    Label("Detach PDF", systemImage: "doc.badge.ellipsis")
                                 }
                             } else {
                                 Button {
@@ -181,6 +361,12 @@ struct ProjectDetailView: View {
                                 } label: {
                                     Label("Attach PDF", systemImage: "doc.badge.plus")
                                 }
+                            }
+
+                            Button {
+                                showPhotoPicker = true
+                            } label: {
+                                Label("Add photo", systemImage: "camera")
                             }
 
                             Button(role: .destructive) {
@@ -220,7 +406,7 @@ struct ProjectDetailView: View {
                 .sheet(isPresented: $showPdfViewer) {
                     if let pdf = project.pdfUpload {
                         NavigationStack {
-                            PDFViewerView(pdfUploadId: pdf.id, fileName: pdf.fileName)
+                            PDFViewerView(pdfUploadId: pdf.id, fileName: pdf.fileName ?? "Pattern PDF")
                                 .toolbar {
                                     ToolbarItem(placement: .cancellationAction) {
                                         Button("Done") { showPdfViewer = false }
@@ -250,6 +436,78 @@ struct ProjectDetailView: View {
                         }
                     }
                 }
+                .sheet(isPresented: $showYarnPicker) {
+                    StashPickerSheet { stashItemId in
+                        Task { await viewModel.addYarnFromStash(stashItemId: stashItemId) }
+                    }
+                }
+                .sheet(isPresented: $showNeedlePicker) {
+                    NeedlePickerSheet { needleId in
+                        Task { await viewModel.addNeedleFromCollection(needleId: needleId) }
+                    }
+                }
+                .confirmationDialog(
+                    "Remove yarn?",
+                    isPresented: .init(
+                        get: { yarnToDelete != nil },
+                        set: { if !$0 { yarnToDelete = nil } }
+                    ),
+                    titleVisibility: .visible
+                ) {
+                    Button("Remove", role: .destructive) {
+                        if let yarn = yarnToDelete {
+                            yarnToDelete = nil
+                            Task { await viewModel.deleteYarn(yarn.id) }
+                        }
+                    }
+                    Button("Cancel", role: .cancel) { yarnToDelete = nil }
+                }
+                .confirmationDialog(
+                    "Remove needle?",
+                    isPresented: .init(
+                        get: { needleToDelete != nil },
+                        set: { if !$0 { needleToDelete = nil } }
+                    ),
+                    titleVisibility: .visible
+                ) {
+                    Button("Remove", role: .destructive) {
+                        if let needle = needleToDelete {
+                            needleToDelete = nil
+                            Task { await viewModel.deleteNeedle(needle.id) }
+                        }
+                    }
+                    Button("Cancel", role: .cancel) { needleToDelete = nil }
+                }
+                .alert("Add row counter", isPresented: $showAddCounter) {
+                    TextField("Counter name", text: $newCounterName)
+                    TextField("Target rows (optional)", text: $newCounterTarget)
+                        .keyboardType(.numberPad)
+                    Button("Cancel", role: .cancel) {
+                        newCounterName = ""
+                        newCounterTarget = ""
+                    }
+                    Button("Add") {
+                        let name = newCounterName.trimmingCharacters(in: .whitespaces)
+                        let target = Int(newCounterTarget)
+                        newCounterName = ""
+                        newCounterTarget = ""
+                        guard !name.isEmpty else { return }
+                        Task { await viewModel.addCounter(name: name, targetRows: target, projectId: projectId) }
+                    }
+                } message: {
+                    Text("Add a simple row counter to this project.")
+                }
+                .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
+                .onChange(of: selectedPhotoItem) { _, item in
+                    guard let item else { return }
+                    Task {
+                        if let data = try? await item.loadTransferable(type: Data.self) {
+                            await viewModel.uploadPhoto(imageData: data, projectId: projectId)
+                        }
+                        selectedPhotoItem = nil
+                    }
+                }
+                .errorAlert(error: $viewModel.error)
         } else if let error = viewModel.error {
             ScrollView {
                 VStack(spacing: 12) {
@@ -273,12 +531,14 @@ struct ProjectDetailView: View {
         }
     }
 
+    // MARK: - Project Content
+
     private func projectContent(_ project: Project) -> some View {
         ScrollView {
             VStack(spacing: 0) {
                 // Photo carousel — user photos first, pattern cover as fallback
                 if let photos = project.photos, !photos.isEmpty {
-                    photoCarousel(photos)
+                    ProjectPhotoCarousel(photos: photos)
                 } else if let patternCover = project.pattern?.coverImageUrl, let url = URL(string: patternCover) {
                     AsyncImage(url: url) { phase in
                         switch phase {
@@ -295,49 +555,137 @@ struct ProjectDetailView: View {
                 }
 
                 VStack(spacing: 20) {
-                    headerBadges(project)
+                    ProjectHeaderBadges(project: project)
 
                     // Linked pattern card
                     if let pattern = project.pattern {
-                        patternCard(pattern)
+                        ProjectPatternCard(pattern: pattern)
                     }
 
-                    // Master progress card
+                    // Progress display — parsed projects get the master card, non-parsed get a slider
                     if let sections = project.sections, !sections.isEmpty {
-                        masterProgressCard(sections)
+                        let hasParsed = sections.contains { $0.patternSection?.rows?.isEmpty == false }
+                        if hasParsed {
+                            ProjectMasterProgressCard(sections: sections)
+                        } else {
+                            ProjectManualProgressSlider(
+                                progressPct: viewModel.project?.progressPct ?? 0,
+                                onChange: { pct in
+                                    Task { await viewModel.saveProgress(pct, projectId: projectId) }
+                                }
+                            )
+                        }
+                    } else {
+                        ProjectManualProgressSlider(
+                            progressPct: viewModel.project?.progressPct ?? 0,
+                            onChange: { pct in
+                                Task { await viewModel.saveProgress(pct, projectId: projectId) }
+                            }
+                        )
                     }
 
                     if project.startedAt != nil || project.finishedAt != nil || project.sizeMade != nil {
-                        quickStats(project)
+                        ProjectQuickStats(project: project)
                     }
 
-                    editableNotesBlock("Notes", field: .description)
+                    ProjectEditableNotesBlock(
+                        title: "Notes",
+                        text: viewModel.project?.description,
+                        onEdit: {
+                            editingNoteField = .description
+                            editingNoteText = viewModel.project?.description ?? ""
+                            showNoteEditor = true
+                        }
+                    )
 
-                    editableNotesBlock("Modifications", field: .modsNotes)
+                    ProjectEditableNotesBlock(
+                        title: "Modifications",
+                        text: viewModel.project?.modsNotes,
+                        onEdit: {
+                            editingNoteField = .modsNotes
+                            editingNoteText = viewModel.project?.modsNotes ?? ""
+                            showNoteEditor = true
+                        }
+                    )
 
                     if let tags = project.tags, !tags.isEmpty {
-                        tagsBlock(tags)
+                        ProjectTagsBlock(tags: tags)
                     }
 
                     if let pdf = project.pdfUpload {
-                        pdfBlock(pdf)
+                        ProjectPdfBlock(pdf: pdf, onTap: { showPdfViewer = true })
+                    } else if project.status != "completed" {
+                        pdfAttachCallout
                     }
 
                     if let gauge = project.gauge,
                        (gauge.stitchesPer10cm != nil || gauge.rowsPer10cm != nil) {
-                        gaugeBlock(gauge)
+                        ProjectGaugeBlock(gauge: gauge)
                     }
 
-                    if let yarns = project.yarns, !yarns.isEmpty {
-                        yarnsBlock(yarns)
-                    }
+                    ProjectYarnsBlock(
+                        yarns: project.yarns ?? [],
+                        onAdd: { showYarnPicker = true },
+                        onDelete: { yarn in yarnToDelete = yarn }
+                    )
+
+                    ProjectNeedlesBlock(
+                        needles: project.needles ?? [],
+                        onAdd: { showNeedlePicker = true },
+                        onDelete: { needle in needleToDelete = needle }
+                    )
 
                     if let sections = project.sections, !sections.isEmpty {
-                        sectionsBlock(sections)
+                        let parsedSections = sections.filter { $0.patternSection?.rows?.isEmpty == false }
+                        let counterSections = sections.filter { $0.patternSection?.rows?.isEmpty != false }
+
+                        // Parsed sections (from AI parse)
+                        if !parsedSections.isEmpty {
+                            ProjectSectionsBlock(
+                                sections: parsedSections,
+                                projectId: viewModel.project?.id,
+                                pdfUploadId: viewModel.project?.pdfUploadId
+                            )
+                        }
+
+                        // Row counters — always shown for both parsed and non-parsed
+                        ProjectRowCountersBlock(
+                            counters: counterSections,
+                            allSections: sections,
+                            projectId: projectId,
+                            pdfUploadId: viewModel.project?.pdfUploadId,
+                            onAdd: { showAddCounter = true },
+                            onDelete: { sectionId in
+                                Task { await viewModel.deleteCounter(sectionId, projectId: projectId) }
+                            }
+                        )
+
+                        // AI parse prompt — shown when PDF exists but no parsed sections
+                        if project.pdfUpload != nil, parsedSections.isEmpty {
+                            aiParsePrompt
+                        }
+                    } else {
+                        // No sections at all — show empty counter block with add
+                        ProjectRowCountersBlock(
+                            counters: [],
+                            allSections: [],
+                            projectId: projectId,
+                            pdfUploadId: viewModel.project?.pdfUploadId,
+                            onAdd: { showAddCounter = true },
+                            onDelete: { _ in }
+                        )
+
+                        if project.pdfUpload != nil {
+                            aiParsePrompt
+                        }
                     }
 
                     if !viewModel.sessions.isEmpty {
-                        sessionsBlock(isCompleted: project.status == "completed")
+                        ProjectSessionsBlock(
+                            sessions: viewModel.sessions,
+                            isCompleted: project.status == "completed",
+                            onLogSession: { showLogSession = true }
+                        )
                     }
 
                     // Spacer for continue button
@@ -350,632 +698,102 @@ struct ProjectDetailView: View {
         }
         .overlay(alignment: .bottom) {
             if let sections = project.sections, sections.contains(where: { $0.completed != true }) {
-                continueKnittingButton(project: project, sections: sections)
+                ProjectContinueKnittingButton(project: project, sections: sections)
             }
         }
     }
 
-    // MARK: - Photo Carousel
+    // MARK: - PDF Attach Callout
 
-    private func photoCarousel(_ photos: [ProjectPhoto]) -> some View {
-        TabView {
-            ForEach(photos) { photo in
-                AsyncImage(url: URL(string: photo.url)) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image.resizable().aspectRatio(contentMode: .fill)
-                    case .failure:
-                        Color(.systemGray5)
-                            .overlay { Image(systemName: "photo").font(.largeTitle).foregroundStyle(.secondary) }
-                    default:
-                        Color(.systemGray6).overlay { ProgressView() }
-                    }
-                }
-                .frame(height: 300)
-                .clipped()
-            }
-        }
-        .tabViewStyle(.page(indexDisplayMode: photos.count > 1 ? .always : .never))
-        .frame(height: 300)
-    }
-
-    // MARK: - Header Badges
-
-    private func headerBadges(_ project: Project) -> some View {
-        HStack(spacing: 8) {
-            badge(project.status.capitalized, icon: statusIcon(project.status), color: statusColor(project.status))
-            badge(project.craftType.capitalized, icon: "leaf", color: .secondary)
-            if let category = project.category, !category.isEmpty {
-                badge(category, icon: "tag", color: .secondary)
-            }
-            Spacer()
-        }
-    }
-
-    private func badge(_ text: String, icon: String, color: Color) -> some View {
-        Label(text, systemImage: icon)
-            .font(.caption.weight(.medium))
-            .foregroundStyle(color)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 5)
-            .background(color.opacity(0.12), in: Capsule())
-    }
-
-    private func statusIcon(_ status: String) -> String {
-        switch status {
-        case "completed": return "checkmark.circle.fill"
-        case "hibernating": return "moon.fill"
-        case "frogged": return "scissors"
-        default: return "play.circle.fill"
-        }
-    }
-
-    private func statusColor(_ status: String) -> Color {
-        switch status {
-        case "completed": return .green
-        case "hibernating": return .orange
-        case "frogged": return .red
-        default: return theme.primary
-        }
-    }
-
-    // MARK: - Pattern Card
-
-    private func patternCard(_ pattern: PatternRef) -> some View {
-        NavigationLink(value: Route.patternDetail(id: pattern.id)) {
+    private var pdfAttachCallout: some View {
+        Button {
+            showPdfPicker = true
+        } label: {
             HStack(spacing: 12) {
-                // Cover image thumbnail
-                if let coverUrl = pattern.coverImageUrl, let url = URL(string: coverUrl) {
-                    AsyncImage(url: url) { image in
-                        image.resizable().aspectRatio(contentMode: .fill)
-                    } placeholder: {
-                        Color.secondary.opacity(0.1)
-                    }
-                    .frame(width: 56, height: 72)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                } else {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(theme.primary.opacity(0.1))
-                        .frame(width: 56, height: 72)
-                        .overlay {
-                            Image(systemName: "book.closed")
-                                .foregroundStyle(theme.primary)
-                        }
-                }
+                Image(systemName: "doc.badge.plus")
+                    .font(.title3)
+                    .foregroundStyle(theme.primary)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Pattern")
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Attach pattern PDF")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    Text("Unlock row-by-row tracking and AI parsing")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text(pattern.title)
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.primary)
-                        .lineLimit(2)
-                    if let designer = pattern.designerName {
-                        Text("by \(designer)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    // Quick info chips
-                    HStack(spacing: 6) {
-                        if let weight = pattern.yarnWeight {
-                            Text(weight)
-                                .font(.caption2)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.secondary.opacity(0.08), in: Capsule())
-                        }
-                        if let difficulty = pattern.difficulty {
-                            Text(difficulty)
-                                .font(.caption2)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.secondary.opacity(0.08), in: Capsule())
-                        }
-                    }
-                    .foregroundStyle(.secondary)
                 }
 
-                Spacer()
+                Spacer(minLength: 0)
 
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                Text("Add")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 6)
+                    .background(theme.primary, in: Capsule())
             }
-            .padding(12)
-            .background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+            .padding(14)
+            .background(theme.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .strokeBorder(theme.primary.opacity(0.2), lineWidth: 1)
+            )
         }
         .buttonStyle(.plain)
     }
 
-    // MARK: - Quick Stats
+    // MARK: - AI Parse Prompt
 
-    private func quickStats(_ project: Project) -> some View {
-        HStack(spacing: 0) {
-            if let started = project.startedAt {
-                statCell("Started", started.formatted(date: .abbreviated, time: .omitted))
-            }
-            if let finished = project.finishedAt {
-                statCell("Finished", finished.formatted(date: .abbreviated, time: .omitted))
-            }
-            if let size = project.sizeMade {
-                statCell("Size", size)
-            }
-        }
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-
-    private func statCell(_ label: String, _ value: String) -> some View {
-        VStack(spacing: 4) {
-            Text(label).font(.caption).foregroundStyle(.secondary)
-            Text(value).font(.subheadline.weight(.medium))
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-    }
-
-    // MARK: - Notes
-
-    private enum NoteField {
-        case description, modsNotes
-    }
-
-    private func editableNotesBlock(_ title: String, field: NoteField) -> some View {
-        let text: String? = switch field {
-        case .description: viewModel.project?.description
-        case .modsNotes: viewModel.project?.modsNotes
-        }
-        let hasContent = text != nil && !(text?.isEmpty ?? true)
-
-        return VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(title).font(.headline)
-                Spacer()
-                Button {
-                    editingNoteField = field
-                    editingNoteText = text ?? ""
-                    showNoteEditor = true
-                } label: {
-                    Text(hasContent ? "Edit" : "Add")
-                        .font(.subheadline)
-                        .foregroundStyle(theme.primary)
-                }
-            }
-            if let text, !text.isEmpty {
-                Text(text).font(.body).foregroundStyle(.secondary)
+    private var aiParsePrompt: some View {
+        Button {
+            if subscriptions.isPro {
+                // TODO: trigger AI parse of this project's PDF
+                viewModel.error = "AI parsing coming soon"
             } else {
-                Text("No \(title.lowercased()) yet")
-                    .font(.body)
-                    .foregroundStyle(.tertiary)
+                showProPaywall = true
             }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "sparkles")
+                    .font(.title3)
+                    .foregroundStyle(theme.primary)
 
-    // MARK: - Tags
-
-    private func tagsBlock(_ tags: [ProjectTag]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Tags").font(.headline)
-            FlowLayout(spacing: 6) {
-                ForEach(tags) { tag in
-                    Text(tag.tag.name)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("AI parse pattern")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    Text("Get step-by-step row instructions from your PDF")
                         .font(.caption)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Color.secondary.opacity(0.1), in: Capsule())
                         .foregroundStyle(.secondary)
                 }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
 
-    // MARK: - Gauge
+                Spacer(minLength: 0)
 
-    private func gaugeBlock(_ gauge: ProjectGauge) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Gauge").font(.headline)
-            HStack(spacing: 12) {
-                if let sts = gauge.stitchesPer10cm {
-                    gaugeCard(String(format: "%.1f", sts), "sts/10cm")
-                }
-                if let rows = gauge.rowsPer10cm {
-                    gaugeCard(String(format: "%.1f", rows), "rows/10cm")
-                }
-                if let needle = gauge.needleSizeMm {
-                    gaugeCard(String(format: "%.1fmm", needle), "needle")
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func gaugeCard(_ value: String, _ label: String) -> some View {
-        VStack(spacing: 2) {
-            Text(value).font(.title3.weight(.semibold))
-            Text(label).font(.caption).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-    }
-
-    // MARK: - Yarns
-
-    private func yarnsBlock(_ yarns: [ProjectYarn]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Yarns").font(.headline)
-            ForEach(yarns) { yarn in
-                HStack(spacing: 12) {
-                    Circle()
-                        .fill(theme.primary.opacity(0.2))
-                        .frame(width: 40, height: 40)
-                        .overlay {
-                            Image(systemName: "wand.and.rays.inverse")
-                                .foregroundStyle(theme.primary)
-                        }
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(yarnDisplayName(yarn))
-                            .font(.subheadline.weight(.medium))
-                        HStack(spacing: 8) {
-                            if let cw = yarn.colorway { Text(cw).font(.caption).foregroundStyle(.secondary) }
-                            if let sk = yarn.skeinsUsed, sk > 0 {
-                                Text("\(String(format: "%.1f", sk)) skeins").font(.caption).foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                    Spacer()
-                }
-                .padding(12)
-                .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func yarnDisplayName(_ yarn: ProjectYarn) -> String {
-        if let d = yarn.yarn {
-            if let c = d.company { return "\(c.name) \(d.name)" }
-            return d.name
-        }
-        return yarn.nameOverride ?? "Unknown Yarn"
-    }
-
-    // MARK: - Master Progress
-
-    private func masterProgressCard(_ sections: [ProjectSection]) -> some View {
-        let completedCount = sections.filter { $0.completed == true }.count
-        let totalPct = masterProgressPct(sections)
-        let activeSection = sections.first { $0.completed != true }
-
-        return VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("\(Int(totalPct * 100))%")
-                    .font(.title2.weight(.bold))
-                    .foregroundStyle(theme.primary)
-                Spacer()
-                Text("\(completedCount) of \(sections.count) sections complete")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            // Segmented progress bar
-            GeometryReader { proxy in
-                HStack(spacing: 2) {
-                    ForEach(sections) { section in
-                        let weight = sectionWeight(section, totalSections: sections)
-                        let sectionPct = sectionCompletionPct(section)
-                        ZStack(alignment: .leading) {
-                            RoundedRectangle(cornerRadius: 2)
-                                .fill(Color(.systemGray5))
-                            RoundedRectangle(cornerRadius: 2)
-                                .fill(section.completed == true ? theme.primary : theme.primary.opacity(0.6))
-                                .frame(width: (proxy.size.width * weight - 2) * sectionPct)
-                        }
-                        .frame(width: proxy.size.width * weight - 2)
-                    }
-                }
-            }
-            .frame(height: 6)
-
-            if let active = activeSection {
-                Text("Active: \(active.name)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(16)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-
-    private func masterProgressPct(_ sections: [ProjectSection]) -> Double {
-        let totalTarget = sections.reduce(0) { $0 + ($1.targetRows ?? 1) }
-        guard totalTarget > 0 else { return 0 }
-        let totalDone = sections.reduce(0) { sum, s in
-            let target = s.targetRows ?? 1
-            if s.completed == true { return sum + target }
-            return sum + min(s.currentRow, target)
-        }
-        return Double(totalDone) / Double(totalTarget)
-    }
-
-    private func sectionWeight(_ section: ProjectSection, totalSections: [ProjectSection]) -> Double {
-        let totalTarget = totalSections.reduce(0) { $0 + ($1.targetRows ?? 1) }
-        guard totalTarget > 0 else { return 1.0 / Double(totalSections.count) }
-        return Double(section.targetRows ?? 1) / Double(totalTarget)
-    }
-
-    private func sectionCompletionPct(_ section: ProjectSection) -> Double {
-        if section.completed == true { return 1.0 }
-
-        // For multi-step sections, calculate progress across all steps
-        if let ps = section.patternSection, let rows = ps.rows, !rows.isEmpty {
-            let currentStep = section.currentStep ?? 1
-            let sortedRows = rows.sorted { $0.rowNumber < $1.rowNumber }
-            let totalSteps = sortedRows.count
-
-            // Steps fully completed (before current step)
-            let stepsCompleted = max(0, currentStep - 1)
-
-            // Progress within current step
-            let currentStepRows = sortedRows.first(where: { $0.rowNumber == currentStep })?.rowsInStep
-            let withinStepPct: Double
-            if let stepTarget = currentStepRows, stepTarget > 0 {
-                withinStepPct = min(Double(section.currentRow) / Double(stepTarget), 1.0)
-            } else {
-                // Open-ended step — count it as 0 progress within the step
-                withinStepPct = section.currentRow > 0 ? 0.5 : 0
-            }
-
-            guard totalSteps > 0 else { return 0 }
-            return (Double(stepsCompleted) + withinStepPct) / Double(totalSteps)
-        }
-
-        // Simple: just row-based progress
-        let target = section.targetRows ?? 1
-        guard target > 0 else { return 0 }
-        return min(Double(section.currentRow) / Double(target), 1.0)
-    }
-
-    private func sectionProgressDonut(_ section: ProjectSection) -> some View {
-        let isComplete = section.completed == true
-        let pct = sectionCompletionPct(section)
-
-        return ZStack {
-            Circle()
-                .stroke(Color(.systemGray4), lineWidth: 3)
-            Circle()
-                .trim(from: 0, to: isComplete ? 1.0 : pct)
-                .stroke(
-                    isComplete ? Color.green : theme.primary,
-                    style: StrokeStyle(lineWidth: 3, lineCap: .round)
-                )
-                .rotationEffect(.degrees(-90))
-
-            if isComplete {
-                Image(systemName: "checkmark")
-                    .font(.caption2.bold())
-                    .foregroundStyle(.green)
-            } else if pct > 0 {
-                Text("\(Int(pct * 100))")
-                    .font(.system(size: 8, weight: .bold, design: .rounded))
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .frame(width: 32, height: 32)
-    }
-
-    // MARK: - Sections
-
-    private func sectionRefs(_ sections: [ProjectSection]) -> [SectionRef] {
-        sections.map { SectionRef(id: $0.id, name: $0.name) }
-    }
-
-    private func sectionsBlock(_ sections: [ProjectSection]) -> some View {
-        let refs = sectionRefs(sections)
-        let activeId = sections.first(where: { $0.completed != true })?.id
-
-        return VStack(alignment: .leading, spacing: 8) {
-            Text("Sections").font(.headline)
-            ForEach(sections) { section in
-                let isActive = section.id == activeId
-                Button {
-                    router.push(.counter(
-                        sectionId: section.id,
-                        allSections: refs,
-                        projectId: viewModel.project?.id,
-                        pdfUploadId: viewModel.project?.pdfUploadId
-                    ))
-                } label: {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(section.name)
-                                .font(.subheadline.weight(.medium))
-                            Text("Row \(section.currentRow)\(section.targetRows.map { " of \($0)" } ?? "")")
-                                .font(.caption).foregroundStyle(.secondary)
-                            if let step = section.currentStep, let ps = section.patternSection,
-                               let rows = ps.rows, !rows.isEmpty {
-                                Text("Step \(step) of \(rows.count)")
-                                    .font(.caption2).foregroundStyle(.tertiary)
-                            }
-                        }
-                        Spacer()
-                        sectionProgressDonut(section)
-                        Image(systemName: "chevron.right").font(.caption).foregroundStyle(.tertiary)
-                    }
-                    .padding(12)
-                    .background(
-                        isActive
-                            ? theme.primary.opacity(0.08)
-                            : Color(.secondarySystemGroupedBackground)
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .overlay(
-                        isActive
-                            ? RoundedRectangle(cornerRadius: 10).stroke(theme.primary.opacity(0.3), lineWidth: 1)
-                            : nil
-                    )
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    // MARK: - Sessions
-
-    private func sessionsBlock(isCompleted: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Recent sessions").font(.headline)
-                Spacer()
-                if !isCompleted {
-                    Button {
-                        showLogSession = true
-                    } label: {
-                        Image(systemName: "plus.circle")
-                            .font(.body)
-                            .foregroundStyle(theme.primary)
-                    }
-                }
-            }
-
-            ForEach(viewModel.sessions) { session in
-                HStack(spacing: 12) {
-                    Image(systemName: "clock")
-                        .font(.subheadline)
-                        .foregroundStyle(theme.primary)
-                        .frame(width: 28)
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(formatSessionDuration(session))
-                            .font(.subheadline.weight(.medium))
-                        Text(formatSessionDate(session.startedAt ?? session.date))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Spacer()
-
-                    if let rowsStart = session.rowsStart, let rowsEnd = session.rowsEnd, rowsEnd > rowsStart {
-                        Text("+\(rowsEnd - rowsStart) rows")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding(10)
-                .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func formatSessionDuration(_ session: CraftingSession) -> String {
-        let mins = session.activeMinutes ?? session.durationMinutes
-        if mins < 60 {
-            return "\(mins) min"
-        }
-        let hours = mins / 60
-        let remaining = mins % 60
-        if remaining == 0 {
-            return "\(hours) hr"
-        }
-        return "\(hours) hr \(remaining) min"
-    }
-
-    private func formatSessionDate(_ date: Date) -> String {
-        let cal = Calendar.current
-        if cal.isDateInToday(date) {
-            return "Today"
-        } else if cal.isDateInYesterday(date) {
-            return "Yesterday"
-        }
-        let fmt = DateFormatter()
-        fmt.dateStyle = .medium
-        fmt.timeStyle = .none
-        return fmt.string(from: date)
-    }
-
-    // MARK: - Continue Knitting
-
-    private func continueKnittingButton(project: Project, sections: [ProjectSection]) -> some View {
-        let activeSection = sections.first { $0.completed != true }
-        let refs = sectionRefs(sections)
-
-        return Group {
-            if let active = activeSection {
-                Button {
-                    router.push(.counter(
-                        sectionId: active.id,
-                        allSections: refs,
-                        projectId: project.id,
-                        pdfUploadId: project.pdfUploadId
-                    ))
-                } label: {
-                    Text("Continue knitting")
-                        .font(.headline)
+                if !subscriptions.isPro {
+                    Text("Pro")
+                        .font(.caption2.weight(.bold))
                         .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(theme.primary)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 8)
-                .background(
-                    LinearGradient(
-                        colors: [Color(.systemBackground).opacity(0), Color(.systemBackground)],
-                        startPoint: .top,
-                        endPoint: .center
-                    )
-                )
-            }
-        }
-    }
-
-    // MARK: - PDF Block
-
-    private func pdfBlock(_ pdf: PdfUpload) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Pattern PDF").font(.headline)
-            Button {
-                showPdfViewer = true
-            } label: {
-                HStack(spacing: 12) {
-                    Image(systemName: "doc.fill")
-                        .foregroundStyle(theme.primary)
-                        .font(.title3)
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(pdf.fileName)
-                            .font(.subheadline.weight(.medium))
-                            .lineLimit(2)
-                        Text(ByteCountFormatter.string(fromByteCount: Int64(pdf.fileSize), countStyle: .file))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Spacer()
-
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(theme.primary, in: Capsule())
+                } else {
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
-                .padding(12)
-                .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
-            .buttonStyle(.plain)
+            .padding(14)
+            .background(theme.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .strokeBorder(theme.primary.opacity(0.2), lineWidth: 1)
+            )
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .buttonStyle(.plain)
+        .sheet(isPresented: $showProPaywall) {
+            StitchPaywallView()
+        }
     }
-
 }
 
 // MARK: - Note Editor Sheet

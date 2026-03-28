@@ -1,14 +1,14 @@
 # Authentication and Onboarding
 
-**Status:** Partially complete
+**Status:** Complete (iOS), partial (web)
 
 ## Problem Statement
 
-Users need a secure, frictionless way to create accounts, sign in across iOS and web, and get oriented with the app's features. The onboarding flow should reduce churn by guiding new users through craft preferences, feature highlights, and optional Ravelry import before they hit the main app.
+Users need a secure, frictionless way to create accounts, sign in across iOS and web, and get oriented with the app's features. The onboarding flow should reduce churn by guiding new users through craft preferences, experience level, and optional Ravelry import before they hit the main app.
 
 ## Solution Overview
 
-Clerk handles authentication on both platforms: iOS SDK with custom SwiftUI views, web with Clerk components and middleware. A multi-step onboarding flow runs once after first sign-up, tracked per-step in the database so users can resume if interrupted. Clerk webhooks sync user records to our database on create, update, and delete.
+Clerk handles authentication on both platforms: iOS SDK with custom SwiftUI views, web with Clerk components and middleware. A multi-step onboarding flow runs once after first sign-up, tracked per-step in the database so users can resume if interrupted. Clerk webhooks sync user records to our database on create, update, and delete. Username is auto-generated from Clerk profile data during webhook processing.
 
 ## Key Components
 
@@ -16,44 +16,63 @@ Clerk handles authentication on both platforms: iOS SDK with custom SwiftUI view
 
 | Route / File | Purpose | Status |
 |---|---|---|
-| `app/api/webhooks/clerk/route.ts` | Syncs user.created, user.updated, user.deleted events to DB | Complete |
+| `app/api/webhooks/clerk/route.ts` | Syncs user.created/updated/deleted to DB, auto-generates unique username | Complete |
 | `lib/auth.ts` - `getDbUser(clerkId)` | Resolves Clerk ID to DB user, upserts on first call as fallback | Complete |
 | `middleware.ts` | Clerk protection on `/dashboard`, `/projects`, `/api/v1`, etc. | Complete |
-| Web sign-in page (`(auth)/sign-in`) | Clerk `<SignIn />` with custom styling | Not started |
-| Web sign-up page (`(auth)/sign-up`) | Clerk `<SignUp />` with custom styling | Not started |
-| `POST /api/v1/onboarding/complete-step` | Marks an onboarding step as complete | Not started |
-| `GET /api/v1/onboarding/status` | Returns which onboarding steps are done | Not started |
+| `PATCH /api/v1/onboarding` | Marks onboarding steps as complete (boolean flags) | Complete |
+| `GET /api/v1/onboarding` | Returns current onboarding step completion status | Complete |
+| `PATCH /api/v1/users/me` | Updates profile fields: display_name, bio, avatar_url, craft_preference, knitting_style, experience_level | Complete |
+| `POST /api/v1/users/me/avatar` | Upload avatar to Supabase Storage, sets avatar_source='manual' | Complete |
+| `PATCH /api/v1/users/me/username` | Change username with availability check and 30-day cooldown | Complete |
+| `GET /api/v1/users/me/username/check` | Check username availability with debounce | Complete |
 
 ### iOS (SwiftUI)
 
 | Screen / Component | Purpose | Status |
 |---|---|---|
-| `ClerkManager.swift` | Clerk iOS SDK wrapper, session management, token refresh | Complete (real SDK) |
+| `ClerkManager.swift` | Clerk iOS SDK wrapper, session management, token refresh | Complete |
 | `KeychainManager.swift` | Stores JWT in iOS Keychain only | Complete |
 | `SplashView.swift` | Animated logo, 1.8s display on launch | Complete |
 | `SignInView.swift` | Dark-themed sign-in with email, password, social buttons | Complete |
 | `SignUpView.swift` | Dark-themed sign-up with email, password, social buttons | Complete |
-| `OnboardingView.swift` | 5-step flow: Welcome, Craft preference, Features, Ravelry, Done | Complete |
-| Forgot password flow | Email-based password reset | Not started |
-| Deep link handler for email verification | Handle Clerk verification links | Not started |
-| Profile completion screen | Avatar, display name, bio after onboarding | Not started |
-
-### Web (Next.js)
-
-| Page / Component | Purpose | Status |
-|---|---|---|
-| `(auth)/sign-in/page.tsx` | Custom-styled Clerk sign-in | Not started |
-| `(auth)/sign-up/page.tsx` | Custom-styled Clerk sign-up | Not started |
-| Email verification page | Post-registration verification | Not started |
-| Onboarding wizard component | Web equivalent of iOS onboarding | Not started |
-| Profile completion page | Avatar, display name, bio | Not started |
+| `OnboardingView.swift` | 7-step flow (see below) | Complete |
 
 ### Database
 
 | Table | Purpose |
 |---|---|
-| `users` | Core user record synced from Clerk (clerk_id, email, display_name, avatar_url, is_pro) |
-| `user_onboarding` | Tracks completion of each onboarding step per user |
+| `users` | Core user record synced from Clerk. Includes craft_preference, knitting_style, experience_level, avatar_url, avatar_source |
+| `user_onboarding` | Tracks completion of each onboarding step per user (boolean flags) |
+
+## Onboarding Flow (7 Steps)
+
+The flow is implemented in `OnboardingView.swift`. All steps except Welcome and Done are skippable. Progress dots at the top show where the user is.
+
+| Step | Screen | What it does | Skippable |
+|------|--------|-------------|-----------|
+| 0 | **Welcome** | Personalized greeting with user's first name, app logo | No |
+| 1 | **Craft preference** | Knitting / Crochet / Both → saves to `users.craft_preference` | Yes |
+| 1a | **Knitting style** (sub-step) | English (throwing) / Continental (picking) — only shown for knitters. Saves to `users.knitting_style` | Yes |
+| 2 | **Experience level** | Beginner / Intermediate / Advanced → saves to `users.experience_level`. Tailors tutorials and suggestions | Yes |
+| 3 | **Ravelry connect** | OAuth connection with benefit list (projects, stash, queue, friends). Opens `ASWebAuthenticationSession` | Yes ("I'll do this later") |
+| 4 | **Measurements** | Body measurements form (bust, waist, hip, arm length, etc.) with quick-size picker and cm/inches toggle | Yes ("Set up later") |
+| 5 | **First project** | "I have a pattern in mind" vs "Just exploring for now" — sets intent | Yes |
+| 6 | **Done** | Checkmark animation + 3 quick-start hints (tap + on Projects, discover patterns, try voice commands) | No |
+
+### Design Details
+
+- Dark theme (forced `.preferredColorScheme(.dark)`)
+- Coral-to-orange gradient on app icon
+- Animated progress dots (current step wider, completed steps filled)
+- Each selectable option is a card with emoji/icon, title, subtitle, and chevron
+- Onboarding steps persisted to `user_onboarding` table via `PATCH /api/v1/onboarding`
+- User preferences persisted to `users` table via `PATCH /api/v1/users/me`
+- Local preferences cached in `UserDefaults` for instant access (craft_preference, knitting_style)
+- Clerk-generated username — no username step in onboarding (username auto-derived from Clerk profile during webhook)
+
+### Features Step (Removed)
+
+The previous swipeable feature highlights step was removed in favor of quick-start hints on the Done screen. Users learn features by doing, not reading.
 
 ## Implementation Checklist
 
@@ -62,64 +81,52 @@ Clerk handles authentication on both platforms: iOS SDK with custom SwiftUI view
 - [x] SplashView with animated logo
 - [x] iOS SignInView (email + password + social)
 - [x] iOS SignUpView (email + password + social)
-- [x] iOS 5-step OnboardingView
+- [x] iOS 7-step OnboardingView with progress dots
+- [x] Craft preference step with knitting style sub-step
+- [x] Experience level step
+- [x] Ravelry connect step
+- [x] Measurements step with quick-size picker
+- [x] First project intent step
+- [x] Done step with quick-start hints
 - [x] Clerk webhook route (user.created/updated/deleted)
 - [x] getDbUser() with upsert fallback
 - [x] Web middleware protecting routes
 - [x] user_onboarding DB table
+- [x] Onboarding API routes (PATCH + GET)
+- [x] Avatar upload to Supabase Storage with avatar_source tracking
+- [x] Username availability check API
+- [x] Profile fields: craft_preference, knitting_style, experience_level
 - [ ] Web sign-in page with custom Clerk styling
 - [ ] Web sign-up page with custom Clerk styling
-- [ ] Web email verification flow
-- [ ] iOS forgot password flow
-- [ ] iOS deep link handling for email verification
-- [ ] Onboarding API routes (complete-step, status)
 - [ ] Web onboarding wizard
-- [ ] Profile completion flow (iOS + web)
-- [ ] Avatar upload to Supabase Storage
+
+## Avatar Resolution
+
+The avatar follows this priority chain:
+
+1. **Manual upload** — user uploads via Edit Profile → stored in Supabase Storage, `avatar_source = 'manual'`
+2. **Ravelry photo** — fetched from Ravelry API during sync or profile-summary load, `avatar_source = 'ravelry'`
+3. **Placeholder** — system person icon when no avatar exists
+
+Ravelry sync only overwrites the avatar when `avatar_source !== 'manual'`, preserving user-uploaded photos.
 
 ## Dependencies
 
 - Clerk account with iOS + web apps configured
 - Clerk webhook endpoint registered in Clerk dashboard
-- Supabase Storage bucket for avatar uploads (profile completion)
+- Supabase Storage bucket for avatar uploads (`avatars` bucket)
+- Ravelry OAuth app with `app-write` scope for the connect step
 
 ## Tier Gating
 
 Authentication and onboarding are available to all users. No Pro gating.
 
-## Onboarding Strategy (Monetization-Aligned)
-
-The onboarding flow must achieve **activation in the first session**: user creates a project + increments the counter at least once. 63% of users consider onboarding a key factor in their subscription decision.
-
-### Recommended First-Session Flow
-
-1. **Welcome** — "What do you love to make?" (knitting/crochet/both) + experience level (beginner/intermediate/advanced)
-2. **Quick win** — "Let's set up your first project." Guide them to create a project with a title and yarn
-3. **Core loop** — show the row counter, have them tap it once. They've now used the #1 daily feature
-4. **Data investment** — "Want to import your Ravelry stash?" (if they use Ravelry) or "Add your first yarn to your stash" (if not)
-5. **Pro taste** — show one AI feature in action (e.g., auto-suggest patterns for their stash yarn) with a "Pro trial" badge
-6. **Done** — they have a project, a row count, and stash data. They're invested.
-
-### Rules
-
-- Never show a paywall before the activation moment
-- No tutorial screens — learn by doing
-- 2-3 personalization questions max
-- First session ends with something the user made (a project card, a row count, a saved pattern)
-
-### Reverse Trial Integration
-
-On signup, the user automatically receives 14 days of full Pro access. The onboarding flow should surface Pro features naturally during this window. See `002-subscriptions-and-pro-tier.md` for reverse trial implementation and `017-monetization-and-growth.md` §4-5 for strategy.
-
-### Activation Tracking
-
-Track the activation metric: "created project + incremented counter at least once." This metric is the primary indicator of retention and should feed into analytics (see analytics requirements in `FEATURE-GAPS.md`).
-
 ## Technical Notes
 
-- Clerk iOS SDK uses `ClerkManager.shared.sessionToken()` to get JWTs, which `APIClient` attaches as Bearer tokens automatically.
-- The webhook route verifies Clerk's `svix` signature before processing events. The `CLERK_WEBHOOK_SECRET` env var is required.
-- `getDbUser()` has an upsert fallback so the app does not break if a webhook is delayed or missed. This means the first API call from a new user may be slightly slower.
-- Onboarding steps are tracked individually so a user who kills the app mid-flow can resume where they left off.
-- iOS tokens must never be stored in UserDefaults. KeychainManager is the only approved storage.
-- On user creation (Clerk webhook or `getDbUser` upsert): set `users.trial_ends_at = now + 14 days`, `users.is_pro = true` to activate the reverse trial.
+- Clerk iOS SDK uses `ClerkManager.shared.sessionToken()` to get JWTs, which `APIClient` attaches as Bearer tokens automatically
+- The webhook route verifies Clerk's `svix` signature before processing events
+- `getDbUser()` has an upsert fallback so the app does not break if a webhook is delayed
+- Onboarding steps are tracked individually so a user who kills the app mid-flow can resume
+- iOS tokens must never be stored in UserDefaults — KeychainManager is the only approved storage
+- Quick sync with Ravelry runs silently on login (see 005-ravelry-sync.md)
+- Notification polling starts on login (see 019-smart-notifications.md)

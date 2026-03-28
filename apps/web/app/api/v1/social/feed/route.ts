@@ -1,16 +1,11 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth, parsePagination, paginatedResponse } from '@/lib/route-helpers'
 
-export async function GET(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
-  const page = parseInt(req.nextUrl.searchParams.get('page') ?? '1')
-  const limit = Math.min(parseInt(req.nextUrl.searchParams.get('limit') ?? '20'), 50)
-  const skip = (page - 1) * limit
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, user) => {
+  const { page, limit, skip } = parsePagination(req)
   const feedType = req.nextUrl.searchParams.get('type') // 'social' | 'activity' | null (both)
 
   // Get IDs of people the user follows
@@ -21,19 +16,8 @@ export async function GET(req: NextRequest) {
   const followingIds = following.map((f) => f.following_id)
   const allFeedUserIds = [user.id, ...followingIds]
 
-  // For activity feed: only show from mutual follows (friends)
-  // A friend = someone I follow who also follows me back
-  let friendIds: string[] = []
-  if (feedType !== 'social') {
-    const mutualFollows = await prisma.follows.findMany({
-      where: {
-        follower_id: { in: followingIds },
-        following_id: user.id,
-      },
-      select: { follower_id: true },
-    })
-    friendIds = [user.id, ...mutualFollows.map((f) => f.follower_id)]
-  }
+  // Activity feed: show from everyone the user follows (+ self)
+  const activityFeedIds = allFeedUserIds
 
   const userSelect = { id: true, username: true, display_name: true, avatar_url: true }
 
@@ -50,6 +34,9 @@ export async function GET(req: NextRequest) {
           include: {
             user: { select: userSelect },
             photos: { orderBy: { sort_order: 'asc' } },
+            project: { select: { id: true, title: true, slug: true } },
+            pattern: { select: { id: true, title: true, slug: true, cover_image_url: true } },
+            yarns: true,
             _count: { select: { likes: true, comments: { where: { deleted_at: null } } } },
             likes: { where: { user_id: user.id }, take: 1 },
           },
@@ -60,7 +47,7 @@ export async function GET(req: NextRequest) {
       : 0,
     includeActivity
       ? prisma.activity_events.findMany({
-          where: { user_id: { in: friendIds } },
+          where: { user_id: { in: activityFeedIds } },
           orderBy: { created_at: 'desc' },
           take: limit + skip,
           include: {
@@ -80,7 +67,7 @@ export async function GET(req: NextRequest) {
         })
       : [],
     includeActivity
-      ? prisma.activity_events.count({ where: { user_id: { in: friendIds } } })
+      ? prisma.activity_events.count({ where: { user_id: { in: activityFeedIds } } })
       : 0,
   ])
 
@@ -112,14 +99,5 @@ export async function GET(req: NextRequest) {
 
   const total = postTotal + activityTotal
 
-  return NextResponse.json({
-    success: true,
-    data: {
-      items: merged,
-      total,
-      page,
-      pageSize: limit,
-      hasMore: total > page * limit,
-    },
-  })
-}
+  return paginatedResponse(merged, total, page, limit)
+})

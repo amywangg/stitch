@@ -37,13 +37,6 @@ export type StepPosition = {
 }
 
 /**
- * Gets the total number of steps in a section.
- */
-export function getTotalSteps(steps: PatternStep[]): number {
-  return steps.length
-}
-
-/**
  * Calculates the total estimated taps across all steps.
  * Open-ended steps (rows_in_step = null) contribute 0 to the count.
  */

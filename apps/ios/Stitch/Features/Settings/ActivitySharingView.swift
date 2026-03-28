@@ -46,6 +46,8 @@ final class ActivitySharingViewModel {
                     enabled: prefs[type.key] ?? true
                 )
             }
+        } catch is CancellationError {
+            return
         } catch {
             self.error = error.localizedDescription
         }
@@ -135,13 +137,6 @@ struct ActivitySharingView: View {
         .navigationTitle("Activity sharing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await viewModel.load() }
-        .alert("Error", isPresented: .init(
-            get: { viewModel.error != nil },
-            set: { if !$0 { viewModel.error = nil } }
-        )) {
-            Button("OK") { viewModel.error = nil }
-        } message: {
-            Text(viewModel.error ?? "")
-        }
+        .errorAlert(error: $viewModel.error)
     }
 }

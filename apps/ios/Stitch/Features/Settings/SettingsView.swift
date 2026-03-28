@@ -80,13 +80,7 @@ struct SettingsView: View {
             .listStyle(.plain)
             .navigationTitle("Settings")
             .sheet(isPresented: $showPaywall) {
-                PaywallView()
-                    .onPurchaseCompleted { _ in
-                        showPaywall = false
-                    }
-                    .onRestoreCompleted { _ in
-                        showPaywall = false
-                    }
+                StitchPaywallView()
             }
             .sheet(isPresented: $showCustomerCenter) {
                 CustomerCenterView()
@@ -119,7 +113,6 @@ private struct RavelrySection: View {
     @State private var isLoading = false
     @State private var isSyncing = false
     @State private var isConnecting = false
-    @State private var syncToRavelry = false
     @State private var errorMessage: String?
     @State private var showSyncView = false
 
@@ -130,32 +123,14 @@ private struct RavelrySection: View {
             } else if let conn = connection, conn.connected {
                 // Connected state
                 HStack {
-                    Image(systemName: conn.tokenValid == false ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
-                        .foregroundStyle(conn.tokenValid == false ? .orange : .green)
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
                     Text("@\(conn.ravelryUsername ?? "")")
                     Spacer()
-                    Text(conn.tokenValid == false ? "Expired" : "Connected")
+                    Text("Connected")
                         .font(.caption)
-                        .foregroundStyle(conn.tokenValid == false ? .orange : .secondary)
+                        .foregroundStyle(.secondary)
                 }
-
-                if conn.tokenValid == false {
-                    Text("Your Ravelry connection has expired. Reconnect to continue syncing.")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
-
-                    Button {
-                        Task { await startOAuthFlow() }
-                    } label: {
-                        Label("Reconnect Ravelry", systemImage: "arrow.clockwise")
-                    }
-                    .disabled(isConnecting)
-                }
-
-                Toggle("Sync changes to Ravelry", isOn: $syncToRavelry)
-                    .onChange(of: syncToRavelry) { _, newValue in
-                        Task { await updateSyncSetting(newValue) }
-                    }
 
                 Button {
                     Task { await triggerSync() }
@@ -176,9 +151,12 @@ private struct RavelrySection: View {
                         .foregroundStyle(.secondary)
                 }
 
-                Text("Re-connect Ravelry to enable write sync if the toggle is unavailable.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Button(role: .destructive) {
+                    Task { await disconnectRavelry() }
+                } label: {
+                    Label("Disconnect Ravelry", systemImage: "link.badge.plus")
+                        .foregroundStyle(.red)
+                }
             } else {
                 // Not connected
                 Button {
@@ -311,20 +289,8 @@ private struct RavelrySection: View {
                 "/integrations/ravelry/status?validate=true"
             )
             connection = response.data
-            syncToRavelry = response.data.syncToRavelry
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-
-    private func updateSyncSetting(_ value: Bool) async {
-        struct SyncSettings: Decodable { let syncToRavelry: Bool }
-        do {
-            let response: APIResponse<SyncSettings> = try await APIClient.shared.patch(
-                "/integrations/ravelry/settings",
-                body: ["sync_to_ravelry": value]
-            )
-            syncToRavelry = response.data.syncToRavelry
+        } catch is CancellationError {
+            // View dismissed — not an error
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -337,17 +303,32 @@ private struct RavelrySection: View {
             let _: APIResponse<Empty> = try await APIClient.shared.post(
                 "/integrations/ravelry/sync"
             )
+        } catch is CancellationError {
+            // Ignore
         } catch {
             errorMessage = "Sync failed: \(error.localizedDescription)"
         }
         isSyncing = false
         await loadStatus(showLoading: false)
     }
+
+    private func disconnectRavelry() async {
+        do {
+            let _ = try await APIClient.shared.post(
+                "/integrations/ravelry/disconnect",
+                body: [:] as [String: Any]
+            )
+        } catch {
+            // Even if decode fails, the server likely disconnected
+        }
+        connection = nil
+    }
 }
 
 // MARK: - Craft Preference Section
 
 private struct CraftPreferenceSection: View {
+    @Environment(ThemeManager.self) private var theme
     @State private var craftPref: String
 
     init() {
@@ -355,22 +336,27 @@ private struct CraftPreferenceSection: View {
     }
 
     var body: some View {
-        Section("Craft") {
-            Picker("I make", selection: $craftPref) {
-                Label("Knitting", systemImage: "hand.draw").tag("knitting")
-                Label("Crochet", systemImage: "lasso").tag("crocheting")
-                Label("Both", systemImage: "sparkles").tag("both")
+        Section {
+            HStack {
+                Label("My craft", systemImage: "hands.and.sparkles")
+                Spacer()
+                Picker("", selection: $craftPref) {
+                    Text("Knitting").tag("knitting")
+                    Text("Crochet").tag("crocheting")
+                    Text("Both").tag("both")
+                }
+                .labelsHidden()
+                .tint(theme.primary)
             }
             .onChange(of: craftPref) { _, newValue in
                 UserDefaults.standard.set(newValue, forKey: "stitch_craft_preference")
-                // Clear glossary cache so it re-filters on next open
                 GlossaryCache.shared.clearCache()
                 Task { await GlossaryCache.shared.refresh() }
             }
-
-            Text("Filters glossary terms, tutorials, and suggestions to match your craft")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+        } header: {
+            Text("Craft")
+        } footer: {
+            Text("Filters glossary, tutorials, and suggestions to match your craft.")
         }
     }
 }

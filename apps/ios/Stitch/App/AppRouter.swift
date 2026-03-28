@@ -21,11 +21,20 @@ enum Route: Hashable {
     case aiToolLookup
     case stashItemDetail(id: String)
     case patternFolder(id: String, name: String)
+    case patternBuilder(id: String? = nil)
+    case communityPatternDetail(id: String)
     case ravelryPatternDetail(ravelryId: Int, name: String, photoUrl: String?)
     case glossaryDetail(slug: String)
     case tutorialDetail(id: String)
     case glossaryBrowse(category: String? = nil)
     case tutorialBrowse
+    case swatchDetail(id: String)
+    case swatchBrowse
+    case aiPatternBuilder
+    case marketplace
+    case marketplaceDetail(id: String)
+    case followersList
+    case followingList
 }
 
 @Observable

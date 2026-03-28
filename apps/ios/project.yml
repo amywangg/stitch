@@ -66,6 +66,8 @@ targets:
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
+        NSMicrophoneUsageDescription: "Stitch uses the microphone for hands-free voice counting while you knit."
+        NSSpeechRecognitionUsageDescription: "Stitch uses speech recognition for hands-free voice commands during counting."
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: YES  # dev only — localhost API
     scheme:

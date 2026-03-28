@@ -1,16 +1,12 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { decrypt } from '@/lib/encrypt'
 import { RavelryClient } from '@/lib/ravelry-client'
 
-export async function GET(_req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await getDbUser(clerkId)
-
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (_req, user) => {
   const connection = await prisma.ravelry_connections.findUnique({ where: { user_id: user.id } })
   if (!connection) {
     return NextResponse.json({ error: 'Ravelry not connected' }, { status: 400 })
@@ -25,14 +21,21 @@ export async function GET(_req: NextRequest) {
   )
 
   // Fetch all friends from Ravelry (paginated)
-  const allFriends: Array<{ friend_username: string; small_photo_url: string | null }> = []
-  let page = 1
-  let pageCount = 1
-  while (page <= pageCount) {
-    const res = await client.listFriends(page)
-    allFriends.push(...res.friendships)
-    pageCount = res.paginator.page_count
-    page++
+  const allFriends: Array<{ friend_username: string; friend_avatar: { tiny_photo_url: string | null; photo_url: string | null } | null }> = []
+  try {
+    let page = 1
+    let pageCount = 1
+    while (page <= pageCount) {
+      const res = await client.listFriends(page)
+      if (!res?.friendships) break
+      allFriends.push(...res.friendships)
+      pageCount = res.paginator?.page_count ?? 0
+      page++
+    }
+  } catch (err) {
+    // Friends endpoint may 302 for empty accounts — return empty list
+    console.warn('[ravelry-friends] Failed to fetch friends list:', err instanceof Error ? err.message : err)
+    return NextResponse.json({ success: true, data: { onStitch: [], notOnStitch: [] } })
   }
 
   // Cross-reference against ravelry_connections
@@ -76,11 +79,11 @@ export async function GET(_req: NextRequest) {
     .filter((f) => !matchedUsernames.has(f.friend_username))
     .map((f) => ({
       ravelryUsername: f.friend_username,
-      photoUrl: f.small_photo_url,
+      photoUrl: f.friend_avatar?.photo_url ?? f.friend_avatar?.tiny_photo_url ?? null,
     }))
 
   return NextResponse.json({
     success: true,
     data: { onStitch, notOnStitch },
   })
-}
+})

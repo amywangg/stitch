@@ -1,61 +1,40 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
 import { requirePro, FREE_LIMITS } from '@/lib/pro-gate'
-import { slugify } from '@/lib/utils'
+import { withAuth, parsePagination, paginatedResponse, generateUniqueSlug } from '@/lib/route-helpers'
 
-export async function GET(req: NextRequest) {
-  try {
-    const { userId: clerkId } = await auth()
-    if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const user = await getDbUser(clerkId)
-    const page = parseInt(req.nextUrl.searchParams.get('page') ?? '1')
-    const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '20')
-    const folderId = req.nextUrl.searchParams.get('folder_id')
+export const dynamic = 'force-dynamic'
+export const GET = withAuth(async (req, user) => {
+  const { page, limit, skip } = parsePagination(req)
+  const folderId = req.nextUrl.searchParams.get('folder_id')
 
-    // folder_id=null means root (unfiled), folder_id=<id> means specific folder, no param means all
-    const where: Record<string, unknown> = { user_id: user.id, deleted_at: null }
-    if (folderId === 'null' || folderId === 'root') {
-      where.folder_id = null
-    } else if (folderId) {
-      where.folder_id = folderId
-    }
-
-    const [items, total] = await Promise.all([
-      prisma.patterns.findMany({
-        where,
-        orderBy: { created_at: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          folder: { select: { id: true, name: true, color: true } },
-          pdf_uploads: { orderBy: { created_at: 'desc' }, take: 1, select: { id: true } },
-        },
-      }),
-      prisma.patterns.count({ where }),
-    ])
-
-    return NextResponse.json({
-      success: true,
-      data: { items, total, page, pageSize: limit, hasMore: total > page * limit },
-    })
-  } catch (err) {
-    console.error('[GET /patterns]', err)
-    return NextResponse.json(
-      { error: 'INTERNAL_ERROR', message: err instanceof Error ? err.message : 'Unknown error' },
-      { status: 500 },
-    )
+  // folder_id=null means root (unfiled), folder_id=<id> means specific folder, no param means all
+  const where: Record<string, unknown> = { user_id: user.id, deleted_at: null }
+  if (folderId === 'null' || folderId === 'root') {
+    where.folder_id = null
+  } else if (folderId) {
+    where.folder_id = folderId
   }
-}
 
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const [items, total] = await Promise.all([
+    prisma.patterns.findMany({
+      where,
+      orderBy: { created_at: 'desc' },
+      skip,
+      take: limit,
+      include: {
+        folder: { select: { id: true, name: true, color: true } },
+        pdf_uploads: { orderBy: { created_at: 'desc' }, take: 1, select: { id: true } },
+      },
+    }),
+    prisma.patterns.count({ where }),
+  ])
 
-  const user = await getDbUser(clerkId)
+  return paginatedResponse(items, total, page, limit)
+})
 
+export const POST = withAuth(async (req, user) => {
   if (!user.is_pro) {
     const count = await prisma.patterns.count({ where: { user_id: user.id, deleted_at: null } })
     if (count >= FREE_LIMITS.savedPatterns) {
@@ -81,12 +60,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  let slug = slugify(title)
-  let attempt = 0
-  while (await prisma.patterns.findUnique({ where: { user_id_slug: { user_id: user.id, slug } } })) {
-    attempt++
-    slug = `${slugify(title)}-${attempt}`
-  }
+  const slug = await generateUniqueSlug(prisma.patterns, user.id, title)
 
   const pattern = await prisma.patterns.create({
     data: {
@@ -104,4 +78,4 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: pattern }, { status: 201 })
-}
+})

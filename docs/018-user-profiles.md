@@ -1,14 +1,14 @@
 # User Profiles
 
-**Status:** Not started
+**Status:** Complete
 
 ## Problem Statement
 
-Users need public profiles to participate in the social layer. The social feed (006) references profile pages, the heatmap (007) lives on profiles, and follows/followers need a destination page. Without profiles, the community features have no anchor.
+Users need public profiles to participate in the social layer. The social feed references profile pages, the heatmap lives on profiles, and follows/followers need a destination page.
 
 ## Solution Overview
 
-Each user has a public profile accessible by username. Profiles display the user's avatar, display name, bio, crafting heatmap, recent projects, reviews, and follower/following counts. Users can edit their own profile (display name, bio, avatar). Other users can follow/unfollow from the profile page.
+Each user has a profile accessible from the Profile tab. Profiles display avatar, display name, bio, crafting heatmap, recent projects, queue, saved patterns, stash breakdown, needle collection, recent reviews, badges, and follower/following counts. Users can edit their own profile. Tapping followers/following navigates to dedicated list views.
 
 ## Key Components
 
@@ -16,69 +16,96 @@ Each user has a public profile accessible by username. Profiles display the user
 
 | Route | Purpose | Status |
 |---|---|---|
-| `GET /api/v1/users/:username` | Public profile data: display_name, avatar_url, bio, project count, review count, follower/following counts, member_since | Not started |
-| `PATCH /api/v1/users/me` | Update own display_name, bio, avatar_url | Not started |
-| `POST /api/v1/users/me/avatar` | Upload avatar to Supabase Storage | Not started |
+| `GET /api/v1/users/me/profile-summary` | Comprehensive profile data: user info, stats, projects, stash, heatmap, reviews, queue, saved patterns, needles, ravelry, subscription | Complete |
+| `PATCH /api/v1/users/me` | Update display_name, bio, avatar_url, craft_preference, knitting_style, experience_level | Complete |
+| `POST /api/v1/users/me/avatar` | Upload avatar to Supabase Storage, sets avatar_source='manual' | Complete |
+| `PATCH /api/v1/users/me/username` | Change username with availability check and cooldown | Complete |
+| `GET /api/v1/users/me/username/check` | Check username availability | Complete |
+| `GET /api/v1/users/me/activity-sharing` | Get activity sharing preferences | Complete |
+| `PATCH /api/v1/users/me/activity-sharing` | Update activity sharing preferences | Complete |
 
 ### iOS (SwiftUI)
 
 | Screen / Component | Purpose | Status |
 |---|---|---|
-| `ProfileView.swift` | Own profile with edit button, heatmap, recent activity | Not started |
-| `UserProfileView.swift` | Other user's profile with follow button | Not started |
-| `EditProfileView.swift` | Edit display name, bio, avatar (camera + library picker) | Not started |
-| `ProfileViewModel.swift` | Load profile data, follow/unfollow, upload avatar | Not started |
+| `ProfileView.swift` | Main profile with all sections, navigation destinations for stash/needles/followers/following | Complete |
+| `ProfileHeader.swift` | Avatar (tappable with camera icon), name, bio, metadata chips (craft, experience, location, join date), edit/find friends buttons | Complete |
+| `ProfileStatsGrid.swift` | 4-cell grid: projects, finished, followers (→FollowListView), following (→FollowListView) | Complete |
+| `ProfileProjectsGrid.swift` | Horizontal scroll of recent projects with cover images (user photos → pattern cover fallback) and status pills | Complete |
+| `ProfileBadges.swift` | 16 achievement badges computed from profile data, earned as horizontal scroll + locked in collapsible section | Complete |
+| `ProfileViewModel.swift` | Loads profile-summary API, all profile models | Complete |
+| `EditProfileSheet` | Form: avatar picker, username, display name, bio with save | Complete |
+| `FollowListView.swift` | Separate followers/following lists with follow-back buttons | Complete |
 
-### Web (Next.js)
+### Badges System
 
-| Page / Component | Purpose | Status |
-|---|---|---|
-| `(app)/profile/[username]/page.tsx` | Public profile page | Not started |
-| `(app)/settings/profile/page.tsx` | Edit own profile | Not started |
-| `ProfileHeader` component | Avatar, name, bio, follow button, stats | Not started |
-| `ProfileActivity` component | Tabs: projects, reviews, activity | Not started |
+16 achievement badges computed client-side from existing profile data (no extra API calls):
 
-### Database
+| Badge | Requirement |
+|---|---|
+| Ravelry linked | Connected Ravelry account |
+| Pro member | Active subscription |
+| First FO | 1 completed project |
+| 5 / 10 / 25 projects done | Milestone completions |
+| Stash started | 1 stash item |
+| Yarn collector | 20+ stash items |
+| Made a friend | Following 1+ person |
+| 10 followers | 10+ followers |
+| Pattern reviewer | 1+ review |
+| 10 / 100 hours crafted | Crafting time this year |
+| 7-day / 30-day streak | Consecutive crafting days from heatmap |
+| Queue planner | 3+ queued patterns |
+| Pattern collector | 10+ saved patterns |
 
-Uses existing `users` table fields: `display_name`, `avatar_url`, `bio` (add `bio` column if not present). No new tables.
+Earned badges show as colored chips. Unearned show grayed in a collapsible "X more to earn" section.
 
-## Implementation Checklist
+### Avatar Resolution
 
-- [ ] Add `bio` field to users table if not present
-- [ ] Add `username` field to users table (unique, URL-safe, derived from display_name or email)
-- [ ] API route: get public profile by username
-- [ ] API route: update own profile
-- [ ] API route: avatar upload to Supabase Storage
-- [ ] iOS ProfileView (own profile)
-- [ ] iOS UserProfileView (other user's profile with follow button)
-- [ ] iOS EditProfileView with avatar picker
-- [ ] iOS ProfileViewModel
-- [ ] Web profile page with username routing
-- [ ] Web profile edit in settings
-- [ ] Integrate heatmap (007) into profile page
-- [ ] Integrate recent projects into profile page
-- [ ] Integrate reviews into profile page
-- [ ] Integrate follower/following counts and lists
+Priority chain:
+1. **Manual upload** — `avatar_source = 'manual'`, stored in Supabase Storage
+2. **Ravelry photo** — `avatar_source = 'ravelry'`, fetched from Ravelry API and backfilled on profile load
+3. **Placeholder** — system person icon
 
-## Dependencies
+The profile-summary route auto-backfills from Ravelry if avatar is null and Ravelry is connected.
 
-- Authentication (001) for user identity
-- Social Feed (006) for follows, activity events
-- Crafting Activity Heatmap (007) for profile heatmap display
-- Pattern Reviews (008) for review list on profile
-- Supabase Storage bucket for avatar uploads
+### Profile Sections
+
+All visible on the Profile tab in order:
+1. Header (avatar, name, bio, chips)
+2. Stats grid (projects, finished, followers, following)
+3. **Badges** (earned achievements)
+4. Crafting heatmap (52-week activity calendar)
+5. Recent projects (horizontal scroll with covers)
+6. Queue preview
+7. Saved patterns preview
+8. Yarn stash breakdown (bar chart by weight)
+9. Needles & hooks breakdown
+10. Recent reviews
+11. Recent activity
+12. Ravelry connection status
+
+### Navigation from Profile
+
+| Tap target | Destination |
+|---|---|
+| Avatar / "Edit profile" | EditProfileSheet |
+| "Find friends" button | FindFriendsView |
+| Followers count | FollowListView(type: .followers) |
+| Following count | FollowListView(type: .following) |
+| "View all" on stash | StashView |
+| "View all" on needles | NeedlesView |
+| Project card | ProjectDetailView |
+| Stash item | StashItemDetailView |
+| Settings gear | SettingsView |
 
 ## Tier Gating
 
-Free for all users. Profiles are a core social feature that drives engagement and organic growth.
-
-## Monetization Role
-
-Profiles anchor the social layer. Pro users get a Pro badge on their profile, which serves as social proof and aspiration for free users. The profile page surfaces Pro-only features (AI insights, richer project cards) that free users can see but not access, driving content-desire conversion.
+Profiles are free for all users. Pro users get a gold ring around their avatar.
 
 ## Technical Notes
 
-- Usernames should be auto-generated from display_name (lowercase, hyphenated) with a uniqueness suffix if needed. Allow users to customize.
-- Avatar storage path: `avatars/{userId}.jpg` in Supabase Storage. Resize to 256x256 on upload.
-- The profile endpoint should aggregate counts efficiently. Consider denormalized counters on the users table if query performance becomes an issue.
-- Profile pages should be accessible without authentication (public profiles), but follow actions require auth.
+- Profile data loaded via single `GET /api/v1/users/me/profile-summary` (parallel DB queries)
+- Heatmap shows 52 weeks of crafting_sessions grouped by date
+- Badge computation uses `longestStreak()` function that calculates consecutive days from heatmap data
+- Craft label handles both "crocheting" (from onboarding) and "crochet" (from Ravelry import)
+- Profile cover photos fall back: user photos → pattern cover → placeholder icon

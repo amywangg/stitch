@@ -6,134 +6,122 @@ struct FindFriendsView: View {
 
     var body: some View {
         List {
-            // Invite banner
+            // Search section
+            Section {
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(.secondary)
+                    TextField("Search by username", text: $viewModel.searchQuery)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                }
+                .onChange(of: viewModel.searchQuery) {
+                    Task { await viewModel.search() }
+                }
+
+                if viewModel.isSearching {
+                    HStack { Spacer(); ProgressView().controlSize(.small); Spacer() }
+                }
+
+                ForEach(viewModel.searchResults) { user in
+                    stitchUserRow(user: user)
+                }
+            }
+
+            // Ravelry friends on Stitch — follow them
+            if let friends = viewModel.ravelryFriends, !friends.onStitch.isEmpty {
+                Section {
+                    ForEach(friends.onStitch, id: \.user.id) { match in
+                        stitchUserRow(
+                            user: match.user,
+                            ravelryUsername: match.ravelryUsername,
+                            isFollowing: match.isFollowing
+                        )
+                    }
+                } header: {
+                    Label("Ravelry friends on Stitch", systemImage: "person.2.fill")
+                } footer: {
+                    Text("Friends from your Ravelry who also use Stitch.")
+                }
+            }
+
+            // Ravelry friends NOT on Stitch — invite them
+            if let friends = viewModel.ravelryFriends, !friends.notOnStitch.isEmpty {
+                Section {
+                    ForEach(friends.notOnStitch, id: \.ravelryUsername) { friend in
+                        ravelryInviteRow(friend)
+                    }
+                } header: {
+                    Label("Invite from Ravelry", systemImage: "envelope")
+                } footer: {
+                    Text("\(friends.notOnStitch.count) Ravelry friend\(friends.notOnStitch.count == 1 ? "" : "s") not on Stitch yet.")
+                }
+            }
+
+            // Loading state for ravelry
+            if viewModel.isLoadingRavelry && viewModel.ravelryFriends == nil {
+                Section {
+                    HStack(spacing: 10) {
+                        ProgressView().controlSize(.small)
+                        Text("Loading Ravelry friends...")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            // General invite
             Section {
                 ShareLink(
                     item: URL(string: "https://stitch.app")!,
                     message: Text("Come join me on Stitch — it's like Goodreads for knitting and crochet!")
                 ) {
                     HStack(spacing: 12) {
-                        Image(systemName: "envelope.fill")
-                            .font(.title3)
-                            .foregroundStyle(.white)
-                            .frame(width: 36, height: 36)
-                            .background(theme.primary)
-                            .clipShape(Circle())
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.body)
+                            .foregroundStyle(theme.primary)
+                            .frame(width: 28)
 
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Invite friends to Stitch")
-                                .font(.subheadline.weight(.semibold))
-                            Text("Share a link via message, email, or social")
+                            Text("Share Stitch")
+                                .font(.subheadline.weight(.medium))
+                            Text("Send a link to anyone")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
 
                         Spacer()
-
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.body)
-                            .foregroundStyle(theme.primary)
                     }
                 }
                 .buttonStyle(.plain)
             }
-
-            // Search section
-            Section {
-                TextField("Search by username", text: $viewModel.searchQuery)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .onChange(of: viewModel.searchQuery) {
-                        Task { await viewModel.search() }
-                    }
-
-                if viewModel.isSearching {
-                    ProgressView()
-                }
-
-                ForEach(viewModel.searchResults) { user in
-                    userRow(user: user, ravelryUsername: nil)
-                }
-            } header: {
-                Text("Search users")
-            }
-
-            // Ravelry friends on Stitch
-            if let friends = viewModel.ravelryFriends {
-                if !friends.onStitch.isEmpty {
-                    Section {
-                        ForEach(friends.onStitch, id: \.user.id) { match in
-                            userRow(
-                                user: match.user,
-                                ravelryUsername: match.ravelryUsername,
-                                isFollowing: match.isFollowing
-                            )
-                        }
-                    } header: {
-                        Text("Ravelry friends on Stitch")
-                    }
-                }
-
-                if !friends.notOnStitch.isEmpty {
-                    Section {
-                        ForEach(friends.notOnStitch, id: \.ravelryUsername) { friend in
-                            HStack(spacing: 10) {
-                                AsyncImage(url: URL(string: friend.photoUrl ?? "")) { image in
-                                    image.resizable().scaledToFill()
-                                } placeholder: {
-                                    Color.gray.opacity(0.3)
-                                }
-                                .frame(width: 36, height: 36)
-                                .clipShape(Circle())
-
-                                Text(friend.ravelryUsername)
-                                    .font(.subheadline)
-
-                                Spacer()
-
-                                ShareLink(
-                                    item: URL(string: "https://stitch.app")!,
-                                    message: Text("Join me on Stitch!")
-                                ) {
-                                    Text("Invite")
-                                        .font(.subheadline.weight(.medium))
-                                        .foregroundStyle(theme.primary)
-                                }
-                            }
-                        }
-                    } header: {
-                        Text("Invite to Stitch")
-                    }
-                }
-            } else if viewModel.isLoadingRavelry {
-                Section {
-                    ProgressView("Loading Ravelry friends...")
-                }
-            }
         }
         .navigationTitle("Find friends")
         .task { await viewModel.loadRavelryFriends() }
+        .errorAlert(error: $viewModel.error)
     }
 
-    @ViewBuilder
-    private func userRow(user: UserSummary, ravelryUsername: String?, isFollowing: Bool? = nil) -> some View {
+    // MARK: - Stitch User Row
+
+    private func stitchUserRow(user: UserSummary, ravelryUsername: String? = nil, isFollowing: Bool? = nil) -> some View {
         let following = isFollowing ?? user.isFollowing ?? false
 
-        HStack(spacing: 10) {
-            AsyncImage(url: URL(string: user.avatarUrl ?? "")) { image in
-                image.resizable().scaledToFill()
-            } placeholder: {
-                Color.gray.opacity(0.3)
-            }
-            .frame(width: 40, height: 40)
-            .clipShape(Circle())
+        return HStack(spacing: 10) {
+            AvatarImage(url: user.avatarUrl, size: 40)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(user.displayName ?? user.username)
                     .font(.subheadline.weight(.semibold))
-                Text("@\(user.username)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    Text("@\(user.username)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    if let rav = ravelryUsername {
+                        Text("· \(rav) on Ravelry")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
             }
 
             Spacer()
@@ -149,13 +137,44 @@ struct FindFriendsView: View {
             } label: {
                 Text(following ? "Following" : "Follow")
                     .font(.subheadline.weight(.medium))
-                    .foregroundColor(following ? .secondary : .white)
+                    .foregroundStyle(following ? Color.secondary : Color.white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 6)
                     .background(following ? Color(.systemGray5) : theme.primary)
                     .clipShape(Capsule())
             }
             .buttonStyle(.plain)
+        }
+    }
+
+    // MARK: - Ravelry Invite Row
+
+    private func ravelryInviteRow(_ friend: RavelryFriendNotOnStitch) -> some View {
+        HStack(spacing: 10) {
+            AvatarImage(url: friend.photoUrl, size: 36)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(friend.ravelryUsername)
+                    .font(.subheadline.weight(.medium))
+                Text("On Ravelry")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+
+            Spacer()
+
+            ShareLink(
+                item: URL(string: "https://stitch.app?ref=ravelry")!,
+                message: Text("Hey \(friend.ravelryUsername)! I'm using Stitch for my knitting — it syncs with Ravelry. Check it out!")
+            ) {
+                Text("Invite")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(theme.primary)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 6)
+                    .background(theme.primary.opacity(0.12))
+                    .clipShape(Capsule())
+            }
         }
     }
 }

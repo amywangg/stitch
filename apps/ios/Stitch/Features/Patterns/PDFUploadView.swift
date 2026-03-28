@@ -24,7 +24,7 @@ struct PDFUploadView: View {
                     Text("PDF uploaded")
                         .font(.headline)
 
-                    Text(pdf.fileName)
+                    Text(pdf.fileName ?? "Untitled PDF")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 

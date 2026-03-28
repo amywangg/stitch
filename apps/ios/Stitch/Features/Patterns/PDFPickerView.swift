@@ -41,12 +41,12 @@ struct PDFPickerView: View {
                                         .font(.title3)
 
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text(pdf.fileName)
+                                        Text(pdf.fileName ?? "Untitled PDF")
                                             .font(.subheadline.weight(.medium))
                                             .foregroundStyle(.primary)
                                             .lineLimit(2)
 
-                                        Text(ByteCountFormatter.string(fromByteCount: Int64(pdf.fileSize), countStyle: .file))
+                                        Text(ByteCountFormatter.string(fromByteCount: Int64(pdf.fileSize ?? 0), countStyle: .file))
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
                                     }

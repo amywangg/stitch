@@ -1,8 +1,9 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 
+
+export const dynamic = 'force-dynamic'
 // Rename Prisma's _count to count for cleaner client decoding
 function transformFolder(folder: Record<string, unknown>): Record<string, unknown> {
   const { _count, children, ...rest } = folder
@@ -13,36 +14,19 @@ function transformFolder(folder: Record<string, unknown>): Record<string, unknow
   }
 }
 
-export async function GET(req: NextRequest) {
-  try {
-    const { userId: clerkId } = await auth()
-    if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const GET = withAuth(async (_req, user) => {
+  const folders = await prisma.pattern_folders.findMany({
+    where: { user_id: user.id },
+    orderBy: [{ sort_order: 'asc' }, { name: 'asc' }],
+    include: {
+      _count: { select: { patterns: { where: { deleted_at: null } } } },
+    },
+  })
 
-    const user = await getDbUser(clerkId)
+  return NextResponse.json({ success: true, data: folders.map(transformFolder) })
+})
 
-    const folders = await prisma.pattern_folders.findMany({
-      where: { user_id: user.id },
-      orderBy: [{ sort_order: 'asc' }, { name: 'asc' }],
-      include: {
-        _count: { select: { patterns: { where: { deleted_at: null } } } },
-      },
-    })
-
-    return NextResponse.json({ success: true, data: folders.map(transformFolder) })
-  } catch (err) {
-    console.error('[GET /patterns/folders]', err)
-    return NextResponse.json(
-      { error: 'INTERNAL_ERROR', message: err instanceof Error ? err.message : 'Unknown error' },
-      { status: 500 },
-    )
-  }
-}
-
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, user) => {
   const body = await req.json()
   const { name, parent_id, color } = body
 
@@ -81,4 +65,4 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: transformFolder(folder as unknown as Record<string, unknown>) }, { status: 201 })
-}
+})

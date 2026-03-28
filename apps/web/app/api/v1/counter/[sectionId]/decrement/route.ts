@@ -1,17 +1,13 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { resolveStep, getStepPosition, getSectionProgress } from '@/lib/instruction-resolver'
 
-type Params = { params: Promise<{ sectionId: string }> }
 
-export async function POST(_req: NextRequest, { params }: Params) {
-  const { sectionId } = await params
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const dynamic = 'force-dynamic'
+export const POST = withAuth(async (_req, user, params) => {
+  const sectionId = params!.sectionId
 
-  const user = await getDbUser(clerkId)
   const section = await prisma.project_sections.findFirst({
     where: { id: sectionId, project: { user_id: user.id, deleted_at: null } },
   })
@@ -86,4 +82,4 @@ export async function POST(_req: NextRequest, { params }: Params) {
       instruction,
     },
   })
-}
+})

@@ -14,12 +14,31 @@ struct ProfileView: View {
                 } else if let summary = viewModel.summary {
                     ScrollView {
                         VStack(spacing: 0) {
-                            profileHeader(summary.user, stats: summary.stats)
-                            statsGrid(summary.stats)
+                            ProfileHeader(
+                                user: summary.user,
+                                stats: summary.stats,
+                                onEditProfile: { showingEditProfile = true }
+                            )
+                            .sheet(isPresented: $showingEditProfile) {
+                                EditProfileSheet(user: summary.user) {
+                                    Task { await viewModel.load() }
+                                }
+                            }
+
+                            ProfileStatsGrid(stats: summary.stats)
+
+                            // Badges
+                            ProfileBadgesSection(badges: computeBadges(
+                                stats: summary.stats,
+                                user: summary.user,
+                                ravelry: summary.ravelry,
+                                heatmap: summary.heatmap
+                            ))
+
                             craftingHeatmap(summary.heatmap, stats: summary.stats)
-                            recentProjectsSection(summary.recentProjects, stats: summary.stats)
-                            queueSection(summary.queuePreview, count: summary.stats.queueItems)
-                            favoritesSection(summary.savedPatternsPreview, count: summary.stats.savedPatterns)
+                            ProfileProjectsGrid(projects: summary.recentProjects, stats: summary.stats)
+                            ProfileQueueSection(items: summary.queuePreview, count: summary.stats.queueItems)
+                            ProfileFavoritesSection(patterns: summary.savedPatternsPreview, count: summary.stats.savedPatterns)
                             stashSection(summary.stashBreakdown, stats: summary.stats)
                             needlesSection(summary.needleBreakdown, count: summary.stats.needles)
                             reviewsSection(summary.recentReviews, count: summary.stats.reviews)
@@ -49,14 +68,28 @@ struct ProfileView: View {
             }
             .navigationDestination(for: Route.self) { route in
                 switch route {
+                case .projectDetail(let id):
+                    ProjectDetailView(projectId: id)
+                case .patternDetail(let id):
+                    PatternDetailView(patternId: id)
                 case .findFriends:
                     FindFriendsView()
+                case .followersList:
+                    FollowListView(type: .followers)
+                case .followingList:
+                    FollowListView(type: .following)
                 case .notifications:
                     NotificationsView()
                 case .stash:
                     StashView()
+                case .stashItemDetail(let id):
+                    StashItemDetailView(itemId: id)
                 case .needles:
                     NeedlesView()
+                case .addFromCatalog:
+                    AddFromCatalogView()
+                case .toolSetDetail(let id):
+                    ToolSetDetailView(setId: id)
                 case .queue:
                     EmptyView()
                 default:
@@ -66,160 +99,6 @@ struct ProfileView: View {
         }
         .refreshable { await viewModel.load() }
         .task { await viewModel.load() }
-    }
-
-    // ─── Header ──────────────────────────────────────────────────────────────
-
-    private func profileHeader(_ user: ProfileUser, stats: ProfileStats) -> some View {
-        VStack(spacing: 14) {
-            // Avatar with Pro ring
-            AsyncImage(url: URL(string: user.avatarUrl ?? "")) { image in
-                image.resizable().scaledToFill()
-            } placeholder: {
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .foregroundStyle(.gray.opacity(0.3))
-            }
-            .frame(width: 96, height: 96)
-            .clipShape(Circle())
-            .overlay(
-                Circle()
-                    .stroke(
-                        user.isPro ? theme.primary : Color.clear,
-                        lineWidth: 3
-                    )
-                    .padding(-2)
-            )
-
-            // Name + Pro badge
-            HStack(spacing: 6) {
-                Text(user.displayName ?? user.username)
-                    .font(.title2.weight(.bold))
-
-                if user.isPro {
-                    Text("PRO")
-                        .font(.system(size: 10, weight: .heavy))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(theme.primary)
-                        .clipShape(Capsule())
-                }
-            }
-
-            Text("@\(user.username)")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            // Bio
-            if let bio = user.bio, !bio.isEmpty {
-                Text(bio)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 24)
-            }
-
-            // Metadata chips
-            FlowLayout(spacing: 8) {
-                if let location = user.location, !location.isEmpty {
-                    profileChip(icon: "location", text: location)
-                }
-                profileChip(icon: "scissors", text: craftLabel(user.craftPreference))
-                if let level = user.experienceLevel, !level.isEmpty {
-                    profileChip(icon: "chart.bar", text: level.capitalized)
-                }
-                if let website = user.website, !website.isEmpty {
-                    profileChip(icon: "link", text: cleanURL(website))
-                }
-                profileChip(
-                    icon: "calendar",
-                    text: "Joined \(user.memberSince.formatted(.dateTime.month(.abbreviated).year()))"
-                )
-            }
-            .padding(.horizontal)
-
-            // Edit profile + Find friends buttons
-            HStack(spacing: 10) {
-                Button {
-                    showingEditProfile = true
-                } label: {
-                    Text("Edit profile")
-                        .font(.subheadline.weight(.medium))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background(Color(.systemGray5))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                .buttonStyle(.plain)
-
-                NavigationLink(value: Route.findFriends) {
-                    Text("Find friends")
-                        .font(.subheadline.weight(.medium))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background(Color(.systemGray5))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.horizontal)
-            .padding(.top, 4)
-        }
-        .padding(.vertical, 20)
-        .sheet(isPresented: $showingEditProfile) {
-            EditProfileSheet(user: user) {
-                Task { await viewModel.load() }
-            }
-        }
-    }
-
-    private func profileChip(icon: String, text: String) -> some View {
-        HStack(spacing: 4) {
-            Image(systemName: icon)
-                .font(.system(size: 10))
-            Text(text)
-                .font(.caption)
-        }
-        .foregroundStyle(.secondary)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(Color(.systemGray6))
-        .clipShape(Capsule())
-    }
-
-    // ─── Stats Grid ──────────────────────────────────────────────────────────
-
-    private func statsGrid(_ stats: ProfileStats) -> some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 12) {
-            statCell(value: stats.projects, label: "Projects")
-            statCell(value: stats.completedProjects, label: "Finished")
-            NavigationLink(value: Route.findFriends) {
-                statCellContent(value: stats.followers, label: "Followers")
-            }
-            .buttonStyle(.plain)
-            NavigationLink(value: Route.findFriends) {
-                statCellContent(value: stats.following, label: "Following")
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.horizontal)
-        .padding(.vertical, 14)
-        .background(Color(.secondarySystemBackground))
-    }
-
-    private func statCell(value: Int, label: String) -> some View {
-        statCellContent(value: value, label: label)
-    }
-
-    private func statCellContent(value: Int, label: String) -> some View {
-        VStack(spacing: 2) {
-            Text("\(value)")
-                .font(.headline)
-            Text(label)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-        }
     }
 
     // ─── Crafting Heatmap ────────────────────────────────────────────────────
@@ -233,192 +112,9 @@ struct ProfileView: View {
             }
         }) {
             if heatmap.isEmpty {
-                emptyState("No crafting sessions logged yet")
+                ProfileEmptyState(message: "No crafting sessions logged yet")
             } else {
                 HeatmapGrid(days: heatmap)
-            }
-        }
-    }
-
-    // ─── Recent Projects ─────────────────────────────────────────────────────
-
-    private func recentProjectsSection(_ projects: [ProfileProject], stats: ProfileStats) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            sectionHeader(
-                title: "Projects",
-                count: stats.projects,
-                countLabel: "\(stats.activeProjects) active"
-            )
-            .padding(.horizontal)
-
-            if projects.isEmpty {
-                emptyState("No projects yet")
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(projects) { project in
-                            projectCard(project)
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-            }
-        }
-        .padding(.vertical, 8)
-    }
-
-    private func projectCard(_ project: ProfileProject) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            ZStack(alignment: .bottomTrailing) {
-                if let photo = project.photos.first {
-                    AsyncImage(url: URL(string: photo.url)) { image in
-                        image.resizable().scaledToFill()
-                    } placeholder: {
-                        Color.gray.opacity(0.15)
-                    }
-                } else {
-                    Rectangle()
-                        .fill(Color(.systemGray6))
-                        .overlay {
-                            Image(systemName: project.craftType == "crochet" ? "link" : "scissors")
-                                .font(.title2)
-                                .foregroundStyle(.tertiary)
-                        }
-                }
-
-                // Status pill
-                Text(project.status.capitalized)
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(statusColor(project.status))
-                    .clipShape(Capsule())
-                    .padding(6)
-            }
-            .frame(width: 130, height: 170)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-
-            Text(project.title)
-                .font(.caption.weight(.medium))
-                .lineLimit(1)
-                .truncationMode(.tail)
-                .frame(width: 130, alignment: .leading)
-
-            // Progress bar
-            if project.status == "active",
-               let section = project.sections.first,
-               let target = section.targetRows, target > 0 {
-                ProgressView(value: Double(section.currentRow), total: Double(target))
-                    .tint(theme.primary)
-                    .frame(width: 130)
-            }
-        }
-    }
-
-    // ─── Queue ───────────────────────────────────────────────────────────────
-
-    private func queueSection(_ items: [ProfileQueueItem], count: Int) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                sectionHeader(title: "Queue", count: count, countLabel: "want to make")
-                NavigationLink(value: Route.queue) {
-                    HStack(spacing: 2) {
-                        Text("See all")
-                            .font(.caption)
-                        Image(systemName: "chevron.right")
-                            .font(.caption2)
-                    }
-                    .foregroundStyle(.secondary)
-                }
-            }
-            .padding(.horizontal)
-
-            if items.isEmpty {
-                emptyState("Queue is empty")
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 10) {
-                        ForEach(items) { item in
-                            patternThumbnail(
-                                title: item.pattern.title,
-                                imageUrl: item.pattern.coverImageUrl,
-                                designer: item.pattern.designerName
-                            )
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-            }
-        }
-        .padding(.vertical, 8)
-    }
-
-    // ─── Favorites / Saved Patterns ──────────────────────────────────────────
-
-    private func favoritesSection(_ patterns: [ProfileSavedPattern], count: Int) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            sectionHeader(title: "Favorites", count: count, countLabel: "saved")
-                .padding(.horizontal)
-
-            if patterns.isEmpty {
-                emptyState("No saved patterns yet")
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 10) {
-                        ForEach(patterns) { pattern in
-                            let photoUrl: String? = pattern.photoUrl.map { path in
-                                path.hasPrefix("http") ? path : "https://images4.ravelry.com\(path)"
-                            }
-                            patternThumbnail(
-                                title: pattern.name,
-                                imageUrl: photoUrl,
-                                designer: pattern.designer
-                            )
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-            }
-        }
-        .padding(.vertical, 8)
-    }
-
-    /// Shared pattern thumbnail used by queue and favorites
-    private func patternThumbnail(title: String, imageUrl: String?, designer: String?) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Group {
-                if let url = imageUrl {
-                    AsyncImage(url: URL(string: url)) { image in
-                        image.resizable().scaledToFill()
-                    } placeholder: {
-                        Color.gray.opacity(0.15)
-                    }
-                } else {
-                    Rectangle()
-                        .fill(Color(.systemGray6))
-                        .overlay {
-                            Image(systemName: "book.closed")
-                                .foregroundStyle(.tertiary)
-                        }
-                }
-            }
-            // 2:3 portrait ratio per design system
-            .frame(width: 100, height: 150)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-
-            Text(title)
-                .font(.caption.weight(.medium))
-                .lineLimit(1)
-                .truncationMode(.tail)
-                .frame(width: 100, alignment: .leading)
-
-            if let designer = designer {
-                Text(designer)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .frame(width: 100, alignment: .leading)
             }
         }
     }
@@ -440,7 +136,7 @@ struct ProfileView: View {
             }
         }) {
             if breakdown.isEmpty {
-                emptyState("Stash is empty")
+                ProfileEmptyState(message: "Stash is empty")
             } else {
                 let sorted = breakdown.sorted { $0.value.skeins > $1.value.skeins }
                 let maxSkeins = sorted.first?.value.skeins ?? 1
@@ -490,7 +186,7 @@ struct ProfileView: View {
             }
         }) {
             if breakdown.isEmpty {
-                emptyState("No needles or hooks added")
+                ProfileEmptyState(message: "No needles or hooks added")
             } else {
                 HStack(spacing: 16) {
                     ForEach(Array(breakdown.sorted(by: { $0.value > $1.value })), id: \.key) { type, qty in
@@ -522,7 +218,7 @@ struct ProfileView: View {
             }
         }) {
             if reviews.isEmpty {
-                emptyState("No reviews yet")
+                ProfileEmptyState(message: "No reviews yet")
             } else {
                 VStack(spacing: 12) {
                     ForEach(reviews) { review in
@@ -602,7 +298,7 @@ struct ProfileView: View {
     private func recentActivitySection(_ events: [ProfileActivityEvent]) -> some View {
         profileSection(title: "Recent activity") {
             if events.isEmpty {
-                emptyState("No recent activity")
+                ProfileEmptyState(message: "No recent activity")
             } else {
                 VStack(spacing: 0) {
                     ForEach(events) { event in
@@ -710,55 +406,7 @@ struct ProfileView: View {
         .padding()
     }
 
-    private func sectionHeader(title: String, count: Int, countLabel: String) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-            Text("\(count)")
-                .font(.subheadline.weight(.bold))
-                .foregroundStyle(theme.primary)
-            if count > 0 {
-                Text(countLabel)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-        }
-    }
-
-    private func emptyState(_ message: String) -> some View {
-        Text(message)
-            .font(.caption)
-            .foregroundStyle(.tertiary)
-            .frame(maxWidth: .infinity, alignment: .center)
-            .padding(.vertical, 12)
-    }
-
     // ─── Helpers ─────────────────────────────────────────────────────────────
-
-    private func craftLabel(_ pref: String) -> String {
-        switch pref {
-        case "knitting": return "Knitter"
-        case "crochet": return "Crocheter"
-        default: return "Knitter & crocheter"
-        }
-    }
-
-    private func cleanURL(_ url: String) -> String {
-        url.replacingOccurrences(of: "https://", with: "")
-            .replacingOccurrences(of: "http://", with: "")
-            .trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-    }
-
-    private func statusColor(_ status: String) -> Color {
-        switch status {
-        case "completed": return .green
-        case "active": return theme.primary
-        case "frogged": return .red
-        case "hibernating": return .orange
-        default: return .gray
-        }
-    }
 
     private func formatWeight(_ weight: String) -> String {
         switch weight {
@@ -767,10 +415,6 @@ struct ProfileView: View {
         case "unknown": return "Other"
         default: return weight.capitalized
         }
-    }
-
-    private func formatSkeins(_ skeins: Double) -> String {
-        skeins == skeins.rounded() ? String(Int(skeins)) : String(format: "%.1f", skeins)
     }
 
     private func formatCraftingTime(_ minutes: Int) -> String {
@@ -904,6 +548,7 @@ struct HeatmapGrid: View {
                 }
             }
         }
+        .defaultScrollAnchor(.trailing)
 
         // Legend
         HStack(spacing: 4) {

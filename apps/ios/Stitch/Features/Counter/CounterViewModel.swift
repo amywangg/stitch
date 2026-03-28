@@ -27,6 +27,37 @@ final class CounterViewModel {
     var isLoading = false
     var error: String?
 
+    // MARK: - Milestone & Stats
+
+    /// Set when a milestone row is hit — triggers celebration overlay
+    var milestoneToShow: Int?
+
+    /// Tracks rows counted this session for rows/hr calculation
+    private var sessionRowsAtStart: Int = 0
+    private var sessionStartTime: Date?
+
+    /// Rows per hour based on current session pace
+    var rowsPerHour: Double? {
+        guard let start = sessionStartTime else { return nil }
+        let elapsed = Date().timeIntervalSince(start)
+        guard elapsed > 60 else { return nil } // Need at least 1 minute
+        let rowsDone = Double(currentRow - sessionRowsAtStart)
+        guard rowsDone > 0 else { return nil }
+        return rowsDone / (elapsed / 3600)
+    }
+
+    /// Spoken status string for voice counter
+    var spokenStatus: String {
+        var parts = ["Row \(currentRow)"]
+        if let target = targetRows, target > 0 {
+            parts.append("of \(target)")
+        }
+        if totalSteps > 0 {
+            parts.append("Step \(currentStep) of \(totalSteps)")
+        }
+        return parts.joined(separator: ", ")
+    }
+
     private(set) var sectionId: String = ""
     private var hasInstructions = false
 
@@ -60,11 +91,19 @@ final class CounterViewModel {
         isLoading = true
         defer { isLoading = false }
 
+        // Track session start for rows/hr
+        if sessionStartTime == nil {
+            sessionStartTime = Date()
+        }
+
         // Try instruction endpoint first (has pattern rows)
         do {
             let response: APIResponse<InstructionDetailResponse> = try await APIClient.shared.get("/counter/\(sectionId)/instruction")
             applyInstructionDetail(response.data)
             hasInstructions = true
+            sessionRowsAtStart = currentRow
+        } catch is CancellationError {
+            return
         } catch {
             // Fall back to basic counter state
             hasInstructions = false
@@ -72,6 +111,9 @@ final class CounterViewModel {
                 let response: APIResponse<CounterState> = try await APIClient.shared.get("/counter/\(sectionId)")
                 currentRow = response.data.currentRow
                 targetRows = response.data.targetRows
+                sessionRowsAtStart = currentRow
+            } catch is CancellationError {
+                return
             } catch {
                 self.error = error.localizedDescription
             }
@@ -83,11 +125,18 @@ final class CounterViewModel {
 
         let previousRow = currentRow
         currentRow += 1  // Optimistic update
+
+        // Check for milestone
+        if isMilestoneRow(currentRow) {
+            milestoneToShow = currentRow
+        }
+
         do {
             let response: APIResponse<CounterResponse> = try await APIClient.shared.post("/counter/\(sectionId)/increment")
             applyCounterResponse(response.data)
         } catch {
             currentRow = previousRow  // Revert on failure
+            milestoneToShow = nil
             self.error = error.localizedDescription
         }
     }

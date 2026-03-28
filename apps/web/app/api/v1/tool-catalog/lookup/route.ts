@@ -1,17 +1,14 @@
-import { auth } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getDbUser } from '@/lib/auth'
+import { withAuth } from '@/lib/route-helpers'
 import { openai } from '@/lib/openai'
 import { TOOL_LOOKUP_SYSTEM_PROMPT, buildToolLookupPrompt } from '@/lib/prompts/tool-lookup'
 
+
+export const dynamic = 'force-dynamic'
 // POST /api/v1/tool-catalog/lookup — AI-powered set lookup
 // Free with rate limit (5/month) — builds shared catalog
-export async function POST(req: NextRequest) {
-  const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getDbUser(clerkId)
+export const POST = withAuth(async (req, _user) => {
   const body = await req.json()
   const { brand, set_name } = body
 
@@ -145,4 +142,4 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true, data: result }, { status: 201 })
-}
+})

@@ -1,0 +1,8 @@
+apps/ios
+.git
+*.xcodeproj
+*.xcworkspace
+docs
+packages/db/seed-personas.ts
+packages/db/test-ravelry-api.ts
+packages/db/test-ravelry-write.ts

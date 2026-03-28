@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
+
+export const dynamic = 'force-dynamic'
 const lookupSchema = z.object({
   terms: z.array(z.string().min(1)).min(1).max(100),
 })
