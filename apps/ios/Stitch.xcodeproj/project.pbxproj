@@ -138,6 +138,7 @@
 		DCAE5B08ABFD1CFC51E1C039 /* StartPatternFlowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8683D796263094EF391BBFC /* StartPatternFlowViewModel.swift */; };
 		DCD0A460A898833C5B513F73 /* PatternFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18A55F101549A4FCC895457 /* PatternFilterSheet.swift */; };
 		DCEA6B1D84AB2AD84104ECBB /* VoiceCommandHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A32E247FCCA87300C9618A /* VoiceCommandHelpView.swift */; };
+		DF09C09004C842CB8F748668 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72AE44BBE9A170AAE3CC5B98 /* Assets.xcassets */; };
 		E1C334F347D6AB665F9A7BD2 /* CounterInstructionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9D4872C65ECE50F4B64217 /* CounterInstructionLayout.swift */; };
 		E2F2F906C79A156A7D99FC28 /* NeedleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68ACA4882981E3AF4141E4CA /* NeedleRow.swift */; };
 		E374D3287FA460A987BDA72B /* PatternDiscoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DCACB81E8F908C732AD538 /* PatternDiscoverView.swift */; };
@@ -230,6 +231,7 @@
 		6FF0BB6ABFF4CC9629F0542A /* MarkdownBoldText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownBoldText.swift; sourceTree = "<group>"; };
 		7152423D6B4A388CC2AA5C56 /* ProfileBadges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBadges.swift; sourceTree = "<group>"; };
 		71FC4B024BBB9A98A30AD5B0 /* AvatarImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImage.swift; sourceTree = "<group>"; };
+		72AE44BBE9A170AAE3CC5B98 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		72BEF4AE6FF56F1810AFD117 /* AIPatternBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIPatternBuilderView.swift; sourceTree = "<group>"; };
 		7528E7308885E06FC948409F /* NeedlesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedlesView.swift; sourceTree = "<group>"; };
 		7763D6AF70CC835B04A9ED40 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
@@ -522,6 +524,7 @@
 				2D582FA0BD6252EE0F547EBE /* Extensions */,
 				459E108DE34F48B5027C1D53 /* Features */,
 				378C9FD34EBC1D65C0999FB1 /* Models */,
+				72AE44BBE9A170AAE3CC5B98 /* Assets.xcassets */,
 				EDB463176DF224D9CAC6830C /* Info.plist */,
 				FE7C8F95750F278FB6D18821 /* Stitch.entitlements */,
 				52BE9702A5FEFB4F650E3312 /* StitchApp.swift */,
@@ -762,6 +765,7 @@
 			buildConfigurationList = 45FA49F1DDF125BC29EB6A3E /* Build configuration list for PBXNativeTarget "Stitch" */;
 			buildPhases = (
 				02269FA457668C6A325725BC /* Sources */,
+				543B79875ABFA0A49B21D676 /* Resources */,
 				F47A75A942924A635FAAE194 /* Frameworks */,
 			);
 			buildRules = (
@@ -816,6 +820,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		543B79875ABFA0A49B21D676 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF09C09004C842CB8F748668 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		02269FA457668C6A325725BC /* Sources */ = {

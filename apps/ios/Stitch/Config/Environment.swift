@@ -6,7 +6,7 @@ enum AppConfig {
     /// Base URL for the Next.js API (web app)
     static var apiBaseURL: String {
         #if DEBUG
-        return "http://192.168.2.46:3000/api/v1"
+        return "https://staging.stitch-marker.com/api/v1"
         #else
         return "https://stitch-marker.com/api/v1"
         #endif
