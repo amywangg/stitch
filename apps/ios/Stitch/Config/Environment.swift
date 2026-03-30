@@ -21,7 +21,7 @@ enum AppConfig {
 
     // MARK: - Clerk
 
-    static let clerkPublishableKey = "pk_test_bWludC1jYWltYW4tNDUuY2xlcmsuYWNjb3VudHMuZGV2JA"
+    static let clerkPublishableKey = "pk_live_Y2xlcmsuc3RhZ2luZy5zdGl0Y2gtbWFya2VyLmNvbSQ"
 
     // MARK: - RevenueCat
 
