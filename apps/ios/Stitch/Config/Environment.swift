@@ -4,30 +4,19 @@ enum AppConfig {
     // MARK: - API Base URLs
 
     /// Base URL for the Next.js API (web app)
+    /// For alpha: both debug and release point to staging
     static var apiBaseURL: String {
-        #if DEBUG
         return "https://staging.stitch-marker.com/api/v1"
-        #else
-        return "https://stitch-marker.com/api/v1"
-        #endif
     }
 
     // MARK: - Supabase (for Realtime)
 
     static var supabaseURL: String {
-        #if DEBUG
-        return "http://127.0.0.1:54321"
-        #else
-        return "https://stitch-marker.com/supabase"  // TODO: Update with hosted Supabase URL (e.g. https://xxxxx.supabase.co)
-        #endif
+        return "https://zyluwnvhpddzqafwvkzf.supabase.co"
     }
 
     static var supabaseAnonKey: String {
-        #if DEBUG
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"
-        #else
-        return "UPDATE_WITH_PROD_ANON_KEY"  // Update with your hosted Supabase anon key
-        #endif
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5bHV3bnZocGRkenFhZnd2a3pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MzgyNzMsImV4cCI6MjA4OTAxNDI3M30.bTH8cL4-AkjrWox_prv0fiMFnd7Tn9ruvWB-cbvnPOY"
     }
 
     // MARK: - Clerk
