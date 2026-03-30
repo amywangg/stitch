@@ -2,9 +2,7 @@ import Foundation
 import RevenueCat
 
 enum AppTier: String, Comparable {
-    case free
-    case plus
-    case pro
+    case free, plus, pro
 
     static func < (lhs: AppTier, rhs: AppTier) -> Bool {
         let order: [AppTier] = [.free, .plus, .pro]
@@ -19,10 +17,9 @@ final class SubscriptionManager {
 
     var tier: AppTier = .pro  // Alpha: all users get Pro
     var customerInfo: CustomerInfo?
+    private var isConfigured = false
 
-    /// Convenience — true if user is Plus or Pro
     var isPlusOrAbove: Bool { tier >= .plus }
-    /// Convenience — true only for Pro tier
     var isPro: Bool { tier == .pro }
 
     // MARK: - Setup
@@ -30,10 +27,11 @@ final class SubscriptionManager {
     func configure() {
         Purchases.logLevel = .debug
         Purchases.configure(withAPIKey: AppConfig.revenueCatAPIKey)
+        isConfigured = true
     }
 
-    /// Call after Clerk sign-in to associate the RevenueCat anonymous user with the Clerk user ID.
     func logIn(userId: String) async {
+        guard isConfigured else { return }
         do {
             let (info, _) = try await Purchases.shared.logIn(userId)
             updateState(from: info)
@@ -43,6 +41,7 @@ final class SubscriptionManager {
     }
 
     func logOut() async {
+        guard isConfigured else { return }
         do {
             let info = try await Purchases.shared.logOut()
             updateState(from: info)
@@ -51,9 +50,8 @@ final class SubscriptionManager {
         }
     }
 
-    // MARK: - Entitlement Check
-
     func refresh() async {
+        guard isConfigured else { return }
         do {
             let info = try await Purchases.shared.customerInfo()
             updateState(from: info)
@@ -62,9 +60,8 @@ final class SubscriptionManager {
         }
     }
 
-    // MARK: - Purchase
-
     func purchasePro() async throws {
+        guard isConfigured else { throw SubscriptionError.noOfferings }
         let offerings = try await Purchases.shared.offerings()
         guard let package = offerings.current?.availablePackages.first else {
             throw SubscriptionError.noOfferings
@@ -73,27 +70,21 @@ final class SubscriptionManager {
         updateState(from: result.customerInfo)
     }
 
-    // MARK: - Restore
-
     func restorePurchases() async throws {
+        guard isConfigured else { return }
         let info = try await Purchases.shared.restorePurchases()
         updateState(from: info)
     }
 
-    // MARK: - Listen for Updates
-
-    /// Call from a long-lived task (e.g. .task on RootView) to keep tier in sync.
     func listenForUpdates() async {
+        guard isConfigured else { return }
         for await info in Purchases.shared.customerInfoStream {
             updateState(from: info)
         }
     }
 
-    // MARK: - Private
-
     private func updateState(from info: CustomerInfo) {
         customerInfo = info
-        // Check entitlements in order: Pro first, then Plus
         if info.entitlements["Stitch Pro"]?.isActive == true {
             tier = .pro
         } else if info.entitlements["Stitch Plus"]?.isActive == true {
@@ -106,11 +97,7 @@ final class SubscriptionManager {
 
 enum SubscriptionError: LocalizedError {
     case noOfferings
-
     var errorDescription: String? {
-        switch self {
-        case .noOfferings:
-            return "No subscription offerings available. Please try again later."
-        }
+        switch self { case .noOfferings: return "No subscription offerings available." }
     }
 }

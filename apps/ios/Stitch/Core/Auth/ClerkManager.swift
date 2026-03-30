@@ -9,7 +9,9 @@ final class ClerkManager {
     private init() {}
 
     @MainActor func configure() {
+        print("[CLERK] Configuring with key: \(AppConfig.clerkPublishableKey.prefix(20))...")
         Clerk.configure(publishableKey: AppConfig.clerkPublishableKey)
+        print("[CLERK] Configuration complete")
     }
 
     func sessionToken() async -> String? {

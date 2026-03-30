@@ -128,10 +128,30 @@ struct SignInView: View {
 
     private func signInWithGoogle() async {
         errorMessage = nil
+        print("[AUTH] === Google OAuth Start ===")
+
+        // Try sign-up first (handles both new and existing users with OAuth)
         do {
             try await Clerk.shared.auth.signUpWithOAuth(provider: .google)
+            print("[AUTH] signUpWithOAuth done, user: \(Clerk.shared.user?.id ?? "nil")")
+            if Clerk.shared.user != nil { return }
         } catch {
-            errorMessage = error.localizedDescription
+            print("[AUTH] signUpWithOAuth error: \(error)")
+        }
+
+        // Fallback: try sign-in
+        do {
+            try await Clerk.shared.auth.signInWithOAuth(provider: .google)
+            print("[AUTH] signInWithOAuth done, user: \(Clerk.shared.user?.id ?? "nil")")
+            if Clerk.shared.user != nil { return }
+        } catch {
+            print("[AUTH] signInWithOAuth error: \(error)")
+        }
+
+        // Both failed
+        if Clerk.shared.user == nil {
+            print("[AUTH] === Both OAuth methods returned nil user ===")
+            errorMessage = "Sign in failed. Please try again or use email."
         }
     }
 

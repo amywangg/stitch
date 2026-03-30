@@ -237,8 +237,16 @@ struct SignUpView: View {
         errorMessage = nil
         do {
             try await Clerk.shared.auth.signUpWithOAuth(provider: .google)
+            print("[AUTH] Google sign-up completed, user: \(Clerk.shared.user?.id ?? "nil")")
         } catch {
-            errorMessage = error.localizedDescription
+            print("[AUTH] Google sign-up failed, trying sign-in: \(error)")
+            do {
+                try await Clerk.shared.auth.signInWithOAuth(provider: .google)
+                print("[AUTH] Google sign-in completed, user: \(Clerk.shared.user?.id ?? "nil")")
+            } catch {
+                print("[AUTH] Google sign-in also failed: \(error)")
+                errorMessage = error.localizedDescription
+            }
         }
     }
 

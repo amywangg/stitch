@@ -72,6 +72,9 @@ targets:
         NSPhotoLibraryUsageDescription: "Stitch accesses your photo library to add images of your projects and yarn."
         NSMicrophoneUsageDescription: "Stitch uses the microphone for hands-free voice counting while you knit."
         NSSpeechRecognitionUsageDescription: "Stitch uses speech recognition for hands-free voice commands during counting."
+        CFBundleURLTypes:
+          - CFBundleURLSchemes:
+              - com.stitchmarker.app
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: YES  # dev only — localhost API
     scheme:
