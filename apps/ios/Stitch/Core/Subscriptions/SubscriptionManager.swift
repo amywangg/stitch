@@ -17,7 +17,7 @@ final class SubscriptionManager {
     static let shared = SubscriptionManager()
     private init() {}
 
-    var tier: AppTier = .free
+    var tier: AppTier = .pro  // Alpha: all users get Pro
     var customerInfo: CustomerInfo?
 
     /// Convenience — true if user is Plus or Pro

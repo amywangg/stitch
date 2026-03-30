@@ -10,7 +10,8 @@ struct StitchApp: App {
 
     init() {
         ClerkManager.shared.configure()
-        SubscriptionManager.shared.configure()
+        // RevenueCat disabled for alpha — all users get Pro
+        // SubscriptionManager.shared.configure()
     }
 
     var body: some Scene {
