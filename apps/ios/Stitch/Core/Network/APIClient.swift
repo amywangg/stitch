@@ -80,8 +80,12 @@ final class APIClient {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         // Attach Clerk JWT
-        if let token = await ClerkManager.shared.sessionToken() {
+        let token = await ClerkManager.shared.sessionToken()
+        if let token {
             req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            print("[API] \(method) \(path) (token: \(token.prefix(20))...)")
+        } else {
+            print("[API] \(method) \(path) (NO TOKEN)")
         }
 
         if let body {
@@ -100,17 +104,25 @@ final class APIClient {
             throw APIError.networkError(URLError(.badServerResponse))
         }
 
+        print("[API] \(method) \(path) → \(http.statusCode)")
+
         if http.statusCode == 401 {
+            let body = String(data: data.prefix(300), encoding: .utf8) ?? ""
+            print("[API] 401 UNAUTHORIZED: \(body)")
             throw APIError.unauthorized
         }
 
         guard (200..<300).contains(http.statusCode) else {
+            let body = String(data: data.prefix(500), encoding: .utf8) ?? ""
+            print("[API] ERROR \(http.statusCode): \(body)")
             throw APIError.httpError(statusCode: http.statusCode, body: data)
         }
 
         do {
             return try JSONDecoder.iso8601.decode(T.self, from: data)
         } catch {
+            let body = String(data: data.prefix(500), encoding: .utf8) ?? ""
+            print("[API] DECODE ERROR on \(path): \(error)\nBody: \(body)")
             throw APIError.decodingError(error)
         }
     }

@@ -130,27 +130,41 @@ struct SignInView: View {
         errorMessage = nil
         print("[AUTH] === Google OAuth Start ===")
 
-        // Try sign-up first (handles both new and existing users with OAuth)
-        do {
-            try await Clerk.shared.auth.signUpWithOAuth(provider: .google)
-            print("[AUTH] signUpWithOAuth done, user: \(Clerk.shared.user?.id ?? "nil")")
-            if Clerk.shared.user != nil { return }
-        } catch {
-            print("[AUTH] signUpWithOAuth error: \(error)")
-        }
-
-        // Fallback: try sign-in
+        // Try sign-in first
         do {
             try await Clerk.shared.auth.signInWithOAuth(provider: .google)
             print("[AUTH] signInWithOAuth done, user: \(Clerk.shared.user?.id ?? "nil")")
             if Clerk.shared.user != nil { return }
         } catch {
-            print("[AUTH] signInWithOAuth error: \(error)")
+            let errStr = String(describing: error)
+            print("[AUTH] signInWithOAuth error: \(errStr)")
+            // If session already exists, refresh the client
+            if errStr.contains("session_exists") {
+                print("[AUTH] Session exists, refreshing client...")
+                try? await Clerk.shared.refreshClient()
+                if Clerk.shared.user != nil {
+                    print("[AUTH] Refreshed, user: \(Clerk.shared.user?.id ?? "nil")")
+                    return
+                }
+            }
         }
 
-        // Both failed
+        // Fallback: try sign-up (new user)
+        do {
+            try await Clerk.shared.auth.signUpWithOAuth(provider: .google)
+            print("[AUTH] signUpWithOAuth done, user: \(Clerk.shared.user?.id ?? "nil")")
+            if Clerk.shared.user != nil { return }
+        } catch {
+            let errStr = String(describing: error)
+            print("[AUTH] signUpWithOAuth error: \(errStr)")
+            if errStr.contains("session_exists") {
+                try? await Clerk.shared.refreshClient()
+                if Clerk.shared.user != nil { return }
+            }
+        }
+
         if Clerk.shared.user == nil {
-            print("[AUTH] === Both OAuth methods returned nil user ===")
+            print("[AUTH] === Both methods failed ===")
             errorMessage = "Sign in failed. Please try again or use email."
         }
     }
