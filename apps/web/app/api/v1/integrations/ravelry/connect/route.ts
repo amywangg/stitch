@@ -76,7 +76,7 @@ export const GET = withAuth(async (req, _user) => {
       .map(([k, v]) => `${percentEncode(k)}="${percentEncode(v)}"`)
       .join(', ')
 
-    const tokenRes = await fetch('https://www.ravelry.com/oauth/request_token', {
+    const tokenRes = await fetch('https://www.ravelry.com/oauth/request_token?scope=app-write+library-pdf', {
       method: 'POST',
       headers: { Authorization: authHeader },
     })
@@ -104,7 +104,7 @@ export const GET = withAuth(async (req, _user) => {
     })
     const encryptedState = encrypt(statePayload)
 
-    const authUrl = `https://www.ravelry.com/oauth/authorize?oauth_token=${requestToken}&scope=app-write%20library-pdf`
+    const authUrl = `https://www.ravelry.com/oauth/authorize?oauth_token=${requestToken}&scope=app-write+library-pdf`
 
     // For iOS: return JSON so the app can open ASWebAuthenticationSession
     if (source === 'ios') {

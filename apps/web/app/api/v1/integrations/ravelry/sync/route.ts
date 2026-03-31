@@ -622,7 +622,9 @@ export const POST = withAuth(async (_req, user) => {
         let result: PatternUpsertResult | null = null
         try {
           result = await upsertPatternRich(user.id, ravelryPatternId)
-        } catch {
+          console.log(`[ravelry-sync] Pattern ${ravelryPatternId}: downloadUrl=${result.downloadUrl?.slice(0, 60) ?? 'null'}, hasPdf=${result.hasPdfAlready}`)
+        } catch (richErr) {
+          console.error(`[ravelry-sync] upsertPatternRich failed for ${ravelryPatternId}:`, richErr instanceof Error ? richErr.message : String(richErr))
           // Fall back to basic upsert with data from the volume itself
           const patternName = vol.pattern?.name ?? vol.title ?? 'Untitled'
           const designerName = vol.pattern?.designer?.name ?? vol.author_name ?? null
@@ -680,24 +682,83 @@ export const POST = withAuth(async (_req, user) => {
   }
 
   // ── Phase 3b: Download PDFs from library ─────────────────────────────────
-  // Download PDFs for patterns that have download_location but no pdf_url yet.
-  // This runs after all patterns are imported so we don't slow down the import phase.
-  if (pdfDownloadQueue.length > 0) {
-    await updateProgress('pdfs')
-    for (const job of pdfDownloadQueue) {
+  // Two strategies:
+  // 1. Free patterns: use download_location URL directly (already queued above)
+  // 2. Paid patterns: use volume_attachments + generate_download_link API
+  await updateProgress('pdfs')
+  console.log(`[ravelry-sync] PDF queue: ${pdfDownloadQueue.length} free patterns`)
+
+  // Strategy 1: Free pattern PDFs via direct download
+  for (const job of pdfDownloadQueue) {
+    try {
+      const success = await downloadAndAttachPdf(user.id, job.patternId, job.ravelryId, job.downloadUrl, job.title)
+      if (success) stats.patterns.pdfs_downloaded++
+    } catch (err) {
+      errors.push(`pdf ${job.ravelryId}: ${err instanceof Error ? err.message : String(err)}`)
+    }
+  }
+
+  // Strategy 2: Paid pattern PDFs via volume_attachments + generate_download_link
+  // Find patterns in our DB that are from Ravelry library but have no PDF
+  try {
+    const patternsNeedingPdf = await prisma.patterns.findMany({
+      where: { user_id: user.id, ravelry_id: { not: null }, pdf_url: null, deleted_at: null },
+      select: { id: true, ravelry_id: true, title: true },
+    })
+    console.log(`[ravelry-sync] Patterns needing paid PDF: ${patternsNeedingPdf.length}`)
+
+    // Build a map of ravelry_id → volume from the library
+    const libraryVolumes = await fetchAllPages(async page => {
       try {
-        const success = await downloadAndAttachPdf(
-          user.id,
-          job.patternId,
-          job.ravelryId,
-          job.downloadUrl,
-          job.title,
-        )
-        if (success) stats.patterns.pdfs_downloaded++
+        const res = await client.listLibrary(page)
+        return { items: res?.volumes ?? [], pageCount: res?.paginator?.page_count ?? 0 }
+      } catch { return { items: [] as any[], pageCount: 0 } }
+    })
+    const volumeByPatternId = new Map<string, any>()
+    for (const vol of libraryVolumes) {
+      const pid = vol.pattern?.id ?? vol.pattern_id
+      if (pid) volumeByPatternId.set(String(pid), vol)
+    }
+
+    for (const pattern of patternsNeedingPdf) {
+      if (!pattern.ravelry_id) continue
+      const vol = volumeByPatternId.get(pattern.ravelry_id)
+      if (!vol || !vol.has_downloads) continue
+
+      try {
+        // Get volume details with attachments
+        const volDetail = await client.get<{ volume: any }>(`/volumes/${vol.id}.json`)
+        const attachments = volDetail?.volume?.volume_attachments ?? []
+        if (attachments.length === 0) continue
+
+        // Try to get download link for the first English PDF (or first available)
+        const englishAtt = attachments.find((a: any) => a.language_code === 'en') ?? attachments[0]
+        const attId = englishAtt.product_attachment_id
+        if (!attId) continue
+
+        console.log(`[ravelry-sync] Trying generate_download_link for ${pattern.title} (att ${attId})`)
+        try {
+          const dlRes = await client.post<{ download_link: { url: string } }>(
+            `/product_attachments/${attId}/generate_download_link.json`
+          )
+          const pdfUrl = dlRes?.download_link?.url
+          if (pdfUrl) {
+            const success = await downloadAndAttachPdf(user.id, pattern.id, parseInt(pattern.ravelry_id), pdfUrl, pattern.title)
+            if (success) {
+              stats.patterns.pdfs_downloaded++
+              console.log(`[ravelry-sync] Paid PDF downloaded: ${pattern.title}`)
+            }
+          }
+        } catch {
+          // generate_download_link failed — likely missing library-pdf scope, skip silently
+          console.log(`[ravelry-sync] generate_download_link failed for ${pattern.title} (scope issue)`)
+        }
       } catch (err) {
-        errors.push(`pdf ${job.ravelryId}: ${err instanceof Error ? err.message : String(err)}`)
+        // Non-critical — volume detail failed
       }
     }
+  } catch (err) {
+    console.error('[ravelry-sync] Paid PDF phase error:', err)
   }
 
   await updateProgress('queue')

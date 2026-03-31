@@ -278,7 +278,7 @@ export class RavelryClient {
     }
   }
 
-  private async get<T>(path: string, params?: Record<string, string | number>): Promise<T> {
+  async get<T>(path: string, params?: Record<string, string | number>): Promise<T> {
     return this.request('GET', path, params)
   }
 
