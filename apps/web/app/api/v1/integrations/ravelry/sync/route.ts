@@ -409,7 +409,24 @@ async function downloadAndAttachPdf(
   patternTitle: string,
 ): Promise<boolean> {
   try {
-    const pdfBuffer = await fetchRavelryDownload(downloadUrl, userId)
+    let pdfBuffer: Buffer | null = null
+
+    // Direct S3/CDN URLs (from generate_download_link) don't need auth
+    if (downloadUrl.includes('s3.amazonaws.com') || downloadUrl.includes('ravelrycache.com')) {
+      const res = await fetch(downloadUrl, { redirect: 'follow' })
+      if (res.ok) {
+        const buf = Buffer.from(await res.arrayBuffer())
+        if (buf.length > 100 && buf.slice(0, 4).toString() === '%PDF') {
+          pdfBuffer = buf
+        }
+      }
+    }
+
+    // Ravelry /dls/ or /dl/ URLs need OAuth auth
+    if (!pdfBuffer) {
+      pdfBuffer = await fetchRavelryDownload(downloadUrl, userId)
+    }
+
     if (!pdfBuffer) return false
     if (pdfBuffer.length > MAX_PDF_SIZE) return false
 
