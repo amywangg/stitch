@@ -76,7 +76,7 @@ export const GET = withAuth(async (req, _user) => {
       .map(([k, v]) => `${percentEncode(k)}="${percentEncode(v)}"`)
       .join(', ')
 
-    const tokenRes = await fetch('https://www.ravelry.com/oauth/request_token?scope=app-write+library-pdf', {
+    const tokenRes = await fetch('https://www.ravelry.com/oauth/request_token', {
       method: 'POST',
       headers: { Authorization: authHeader },
     })
