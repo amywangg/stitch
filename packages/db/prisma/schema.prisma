@@ -1265,6 +1265,8 @@ model user_onboarding {
   first_pattern_saved   Boolean   @default(false)
   counter_tutorial_done Boolean   @default(false)
   ravelry_prompted      Boolean   @default(false)
+  profile_setup         Boolean   @default(false)
+  tour_offered          Boolean   @default(false)
   onboarding_complete   Boolean   @default(false)
   completed_at          DateTime?
   created_at            DateTime  @default(now())

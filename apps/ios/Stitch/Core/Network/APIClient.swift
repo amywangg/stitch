@@ -149,6 +149,36 @@ final class APIClient {
         try await request("DELETE", path: path, body: body)
     }
 
+    /// Upload an image as multipart form data
+    func uploadImage<T: Decodable>(_ path: String, imageData: Data, fieldName: String = "file", fileName: String = "photo.jpg") async throws -> T {
+        let url = URL(string: AppConfig.apiBaseURL + path)!
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+
+        let boundary = UUID().uuidString
+        req.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+        if let token = await ClerkManager.shared.sessionToken() {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        var body = Data()
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
+        body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+        body.append(imageData)
+        body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        req.httpBody = body
+
+        let (data, response) = try await session.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+            print("[API] UPLOAD \(path) → \(statusCode)")
+            throw APIError.httpError(statusCode: statusCode, body: data)
+        }
+        return try JSONDecoder.iso8601.decode(T.self, from: data)
+    }
+
     // MARK: - Raw Data Request (e.g., PDF download)
 
     func rawPost(_ path: String, body: [String: Any]) async throws -> Data {

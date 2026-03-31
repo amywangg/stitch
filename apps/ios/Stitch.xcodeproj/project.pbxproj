@@ -95,6 +95,7 @@
 		8E9590E9DE5C5B3955CC6369 /* ManualSectionSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D14020812992CD5DA077BCAD /* ManualSectionSetupView.swift */; };
 		8EF857F7FECD7999CC39DAFA /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D52632844CAF53ED424B61 /* Color+Hex.swift */; };
 		94DE70BE708B87F0C6C5B812 /* CommunityPatternDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAABD0988081668848A73695 /* CommunityPatternDetailView.swift */; };
+		9526A95E1258D5486F0BDA18 /* ShareProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBB0D7FAF37386B516FBE9C /* ShareProfileView.swift */; };
 		9657145AAAD91927DC6122E4 /* ThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76BD5B1779F4C7E7BC04A0 /* ThemeSettingsView.swift */; };
 		96C87633C1F5635C78EBE533 /* CounterControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815FB7E2156A62FED3DC0085 /* CounterControls.swift */; };
 		99CD9CF47524D958C99ED118 /* StitchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AEC078DCCC2F356C967047E /* StitchButton.swift */; };
@@ -305,6 +306,7 @@
 		E93262A4FD09F10E68C3A1EF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		EB49CD66008831290A93CF89 /* CastOnModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastOnModeView.swift; sourceTree = "<group>"; };
 		EC36902E4E25E5C88B551637 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		ECBB0D7FAF37386B516FBE9C /* ShareProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareProfileView.swift; sourceTree = "<group>"; };
 		EDB463176DF224D9CAC6830C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EEC08EFE6CE1D09D02A22667 /* YarnSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YarnSelectionView.swift; sourceTree = "<group>"; };
 		F0FE780CC0A5D25007F2ACE4 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -510,6 +512,7 @@
 				354E4C05400200BC2DAC7F8B /* ProfileProjectsGrid.swift */,
 				153FE4F84EA1355DEA86CFF1 /* ProfileView.swift */,
 				EC36902E4E25E5C88B551637 /* ProfileViewModel.swift */,
+				ECBB0D7FAF37386B516FBE9C /* ShareProfileView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -949,6 +952,7 @@
 				513FBE31145F95DD2AAE1EB7 /* SellPatternSheet.swift in Sources */,
 				F27474ED6AA4253E86DEBEED /* SessionSummaryToast.swift in Sources */,
 				51ABA720C5A833B21EE4B372 /* SettingsView.swift in Sources */,
+				9526A95E1258D5486F0BDA18 /* ShareProfileView.swift in Sources */,
 				19C4DDAB033CDA698398AAAF /* SignInView.swift in Sources */,
 				2B6A0C5AE4D19DDF9F8ED636 /* SignUpView.swift in Sources */,
 				5C79B80836725D0E5CB63757 /* SizeSelectionView.swift in Sources */,
@@ -999,7 +1003,7 @@
 				CODE_SIGN_ENTITLEMENTS = Stitch/Stitch.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6K3U993582;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Stitch/Info.plist;
@@ -1144,7 +1148,7 @@
 				CODE_SIGN_ENTITLEMENTS = Stitch/Stitch.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6K3U993582;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Stitch/Info.plist;

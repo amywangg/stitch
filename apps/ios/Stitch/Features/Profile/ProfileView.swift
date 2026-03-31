@@ -4,6 +4,7 @@ struct ProfileView: View {
     @Environment(ThemeManager.self) private var theme
     @State private var viewModel = ProfileViewModel()
     @State private var showingEditProfile = false
+    @State private var showShareProfile = false
 
     var body: some View {
         NavigationStack {
@@ -58,12 +59,22 @@ struct ProfileView: View {
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button { showShareProfile = true } label: {
+                        Image(systemName: "qrcode")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
                         SettingsView()
                     } label: {
                         Image(systemName: "gear")
                     }
+                }
+            }
+            .sheet(isPresented: $showShareProfile) {
+                if let summary = viewModel.summary {
+                    ShareProfileView(username: summary.user.username ?? "user", displayName: summary.user.displayName)
                 }
             }
             .navigationDestination(for: Route.self) { route in
@@ -834,44 +845,7 @@ struct EditProfileSheet: View {
 
 // MARK: - Image Picker (UIKit bridge)
 
-struct ImagePicker: UIViewControllerRepresentable {
-    @Binding var image: UIImage?
-    @Environment(\.dismiss) private var dismiss
-
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        picker.allowsEditing = true
-        picker.sourceType = .photoLibrary
-        return picker
-    }
-
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-
-    func makeCoordinator() -> Coordinator { Coordinator(self) }
-
-    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: ImagePicker
-
-        init(_ parent: ImagePicker) { self.parent = parent }
-
-        func imagePickerController(
-            _ picker: UIImagePickerController,
-            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
-        ) {
-            if let edited = info[.editedImage] as? UIImage {
-                parent.image = edited
-            } else if let original = info[.originalImage] as? UIImage {
-                parent.image = original
-            }
-            parent.dismiss()
-        }
-
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            parent.dismiss()
-        }
-    }
-}
+// ImagePicker is now defined in OnboardingView.swift (shared)
 
 // MARK: - Date Formatter
 

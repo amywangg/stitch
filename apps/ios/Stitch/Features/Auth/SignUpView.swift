@@ -6,6 +6,7 @@ struct SignUpView: View {
 
     @Environment(ThemeManager.self) private var theme
     @State private var firstName = ""
+    @State private var lastName = ""
     @State private var email = ""
     @State private var password = ""
     @State private var isLoading = false
@@ -57,6 +58,13 @@ struct SignUpView: View {
                         placeholder: "First name",
                         iconName: "person",
                         text: $firstName,
+                        keyboardType: .default
+                    )
+
+                    AuthTextField(
+                        placeholder: "Last name",
+                        iconName: "person",
+                        text: $lastName,
                         keyboardType: .default
                     )
 
@@ -207,7 +215,8 @@ struct SignUpView: View {
             let signUp = try await Clerk.shared.auth.signUp(
                 emailAddress: email,
                 password: password,
-                firstName: firstName.isEmpty ? nil : firstName
+                firstName: firstName.isEmpty ? nil : firstName,
+                lastName: lastName.isEmpty ? nil : lastName
             )
             if signUp.status == .complete {
                 // Session is active — clerk.user will become non-nil automatically

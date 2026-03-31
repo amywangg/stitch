@@ -6,12 +6,14 @@ import { withAuth } from '@/lib/route-helpers'
 export const dynamic = 'force-dynamic'
 const ONBOARDING_STEPS = [
   'welcome_seen',
+  'profile_setup',
   'craft_preference_set',
   'experience_level_set',
   'first_project_created',
   'first_pattern_saved',
   'counter_tutorial_done',
   'ravelry_prompted',
+  'tour_offered',
 ] as const
 
 type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
