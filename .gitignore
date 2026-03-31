@@ -58,3 +58,4 @@ yarn-error.log*
 .env.staging
 .env.prod
 packages/db/.env.prod
+.env.stg*

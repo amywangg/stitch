@@ -43,6 +43,8 @@ export const GET = withAuth(async (req, _user) => {
     // Then encrypt the state and pass it as a query param on the callback.
     // Ravelry preserves query params on the callback URL.
 
+    const requestedScopes = 'app-write library-pdf'
+
     const oauthParams: Record<string, string> = {
       oauth_callback: callbackBase,
       oauth_consumer_key: clientKey,
@@ -52,9 +54,12 @@ export const GET = withAuth(async (req, _user) => {
       oauth_version: '1.0',
     }
 
-    const paramString = Object.keys(oauthParams)
+    // Include scope in the signature base string (OAuth 1.0a requires ALL params to be signed)
+    const allParams: Record<string, string> = { ...oauthParams, scope: requestedScopes }
+
+    const paramString = Object.keys(allParams)
       .sort()
-      .map(k => `${percentEncode(k)}=${percentEncode(oauthParams[k])}`)
+      .map(k => `${percentEncode(k)}=${percentEncode(allParams[k])}`)
       .join('&')
 
     const baseString = [
@@ -76,7 +81,8 @@ export const GET = withAuth(async (req, _user) => {
       .map(([k, v]) => `${percentEncode(k)}="${percentEncode(v)}"`)
       .join(', ')
 
-    const tokenRes = await fetch('https://www.ravelry.com/oauth/request_token', {
+    // Scope goes as a query param on request_token (NOT in the Authorization header)
+    const tokenRes = await fetch(`https://www.ravelry.com/oauth/request_token?scope=${percentEncode(requestedScopes)}`, {
       method: 'POST',
       headers: { Authorization: authHeader },
     })
@@ -104,7 +110,7 @@ export const GET = withAuth(async (req, _user) => {
     })
     const encryptedState = encrypt(statePayload)
 
-    const authUrl = `https://www.ravelry.com/oauth/authorize?oauth_token=${requestToken}&scope=app-write+library-pdf`
+    const authUrl = `https://www.ravelry.com/oauth/authorize?oauth_token=${requestToken}`
 
     // For iOS: return JSON so the app can open ASWebAuthenticationSession
     if (source === 'ios') {
