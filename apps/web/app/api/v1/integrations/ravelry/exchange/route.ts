@@ -110,11 +110,22 @@ export const POST = withAuth(async (req, user) => {
     const accessParams = new URLSearchParams(accessBody)
     const accessToken = accessParams.get('oauth_token')
     const tokenSecret = accessParams.get('oauth_token_secret')
-    // Username comes from callback URL params, not from the access token response
-    const ravelryUsername = accessParams.get('username') || usernameFromCallback || 'unknown'
-
     if (!accessToken || !tokenSecret) {
       return NextResponse.json({ error: 'Missing tokens from Ravelry' }, { status: 502 })
+    }
+
+    // Get the actual Ravelry username — try from access token response first,
+    // then from callback params, then fetch from profile API
+    let ravelryUsername = accessParams.get('username') || usernameFromCallback || ''
+    if (!ravelryUsername) {
+      try {
+        const { RavelryClient } = await import('@/lib/ravelry-client')
+        const tempClient = new RavelryClient(clientKey, clientSecret, accessToken, tokenSecret, '')
+        const profile = await tempClient.getProfile()
+        ravelryUsername = profile?.user?.username ?? 'unknown'
+      } catch {
+        ravelryUsername = 'unknown'
+      }
     }
 
     await prisma.ravelry_connections.upsert({

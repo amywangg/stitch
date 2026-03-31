@@ -1,6 +1,7 @@
 import SwiftUI
 import ClerkKit
 import SafariServices
+import AuthenticationServices
 
 // MARK: - Onboarding View
 // 0: Welcome + Username + Photo
@@ -39,6 +40,9 @@ struct OnboardingView: View {
 
     // Step 2: Ravelry
     @State private var showRavelrySafari = false
+    @State private var ravelryAuthURL: URL?
+    @State private var isConnectingRavelry = false
+    @State private var ravelryError: String?
 
     // Step 3: Measurements
     @State private var measurementsVM = MeasurementsViewModel()
@@ -80,7 +84,9 @@ struct OnboardingView: View {
             ImagePicker(image: $selectedImage)
         }
         .sheet(isPresented: $showRavelrySafari) {
-            SafariView(url: ravelryConnectURL).ignoresSafeArea()
+            if let url = ravelryAuthURL {
+                SafariView(url: url).ignoresSafeArea()
+            }
         }
     }
 
@@ -180,10 +186,16 @@ struct OnboardingView: View {
                             .foregroundStyle(.white)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
-                            .onChange(of: username) { _, newVal in
-                                username = newVal.lowercased().replacingOccurrences(of: " ", with: "_")
+                            .onChange(of: username) { oldVal, newVal in
+                                let sanitized = newVal.lowercased().replacingOccurrences(of: " ", with: "_")
                                     .filter { $0.isLetter || $0.isNumber || $0 == "_" }
-                                checkUsernameAvailability()
+                                if sanitized != newVal {
+                                    username = sanitized
+                                    return // onChange will fire again with sanitized value
+                                }
+                                if oldVal != newVal {
+                                    checkUsernameAvailability()
+                                }
                             }
                         if isCheckingUsername {
                             ProgressView().scaleEffect(0.7)
@@ -252,7 +264,7 @@ struct OnboardingView: View {
             }
 
             // Mark onboarding step
-            let _: APIResponse<[String: Bool]> = try await APIClient.shared.patch(
+            let _: APIResponse<AnyCodable> = try await APIClient.shared.patch(
                 "/onboarding", body: ["profile_setup": true, "welcome_seen": true]
             )
 
@@ -262,142 +274,175 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Step 1: Craft + Experience (Combined)
+    // MARK: - Step 1: Craft + Experience (Single Screen)
 
     private var craftExperienceStep: some View {
-        VStack(spacing: 0) {
-            if showExperiencePicker {
-                experienceContent
-            } else if showKnittingStylePicker {
-                knittingStyleContent
-            } else {
-                craftContent
-            }
-        }
-    }
+        ScrollView {
+            VStack(spacing: 0) {
+                skipButton { await skipCraftExperience() }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.horizontal, 28).padding(.top, 8)
 
-    private var craftContent: some View {
-        VStack(spacing: 0) {
-            skipButton { await skipCraftExperience() }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.horizontal, 28).padding(.top, 8)
-
-            VStack(spacing: 6) {
-                Text("What do you make?")
-                    .font(.title2.bold()).foregroundStyle(.white)
-                Text("We'll personalise your experience")
-                    .font(.subheadline).foregroundStyle(Color(hex: "#8E8E93"))
-            }
-            .padding(.top, 36).padding(.bottom, 36)
-
-            VStack(spacing: 12) {
-                onboardCard(emoji: "🧶", title: "Knitting", subtitle: "Cast on, knit, purl, repeat") { selectCraft(.knitting) }
-                onboardCard(emoji: "🪡", title: "Crocheting", subtitle: "Hook, yarn, and create") { selectCraft(.crocheting) }
-                onboardCard(emoji: "✨", title: "Both!", subtitle: "I love all fibre arts") { selectCraft(.both) }
-            }
-            .padding(.horizontal, 24)
-            Spacer()
-        }
-    }
-
-    private func selectCraft(_ pref: CraftPref) {
-        craftPref = pref
-        UserDefaults.standard.set(pref.rawValue, forKey: "stitch_craft_preference")
-        Task {
-            let _: APIResponse<[String: Bool]> = try await APIClient.shared.patch(
-                "/onboarding", body: ["craft_preference_set": true]
-            )
-            if pref == .knitting || pref == .both {
-                withAnimation { showKnittingStylePicker = true }
-            } else {
-                withAnimation { showExperiencePicker = true }
-            }
-        }
-    }
-
-    private var knittingStyleContent: some View {
-        VStack(spacing: 0) {
-            skipButton {
-                withAnimation { showKnittingStylePicker = false; showExperiencePicker = true }
-            }
-            .frame(maxWidth: .infinity, alignment: .trailing)
-            .padding(.horizontal, 28).padding(.top, 8)
-
-            VStack(spacing: 6) {
-                Text("How do you knit?")
-                    .font(.title2.bold()).foregroundStyle(.white)
-                Text("This helps us show the right tutorials")
-                    .font(.subheadline).foregroundStyle(Color(hex: "#8E8E93"))
-            }
-            .padding(.top, 36).padding(.bottom, 36)
-
-            VStack(spacing: 12) {
-                onboardCard(icon: "hand.raised.fill", title: "English (throwing)", subtitle: "Yarn held in your right hand") {
-                    saveKnittingStyle("english")
+                VStack(spacing: 6) {
+                    Text("About your crafting")
+                        .font(.title2.bold()).foregroundStyle(.white)
+                    Text("We'll personalise your experience")
+                        .font(.subheadline).foregroundStyle(Color(hex: "#8E8E93"))
                 }
-                onboardCard(icon: "hand.raised", title: "Continental (picking)", subtitle: "Yarn held in your left hand") {
-                    saveKnittingStyle("continental")
+                .padding(.top, 24).padding(.bottom, 24)
+
+                // Craft type
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("What do you make?")
+                        .font(.subheadline.weight(.semibold)).foregroundStyle(.white)
+                        .padding(.horizontal, 24)
+
+                    VStack(spacing: 8) {
+                        craftChip(emoji: "🧶", title: "Knitting", pref: .knitting)
+                        craftChip(emoji: "🪡", title: "Crocheting", pref: .crocheting)
+                        craftChip(emoji: "✨", title: "Both", pref: .both)
+                    }
+                    .padding(.horizontal, 24)
                 }
+                .padding(.bottom, 20)
+
+                // Knitting style (only if knitting/both selected)
+                if craftPref == .knitting || craftPref == .both {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("How do you knit?")
+                            .font(.subheadline.weight(.semibold)).foregroundStyle(.white)
+                            .padding(.horizontal, 24)
+
+                        VStack(spacing: 8) {
+                            styleChip(icon: "hand.raised.fill", title: "English (throwing)", style: "english")
+                            styleChip(icon: "hand.raised", title: "Continental (picking)", style: "continental")
+                        }
+                        .padding(.horizontal, 24)
+                    }
+                    .padding(.bottom, 20)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                }
+
+                // Experience level
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Experience level")
+                        .font(.subheadline.weight(.semibold)).foregroundStyle(.white)
+                        .padding(.horizontal, 24)
+
+                    VStack(spacing: 8) {
+                        expChip(icon: "leaf", title: "Beginner", level: "beginner")
+                        expChip(icon: "flame", title: "Intermediate", level: "intermediate")
+                        expChip(icon: "star.fill", title: "Advanced", level: "advanced")
+                    }
+                    .padding(.horizontal, 24)
+                }
+                .padding(.bottom, 28)
+
+                // Continue button
+                AuthPrimaryButton(
+                    title: "Continue",
+                    isLoading: false,
+                    disabled: false
+                ) {
+                    Task { await saveCraftExperience() }
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 40)
             }
-            .padding(.horizontal, 24)
-            Spacer()
         }
+        .animation(.easeInOut(duration: 0.25), value: craftPref)
     }
 
-    private func saveKnittingStyle(_ style: String) {
-        knittingStyle = style
-        UserDefaults.standard.set(style, forKey: "stitch_knitting_style")
-        Task {
+    private func craftChip(emoji: String, title: String, pref: CraftPref) -> some View {
+        Button {
+            withAnimation { craftPref = pref }
+            UserDefaults.standard.set(pref.rawValue, forKey: "stitch_craft_preference")
+        } label: {
+            HStack(spacing: 12) {
+                Text(emoji).font(.system(size: 22))
+                Text(title).font(.subheadline.weight(.medium)).foregroundStyle(.white)
+                Spacer()
+                if craftPref == pref {
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(theme.primary)
+                } else {
+                    Circle().stroke(Color(hex: "#3A3A3C"), lineWidth: 1.5).frame(width: 22, height: 22)
+                }
+            }
+            .padding(14)
+            .background(craftPref == pref ? theme.primary.opacity(0.12) : Color(hex: "#1C1C1E").opacity(0.6),
+                         in: RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(craftPref == pref ? theme.primary.opacity(0.4) : Color(hex: "#2C2C2E"), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func styleChip(icon: String, title: String, style: String) -> some View {
+        Button {
+            withAnimation { knittingStyle = style }
+            UserDefaults.standard.set(style, forKey: "stitch_knitting_style")
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: icon).font(.system(size: 18)).foregroundStyle(theme.primary).frame(width: 28)
+                Text(title).font(.subheadline.weight(.medium)).foregroundStyle(.white)
+                Spacer()
+                if knittingStyle == style {
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(theme.primary)
+                } else {
+                    Circle().stroke(Color(hex: "#3A3A3C"), lineWidth: 1.5).frame(width: 22, height: 22)
+                }
+            }
+            .padding(14)
+            .background(knittingStyle == style ? theme.primary.opacity(0.12) : Color(hex: "#1C1C1E").opacity(0.6),
+                         in: RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(knittingStyle == style ? theme.primary.opacity(0.4) : Color(hex: "#2C2C2E"), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func expChip(icon: String, title: String, level: String) -> some View {
+        Button {
+            withAnimation { experienceLevel = level }
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: icon).font(.system(size: 18)).foregroundStyle(theme.primary).frame(width: 28)
+                Text(title).font(.subheadline.weight(.medium)).foregroundStyle(.white)
+                Spacer()
+                if experienceLevel == level {
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(theme.primary)
+                } else {
+                    Circle().stroke(Color(hex: "#3A3A3C"), lineWidth: 1.5).frame(width: 22, height: 22)
+                }
+            }
+            .padding(14)
+            .background(experienceLevel == level ? theme.primary.opacity(0.12) : Color(hex: "#1C1C1E").opacity(0.6),
+                         in: RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(experienceLevel == level ? theme.primary.opacity(0.4) : Color(hex: "#2C2C2E"), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func saveCraftExperience() async {
+        if let craft = craftPref {
+            try? await APIClient.shared.patch("/onboarding", body: ["craft_preference_set": true]) as APIResponse<AnyCodable>
+        }
+        if let style = knittingStyle {
             struct Body: Encodable { let knitting_style: String }
-            try? await APIClient.shared.patch("/users/me", body: Body(knitting_style: style)) as APIResponse<[String: Bool]>
-            withAnimation { showKnittingStylePicker = false; showExperiencePicker = true }
+            try? await APIClient.shared.patch("/users/me", body: Body(knitting_style: style)) as APIResponse<AnyCodable>
         }
-    }
-
-    private var experienceContent: some View {
-        VStack(spacing: 0) {
-            skipButton { await skipExperience() }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.horizontal, 28).padding(.top, 8)
-
-            VStack(spacing: 6) {
-                Text("What's your experience?")
-                    .font(.title2.bold()).foregroundStyle(.white)
-                Text("We'll tailor tutorials and suggestions")
-                    .font(.subheadline).foregroundStyle(Color(hex: "#8E8E93"))
-            }
-            .padding(.top, 36).padding(.bottom, 36)
-
-            VStack(spacing: 12) {
-                experienceCard(icon: "leaf", title: "Beginner", subtitle: "Just starting out", level: "beginner")
-                experienceCard(icon: "flame", title: "Intermediate", subtitle: "Comfortable with patterns", level: "intermediate")
-                experienceCard(icon: "star.fill", title: "Advanced", subtitle: "Experienced with complex projects", level: "advanced")
-            }
-            .padding(.horizontal, 24)
-            Spacer()
+        if let level = experienceLevel {
+            struct Body: Encodable { let experience_level: String }
+            try? await APIClient.shared.patch("/users/me", body: Body(experience_level: level)) as APIResponse<AnyCodable>
+            try? await APIClient.shared.patch("/onboarding", body: ["experience_level_set": true]) as APIResponse<AnyCodable>
         }
-    }
-
-    private func experienceCard(icon: String, title: String, subtitle: String, level: String) -> some View {
-        onboardCard(icon: icon, title: title, subtitle: subtitle) {
-            experienceLevel = level
-            Task {
-                struct Body: Encodable { let experience_level: String }
-                try? await APIClient.shared.patch("/users/me", body: Body(experience_level: level)) as APIResponse<[String: Bool]>
-                try? await APIClient.shared.patch("/onboarding", body: ["experience_level_set": true]) as APIResponse<[String: Bool]>
-                withAnimation { showExperiencePicker = false; step = 2 }
-            }
-        }
-    }
-
-    private func skipCraftExperience() async {
-        try? await APIClient.shared.patch("/onboarding", body: ["craft_preference_set": true, "experience_level_set": true]) as APIResponse<[String: Bool]>
         withAnimation { step = 2 }
     }
 
-    private func skipExperience() async {
-        try? await APIClient.shared.patch("/onboarding", body: ["experience_level_set": true]) as APIResponse<[String: Bool]>
-        withAnimation { showExperiencePicker = false; step = 2 }
+    private func skipCraftExperience() async {
+        try? await APIClient.shared.patch("/onboarding", body: ["craft_preference_set": true, "experience_level_set": true]) as APIResponse<AnyCodable>
+        withAnimation { step = 2 }
     }
 
     // MARK: - Step 2: Connect Ravelry
@@ -405,7 +450,7 @@ struct OnboardingView: View {
     private var ravelryStep: some View {
         VStack(spacing: 0) {
             skipButton {
-                try? await APIClient.shared.patch("/onboarding", body: ["ravelry_prompted": true]) as APIResponse<[String: Bool]>
+                try? await APIClient.shared.patch("/onboarding", body: ["ravelry_prompted": true]) as APIResponse<AnyCodable>
                 withAnimation { step = 3 }
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
@@ -439,9 +484,9 @@ struct OnboardingView: View {
             VStack(spacing: 12) {
                 Button {
                     Task {
-                        try? await APIClient.shared.patch("/onboarding", body: ["ravelry_prompted": true]) as APIResponse<[String: Bool]>
+                        try? await APIClient.shared.patch("/onboarding", body: ["ravelry_prompted": true]) as APIResponse<AnyCodable>
+                        await connectRavelry()
                     }
-                    showRavelrySafari = true
                 } label: {
                     HStack(spacing: 8) {
                         Text("R").font(.system(size: 18, weight: .bold, design: .rounded))
@@ -458,7 +503,7 @@ struct OnboardingView: View {
 
                 Button {
                     Task {
-                        try? await APIClient.shared.patch("/onboarding", body: ["ravelry_prompted": true]) as APIResponse<[String: Bool]>
+                        try? await APIClient.shared.patch("/onboarding", body: ["ravelry_prompted": true]) as APIResponse<AnyCodable>
                         withAnimation { step = 3 }
                     }
                 } label: {
@@ -544,10 +589,68 @@ struct OnboardingView: View {
 
     private func finishOnboarding() {
         Task {
-            try? await APIClient.shared.patch("/onboarding", body: ["tour_offered": true]) as APIResponse<[String: Bool]>
+            try? await APIClient.shared.patch("/onboarding", body: ["tour_offered": true]) as APIResponse<AnyCodable>
         }
         UserDefaults.standard.set(true, forKey: "stitch_onboarding_done")
         onComplete()
+    }
+
+    // MARK: - Ravelry Connect
+
+    private func connectRavelry() async {
+        isConnectingRavelry = true
+        defer { isConnectingRavelry = false }
+        do {
+            // Step 1: Get auth URL from our API
+            struct ConnectResponse: Decodable { let url: String; let state: String }
+            let response: APIResponse<ConnectResponse> = try await APIClient.shared.get(
+                "/integrations/ravelry/connect?source=ios"
+            )
+            guard let authURL = URL(string: response.data.url) else {
+                ravelryError = "Invalid authorization URL"; return
+            }
+            let encryptedState = response.data.state
+
+            // Step 2: Open ASWebAuthenticationSession
+            let callbackURL: URL = try await withCheckedThrowingContinuation { continuation in
+                let coordinator = OnboardingOAuthCoordinator()
+                let session = ASWebAuthenticationSession(
+                    url: authURL,
+                    callbackURLScheme: "stitch"
+                ) { url, error in
+                    if let error { continuation.resume(throwing: error) }
+                    else if let url { continuation.resume(returning: url) }
+                    else { continuation.resume(throwing: URLError(.cancelled)) }
+                }
+                session.presentationContextProvider = coordinator
+                session.prefersEphemeralWebBrowserSession = false
+                coordinator.session = session
+                objc_setAssociatedObject(session, "coordinator", coordinator, .OBJC_ASSOCIATION_RETAIN)
+                session.start()
+            }
+
+            // Step 3: Extract tokens from callback
+            let components = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)
+            let queryItems = components?.queryItems ?? []
+            guard let oauthToken = queryItems.first(where: { $0.name == "oauth_token" })?.value,
+                  let oauthVerifier = queryItems.first(where: { $0.name == "oauth_verifier" })?.value else {
+                ravelryError = "Missing authorization data"; return
+            }
+
+            // Step 4: Exchange tokens via our API
+            struct ExchangeBody: Encodable { let oauth_token: String; let oauth_verifier: String; let state: String }
+            let _: APIResponse<AnyCodable> = try await APIClient.shared.post(
+                "/integrations/ravelry/exchange",
+                body: ExchangeBody(oauth_token: oauthToken, oauth_verifier: oauthVerifier, state: encryptedState)
+            )
+            print("[ONBOARDING] Ravelry connected!")
+            withAnimation { step = 3 }
+        } catch is CancellationError {
+            // User cancelled — stay on Ravelry step
+        } catch {
+            print("[ONBOARDING] Ravelry connect error: \(error)")
+            ravelryError = "Could not connect to Ravelry."
+        }
     }
 
     // MARK: - Shared Components
@@ -629,6 +732,7 @@ struct OnboardingView: View {
                     "/users/me/username/check?q=\(input)"
                 )
                 guard !Task.isCancelled else { return }
+                print("[ONBOARDING] Username check '\(input)': available=\(response.data.available), reason=\(response.data.reason ?? "none")")
                 await MainActor.run {
                     isCheckingUsername = false
                     usernameAvailable = response.data.available
@@ -636,6 +740,7 @@ struct OnboardingView: View {
                 }
             } catch {
                 guard !Task.isCancelled else { return }
+                print("[ONBOARDING] Username check failed: \(error)")
                 await MainActor.run {
                     isCheckingUsername = false
                     usernameAvailable = false
@@ -680,5 +785,19 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
 
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) { parent.dismiss() }
+    }
+}
+
+// MARK: - OAuth Presentation Context
+
+private class OnboardingOAuthCoordinator: NSObject, ASWebAuthenticationPresentationContextProviding {
+    var session: ASWebAuthenticationSession?
+
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+              let window = scene.windows.first(where: { $0.isKeyWindow }) else {
+            return ASPresentationAnchor()
+        }
+        return window
     }
 }

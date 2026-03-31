@@ -1,5 +1,15 @@
 import Foundation
 
+// MARK: - AnyCodable (accepts any JSON value)
+
+struct AnyCodable: Codable {
+    init(from decoder: Decoder) throws {
+        // Accept anything — we don't use the value
+        _ = try? decoder.singleValueContainer()
+    }
+    func encode(to encoder: Encoder) throws {}
+}
+
 // MARK: - API Response Wrappers
 
 struct APIResponse<T: Decodable>: Decodable {
