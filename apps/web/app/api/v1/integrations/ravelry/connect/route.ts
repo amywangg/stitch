@@ -104,7 +104,7 @@ export const GET = withAuth(async (req, _user) => {
     })
     const encryptedState = encrypt(statePayload)
 
-    const authUrl = `https://www.ravelry.com/oauth/authorize?oauth_token=${requestToken}&scope=app-write+library-pdf`
+    const authUrl = `https://www.ravelry.com/oauth/authorize?oauth_token=${requestToken}&scope=app-write%20library-pdf`
 
     // For iOS: return JSON so the app can open ASWebAuthenticationSession
     if (source === 'ios') {

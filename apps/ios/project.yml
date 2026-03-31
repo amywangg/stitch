@@ -6,6 +6,11 @@ options:
   xcodeVersion: "16"
   groupSortPosition: top
 
+configs:
+  Debug: debug
+  Staging: debug
+  Release: release
+
 packages:
   ClerkiOS:
     url: https://github.com/clerk/clerk-ios
@@ -18,6 +23,9 @@ settings:
   base:
     SWIFT_VERSION: "5.9"
     ENABLE_PREVIEWS: YES
+  configs:
+    Staging:
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG STAGING"
 
 targets:
   Stitch:
@@ -44,7 +52,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.stitchmarker.app
         MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "4"
+        CURRENT_PROJECT_VERSION: "5"
         INFOPLIST_FILE: Stitch/Info.plist
         DEVELOPMENT_TEAM: 6K3U993582
         CODE_SIGN_STYLE: Automatic
@@ -76,7 +84,7 @@ targets:
           - CFBundleURLSchemes:
               - com.stitchmarker.app
         NSAppTransportSecurity:
-          NSAllowsArbitraryLoads: YES  # dev only — localhost API
+          NSAllowsArbitraryLoads: YES
     scheme:
       testTargets: []
       gatherCoverageData: false
@@ -92,5 +100,17 @@ schemes:
       config: Release
     analyze:
       config: Debug
+    archive:
+      config: Release
+  Stitch Staging:
+    build:
+      targets:
+        Stitch: all
+    run:
+      config: Staging
+    profile:
+      config: Release
+    analyze:
+      config: Staging
     archive:
       config: Release

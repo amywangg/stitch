@@ -66,6 +66,30 @@ struct SettingsView: View {
                     }
                 }
 
+                #if DEBUG
+                Section("Developer") {
+                    HStack {
+                        Text("Environment")
+                        Spacer()
+                        Text("\(AppConfig.environmentName)")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(AppConfig.environmentName == "LOCAL" ? Color.green : Color.orange, in: Capsule())
+                    }
+                    HStack {
+                        Text("API")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(AppConfig.apiBaseURL)
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                            .lineLimit(1)
+                    }
+                }
+                #endif
+
                 Section("Account") {
                     Button(role: .destructive) {
                         Task {
